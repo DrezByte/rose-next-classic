@@ -1,0 +1,14 @@
+[Bb]in/
+[Bb]uild/
+[Ll]ib/
+
+server/data/
+
+# Visual studio
+*.vs/
+*.pch
+*.sdf
+*.vcxproj.user
+
+# Generated files
+*.inc
