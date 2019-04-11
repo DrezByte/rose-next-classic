@@ -77,7 +77,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\SHO_WS\SHO_WS_LIB;$(SolutionDir)src\SHO_WS\SHO_WS_LIB\Shared;$(SolutionDir)bin\$(Configuration);$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\Common;$(SolutionDir)src\Client\Common;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_ws\sho_ws_lib;$(SolutionDir)src\sho_ws\sho_ws_lib\shared;$(SolutionDir)bin\$(Configuration);$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;$(SolutionDir)src\Common;$(SolutionDir)src\Client\Common;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_debug;_WINDOWS;_USRDLL;SHO_WS_DLL_EXPORTS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
@@ -86,7 +86,6 @@
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -129,7 +128,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\SHO_WS\SHO_WS_LIB;$(SolutionDir)src\SHO_WS\SHO_WS_LIB\Shared;$(SolutionDir)bin\$(Configuration);$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\Common;$(SolutionDir)src\Client\Common;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_ws\sho_ws_lib;$(SolutionDir)src\sho_ws\sho_ws_lib\shared;$(SolutionDir)bin\$(Configuration);$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;$(SolutionDir)src\Common;$(SolutionDir)src\Client\Common;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;Ndebug;_WINDOWS;_USRDLL;SHO_WS_DLL_EXPORTS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

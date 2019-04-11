@@ -9,16 +9,6 @@
 #include "classLUA.h"
 #include "classLOG.h"
 
-//-------------------------------------------------------------------------------------------------
-#ifdef __BORLANDC__
-    #pragma	comment (lib, "BCB5_lua.lib")
-    #pragma	comment (lib, "BCB5_lualib.lib")
-#else
-    #pragma	comment (lib, "lua401.lib")
-    #pragma	comment (lib, "lualib401.lib")
-#endif
-
-//-------------------------------------------------------------------------------------------------
 
 classLUA::classLUA (int iStackSize)
 {

@@ -2,6 +2,7 @@
 #include ".\sqlitedb.h"
 
 
+/*
 #pragma comment(lib, "sqlite.lib")
 
 CSqliteDB::CSqliteDB(void)
@@ -141,3 +142,4 @@ int CSqliteDB::DeleteMemo( int iRowid )
 	}
 	return 0;
 }
+*/

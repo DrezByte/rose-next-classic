@@ -178,9 +178,6 @@ void SHO_WS::SystemINIT( HINSTANCE hInstance, char *szBaseDataDIR, int iLangType
 	if ( pSockWND ) {
 		// pSockWND->AddSocketMsgProc( WM_LSVSOCK_MSG, LSV_SocketMSG );
 		pSockWND->AddSocket( &g_pSockLSV->m_SockLSV, WM_LSVSOCK_MSG );
-	#ifdef	__CDB_SOCKET
-		pSockWND->AddSocket( g_pSockLOG, WM_LOGSOCK_MSG );
-	#endif
 	}
 
 //	g_pPartyBUFF  = new CWSPartyBUFF;
@@ -327,15 +324,6 @@ bool SHO_WS::Start (HWND hMainWND,
 	m_dwRandomSEED = ::timeGetTime();
 	g_pPacketCODEC->Init( m_dwRandomSEED );
 
-
-#ifdef	__CDB_SOCKET
-	g_pSockLOG->Init ( CSocketWND::GetInstance()->GetWindowHandle(), 
-						szLogServerIP, 
-						iLogServerPortNO, 
-						WM_LOGSOCK_MSG, 
-						m_DBName.Get(), m_DBUser.Get(), m_DBPassword.Get(),
-						WS_TIMER_LOG, RECONNECT_TIME_TICK, (TIMERPROC)WS_TimerProc );
-#endif
 	this->ConnectToLOG ();
 
 	g_pSockLSV->Init ( CSocketWND::GetInstance()->GetWindowHandle(), szLoginServerIP, iLoginServerPort, WM_LSVSOCK_MSG, true );

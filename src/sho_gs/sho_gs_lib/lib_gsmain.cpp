@@ -211,22 +211,6 @@ DWORD GetServerStartTIME ()
 }
 
 //-------------------------------------------------------------------------------------------------
-/*
-bool LOG_SocketMSG(WPARAM wParam, LPARAM lParam)
-{
-#ifdef	__CDB_SOCKET
-	return g_pSockLOG->WndPROC( wParam, lParam );
-#else
-	return true;
-#endif
-}
-bool LSV_SocketMSG(WPARAM wParam, LPARAM lParam)
-{
-	return g_pSockLSV->Proc_SocketMSG( wParam, lParam );
-}
-*/
-
-//-------------------------------------------------------------------------------------------------
 #define	WM_LSVSOCK_MSG	( WM_SOCKETWND_MSG+0 )
 #define	WM_ASVSOCK_MSG	( WM_SOCKETWND_MSG+1 )
 //#define	WM_LOGSOCK_MSG	( WM_SOCKETWND_MSG+1 )
@@ -353,9 +337,6 @@ void CLIB_GameSRV::SystemINIT( HINSTANCE hInstance, char *szBaseDataDIR, int iLa
 	if ( pSockWND ) {
 		pSockWND->AddSocket( &g_pSockLSV->m_SockLSV, WM_LSVSOCK_MSG );
 		pSockWND->AddSocket( &g_pSockASV->m_SockASV, WM_ASVSOCK_MSG );
-	#ifdef	__CDB_SOCKET
-		pSockWND->AddSocket( g_pSockLOG, WM_LOGSOCK_MSG );
-	#endif
 	}
 
 	this->InitLocalZone( true );
@@ -979,16 +960,6 @@ bool CLIB_GameSRV::Start( HWND hMainWND, char *szServerName, char *szClientListe
 						m_iAccountServerPORT, 
 						WM_ASVSOCK_MSG );
 	this->ConnectToASV ();
-
-#ifdef	__CDB_SOCKET
-	g_pSockLOG->Init ( CSocketWND::GetInstance()->GetWindowHandle(), 
-						m_LogServerIP.Get(),
-						m_iLogServerPORT,
-						WM_LOGSOCK_MSG, 
-						m_DBName.Get(), 
-						m_DBUser.Get(), m_DBPassword.Get(),
-						GS_TIMER_LOG, RECONNECT_TIME_TICK, (TIMERPROC)GS_TimerProc );
-#endif
 	this->ConnectToLOG ();
 
 	m_hMainWND = hMainWND;

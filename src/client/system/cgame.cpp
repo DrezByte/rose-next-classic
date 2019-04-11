@@ -367,11 +367,13 @@ int CGame::Init()
 	}
 
 	//CSqliteDB::GetInstance()
+	/*
 	if( CSqliteDB::GetInstance().Open( "Rose.db") == 0 )
 	{
 		const char* sqlCreateMemoTable = "create table memo ( name string, sender string, content string, time int )";
 		CSqliteDB::GetInstance().Exec( sqlCreateMemoTable, NULL );
 	}
+	*/
 
 	CSFXFont* sfx_font = new CSFXFont;
 	CSFXManager::GetSingleton().AddSFX( sfx_font );
@@ -404,7 +406,7 @@ void CGame::Exit()
 {
 	CSFXManager::GetSingleton().Clear();
 
-	CSqliteDB::GetInstance().Close();
+	// CSqliteDB::GetInstance().Close();
 
 	CCursor::GetInstance().Finalize();
 

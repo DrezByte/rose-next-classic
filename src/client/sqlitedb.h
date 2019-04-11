@@ -1,5 +1,7 @@
 #ifndef _CSqliteDB_
 #define _CSqliteDB_
+
+/* TODO: PORT TO SQLITE3 
 #include "sqlite.h"
 
 class CSqliteDB
@@ -19,4 +21,5 @@ public:
 private:
 	sqlite* m_db;
 };
+*/
 #endif

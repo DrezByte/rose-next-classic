@@ -7,7 +7,6 @@
 #include "it_mgr.h"
 
 #include "zlib.h"
-#pragma comment( lib,"zdll.lib" )
 
 CClanMarkTransfer _ClanMarkTransfer;
 CClanMarkTransfer::CClanMarkTransfer(void)
@@ -24,17 +23,6 @@ void CClanMarkTransfer::RequestMarkFromServer( int iClanID )
 	g_pNet->Send_cli_CLANMARK_REQ( iClanID );
 }
 
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------/
-///1. File이 있는지 체크
-///2. 포맷이 맞는지 체크 --> 별도의 Class에서 확인한다
-///3. File을 Load해서 temp.gz생성
-///4. 임시저장 zip file을 Memory에 올린후 서버로 전송( size check - 1kbyte 이하이어야 한다 )
-//----------------------------------------------------------------------------------------------------/
 bool  CClanMarkTransfer::RegisterMarkToServer( int iClanID, const char* pStrFileName )
 {
 	assert( pStrFileName );
