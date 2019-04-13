@@ -185,7 +185,7 @@ t_HASHKEY CFileLIST<dType>::Add_FILE( char *szFileName, short nIndex, dType DATA
 #else
 	if ( bCheckFileExist && !CUtil::Is_FileExist( szFileName ) ) {
 		CStrVAR str( 256 );
-		str.Printf ("ERROR File [%s] not found in %s ... \n", szFileName, m_NameTAG.Get());
+		str.Printf ((char*)"ERROR File [%s] not found in %s ... \n", szFileName, m_NameTAG.Get());
 		// ::MessageBox (NULL, szMSG, "ERROR", MB_OK);
 		LogString ( LOG_DEBUG, str.Get() );
 		return 0;
@@ -207,13 +207,13 @@ t_HASHKEY CFileLIST<dType>::Add_FILE( char *szFileName, short nIndex, dType DATA
 
 	/// 이미들어간거라면..
 	if ( pData ) {
-		if ( !strcmpi(szFileName, pData->m_FileName.Get() ) )
+		if ( !_strcmpi(szFileName, pData->m_FileName.Get() ) )
 			return uiHashKey;
 
 		t_HASHKEY uiHashKey2;
 		uiHashKey2 = StrToHashKey( pData->m_FileName.Get() );
 
-		LogString ( LOG_DEBUG, "HashKey Collision (%d:%s,  %d:%s)\n", uiHashKey, szFileName, uiHashKey2, pData->m_FileName.Get() );
+		LogString ( LOG_DEBUG, (char*)"HashKey Collision (%d:%s,  %d:%s)\n", uiHashKey, szFileName, uiHashKey2, pData->m_FileName.Get() );
 
 		_ASSERT( !pData );
 		return 0;
@@ -236,7 +236,7 @@ t_HASHKEY CFileLIST<dType>::Add_FILE( char *szFileName, short nIndex, dType DATA
 			{
 				m_pDATAs[ nIndex ].m_bLoad = true;
 				m_nLoadCNT ++;
-				LogString ( LOG_DEBUG, "Add and Load FILE : %s, LoadCNT: %d\n", m_pDATAs[ nIndex ].m_FileName.Get(), Get_LoadCOUNT() );				
+				LogString ( LOG_DEBUG, (char*)"Add and Load FILE : %s, LoadCNT: %d\n", m_pDATAs[ nIndex ].m_FileName.Get(), Get_LoadCOUNT() );				
 			}
 		}		
 

@@ -147,11 +147,11 @@ namespace JED
 	//---------------------------------------------------------------------------
 	/// return object to pool
 	//---------------------------------------------------------------------------
-	template< class T >
-	void CResourceContainer< T >::ReturnObjectToPool( T* )
+	template< typename T >
+	void CResourceContainer< T >::ReturnObjectToPool( T* o )
 	{
-		m_pUsedPool.remove( T* );
-		m_pObjectPool.push_back( T* );
+		m_pUsedPool.remove( o );
+		m_pObjectPool.push_back( o );
 	}
 
 	//---------------------------------------------------------------------------
@@ -182,12 +182,13 @@ namespace JED
 
 
 	/// Add new object, if it exist already in map, return false.
-	template< class T >
+	template< typename T >
 	bool CResourceContainer< T >::AddObject( const char* strName, T* obj )
 	{
 		CResObject keyObj( strName );
 
-		std::map< CResObject, T* >::iterator itor = m_ObjectMap.find( keyObj );
+		//std::map< CResObject, T* >::iterator itor = m_ObjectMap.find( keyObj );
+		auto itor = m_ObjectMap.find(keyObj);
 		if( itor != m_ObjectMap.end() )
 		{			
 			return false;
@@ -203,7 +204,7 @@ namespace JED
 	T* CResourceContainer< T >::GetObjectByName( const char* strName )
 	{
 		CResObject keyObj( strName );
-		std::map< CResObject, T* >::iterator itor = m_ObjectMap.find( keyObj );
+		auto itor = m_ObjectMap.find( keyObj );
 		if( itor != m_ObjectMap.end() )
 		{
 			return itor->second;

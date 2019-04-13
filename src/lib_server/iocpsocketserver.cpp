@@ -274,7 +274,7 @@ bool IOCPSocketSERVER::New_SOCKET( SOCKET hSocket, sockaddr_in &SockADDR )
 	pSOCKET->m_HashKeyIP = ipHashKEY;
 
 	if ( !m_IOCP.LinkPort( (HANDLE)hSocket, iSocketIDX ) || 
-		 eRESULT_PACKET_OK != pSOCKET->Recv_Start () ) {
+		eRESULT_PACKET_OK != pSOCKET->Recv_Start () ) {
 		this->Lock ();
 			// @버그 수정 : 2004. 7. 16 iSocketIDX대신 pSOCKET->m_iSocketIDX로 사용했던 실수가 있었음.
 			// 아미 메모리 풀이 중복 해제되는 원인으루 추정됨...

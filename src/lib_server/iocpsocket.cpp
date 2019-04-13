@@ -1,4 +1,3 @@
-
 #include <winsock2.H>
 #include <windows.h>
 #include <tchar.h>
@@ -7,6 +6,7 @@
 #include "classLOG.h"
 #include "classUTIL.h"
 #include "classIOCP.h"
+#include "classPACKET.h"
 #include "iocpSOCKET.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -75,7 +75,9 @@ void iocpSOCKET::Clear_LIST (void)
 // pRecvNode에 이어 받기.
 ePacketRECV iocpSOCKET::Recv_Continue (tagIO_DATA *pRecvDATA)
 {
-	_ASSERT( pRecvDATA->m_pCPacket->GetRefCnt() == 1 );
+	auto packet = pRecvDATA->m_pCPacket;
+	auto ref_count = packet->GetRefCnt();
+	//_ASSERT( pRecvDATA->m_pCPacket->GetRefCnt() == 1 );
 
     if ( 0 == ::ReadFile( (HANDLE)m_Socket,										// HANDLE hFile,                // handle to file
                     &pRecvDATA->m_pCPacket->m_pDATA[ pRecvDATA->m_dwIOBytes ],  // LPVOID lpBuffer,             // data buffer
@@ -107,11 +109,11 @@ ePacketRECV iocpSOCKET::Recv_Continue (tagIO_DATA *pRecvDATA)
 // 새로 받기.
 ePacketRECV iocpSOCKET::Recv_Start (void)
 {
-    classDLLNODE<tagIO_DATA> *pRecvNODE;
+    classDLLNODE<tagIO_DATA> *pRecvNODE = this->Alloc_RecvIODATA();
 
-    pRecvNODE = this->Alloc_RecvIODATA ();
-    if ( NULL == pRecvNODE )
-        return eRESULT_PACKET_DISCONNECT;//false;
+	if (NULL == pRecvNODE) {
+		return eRESULT_PACKET_DISCONNECT;//false;
+	}
 
 	_ASSERT( pRecvNODE->DATA.m_IOmode    == ioREAD );
 	_ASSERT( pRecvNODE->DATA.m_dwIOBytes == 0 );

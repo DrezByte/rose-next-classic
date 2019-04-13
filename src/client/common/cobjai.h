@@ -8,6 +8,21 @@
 #include "IO_Skill.h"
 #include "..\AI_LIB\CAI_LIB.h"
 
+#include <cstdint>
+
+/*
+#ifndef WORD
+typedef int16_t WORD;
+#endif
+
+#ifndef DWORD
+typedef int32_t WORD;
+#endif
+
+#ifndef BYTE
+typedef uint8_t BYTE;
+#endif
+*/
 
 //-------------------------------------------------------------------------------------------------
 //
@@ -112,6 +127,7 @@ public  :
 
 #define RECOVER_STATE_STOP_OR_WALK_OLD	8		/// 정지,걷기 상태	:: nRecoverMODE = 8
 #define RECOVER_STATE_STOP_OR_WALK_NEW	5		/// 정지,걷기 상태	:: nRecoverMODE = 5//대만, 필리핀 적용( 2005/5/19 )
+
 ///
 ///	CObjAI class 
 ///
@@ -239,17 +255,23 @@ protected :
 public    :
 	virtual void		SetCMD_SIT (void);
 	virtual void		SetCMD_STAND (void);
+#ifndef __SERVER
 	virtual void		SetCMD_MOVE ( WORD wSrvDIST, const D3DVECTOR& PosTO, int iServerTarget);
+#endif
 	virtual void		SetCMD_DIE ();
 	virtual bool		SetCMD_TOGGLE (BYTE btTYPE);
 	
 	virtual bool		SetCMD_STOP ();
 	virtual bool		SetCMD_MOVE2D ( float fPosX, float fPosY, BYTE btRunMODE );
+#ifndef __SERVER
 	virtual bool		SetCMD_MOVE ( const D3DVECTOR& vPosTo, BYTE btRunMODE );
+#endif
 	
 	virtual void		SetCMD_Skill2SELF (short nSkillIDX);
+#ifndef __SERVER
 	virtual bool		SetCMD_Skill2OBJ ( WORD wSrvDIST, const D3DVECTOR& PosTO, int iServerTarget, short nSkillIDX);
 	virtual void		SetCMD_Skill2POS ( const D3DVECTOR& PosGOTO, short nSkillIDX);
+#endif
 
 	virtual void		SetCMD_RUNnATTACK(int iTargetObjTAG)
 	{	

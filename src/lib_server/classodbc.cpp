@@ -2,6 +2,7 @@
 #include <tchar.h>
 #include <crtdbg.h>
 #include <stdio.h>
+#include <string>
 #include "classODBC.h"
 #include "classLOG.h"
 
@@ -872,12 +873,23 @@ DWORD classODBC::MakeQuery (char *szCommand, ...)
 			}
 			case MQ_PARAM_STR	: 
 			{
-				char *pStr = va_arg(va, char*);
-
 				*pBuff++ = '\'';
 
+				char* pStr = (va_arg(va, char*));
 				iStrLen = strlen(pStr);
-				::CopyMemory (pBuff, pStr, iStrLen);
+
+				// Ralph: Escape quotes, this is a work around and the query should be done using
+				// parameter binding instead.
+				std::string escaped;
+				for (int i = 0; i < iStrLen; ++i) {
+					char c = pStr[i];
+					if (c == '\'') {
+						escaped.push_back('\'');
+					}
+					escaped.push_back(c);
+				}
+
+				::CopyMemory (pBuff, escaped.c_str(), escaped.size());
 				pBuff += iStrLen;
 
 				*pBuff++ = '\'';

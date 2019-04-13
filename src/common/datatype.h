@@ -226,7 +226,7 @@ struct tPOINTF {
 
 	typedef	D3DVECTOR					t_POSITION;
 #else
-	typedef	tPOINTF						t_POSITION;
+	typedef tPOINTF t_POSITION;
 #endif
 
 

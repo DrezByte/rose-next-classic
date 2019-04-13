@@ -13,6 +13,7 @@
 #include "CObjAVT.h"
 #include "GS_Party.h"
 #include "Calculation.h"
+#include "io_skill.h"
 
 extern CPacketCODEC *g_pPacketCODEC;
 
@@ -537,7 +538,8 @@ public :
 	DWORD			m_dwTimeToLogOUT;
 	DWORD			m_dwLastSkillActiveTIME;
 	DWORD			m_dwLastSkillSpellTIME[ MAX_LEARNED_SKILL_CNT ];
-	DWORD			m_dwLastSkillGroupSpeelTIME[ MAX_SKILL_RELOAD_TYPE ];
+	//DWORD			m_dwLastSkillGroupSpeelTIME[ MAX_SKILL_RELOAD_TYPE ];
+	DWORD			m_dwLastSkillGroupSpeelTIME[15];
 
 	char			m_szUserTITLE[ MAX_USER_TITLE+1 ];
 	struct tagUserSTORE {
@@ -725,7 +727,7 @@ x	//CDLList< tagPartyUSER >::tagNODE *m_pPartyNODE;
 		m_dwGoddnessTIME = 0;
 		m_btSummonCMD = 0;
 
-		m_nPatHP_Mode = 0;
+		// m_nPatHP_Mode = 0;
 	}
 	void FreeUSER ()
 	{

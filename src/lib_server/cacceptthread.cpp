@@ -56,6 +56,8 @@ void CAcceptTHREAD::Execute ()
             ::shutdown   (ClientSocket, SD_BOTH);
             ::setsockopt (ClientSocket, SOL_SOCKET, SO_LINGER, (char *)&li, sizeof(li));
             ::closesocket(ClientSocket);
+
+			g_LOG.CS_ODS(0xffff, "Failed to accept a socket");
         }
     }
 

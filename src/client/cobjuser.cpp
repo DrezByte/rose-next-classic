@@ -1015,7 +1015,7 @@ bool CObjUSER::SetCMD_Skill2OBJ ( WORD wSrvDIST, const D3DVECTOR& PosTO, int iSe
 	return CObjAI::SetCMD_Skill2OBJ ( wSrvDIST, PosTO, iServerTarget, nSkillIDX);
 }
 
-void CObjUSER::SetCMD_Skill2SELF (short nSkillIDX)
+void  CObjUSER::SetCMD_Skill2SELF (short nSkillIDX)
 {
 	CObjSkill2SelfCommand* pObjCommand = (CObjSkill2SelfCommand*)g_CommandFilter.GetCommandObject( OBJECT_COMMAND_Skill2SELF );
 	pObjCommand->SetCMD_Skill2SELF( nSkillIDX );

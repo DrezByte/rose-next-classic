@@ -200,7 +200,7 @@ void  CDLList <T>::DeleteNode(tagNODE *pNodeToDel)
 template <typename T>
 void  CDLList <T>::ReplaceNode (tagNODE *pTargetNode, tagNODE *pNodeToReplace)
 {
-	if ( TargetNode == NULL ) return;
+	if ( pTargetNode == NULL ) return;
 
 	pNodeToReplace->m_pPREV = pTargetNode->m_pPREV;
 	pNodeToReplace->m_pNEXT = pTargetNode->m_pNEXT;
@@ -211,7 +211,7 @@ void  CDLList <T>::ReplaceNode (tagNODE *pTargetNode, tagNODE *pNodeToReplace)
 		pTargetNode->m_pPREV->m_pNEXT = pNodeToReplace;
 
 	if ( pTargetNode == m_pTAIL ) 
-		m_pTAIL = NodeToReplace;
+		m_pTAIL = pNodeToReplace;
 	else
 		pTargetNode->m_pNEXT->m_pPREV = pNodeToReplace;
 }
@@ -243,7 +243,7 @@ void  CDLList <T>::InsertNodeToPrev (tagNODE *pTargetNode, tagNODE *pNodeToIns)
 //---------------------------------------------------------------------------
 
 template <typename T>
-void  CDLList <T>::InsertNodeToNext (tagNODE *TargetNode, tagNODE *NodeToIns)
+void  CDLList <T>::InsertNodeToNext (tagNODE *pTargetNode, tagNODE *pNodeToIns)
 {
 	if ( pTargetNode == NULL ) return;
 
@@ -251,7 +251,7 @@ void  CDLList <T>::InsertNodeToNext (tagNODE *TargetNode, tagNODE *NodeToIns)
         pNodeToIns->m_pPREV	= m_pTAIL;
         pNodeToIns->m_pNEXT	= NULL;
         m_pTAIL->m_pNEXT	= pNodeToIns;
-        m_pTAIL = NodeToIns;
+        m_pTAIL = pNodeToIns;
     } else {
         pNodeToIns->m_pPREV	= pTargetNode;
         pNodeToIns->m_pNEXT	= pTargetNode->m_pNEXT;

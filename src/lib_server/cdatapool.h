@@ -54,7 +54,7 @@ protected :
 			pNextNODE = pDataNODE;
 		}
 
-		g_LOG.CS_ODS( 0xffff, ">>>> Pool[ %s ] Increase %d data total: %d\n", m_PoolName.Get(), uiDataCNT, m_uiTotalDataCNT );
+		g_LOG.CS_ODS( 0xffff, (char*)">>>> Pool[ %s ] Increase %d data total: %d\n", m_PoolName.Get(), uiDataCNT, m_uiTotalDataCNT );
 
 
 		return pDataBLOCK;
@@ -121,7 +121,7 @@ public :
 			if ( pDataNODE->m_POOL_bUsed ) {
 				pDataNODE->m_POOL_bUsed = false;
 
-				this->m_iUsedCNT --;
+				if(this->m_iUsedCNT > 0) this->m_iUsedCNT--;
 				_ASSERT( this->m_iUsedCNT >= 0 );
 
 				this->m_pTailNODE->m_POOL_pNextNODE = pDataNODE;

@@ -22,11 +22,11 @@ typedef enum {
 
 
 struct tagIO_DATA {
-	OVERLAPPED					m_Overlapped;
-	IO_MODE						m_IOmode;
-	DWORD						m_dwIOBytes;
-	classPACKET				   *m_pCPacket;
-	classDLLNODE<tagIO_DATA>   *m_pNODE;
+	OVERLAPPED m_Overlapped;
+	IO_MODE	m_IOmode;
+	DWORD m_dwIOBytes;
+	classPACKET* m_pCPacket;
+	classDLLNODE<tagIO_DATA>* m_pNODE;
 } ;
 typedef	classDLLNODE<tagIO_DATA>	IODATANODE;
 typedef	classDLLNODE<tagIO_DATA>*	LPIODATANODE;
@@ -48,36 +48,16 @@ public :
 		return m_pCPoolPACKET;
 	}
 
-#ifndef	__USE_PACKET_POOL
-	LPCPACKET	Pool_Alloc ()						
-	{
-		LPCPACKET pPacket;
-		pPacket = new classPACKET;
-		return pPacket;
-	}
-	void		Pool_Free( LPCPACKET pCPacket )		
-	{	
-		SAFE_DELETE( pCPacket );
-	}
-#endif
-
-
 private:
 	CPoolPACKET( UINT uiInitDataCNT, UINT uiIncDataCNT );
 
 public :
-	inline void InitData (LPCPACKET pCPacket)
-	{	
-		pCPacket->SetLength( 0 );
-	}
-
 	LPCPACKET AllocOnly ()
 	{
-		LPCPACKET pCPacket;
-		pCPacket = this->Pool_Alloc ();
+		LPCPACKET pCPacket = new classPACKET;
 
-		this->InitData( pCPacket );
-		pCPacket->SetRefCnt( 0 );
+		pCPacket->SetLength(0);
+		pCPacket->SetRefCnt(0);
 
 		return pCPacket;
 	}
@@ -93,12 +73,10 @@ public :
 
 	LPCPACKET AllocNLock ()
 	{
-		LPCPACKET pCPacket;
+		LPCPACKET pCPacket = new classPACKET();
 
-		pCPacket = this->Pool_Alloc ();
-
-		this->InitData( pCPacket );
-		pCPacket->SetRefCnt( 1 );
+		pCPacket->SetLength(0);
+		pCPacket->SetRefCnt(1);
 
 		return pCPacket;
 	}
@@ -138,7 +116,7 @@ public :
 #ifndef	__USE_RECV_IODATA_POOL
 	LPIODATANODE Pool_Alloc ()	
 	{	
-		return new classDLLNODE< tagIO_DATA >;
+		return new classDLLNODE<tagIO_DATA>();
 	}
 
 	void  Pool_Free( LPIODATANODE pDelNODE )

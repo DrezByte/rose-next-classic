@@ -223,6 +223,7 @@ public :
 //	int     Proc ()					{	return CObjCHAR::Proc ()			}
 
 protected:
+	short m_nPatHP_Mode;
 	// CObjAVT ------------------------------------------------------------------------------------
 	short	m_nRunSPEED;
 	short	m_nAtkAniSPEED;

@@ -82,14 +82,12 @@ public :
 	virtual short D_RecvB (t_PACKETHEADER *pPacket)		{	return pPacket->m_nSize;	}
 	virtual WORD  P_Length(t_PACKETHEADER *pPacket)		{	return pPacket->m_nSize;	}
 
-    classDLLNODE<tagIO_DATA> *Alloc_RecvIODATA (void)
+	classDLLNODE<tagIO_DATA> *Alloc_RecvIODATA (void)
 	{
-		classDLLNODE<tagIO_DATA> *pRecvDATA;
-
-		pRecvDATA = CPoolRECVIO::GetInstance()->Pool_Alloc ();
+		classDLLNODE<tagIO_DATA>* pRecvDATA = CPoolRECVIO::GetInstance()->Pool_Alloc();
 		if ( pRecvDATA ) {
 			CPoolRECVIO::GetInstance()->InitData( pRecvDATA );
-			pRecvDATA->DATA.m_pCPacket = CPoolPACKET::GetInstance()->AllocNLock ();
+			pRecvDATA->DATA.m_pCPacket = CPoolPACKET::GetInstance()->AllocNLock();
 		}
 
 		return pRecvDATA;

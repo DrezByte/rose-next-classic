@@ -1,5 +1,6 @@
-#ifndef	__SHO_LS_LIB_H
+﻿#ifndef	__SHO_LS_LIB_H
 #define	__SHO_LS_LIB_H
+
 #include "CLS_API.h"
 #include "classTIME.h"
 //-------------------------------------------------------------------------------------------------
@@ -7,7 +8,7 @@
 
 class SHO_LS
 {
-private :
+public:
 	int		m_iClientListenPortNO;
 	int		m_iServerListenPortNO;
 	bool	m_bShowOnlyWS;

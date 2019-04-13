@@ -67,7 +67,7 @@ class CSLList {
 
         tagNODE	*GetHeadNode (void)					{	return m_pHEAD;				}
 		tagNODE	*GetTailNode (void)					{	return m_pTAIL;				}
-        tagNODE	*GetNextNode (tagNODE*CurrentNode)	{	return pCurNode->m_pNEXT;	}
+        tagNODE	*GetNextNode (tagNODE*pCurNode)	{	return pCurNode->m_pNEXT;	}
 
 		void AppendNodeList (CSLList<T> *pList);
 

@@ -6,6 +6,8 @@
 #ifndef	__COBJNPC_H
 #define	__COBJNPC_H
 #include "CObjCHAR.H"
+#include "common/io_stb.h"
+
 //-------------------------------------------------------------------------------------------------
 
 // #define	MAX_SAVED_DAMAGED	7
@@ -33,7 +35,7 @@ private:
 public :	
 	// virtual function inherit from CGameOBJ -----------------------------------------------------
 	t_ObjTAG		Get_TYPE ()						{	return OBJ_MOB;					}
-	char		   *Get_NAME ()	                	{	return NPC_NAME( m_nCharIdx );	}
+	char		   *Get_NAME ()	                	{	return (char*)NPC_NAME( m_nCharIdx );	}
     virtual bool	Make_gsv_ADD_OBJECT( classPACKET *pCPacket );
 
 public :
@@ -108,7 +110,7 @@ public :
 	void	Add_ToTargetLIST( CObjAVT *pAVTChar );
 	void	Sub_FromTargetLIST( CObjAVT *pAVTChar );
 
-	WORD	Get_ATTRIBUTE ()		{	return NPC_ATTRIBUTE( m_nCharIdx );	}		// ¼Ó¼º
+	WORD	Get_ATTRIBUTE() { return NPC_ATTRIBUTE(m_nCharIdx); }
 
 
 private:

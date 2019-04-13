@@ -42,9 +42,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SHO_LS_LIB.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CLS_SQLThread.cpp">
       <Filter>Source Files\CLS_Thread</Filter>
     </ClCompile>
@@ -59,6 +56,9 @@
     </ClCompile>
     <ClCompile Include="CAS_GUMS.cpp">
       <Filter>Source Files\GUMs</Filter>
+    </ClCompile>
+    <ClCompile Include="SHO_LS_LIB.CPP">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

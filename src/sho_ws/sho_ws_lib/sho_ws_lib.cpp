@@ -100,13 +100,6 @@ CThreadGUILD	*g_pThreadGUILD = NULL;
 
 #define	MAX_CHAT_ROOMS	150
 
-/*
-bool LSV_SocketMSG(WPARAM wParam, LPARAM lParam)
-{
-	return g_pSockLSV->Proc_SocketMSG( wParam, lParam );
-}
-*/
-
 void WriteLOG (char *szMSG)
 {
 	SHO_WS::ExeAPI()->WriteLOG( szMSG );

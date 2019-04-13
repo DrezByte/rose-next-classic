@@ -107,7 +107,7 @@ CSocketWND::CSocketWND (HINSTANCE hInstance, UINT uiMaxSocket)
 				0,									// 윈도우 스타일
 				CW_USEDEFAULT, CW_USEDEFAULT,		// 위치 = 디폴트
 				CW_USEDEFAULT, CW_USEDEFAULT,		// 크기 = 디폴트
-				NULL,								// 부모 윈도우 없음
+				HWND_MESSAGE,								// 부모 윈도우 없음
 				NULL,								// 메뉴 = 윈도우 클래스 디폴트
 				hInstance,							// 윈도우 소유자
 				NULL );								// 추가적인 생성 데이타 없음

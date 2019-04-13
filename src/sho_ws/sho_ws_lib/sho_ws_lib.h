@@ -1,6 +1,7 @@
 #ifndef	__SHO_WS_LIB_H
 #define	__SHO_WS_LIB_H
 #include "classSTR.h"
+#include "classtime.h"
 #include "CWS_API.h"
 //-------------------------------------------------------------------------------------------------
 

@@ -46,7 +46,7 @@ public :
 
 		if( !m_pString )
 		{
-			g_LOG.CS_ODS (0xffff, "Null String Founded\n");
+			g_LOG.CS_ODS (0xffff, (char*)"Null String Founded\n");
 			return NULL;
 		}
 

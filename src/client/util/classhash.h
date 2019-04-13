@@ -152,6 +152,7 @@ template <class t_HASHDATA>
 int classHASH<t_HASHDATA>::GetEntryCount(int iEntryIDX)
 {
     int iCnt=0;
+	tagHASH<t_HASHDATA> *pNODE;
 
     pNODE = m_pTABLE[ iEntryIDX ]->m_NEXT;
     while( pNODE ) {
@@ -235,9 +236,9 @@ tagHASH<t_HASHDATA> *classHASH<t_HASHDATA>::Search (t_HASHKEY ulHashKey, t_HASHD
 
 	unsigned long ulPos = (ulHashKey & 0xFFFF) % m_iEntryCount;
 
-	pNODE = m_pTALBE[ ulPos ]->m_NEXT;
+	pNODE = m_pTABLE[ ulPos ]->m_NEXT;
 	while ( pNODE ) {
-		i ( pNODE->m_DATA == HashData ) {
+		if ( pNODE->m_DATA == HashData ) {
 			return pNODE;
 		}
 		pNODE = pNODE->m_NEXT;

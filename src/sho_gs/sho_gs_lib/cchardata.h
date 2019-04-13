@@ -32,7 +32,7 @@ public :
 	tagMOTION *GetMOTION (BYTE btIndex)			
 	{	
 		if( btIndex >= m_nAniCNT ) {
-			g_LOG.CS_ODS( 0xffff, "OutofRange Ani index : %d\n", btIndex);
+			g_LOG.CS_ODS( 0xffff, (char*)"OutofRange Ani index : %d\n", btIndex);
 			return NULL;
 		}
 

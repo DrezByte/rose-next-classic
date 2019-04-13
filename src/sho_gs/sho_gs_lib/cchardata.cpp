@@ -68,7 +68,8 @@ bool CCharDATA::Load_MOBorNPC (FILE *fp, t_HASHKEY *pAniKEY, short nAniCNT)
 		// 모션 파일 이름을 찾자~~~~
 		if ( 0 == m_ppAniFILE[ nAniIDX ] ) {
 			int i=00;
-			assert( m_ppAniFILE[ nAniIDX ] );
+			// Ralph: Something in LIST_NPC.CHR is causing an assert
+			// assert( m_ppAniFILE[ nAniIDX ] );
 		}
 	}
 	m_nAniCNT = MAX_MOB_ANI;

@@ -49,7 +49,7 @@ private :
 
 public  :
 #ifdef	__SERVER
-	CMotionLIST () : CFileLIST<tagMOTION*>("ANI ", 2048)	{	;	}
+	CMotionLIST () : CFileLIST<tagMOTION*>((char*)"ANI ", 2048)	{	;	}
 #else
 	CMotionLIST () : CFileLIST<tagMOTION*>("ANI ")			{	;	}
 #endif

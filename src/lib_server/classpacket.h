@@ -3,9 +3,22 @@
 #include <crtdbg.h>
 #include "PacketHEADER.h"
 #include "CPacketCODEC.h"
-//-------------------------------------------------------------------------------------------------
+
+
+#ifndef __POINTF
+#define __POINTF
+struct tPOINTF {
+	float	m_fX;
+	float	m_fY;
+};
+#endif
+
+#include "net_prototype.h"
+
 
 struct tagIO_DATA;
+
+/*
 #ifdef	__T_PACKET
 class classPACKET : public t_PACKET {
 #else
@@ -16,16 +29,20 @@ public :
 		BYTE			m_pDATA[ MAX_PACKET_SIZE ];
 	} ;
 #endif
-
+*/
+class classPACKET : public t_PACKET {
 private :
 	long						m_lRefCnt;
 	WORD						m_wPacketLEN;
 
-public :
-	classPACKET ()				
-	{   
-		m_lRefCnt = 0;
+public:
+
+	classPACKET():
+		m_lRefCnt(0),
+		m_wPacketLEN(0)
+	{
 	}
+
 	~classPACKET ()
 	{   
 		// _ASSERT( 0 == m_lRefCnt );
@@ -46,7 +63,7 @@ public :
 		return ::InterlockedDecrement( &this->m_lRefCnt );
 	}
 
-	inline int	  GetRefCnt ()				{	return m_lRefCnt;		}
+	inline int GetRefCnt () { return m_lRefCnt; }
 	inline WORD	  GetLength ()				{	return m_wPacketLEN;	}
 	inline void   SetLength (WORD wLen)		{	m_wPacketLEN = wLen;	}
 

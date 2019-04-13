@@ -112,7 +112,7 @@ void CNetwork::Proc_WorldPacket ()
 						CGame::GetInstance().AcceptedConnectLoginSvr();
 						continue;
 					}
-					case NETWORK_STATUS_CONNECT		:
+					case NETWORK_STATUS_CONNECT:
 					{
 						// 서버와 연결됐다...
 						switch( m_nProcLEVEL ) {

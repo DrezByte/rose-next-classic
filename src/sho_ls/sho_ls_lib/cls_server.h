@@ -143,6 +143,7 @@ public :
 		}
 		return (iocpSOCKET*)pSOCKET;
 	}
+
 	void FreeClientSOCKET( iocpSOCKET *pSOCKET )
 	{
 		CLS_Server *pServer = (CLS_Server*)pSOCKET;

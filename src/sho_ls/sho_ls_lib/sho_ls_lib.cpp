@@ -1,4 +1,4 @@
-
+О╩©
 #include "stdAFX.h"
 
 #include "SHO_LS_LIB.h"
@@ -35,7 +35,7 @@ classListBLOCK<tagBlockDATA>    *g_pListServerIP=NULL;
 
 //-------------------------------------------------------------------------------------------------
 
-#define	DEF_CLIENT_POOL_SIZE	8192		// ╣©╫ц а╒╪с ╢К╠Б ╪рдо
+#define	DEF_CLIENT_POOL_SIZE	8192		// б╣б©б╫ц┐ ц│б╒б╪ц⌠ б╢ц╚б╠ц╒ б╪ц▓ц└ц▐
 #define	INC_CLIENT_POOL_SIZE	1024
 
 #define	DEF_SERVER_POOL_SIZE	256
@@ -59,7 +59,7 @@ classListBLOCK<tagBlockDATA>    *g_pListServerIP=NULL;
 //-------------------------------------------------------------------------------------------------
 void WriteLOG (char *szMSG)
 {
-	// а╓╦╩╥н аъ©Дгя ╦ч╪╪аЖ╦╦...
+	// ц│б╓б╦б╩б╥ц▌ ц│ц÷б©ц╓ц┤ц▒ б╦ц·б╪б╪ц│ц╤б╦б╦...
 	SHO_LS::ExeAPI()->WriteLOG( szMSG );
 }
 
@@ -71,7 +71,7 @@ VOID CALLBACK LS_TimerProc (HWND hwnd/* handle to window */, UINT uMsg/* WM_TIME
 {
 	if ( LS_TIMER_CHECK_WAIT_LIST == idEvent ) {
 		if ( ++s_dwTick % 2 )
-			g_pListWAIT->Delete_IdleACCOUNT( 90 );	// ╪╜╧Ж юл╣©го╢б╣╔ 30цй юл╩С ╟и╦╝╦И б╘╥╞~
+			g_pListWAIT->Delete_IdleACCOUNT( 90 );	// б╪б╜б╧ц╤ ц─ц▄б╣б©ц┤ц▐б╢ц┌б╣б╔ 30ц┐ц┼ ц─ц▄б╩цЁ б╟ц┴б╦б╝б╦ц╘ ц┌б╘б╥б╞~
 		else
 			g_pListCLIENT->Delete_IdleSOCKET();
 	}
@@ -91,11 +91,7 @@ DWORD GetServerStartTIME ()
 
 SHO_LS::SHO_LS (EXE_LS_API *pExeAPI)
 {
-#if ( _WIN32_WINNT < 0x0500 ) || !defined( __SERVER )
-	COMPILE_TIME_ASSERT( 0 );
-#endif
 	m_pExeAPI = pExeAPI;
-
 	m_pTIMER = NULL;
 }
 
@@ -218,7 +214,7 @@ bool SHO_LS::StartClientSOCKET (int iClientListenPort, int iLimitUserCNT, BYTE b
 	::CopyMemory( m_btMD5, btMD5, 32 );
 
 	m_iClientListenPortNO = iClientListenPort;
-	g_pListCLIENT->Active( m_iClientListenPortNO, 65535, 3*60 );	// ╣©╫ц а╒╪с ╪рдо ╟╧╪Ж 65535. а╒╪сю╞аЖ ц╪е╘ 3╨п
+	g_pListCLIENT->Active( m_iClientListenPortNO, 65535, 3*60 );	// б╣б©б╫ц┐ ц│б╒б╪ц⌠ б╪ц▓ц└ц▐ б╟б╧б╪ц╤ 65535. ц│б╒б╪ц⌠ц─б╞ц│ц╤ ц┐б╪ц┘б╘ 3б╨ц░
 	this->SetLimitUserCNT ( iLimitUserCNT );
 
 	return true;
@@ -232,9 +228,7 @@ void SHO_LS::CloseClientSOCKET ()
 	}
 }
 
-
-
-bool SHO_LS::StartServerSOCKET (HWND hMainWND, char *szDBServerIP, int iServerListenPort, DWORD dwLoginRight, char *szGumsIP, int iGumsPORT, bool bShowOnlyWS)
+bool SHO_LS::StartServerSOCKET(HWND hMainWND, char * szDBServerIP, int iServerListenPort, DWORD dwLoginRight, char * szGumsIP, int iGumsPORT, bool bShowOnlyWS)
 {
 	if ( m_iServerListenPortNO )
 		return false;
@@ -270,7 +264,7 @@ bool SHO_LS::StartServerSOCKET (HWND hMainWND, char *szDBServerIP, int iServerLi
 	}
 
 	if ( szGumsIP && CSocketWND::GetInstance() ) {
-		// ев╫╨ф╝©К n-cash ╪╜╧Ж :: 211.232.109.160
+		// ц┘ц≈б╫б╨ц├б╝б©ц╚ n-cash б╪б╜б╧ц╤ :: 211.232.109.160
 		g_pSockGUM = new AS_gumSOCKET;
 		CSocketWND::GetInstance()->AddSocket( &g_pSockGUM->m_SockGUM, WM_GUMSOCK_MSG );
 
@@ -284,7 +278,7 @@ bool SHO_LS::StartServerSOCKET (HWND hMainWND, char *szDBServerIP, int iServerLi
 	g_dwStartTIME = classTIME::GetCurrentAbsSecond();
 
 	m_iServerListenPortNO = iServerListenPort;
-	g_pListSERVER->Active( m_iServerListenPortNO, 1024, 60 );	// ╣©╫ц а╒╪с ╪рдо ╟╧╪Ж 1024. а╒╪сю╞аЖ ц╪е╘ 1╨п
+	g_pListSERVER->Active( m_iServerListenPortNO, 1024, 60 );	// б╣б©б╫ц┐ ц│б╒б╪ц⌠ б╪ц▓ц└ц▐ б╟б╧б╪ц╤ 1024. ц│б╒б╪ц⌠ц─б╞ц│ц╤ ц┐б╪ц┘б╘ 1б╨ц░
 
 	m_pTIMER = new CTimer( hMainWND, LS_TIMER_CHECK_WAIT_LIST, LS_TICK_CHECK_WAIT_LIST, (TIMERPROC)LS_TimerProc );
 	m_pTIMER->Start ();
