@@ -203,7 +203,6 @@ int CRawSOCKET::Receive(void* lpBuf, int nBufLen, int nFlags)
 	return recv(m_hSocket, (LPSTR)lpBuf, nBufLen, nFlags);
 }
 
-
 //-------------------------------------------------------------------------------------------------
 int CRawSOCKET::Send(const void* lpBuf, int nBufLen, int nFlags)
 {

@@ -8298,7 +8298,7 @@ int  classUSER::ProcLogOUT ()
 		while( pRecvNODE ) {
 			pPacket = (t_PACKETHEADER*)pRecvNODE->DATA.m_pCPacket->m_pDATA;
 			do {
-				nTotalPacketLEN = this->D_RecvB( pPacket );
+				nTotalPacketLEN = pPacket->m_nSize;
 				if ( !nTotalPacketLEN ) {
 					// 패킷이 변조되어 왔다.
 					// 헤킹인가 ???
@@ -8378,7 +8378,7 @@ int	 classUSER::Proc (void)
 		while( pRecvNODE ) {
 			pPacket = (t_PACKETHEADER*)pRecvNODE->DATA.m_pCPacket->m_pDATA;
 			do {
-				nTotalPacketLEN = this->D_RecvB( pPacket );
+				nTotalPacketLEN = pPacket->m_nSize;
 				if ( !nTotalPacketLEN ) {
 					// 패킷이 변조되어 왔다.
 					// 헤킹인가 ???

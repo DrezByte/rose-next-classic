@@ -13,15 +13,10 @@ private:
 	HANDLE	m_hEncSOCK;
 	int		m_iSendSEQ;
 
-	WORD	mF_ESP (t_PACKETHEADER *pPacket);
-	WORD	mF_DRH (t_PACKETHEADER *pPacket);
-	short	mF_DRB (t_PACKETHEADER *pPacket);
-
 public :
 	CshoClientSOCK ();
 	virtual ~CshoClientSOCK ();
 
-	void mF_Init(DWORD dwInit);
 	void Set_NetSTATUS (BYTE btStatus);
 	void OnAccepted(int *pSendSEQ);
 	bool WndPROC ( WPARAM wParam, LPARAM lParam );

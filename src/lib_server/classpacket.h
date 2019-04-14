@@ -18,25 +18,13 @@ struct tPOINTF {
 
 struct tagIO_DATA;
 
-/*
-#ifdef	__T_PACKET
-class classPACKET : public t_PACKET {
-#else
-class classPACKET {
-public :
-	union {
-		t_PACKETHEADER	m_HEADER;
-		BYTE			m_pDATA[ MAX_PACKET_SIZE ];
-	} ;
-#endif
-*/
+
 class classPACKET : public t_PACKET {
 private :
-	long						m_lRefCnt;
-	WORD						m_wPacketLEN;
+	long m_lRefCnt;
+	WORD m_wPacketLEN;
 
 public:
-
 	classPACKET():
 		m_lRefCnt(0),
 		m_wPacketLEN(0)
@@ -71,7 +59,8 @@ public:
 	BYTE *GetDataPtr	(short *pOffset, short nSize);
 	bool  AppendString	(char *pStr);
 	bool  AppendData	(void *pData, short nLen);
-} ;
+};
+
 typedef	classPACKET*				LPCPACKET;
 
 //-------------------------------------------------------------------------------------------------

@@ -67,25 +67,6 @@ unsigned __stdcall ClientSOCKET_SendTHREAD( void* lpParameter )
     return (0);
 }
 
-//-------------------------------------------------------------------------------------------------
-void  CClientSOCKET::mF_Init (DWORD dwInit)					
-{	
-	/* nop */	
-}
-WORD  CClientSOCKET::mF_ESP	(t_PACKETHEADER *pPacket)		
-{	
-	return pPacket->m_nSize;	
-}
-WORD  CClientSOCKET::mF_DRH	(t_PACKETHEADER *pPacket)		
-{	
-	return pPacket->m_nSize;	
-}
-short CClientSOCKET::mF_DRB	(t_PACKETHEADER *pPacket)		
-{	
-	return pPacket->m_nSize;	
-}
-
-//-------------------------------------------------------------------------------------------------
 bool CClientSOCKET::_Init (void)
 {
     m_pRecvPacket  = (t_PACKET *) new char [ MAX_PACKET_SIZE ];
@@ -238,27 +219,6 @@ void CClientSOCKET::OnSend (int nErrorCode)
 	}
 }
 
-//-------------------------------------------------------------------------------------------------
-/*
-void CClientSOCKET::Packet_Register2Q (classDLLIST <t_SendPACKET *> &PacketQ, t_SendPACKET *pRegPacket)
-{
-    classDLLNODE <t_PACKET *> *pNewNode;
-    t_PACKET                  *pPacket;
-
-    pNewNode = new classDLLNODE <t_PACKET *> (NULL);
-    pPacket  = (t_PACKET *) new char[ pRegPacket->m_wSize ];
-	if ( pPacket == NULL ) {
-		::MessageBox (NULL, "Out of memeory...", "ERROR", MB_OK);
-		return;
-	}
-
-    ::CopyMemory (pPacket, pRegPacket, wSize);
-    pNewNode->DATA = pPacket;
-	PacketQ.AppendNode (pNewNode);
-}
-*/
-
-//-------------------------------------------------------------------------------------------------
 void CClientSOCKET::Packet_Register2RecvQ( t_PACKET *pRegPacket )
 {
 	t_PACKET *pNewPacket;
@@ -281,28 +241,26 @@ void CClientSOCKET::Set_NetSTATUS (BYTE btStatus)
 //-------------------------------------------------------------------------------------------------
 void CClientSOCKET::Packet_Register2SendQ (t_PACKET *pRegPacket)
 {
-	if ( m_cStatus != CLIENTSOCKET_CONNECTED ) 
+	if (m_cStatus != CLIENTSOCKET_CONNECTED) {
 		return;
+	}
 
-	t_SendPACKET *pSendPacket = new t_SendPACKET;
-	if ( NULL == pSendPacket )
+	t_SendPACKET *pSendPacket = new t_SendPACKET();
+	if (!pSendPacket) {
 		return;
-	
-	::CopyMemory( &pSendPacket->m_Packet, pRegPacket, pRegPacket->m_HEADER.m_nSize );
+	}
 
 //	if ( m_cStatus == CLIENTSOCKET_CONNECTED ) 
 	{
 		::EnterCriticalSection( &m_csThread );
 		{
-			// Encoding pSendPacket->m_Packet ... 위에 있던것을 안으로... 인코딩된 수서와 보내는 순서가 멀티쓰레드에 의해
-			// 틀려질수 있기때문에...
-			pSendPacket->m_wSize = this->mF_ESP( &pSendPacket->m_Packet.m_HEADER );
-
+			::CopyMemory(&pSendPacket->m_Packet, pRegPacket, pRegPacket->m_HEADER.m_nSize);
+			pSendPacket->m_wSize = pSendPacket->m_Packet.m_HEADER.m_nSize;
 			m_WaitPacketQ.AllocNAppend( pSendPacket );
 		}
 		::LeaveCriticalSection( &m_csThread );
 
-		::SetEvent( m_hThreadEvent );			// 쓰레드에 통보 !!!
+		::SetEvent( m_hThreadEvent );
 	}
 }
 
@@ -338,10 +296,8 @@ void CClientSOCKET::Packet_Recv( int iToRecvBytes )
 
 		if ( this->m_nRecvBytes >= sizeof(t_PACKETHEADER) ) {
 			if ( this->m_nRecvBytes == sizeof(t_PACKETHEADER) ) {
-				// Decoding Packet Header ...
-				this->m_nPacketSize = this->mF_DRH( &m_pRecvPacket->m_HEADER );
+				this->m_nPacketSize = m_pRecvPacket->m_HEADER.m_nSize;
 				if ( !this->m_nPacketSize ) {
-					// 패킷 오류 !!!
 					this->Close ();
 					return;
 				}
@@ -350,21 +306,11 @@ void CClientSOCKET::Packet_Recv( int iToRecvBytes )
 			_ASSERT( this->m_nPacketSize );
 			_ASSERT( this->m_nRecvBytes <= this->m_nPacketSize );
 
-			// if ( m_nRecvBytes >= m_pRecvPacket->m_HEADER.m_nSize ) {
 			if ( this->m_nRecvBytes >= this->m_nPacketSize ) {
-				// this->Packet_Register2RecvQ (m_pRecvPacket);
+				t_PACKET *pNewPacket = (t_PACKET *) new char[ this->m_nPacketSize ];
 
-				t_PACKET *pNewPacket;
-				// pNewPacket  = (t_PACKET *) new char[ m_pRecvPacket->m_HEADER.m_nSize ];
-				pNewPacket  = (t_PACKET *) new char[ this->m_nPacketSize ];
 				if ( pNewPacket ) {
-					// ::CopyMemory (pNewPacket, m_pRecvPacket, m_pRecvPacket->m_HEADER.m_nSize);
 					::CopyMemory (pNewPacket, m_pRecvPacket, this->m_nPacketSize);
-
-					// Decoing Packet Body ...
-					if ( !this->mF_DRB( &pNewPacket->m_HEADER ) ) {
-						_ASSERT( 0 );
-					}
 
 					m_RecvPacketQ.AllocNAppend( pNewPacket );
 				}
@@ -420,72 +366,6 @@ bool CClientSOCKET::Packet_Send (void)
 	return true;
 }
 
-
-//-------------------------------------------------------------------------------------------------
-//
-//	UDP Socket
-//
-void CClientSOCKET::Packet_Register2RecvUDPQ (u_long ulFromIP, WORD wFromPort, int iPacketSize)
-{
-	/*
-    classDLLNODE <struct tagUDPPACKET *> *pNewNode;
-	struct tagUDPPACKET	*pUDPPacket;
-
-    pNewNode = new classDLLNODE <struct tagUDPPACKET *> (NULL);
-    pUDPPacket = (struct tagUDPPACKET*) new struct tagUDPPACKET;
-	pUDPPacket->m_pPacket   = (t_PACKET *) new char[ iPacketSize ];
-	
-	pUDPPacket->m_ulFromIP    = ulFromIP;
-	pUDPPacket->m_wFromPort	  = wFromPort;
-	pUDPPacket->m_iPacketSize = iPacketSize;
-    CopyMemory (pUDPPacket->m_pPacket, m_pRecvPacket, iPacketSize);
-
-    pNewNode->DATA = pUDPPacket;
-	m_RecvUDPPacketQ.AppendNode (pNewNode);
-	*/
-}
-
-
-//-------------------------------------------------------------------------------------------------
-//
-//	UDP Socket
-//
-void CClientSOCKET::Packet_RecvFrom (void)
-{
-/*
-struct in_addr {
-        union {
-                struct { u_char s_b1,s_b2,s_b3,s_b4; } S_un_b;
-                struct { u_short s_w1,s_w2; } S_un_w;
-                u_long S_addr;
-        } S_un;
-#define s_addr  S_un.S_addr				// can be used for most tcp & ip code 
-#define s_host  S_un.S_un_b.s_b2		// host on imp 
-#define s_net   S_un.S_un_b.s_b1		// network 
-#define s_imp   S_un.S_un_w.s_w2		// imp 
-#define s_impno S_un.S_un_b.s_b4		// imp # 
-#define s_lh    S_un.S_un_b.s_b3		// logical host 
-};
- 
-struct sockaddr_in{
-    short				sin_family;
-    unsigned short      sin_port;
-    struct   in_addr    sin_addr;
-    char				sin_zero[8];
-};
-*/
-	SOCKADDR_IN sSockAddr;
-	int		    iRet;
-
-	iRet = ReceiveFrom ((void*) m_pRecvPacket, MAX_PACKET_SIZE, &sSockAddr, 0);
-	if ( iRet != SOCKET_ERROR ) {
-		if ( iRet > 0 && iRet < MAX_PACKET_SIZE ) 
-			Packet_Register2RecvUDPQ (sSockAddr.sin_addr.s_addr, sSockAddr.sin_port, iRet);
-	} 
-}
-
-
-//-------------------------------------------------------------------------------------------------
 bool CClientSOCKET::Peek_Packet (t_PACKET *pPacket, bool bRemoveFromQ)
 {
 	if ( this->m_RecvPacketQ.GetNodeCount() > 0 ) {
@@ -508,7 +388,6 @@ bool CClientSOCKET::Peek_Packet (t_PACKET *pPacket, bool bRemoveFromQ)
 	return false;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool CClientSOCKET::Connect (HWND hWND, char *szServerIP, int iTCPPort, UINT uiWindowMsg)
 {
 	bool bReturn;

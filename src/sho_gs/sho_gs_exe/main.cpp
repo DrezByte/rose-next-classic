@@ -68,6 +68,9 @@ int main() {
 
 	auto exe_api = new ExeApi();
 
+	HWND console_window = GetConsoleWindow();
+	HINSTANCE console_handle = GetModuleHandle(nullptr);
+
 	const int ENGLISH = 1;
 	int language = ENGLISH;
 	char* data_dir = (char*)"C:\\dev\\rose-next\\server\\data";
@@ -84,7 +87,7 @@ int main() {
 	int charserver_port = 19001;
 
 	std::cout << "Initializing the server" << std::endl;
-	g_instance = CLIB_GameSRV::InitInstance(nullptr, data_dir, exe_api, ENGLISH);
+	g_instance = CLIB_GameSRV::InitInstance(console_handle, data_dir, exe_api, ENGLISH);
 
 	std::cout << "Connecting to other servers" << std::endl;
 	g_instance->ConnectSERVER(
@@ -106,7 +109,7 @@ int main() {
 	g_instance->InitLocalZone(true);
 
 	std::cout << "Starting the server" << std::endl;
-	g_instance->Start(nullptr, server_name, server_ip, server_port, 1, 0, 0);
+	g_instance->Start(console_window, server_name, server_ip, server_port, 1, 0, 0);
 
 	std::cout << "Setting user limit" << std::endl;
 	g_instance->Set_UserLIMIT(0);

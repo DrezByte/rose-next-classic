@@ -102,23 +102,6 @@ private :
     bool HandlePACKET( t_PACKETHEADER *pPacket );
 
     int     m_iRecvSeqNO;
-
-	WORD  E_SendP (t_PACKETHEADER *pPacket)
-	{
-		return g_pPacketCODEC->Encode_SendServerPACKET( pPacket );
-	}
-	WORD  D_RecvH (t_PACKETHEADER *pPacket)
-	{
-		return g_pPacketCODEC->Decode_RecvClientHEADER( pPacket, m_iRecvSeqNO );
-	}
-	short D_RecvB (t_PACKETHEADER *pPacket)
-	{
-		return g_pPacketCODEC->Decode_RecvClientBODY( pPacket );
-	}
-	WORD  P_Length(t_PACKETHEADER *pPacket)
-	{	
-		return g_pPacketCODEC->GetDecodedPacketLength( pPacket );
-	}
 } ;
 
 

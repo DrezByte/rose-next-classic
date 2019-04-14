@@ -20,10 +20,6 @@ private:
     int     m_iRecvSeqNO;
 
     bool HandlePACKET( t_PACKETHEADER *pPacket );
-	WORD  E_SendP (t_PACKETHEADER *pPacket)		{	return g_pPacketCODEC->Encode_SendServerPACKET( pPacket );					}
-	WORD  D_RecvH (t_PACKETHEADER *pPacket)		{	return g_pPacketCODEC->Decode_RecvClientHEADER( pPacket, m_iRecvSeqNO );	}
-	short D_RecvB (t_PACKETHEADER *pPacket)		{	return g_pPacketCODEC->Decode_RecvClientBODY( pPacket );					}
-	WORD  P_Length(t_PACKETHEADER *pPacket)		{	return g_pPacketCODEC->GetDecodedPacketLength( pPacket );					}
 	bool IsHacking (char *szDesc, char *szFile, int iLine);
 
 	WORD			m_wGSID;

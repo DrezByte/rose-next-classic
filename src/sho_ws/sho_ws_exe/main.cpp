@@ -5,7 +5,6 @@
 #include <windows.h>
 #endif
 
-#include "guicon.h"
 #include "lib_util.h"
 #include "cws_api.h"
 #include "sho_ws_lib.h"

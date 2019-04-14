@@ -77,7 +77,7 @@ ePacketRECV iocpSOCKET::Recv_Continue (tagIO_DATA *pRecvDATA)
 {
 	auto packet = pRecvDATA->m_pCPacket;
 	auto ref_count = packet->GetRefCnt();
-	//_ASSERT( pRecvDATA->m_pCPacket->GetRefCnt() == 1 );
+	_ASSERT( pRecvDATA->m_pCPacket->GetRefCnt() == 1 );
 
     if ( 0 == ::ReadFile( (HANDLE)m_Socket,										// HANDLE hFile,                // handle to file
                     &pRecvDATA->m_pCPacket->m_pDATA[ pRecvDATA->m_dwIOBytes ],  // LPVOID lpBuffer,             // data buffer
@@ -85,20 +85,10 @@ ePacketRECV iocpSOCKET::Recv_Continue (tagIO_DATA *pRecvDATA)
                     NULL,														// LPDWORD lpNumberOfBytesRead, // number of bytes read
                     (LPOVERLAPPED)pRecvDATA ) ) 								// LPOVERLAPPED lpOverlapped    // overlapped buffer
     {
-        // Function failed ..
-        if ( ERROR_IO_PENDING != ::GetLastError () ) {
-			/*
-            DWORD dwCode = ::GetLastError ();
-            g_LOG.CS_ODS(0xffff, "$$$$$$$  SocketIDX: %d : ERROR[ %d:%s ] ::: ReadFile \n", 
-					this->m_iSocketIDX, dwCode, CUtil::GetLastErrorMsg( dwCode ) );
-			*/
-            // false 리턴하면 접속 끊자...
-			return eRESULT_PACKET_DISCONNECT;//false;
-        } 
-		/* 
-		else 
-			g_LOG.CS_ODS(0xfff, "    %d  ReadFile pending error ..\n", this->m_iSocketIDX);
-		*/
+		// Function failed ..
+		if ( ERROR_IO_PENDING != ::GetLastError () ) {
+			return eRESULT_PACKET_DISCONNECT;
+		} 
     }
 
 	return eRESULT_PACKET_OK;//true;
@@ -140,7 +130,7 @@ ePacketRECV iocpSOCKET::Recv_Complete (tagIO_DATA *pRecvDATA)
 
 	if ( 0 == pRecvDATA->m_pCPacket->GetLength() ) {
 		// 디코딩 안되어 있다면...
-		pRecvDATA->m_pCPacket->SetLength( this->D_RecvH( &pRecvDATA->m_pCPacket->m_HEADER ) );
+		pRecvDATA->m_pCPacket->SetLength(pRecvDATA->m_pCPacket->m_HEADER.m_nSize);
 		if ( 0 == pRecvDATA->m_pCPacket->GetLength() ) {
 			this->UnlockSOCKET ();
 			this->Free_RecvIODATA( pRecvDATA );
@@ -175,7 +165,7 @@ ePacketRECV iocpSOCKET::Recv_Complete (tagIO_DATA *pRecvDATA)
 	nPacketSIZE  = 0;
 	while ( nRemainBytes >= sizeof(t_PACKETHEADER) ) {
 		if ( 0 == nPacketSIZE ) {
-			nPacketSIZE = this->D_RecvH( pHEADER );
+			nPacketSIZE = pHEADER->m_nSize;
 			if ( 0 == nPacketSIZE ) {
 				this->UnlockSOCKET ();
 				this->Free_RecvIODATA( pRecvDATA );
@@ -208,7 +198,7 @@ ePacketRECV iocpSOCKET::Recv_Complete (tagIO_DATA *pRecvDATA)
 	if ( pNewNODE ) {
 		if ( nRemainBytes >= sizeof(t_PACKETHEADER) ) {
 			// Header가 Decoding 되었다..
-			pNewNODE->DATA.m_pCPacket->SetLength( this->P_Length( pHEADER ) );
+			pNewNODE->DATA.m_pCPacket->SetLength( pHEADER->m_nSize);
 		}
 		pNewNODE->DATA.m_dwIOBytes = nRemainBytes;
 		::CopyMemory (pNewNODE->DATA.m_pCPacket->m_pDATA, pHEADER, nRemainBytes);
@@ -399,7 +389,7 @@ bool iocpSOCKET::Recv_Done (tagIO_DATA *pRecvDATA)
 
 	t_PACKETHEADER *pPacket = (t_PACKETHEADER*)&pRecvDATA->m_pCPacket->m_pDATA;
     do {
-		nTotalPacketLEN = this->D_RecvB( pPacket );
+		nTotalPacketLEN = pPacket->m_nSize;
 		if ( !nTotalPacketLEN ) {
 			// 패킷이 변조되어 왔다.
 			// 헤킹인가 ???

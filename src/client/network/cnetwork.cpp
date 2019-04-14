@@ -122,7 +122,6 @@ void CNetwork::Proc_WorldPacket ()
 								bAllInONE = true;
 								break;
 							case NS_CON_TO_LSV :	// 로긴 서버에 접속했다.
-								pSocket->mF_Init( PACKET_SEED );
 								Send_cli_HEADER( CLI_ACCEPT_REQ ,true );
 
 
@@ -192,8 +191,6 @@ void CNetwork::Proc_WorldPacket ()
 			case LSV_SELECT_SERVER :
 				{
 					DWORD dwRet = Recv_lsv_SELECT_SERVER ();
-					if ( dwRet )
-						pSocket->mF_Init( dwRet );
 					break;
 				}
 			case LSV_CHANNEL_LIST_REPLY :
@@ -729,7 +726,6 @@ void CNetwork::Proc ()
 						// 존 서버와 연결됐다...
 						// 케릭터 선택후 실제 존에 들어간다.
 						m_bWarping = false;
-						pSocket->mF_Init( m_dwGSV_IDs[1] );
 						this->Send_cli_JOIN_SERVER_REQ( m_dwGSV_IDs[0] );
 						continue;
 					}

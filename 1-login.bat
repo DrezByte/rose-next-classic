@@ -1,9 +1,1 @@
-setlocal
-cd bin\
-
-pushd release\
-SET PATH=%PATH%;%CD%;
-popd
-
-cd ..\server
-start SHO_LS.exe
+.\bin\debug\sho_ls_exe.exe

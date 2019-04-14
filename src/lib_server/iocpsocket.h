@@ -77,10 +77,6 @@ public :
     virtual bool Recv_Done (tagIO_DATA *pRecvDATA);
     virtual bool HandlePACKET ( t_PACKETHEADER *pPacket )=0;
 
-	virtual WORD  E_SendP (t_PACKETHEADER *pPacket)		{	return pPacket->m_nSize;	}
-	virtual WORD  D_RecvH (t_PACKETHEADER *pPacket)		{	return pPacket->m_nSize;	}
-	virtual short D_RecvB (t_PACKETHEADER *pPacket)		{	return pPacket->m_nSize;	}
-	virtual WORD  P_Length(t_PACKETHEADER *pPacket)		{	return pPacket->m_nSize;	}
 
 	classDLLNODE<tagIO_DATA> *Alloc_RecvIODATA (void)
 	{
@@ -103,7 +99,7 @@ public :
     classDLLNODE<tagIO_DATA> *Alloc_SendIODATA (classPACKET *pCPacket)
 	{
 		if ( 0 == pCPacket->GetLength() ) {
-			pCPacket->SetLength( this->E_SendP( &pCPacket->m_HEADER ) );
+			pCPacket->SetLength(pCPacket->m_HEADER.m_nSize);
 		}
 
 		classDLLNODE<tagIO_DATA> *pSendDATA;

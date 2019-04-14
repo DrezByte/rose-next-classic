@@ -45,21 +45,14 @@ protected:
 	void	Packet_Recv (int iToRecvBytes);
 	bool	Packet_Send (void);
 
-	virtual WORD	mF_ESP	(t_PACKETHEADER *pPacket);
-	virtual WORD	mF_DRH	(t_PACKETHEADER *pPacket);
-	virtual short	mF_DRB	(t_PACKETHEADER *pPacket);
-
 public:
     classDLLNODE <CClientSOCKET *> *m_pNode;
 
 	CClientSOCKET ()			{	_Init();	}
 	virtual ~CClientSOCKET()	{	_Free();	}
 
-	void	Packet_Register2RecvUDPQ (u_long ulFromIP, WORD wFromPort, int iPacketSize);
-	void	Packet_RecvFrom (void);
 	void	SetSendEvent ()			{	::SetEvent( m_hThreadEvent );	}
 
-	virtual void	mF_Init			(DWORD dwInit);
 	virtual void	OnConnect		(int nErrorCode);
 	virtual void	OnClose			(int nErrorCode);
 	virtual void	OnReceive		(int nErrorCode);

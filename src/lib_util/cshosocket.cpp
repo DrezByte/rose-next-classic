@@ -44,33 +44,6 @@ void CshoClientSOCK::OnAccepted(int *pSendSEQ)
 	m_iSendSEQ = pSendSEQ[ 0 ];
 }
 
-void CshoClientSOCK::mF_Init (DWORD dwInitCODE)
-{	
-//	CPacketCODEC::Instance ();
-	if ( dwInitCODE )
-		((CPacketCODEC*)m_hEncSOCK)->Init( dwInitCODE );
-	else
-		((CPacketCODEC*)m_hEncSOCK)->Default ();
-}
-
-WORD CshoClientSOCK::mF_ESP (t_PACKETHEADER *pPacket)
-{
-	// 서버에 보낼 패킷 암호화....
-	return ((CPacketCODEC*)m_hEncSOCK)->Encode_SendClientPACKET( pPacket, m_iSendSEQ );
-}
-WORD CshoClientSOCK::mF_DRH (t_PACKETHEADER *pPacket)
-{
-	// 서버에서 받은 패킷헤더 복호화...
-	return ((CPacketCODEC*)m_hEncSOCK)->Decode_RecvServerHEADER( pPacket );
-}
-short CshoClientSOCK::mF_DRB (t_PACKETHEADER *pPacket)
-{
-	// 서버에서 받은 패킷몸체 복호화...
-	return ((CPacketCODEC*)m_hEncSOCK)->Decode_RecvServerBODY( pPacket );
-}
-
-
-//-------------------------------------------------------------------------------------------------
 bool CshoClientSOCK::WndPROC (WPARAM wParam, LPARAM lParam)
 {
 	int nErrorCode = WSAGETSELECTERROR(lParam);
