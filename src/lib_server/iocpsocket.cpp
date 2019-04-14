@@ -121,33 +121,26 @@ ePacketRECV iocpSOCKET::Recv_Complete (tagIO_DATA *pRecvDATA)
 	this->LockSOCKET ();
 
     if ( pRecvDATA->m_dwIOBytes < sizeof(t_PACKETHEADER) ) {
-		// 디코딩 안된 패킷의 크기는 0이다 !!!
-		_ASSERT( 0 == pRecvDATA->m_pCPacket->GetLength() );
-		// 최소 크기의 패킷 받기...
+		_ASSERT( 0 == pRecvDATA->m_pCPacket->size );
         eResult = this->Recv_Continue( pRecvDATA );	// 이어 받기.
 		goto _JUMP_RETURN;
 	}
 
-	if ( 0 == pRecvDATA->m_pCPacket->GetLength() ) {
-		// 디코딩 안되어 있다면...
-		pRecvDATA->m_pCPacket->SetLength(pRecvDATA->m_pCPacket->m_HEADER.m_nSize);
-		if ( 0 == pRecvDATA->m_pCPacket->GetLength() ) {
-			this->UnlockSOCKET ();
-			this->Free_RecvIODATA( pRecvDATA );
+	if ( 0 == pRecvDATA->m_pCPacket->size ) {
+		this->UnlockSOCKET ();
+		this->Free_RecvIODATA( pRecvDATA );
 
-			// 블랙 리스트에 ip 등록...
-			g_LOG.CS_ODS( 0xffff, "*** ERROR: Decode recv packet header1, IP[ %s ]\n", this->m_IP.Get() );
-			return eRESULT_PACKET_BLOCK;//false;
-		}
+		g_LOG.CS_ODS( 0xffff, "ERROR: Packet received with no header from [ %s ]\n", this->m_IP.Get() );
+		return eRESULT_PACKET_BLOCK;//false;
 	}
 
-	_ASSERT( pRecvDATA->m_pCPacket->GetLength() >= sizeof(t_PACKETHEADER) );
+	_ASSERT( pRecvDATA->m_pCPacket->size >= sizeof(t_PACKETHEADER) );
 	
-	if ( (short)pRecvDATA->m_dwIOBytes < pRecvDATA->m_pCPacket->GetLength() ) {
+	if ( (short)pRecvDATA->m_dwIOBytes < pRecvDATA->m_pCPacket->size ) {
         eResult = this->Recv_Continue( pRecvDATA );	// 이어 받기.
 		goto _JUMP_RETURN;
     } else
-    if ( (short)pRecvDATA->m_dwIOBytes == pRecvDATA->m_pCPacket->GetLength() ) {
+    if ( (short)pRecvDATA->m_dwIOBytes == pRecvDATA->m_pCPacket->size ) {
 		this->UnlockSOCKET ();
 		if ( !this->Recv_Done( pRecvDATA ) )		// Free_RecvIODATA( pRecvDATA ); <-- Recv_done에서 호출되어옴
 			return eRESULT_PACKET_DISCONNECT;//false;
@@ -158,10 +151,10 @@ ePacketRECV iocpSOCKET::Recv_Complete (tagIO_DATA *pRecvDATA)
     t_PACKETHEADER *pHEADER;
     short	nRemainBytes, nPacketSIZE;
 
-	_ASSERT( pRecvDATA->m_dwIOBytes > pRecvDATA->m_pCPacket->GetLength() );
+	_ASSERT( pRecvDATA->m_dwIOBytes > pRecvDATA->m_pCPacket->size );
 
-    nRemainBytes = (short)pRecvDATA->m_dwIOBytes - pRecvDATA->m_pCPacket->GetLength() ;
-    pHEADER		 = (t_PACKETHEADER*) &pRecvDATA->m_pCPacket->m_pDATA[ pRecvDATA->m_pCPacket->GetLength() ];
+    nRemainBytes = (short)pRecvDATA->m_dwIOBytes - pRecvDATA->m_pCPacket->size ;
+    pHEADER		 = (t_PACKETHEADER*) &pRecvDATA->m_pCPacket->m_pDATA[ pRecvDATA->m_pCPacket->size ];
 	nPacketSIZE  = 0;
 	while ( nRemainBytes >= sizeof(t_PACKETHEADER) ) {
 		if ( 0 == nPacketSIZE ) {
@@ -196,10 +189,6 @@ ePacketRECV iocpSOCKET::Recv_Complete (tagIO_DATA *pRecvDATA)
     classDLLNODE<tagIO_DATA> *pNewNODE;
     pNewNODE = this->Alloc_RecvIODATA ();
 	if ( pNewNODE ) {
-		if ( nRemainBytes >= sizeof(t_PACKETHEADER) ) {
-			// Header가 Decoding 되었다..
-			pNewNODE->DATA.m_pCPacket->SetLength( pHEADER->m_nSize);
-		}
 		pNewNODE->DATA.m_dwIOBytes = nRemainBytes;
 		::CopyMemory (pNewNODE->DATA.m_pCPacket->m_pDATA, pHEADER, nRemainBytes);
 
@@ -228,10 +217,10 @@ _JUMP_RETURN :
 bool iocpSOCKET::Send_Continue (tagIO_DATA *pSendDATA)
 {
 	// 2004. 10. 25 아래 assert 걸림...
-	// _ASSERT( pSendDATA->m_pCPacket->GetLength() > pSendDATA->m_dwIOBytes );
-	if ( pSendDATA->m_dwIOBytes >= pSendDATA->m_pCPacket->GetLength() ) {
+	// _ASSERT( pSendDATA->m_pCPacket->size > pSendDATA->m_dwIOBytes );
+	if ( pSendDATA->m_dwIOBytes >= pSendDATA->m_pCPacket->size ) {
 		g_LOG.CS_ODS( 0xffff, ">>ERROR:: Sending packet: Len: %d, completed: %d, IP:%s\n", 
-					pSendDATA->m_pCPacket->GetLength(), pSendDATA->m_dwIOBytes , this->Get_IP() );
+					pSendDATA->m_pCPacket->size, pSendDATA->m_dwIOBytes , this->Get_IP() );
 		return false;
 	}
 
@@ -240,7 +229,7 @@ bool iocpSOCKET::Send_Continue (tagIO_DATA *pSendDATA)
 	this->m_bWritable = false;
     if ( 0 == ::WriteFile((HANDLE)m_Socket,											// HANDLE hFile,                    // handle to file
                     &pSendDATA->m_pCPacket->m_pDATA[ pSendDATA->m_dwIOBytes ],	    // LPCVOID lpBuffer,                // data buffer
-                    pSendDATA->m_pCPacket->GetLength() - pSendDATA->m_dwIOBytes,		// DWORD nNumberOfBytesToWrite,     // number of bytes to write
+                    pSendDATA->m_pCPacket->size - pSendDATA->m_dwIOBytes,		// DWORD nNumberOfBytesToWrite,     // number of bytes to write
                     NULL,															// LPDWORD lpNumberOfBytesWritten,  // number of bytes written
                     (LPOVERLAPPED)pSendDATA )) {									// LPOVERLAPPED lpOverlapped        // overlapped buffer
         // Function failed ..
@@ -286,8 +275,8 @@ bool iocpSOCKET::Send_Start (classPACKET *pCPacket)
 	_ASSERT( pSendNODE->DATA.m_IOmode == ioWRITE );
 	_ASSERT( pSendNODE->DATA.m_dwIOBytes == 0 );
 
-	_ASSERT( pSendNODE->DATA.m_pCPacket->GetLength() >= sizeof( t_PACKETHEADER ) );
-	_ASSERT( pSendNODE->DATA.m_pCPacket->GetLength() <= MAX_PACKET_SIZE );
+	_ASSERT( pSendNODE->DATA.m_pCPacket->size >= sizeof( t_PACKETHEADER ) );
+	_ASSERT( pSendNODE->DATA.m_pCPacket->size <= MAX_PACKET_SIZE );
 
     m_csSendQ.Lock ();
     {
@@ -328,11 +317,11 @@ bool iocpSOCKET::Send_Complete (tagIO_DATA *pSendDATA)
 			// 2004. 10. 3... 
 			// _ASSERT( pHeadNODE == pSendDATA->m_pNODE ); 에서 오류 발생...
 			// m_SendList.GetNodeCount() == 0인상태에서 이리로 들어 와서 뻑~~~
-			// this->m_iSocketIDX = 0이고, pSendDATA->m_dwIOBytes = 0, pSendDATA->m_pCPacket->GetLength()=10 이었지만
+			// this->m_iSocketIDX = 0이고, pSendDATA->m_dwIOBytes = 0, pSendDATA->m_pCPacket->size=10 이었지만
 			// 아래 pSendDATA->m_dwIOBytes == (WORD)pSendDATA->m_pCPacket->GetLength() 조건을 통과했다.
 			// 1. 동시에 여러 워커 쓰래드에서 IO발생
 			// 2. 다른 워커쓰레드에서 소켓 종료 => m_SendList초기화 됨( 현재 pSendDATA가 Pool에 반납됨 )
-			// 3. 현재 워커쓰레드에서 이 함수로 접근pSendDATA->m_dwIOBytes == (WORD)pSendDATA->m_pCPacket->GetLength() 조건통과.
+			// 3. 현재 워커쓰레드에서 이 함수로 접근pSendDATA->m_dwIOBytes == (WORD)pSendDATA->m_pCPacket->size 조건통과.
 			// 4. 다른 소켓에의해 pSendDATA가 할당, 최기화됨.
 			// 5. 현재 워커쓰레드 뻑~~~
 			m_csSendQ.Unlock ();
@@ -340,7 +329,7 @@ bool iocpSOCKET::Send_Complete (tagIO_DATA *pSendDATA)
 		}
 
         this->m_bWritable = true;
-		if ( pSendDATA->m_dwIOBytes == (WORD)pSendDATA->m_pCPacket->GetLength() ) {		// 전체 전송 완료..
+		if ( pSendDATA->m_dwIOBytes == (WORD)pSendDATA->m_pCPacket->size ) {		// 전체 전송 완료..
             // ** 아래 라인에서 m_SendList에서 pSendNode를 삭제하는 과정에서
             //    오류가 난것은 pUSER가 이미 접속종료되어 ClearIOList() 함수를
             //    실행하여 m_SendList가 이미 비어있기 때문이다.
@@ -366,7 +355,7 @@ bool iocpSOCKET::Send_Complete (tagIO_DATA *pSendDATA)
 				}
             }
 		} else 
-        if ( pSendDATA->m_dwIOBytes < pSendDATA->m_pCPacket->GetLength() ) {			// 부분 전송됨..
+        if ( pSendDATA->m_dwIOBytes < pSendDATA->m_pCPacket->size ) {			// 부분 전송됨..
             if ( !this->Send_Continue (pSendDATA) ) {
 			    m_csSendQ.Unlock ();
 				return false;

@@ -165,7 +165,7 @@
 퀘스트 물품(441)	 왕의옥쇠, 마스터키, 감옥열쇠
 인증서     (442)	 보안관 신분증, 국왕 초대장
 */
-
+#include <cstdint>
 
 #ifndef	__DATATYPE_H
 #define	__DATATYPE_H

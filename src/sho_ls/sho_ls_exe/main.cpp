@@ -86,6 +86,7 @@ int main() {
 	
 	HWND console_window = GetConsoleWindow();
 	HINSTANCE console_handle = GetModuleHandle(nullptr);
+	SetConsoleTitle("ROSE Next - Login Server");
 
 	char* db_ip = (char*)"127.0.0.1";
 	int server_port = 19000;

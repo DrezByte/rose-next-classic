@@ -98,10 +98,6 @@ public :
 
     classDLLNODE<tagIO_DATA> *Alloc_SendIODATA (classPACKET *pCPacket)
 	{
-		if ( 0 == pCPacket->GetLength() ) {
-			pCPacket->SetLength(pCPacket->m_HEADER.m_nSize);
-		}
-
 		classDLLNODE<tagIO_DATA> *pSendDATA;
 		pSendDATA = CPoolSENDIO::GetInstance()->Pool_Alloc ();
 		if ( NULL != pSendDATA ) {

@@ -27,33 +27,25 @@ private :
 public:
 	classPACKET():
 		m_lRefCnt(0),
-		m_wPacketLEN(0)
-	{
+		m_wPacketLEN(0) {
 	}
 
-	~classPACKET ()
-	{   
-		// _ASSERT( 0 == m_lRefCnt );
+	~classPACKET () {
 	}
 
-	void SetRefCnt (long lRefCnt)
-	{
+	void SetRefCnt (long lRefCnt) {
 		this->m_lRefCnt = lRefCnt;
 	}
 
-	long IncRefCnt () 
-	{
-		//_ASSERT( 0 != m_wPacketLEN );
+	long IncRefCnt () {
 		return ::InterlockedIncrement( &this->m_lRefCnt );
 	}
-	long DecRefCnt ()
-	{
+
+	long DecRefCnt () {
 		return ::InterlockedDecrement( &this->m_lRefCnt );
 	}
 
 	inline int GetRefCnt () { return m_lRefCnt; }
-	inline WORD	  GetLength ()				{	return m_wPacketLEN;	}
-	inline void   SetLength (WORD wLen)		{	m_wPacketLEN = wLen;	}
 
 	char *GetStringPtr	(short *pOffset);
 	BYTE *GetDataPtr	(short *pOffset, short nSize);

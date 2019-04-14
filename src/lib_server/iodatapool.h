@@ -54,12 +54,7 @@ private:
 public :
 	LPCPACKET AllocOnly ()
 	{
-		LPCPACKET pCPacket = new classPACKET;
-
-		pCPacket->SetLength(0);
-		pCPacket->SetRefCnt(0);
-
-		return pCPacket;
+		return new classPACKET();
 	}
 
 	void ReleaseOnly (LPCPACKET pCPacket)
@@ -74,10 +69,7 @@ public :
 	LPCPACKET AllocNLock ()
 	{
 		LPCPACKET pCPacket = new classPACKET();
-
-		pCPacket->SetLength(0);
 		pCPacket->SetRefCnt(1);
-
 		return pCPacket;
 	}
 

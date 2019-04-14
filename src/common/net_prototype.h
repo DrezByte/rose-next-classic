@@ -2855,6 +2855,13 @@ struct pxy_SET_RIGHTS : public t_PACKETHEADER {
 #define	__T_PACKET
 struct t_PACKET {
 	union {
+		struct {
+			uint16_t size;
+			uint16_t type;
+			uint16_t reserved;
+			uint8_t data[MAX_PACKET_SIZE];
+		};
+
 		t_PACKETHEADER				m_HEADER;
 		BYTE						m_pDATA[ MAX_PACKET_SIZE ];
 		t_NETWORK_STATUS			m_NetSTATUS;

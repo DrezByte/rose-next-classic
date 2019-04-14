@@ -82,6 +82,7 @@ int main() {
 
 	HWND console_window = GetConsoleWindow();
 	HINSTANCE console_handle = GetModuleHandle(nullptr);
+	SetConsoleTitle("ROSE Next - World Server");
 
 	const int ENGLISH = 1;
 	int language = ENGLISH;

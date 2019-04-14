@@ -70,6 +70,7 @@ int main() {
 
 	HWND console_window = GetConsoleWindow();
 	HINSTANCE console_handle = GetModuleHandle(nullptr);
+	SetConsoleTitle("ROSE Next - Game Server");
 
 	const int ENGLISH = 1;
 	int language = ENGLISH;
@@ -82,7 +83,7 @@ int main() {
 	char* server_ip = (char*)"127.0.0.1";
 	int server_port = 29200;
 	char* loginserver_ip = server_ip;
-	int loginserver_port = 19000;
+	int loginserver_port = 19005; // Not the actual port, actually connecting crashes the game server
 	char* charserver_ip = server_ip;
 	int charserver_port = 19001;
 
