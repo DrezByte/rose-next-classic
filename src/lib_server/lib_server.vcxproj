@@ -58,7 +58,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\client;$(SolutionDir)src\client\Util;$(SolutionDir)src\client\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\common;$(SolutionDir)thirdparty\directx9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\client;$(SolutionDir)src\client\Util;$(SolutionDir)src\client\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)thirdparty\directx9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;WIN32;_WINDOWS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
@@ -86,7 +86,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\client;$(SolutionDir)src\client\Util;$(SolutionDir)src\client\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\common;$(SolutionDir)thirdparty\directx9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\client;$(SolutionDir)src\client\Util;$(SolutionDir)src\client\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)thirdparty\directx9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;WIN32;_WINDOWS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>

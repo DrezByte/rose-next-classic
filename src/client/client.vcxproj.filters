@@ -111,9 +111,6 @@
     <Filter Include="Include">
       <UniqueIdentifier>{f53659f2-4760-490a-9b3a-2facac96fd1e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Common\Common">
-      <UniqueIdentifier>{58790777-73cc-495f-9143-745a07d4c2bd}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCamera.cpp">
@@ -2262,6 +2259,9 @@
     </ClInclude>
     <ClInclude Include="util\string_util.h">
       <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\include\rose\common\rosenext_config.h">
+      <Filter>Source Files\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,9 +5,6 @@
 
 #pragma once
 
-#ifdef	__SERVER
-#include <VCL.h>
-#else
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 #define	_WIN32_WINNT			0x0501
 
@@ -29,11 +26,10 @@
 #include <algorithm>
 #include <map>
 
+// DirectX
 #include <d3d9.h>
 #include <D3DX9.h>
 
-// TODO: reference additional headers your program requires here
-//-------------------------------------------------------------------------------------------------
 
 typedef	LPDIRECT3DDEVICE9			LPD3DDEVICE;
 typedef	IDirect3DTexture9			ID3DTexture;
@@ -41,22 +37,16 @@ typedef	LPDIRECT3DTEXTURE9			LPD3DTEXTURE;
 typedef	D3DMATERIAL9				D3DMATERIAL;
 typedef	LPDIRECT3DVERTEXBUFFER9		LPD3DVERTEXBUFFER;
 
-//#define _D_RELEASE
 
 #define	ZZ_MEM_OFF	// not use zz_mem
-//#define FRAROSE
-#ifdef FRAROSE
-	#define _GBC
-#endif
 
-//#define _NEWUI
-//#define __APPLY_EXTAND_QUEST_VAR
-//#define __USE_IME
 
 #include "zz_interface.h"
 
 // #pragma warning(default : 4786)
 #pragma warning( disable : 4651 ) 
+
+#include "rose/common/rosenext_config.h"
 
 #include "util\CVector.h"
 #include "common\DataTYPE.h"
@@ -76,8 +66,6 @@ typedef	LPDIRECT3DVERTEXBUFFER9		LPD3DVERTEXBUFFER;
 
 #include "CApplication.h"
 
-#endif
-//-------------------------------------------------------------------------------------------------
 
 #ifndef SAFE_DELETE
 #define SAFE_DELETE(p)       { if(p) { delete (p);     (p)=NULL; } }

@@ -1,7 +1,7 @@
 #ifndef	__IO_STB_H
 #define	__IO_STB_H
 
-#include "Util/classstr.h"
+#include "util/classstr.h"
 #include "..\Util\classHASH.h"
 
 #ifndef __SERVER

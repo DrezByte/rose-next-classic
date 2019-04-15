@@ -1,7 +1,5 @@
-
-
+#include "stdafx.h"
 #include "LIB_gsMAIN.h"
-
 #include "GS_USER.h"
 #include "ZoneLIST.h"
 #include "GS_ThreadSQL.h"
@@ -21,6 +19,7 @@
 #define	RET_OK			true
 #define	RET_SKIP_PROC	2
 
+using namespace Rose;
 
 classUSER::classUSER ()
 {	
@@ -924,7 +923,7 @@ void classUSER::Add_EXP (__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX)
 		iExp *= 0;
 #endif
 	if ( m_GrowAbility.m_lEXP + iExp > MAX_EXPERIENCE ) {
-		m_GrowAbility.m_lEXP = this->Get_NeedEXP( MAX_LEVEL );
+		m_GrowAbility.m_lEXP = this->Get_NeedEXP( Config::MAX_LEVEL );
 	} else
 		m_GrowAbility.m_lEXP += iExp;
 
@@ -934,7 +933,7 @@ void classUSER::Add_EXP (__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX)
 	short nBeforeLEV = this->Get_LEVEL();
 	while ( m_GrowAbility.m_lEXP >= iNeedEXP ) {
 		// 레벨 제한 
-		if ( this->Get_LEVEL() < MAX_LEVEL ) {
+		if ( this->Get_LEVEL() < Config::MAX_LEVEL ) {
 			this->Set_LEVEL( this->Get_LEVEL() + 1 );
 		}
 
@@ -4631,7 +4630,7 @@ bool classUSER::Recv_cli_USE_BPOINT_REQ( t_PACKET *pPacket )
 		return true;
 	}
 
-	if ( this->m_BasicAbility.m_nBasicA[ pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO ] >= MAX_BASIC_ABLITY ) {
+	if ( this->m_BasicAbility.m_nBasicA[ pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO ] >= Config::MAX_STAT ) {
 		// 더이상 올릴수 없다.
 		return true;
 	}

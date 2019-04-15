@@ -1,4 +1,4 @@
-
+#include "stdafx.h"
 #include "LIB_gsMAIN.h"
 #include "GS_USER.h"
 #include "ZoneLIST.h"
@@ -6,7 +6,7 @@
 #include "IO_Quest.h"
 #include "GS_SocketLSV.h"
 
-//-------------------------------------------------------------------------------------------------
+using namespace Rose;
 
 char *l_szAbility[] = {
 	"STR",
@@ -725,8 +725,8 @@ short classUSER::Cheat_set ( classUSER *pUSER, char *pArg1, char *pArg2, char *p
 
 				if ( iValue < 10 )
 					iValue = 10;
-				if ( iValue > MAX_BASIC_ABLITY )
-					iValue = MAX_BASIC_ABLITY;
+				if ( iValue > Config::MAX_STAT )
+					iValue = Config::MAX_STAT;
 
 				pUSER->m_BasicAbility.m_nBasicA[ nI ] = iValue;
 				pUSER->Update_SPEED();

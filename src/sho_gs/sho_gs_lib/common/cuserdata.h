@@ -9,6 +9,9 @@
 #include "CInventory.h"
 #include "CHotICON.h"
 #include "Calculation.h"
+
+#include "rose/common/rosenext_config.h"
+
 #pragma warning (disable:4201)
 //#define FRAROSE
 //-------------------------------------------------------------------------------------------------
@@ -82,19 +85,6 @@ struct tagBasicAbility {
 	}
 } ;
 
-// #ifdef __SHO_GS1
-// #include "../LIB_gsMAIN.h"
-// #define	MAX_BASIC_ABLITY		::Get_ServerMaxStats()//CLIB_GameSRV::GetInstance()->GetMaxStats()//400		/// 250 기본 능력치 최대치를 300으로 수정
-// #define	MAX_LEVEL				::Get_ServerMaxLevel()//CLIB_GameSRV::GetInstance()->GetMaxLevel()//220		/// 200 최대 레벨을 250으로 수정
-// #else
-#if defined(FRAROSE)
-	#define	MAX_BASIC_ABLITY		410		// 250 기본 능력치 최대치를 300으로 수정
-	#define	MAX_LEVEL				255		// 200 최대 레벨을 250으로 수정
-#else
-	#define	MAX_BASIC_ABLITY		300		// 250 기본 능력치 최대치를 300으로 수정
-	#define	MAX_LEVEL				210		// 200 최대 레벨을 250으로 수정
-#endif
-//#endif
 #define	MAX_EXPERIENCE			0x7FFFFFFFFFFFFFFF
 
 #define	MAX_STAMINA					5000
@@ -798,7 +788,7 @@ public :
 
 	virtual void  SetCur_JOB (short nValue)	{	this->m_BasicINFO.m_nClass=nValue;			}
 
-	void  SetCur_LEVEL(WORD wValue)			{	this->m_GrowAbility.m_nLevel = ( wValue>MAX_LEVEL) ? MAX_LEVEL : wValue;	}
+	void  SetCur_LEVEL(WORD wValue)			{	this->m_GrowAbility.m_nLevel = ( wValue>Rose::Config::MAX_LEVEL) ? Rose::Config::MAX_LEVEL : wValue;	}
 	void  SetCur_EXP (long lValue)			{	this->m_GrowAbility.m_lEXP=lValue;			}
 	void  SetCur_BonusPOINT(short nValue)	{	this->m_GrowAbility.m_nBonusPoint=nValue;	}
 	void  SetCur_SkillPOINT(short nValue)	{	this->m_GrowAbility.m_nSkillPoint=nValue;	}

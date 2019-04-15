@@ -153,7 +153,7 @@ int classHASH<t_HASHDATA>::GetEntryCount(int iEntryIDX)
 {
     int iCnt=0;
 
-    pNODE = m_pTABLE[ iEntryIDX ]->m_NEXT;
+    auto pNODE = m_pTABLE[ iEntryIDX ]->m_NEXT;
     while( pNODE ) {
 		pNODE = pNODE->m_NEXT;
         iCnt ++;
@@ -235,9 +235,9 @@ tagHASH<t_HASHDATA> *classHASH<t_HASHDATA>::Search (t_HASHKEY ulHashKey, t_HASHD
 
 	unsigned long ulPos = (ulHashKey & 0xFFFF) % m_iEntryCount;
 
-	pNODE = m_pTALBE[ ulPos ]->m_NEXT;
+	auto pNODE = m_pTABLE[ ulPos ]->m_NEXT;
 	while ( pNODE ) {
-		i ( pNODE->m_DATA == HashData ) {
+		if ( pNODE->m_DATA == HashData ) {
 			return pNODE;
 		}
 		pNODE = pNODE->m_NEXT;

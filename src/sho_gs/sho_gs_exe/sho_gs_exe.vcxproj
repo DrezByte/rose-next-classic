@@ -83,7 +83,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_gs\sho_gs_lib;$(SolutionDir)src\Client\Util;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Network;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\Common;$(SolutionDir)src\Client\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_gs\sho_gs_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Network;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -108,7 +108,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_gs\sho_gs_lib;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_gs\sho_gs_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Network;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>

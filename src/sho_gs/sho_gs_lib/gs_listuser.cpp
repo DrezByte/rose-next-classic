@@ -1,4 +1,4 @@
-
+#include "stdafx.h"
 #include "LIB_gsMAIN.h"
 #include "GS_ListUSER.h"
 #include "GS_ThreadSQL.h"
@@ -6,6 +6,8 @@
 #include "GS_SocketLSV.h"
 #include "GS_SocketASV.h"
 #include "IO_Quest.h"
+
+using namespace Rose;
 
 extern void IncUserCNT( int iUserCNT, classUSER *pUSER );
 extern void DecUserCNT( int iUserCNT, classUSER *pUSER );
@@ -24,10 +26,10 @@ CUserLIST::CUserLIST ( UINT uiInitDataCNT, UINT uiIncDataCNT )
 
 	char szTmp[ MAX_PATH ];
 	t_HASHKEY HashKey;
-	m_HashLevelUpTRIGGER = new t_HASHKEY[MAX_LEVEL];
-	::ZeroMemory( m_HashLevelUpTRIGGER, sizeof(t_HASHKEY)*MAX_LEVEL );
+	m_HashLevelUpTRIGGER = new t_HASHKEY[Config::MAX_LEVEL];
+	::ZeroMemory( m_HashLevelUpTRIGGER, sizeof(t_HASHKEY)*Config::MAX_LEVEL );
 
-	for (int iL=1;iL<MAX_LEVEL; iL++) {
+	for (int iL=1;iL<Config::MAX_LEVEL; iL++) {
 		sprintf( szTmp, "levelup_%d", iL );
 		HashKey = ::StrToHashKey( szTmp );
 		if ( g_QuestList.GetQuest( HashKey ) ) 

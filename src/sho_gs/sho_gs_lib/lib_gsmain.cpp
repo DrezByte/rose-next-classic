@@ -785,20 +785,6 @@ bool CLIB_GameSRV::Load_BasicDATA ()
 	CheckSTB_GemITEM ();
 	CheckSTB_ListPRODUCT ();
 
-#ifdef __SHO_GS1
-	char *file_name = CStr::Printf("%\\SHO_GS_INIT.ini", BASE_DATA_DIR);
-	char	Temp_ID[DB_INI_STRING] = "";
-
-	GetPrivateProfileString("SHO_BASE", "MAX_LEVEL", "210", Temp_ID, DB_INI_STRING, file_name);
-	if (strlen(Temp_ID) == 0) return false;
-	m_dwMaxLevel = (DWORD)atoi(Temp_ID);
-
-	ZeroMemory(Temp_ID,DB_INI_STRING);
-	GetPrivateProfileString("SHO_BASE", "MAX_STATS", "300", Temp_ID, DB_INI_STRING, file_name);
-	if (strlen(Temp_ID) == 0) return false;
-	m_dwMaxStats = (DWORD)atoi(Temp_ID);
-#endif
-
 	return true;
 }
 void CLIB_GameSRV::Free_BasicDATA ()

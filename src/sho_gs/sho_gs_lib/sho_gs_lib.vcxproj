@@ -58,7 +58,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_gs\sho_gs_lib;$(SolutionDir)src\Client\Util;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Network;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\Common;$(SolutionDir)src\Client\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_gs\sho_gs_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Network;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>Ndebug;WIN32;_LIB;__SERVER;__USE_CHEAT;_PA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -87,8 +87,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_gs\sho_gs_lib;$(SolutionDir)src\Client\Util;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Network;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\Common;$(SolutionDir)src\Client\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_debug;WIN32;_LIB;__SERVER;__USE_CHEAT;_WIN32_WINNT 0x0500;MAX_LEVEL 210;MAX_BASIC_ABLITY 300;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_gs\sho_gs_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Network;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_debug;WIN32;_LIB;__SERVER;__USE_CHEAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>

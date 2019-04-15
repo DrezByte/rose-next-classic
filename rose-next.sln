@@ -68,6 +68,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_ws_exe", "src\sho_ws\sho_ws_exe\sho_ws_exe.vcxproj", "{6A71147E-E679-40BD-98B0-0B49AE4EEA72}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_gs_exe", "src\sho_gs\sho_gs_exe\sho_gs_exe.vcxproj", "{E3F4F566-10CF-4FDA-B77D-076388CB4CB1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{782AF9C9-40B2-4844-BE58-D73710823F16} = {782AF9C9-40B2-4844-BE58-D73710823F16}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

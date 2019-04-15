@@ -12,6 +12,9 @@
 #ifdef	__SERVER
 #include "ZoneLIST.H"
 #else
+
+using namespace Rose;
+
 short Get_WorldDROP_M ()
 {
 	return 100;
@@ -34,8 +37,8 @@ short Get_WorldREWARD ()
 __int64 CCal::Get_NeedRawEXP (int iLevel)
 {
 	// 필요 경험치
-	if ( iLevel > MAX_LEVEL )
-		iLevel = MAX_LEVEL;
+	if ( iLevel > Config::MAX_LEVEL )
+		iLevel = Config::MAX_LEVEL;
 
 	// [레벨 15이하일 경우]   필요 경험치 = { (LV + 3) * (LV + 5 ) * (LV + 10) * 0.7 }
 	if ( iLevel <= 15 )
