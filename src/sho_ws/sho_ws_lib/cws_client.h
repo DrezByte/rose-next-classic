@@ -3,8 +3,6 @@
 //-------------------------------------------------------------------------------------------------
 #include "CWS_Account.h"
 
-extern CPacketCODEC	*g_pPacketCODEC;
-
 class WS_Zone;
 class CWS_Party;
 class CWS_Server;

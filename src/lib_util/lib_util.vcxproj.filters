@@ -26,13 +26,7 @@
     <ClInclude Include="..\Client\Util\CClientSOCKET.h">
       <Filter>Source Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="CPacketCODEC.h">
-      <Filter>Source Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="..\Client\Util\CRawSOCKET.h">
-      <Filter>Source Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Client\Util\CshoSOCKET.h">
       <Filter>Source Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\Client\Util\CSocket.h">
@@ -145,13 +139,7 @@
     <ClCompile Include="CClientSOCKET.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="CPacketCODEC.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
     <ClCompile Include="CRawSOCKET.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="CshoSOCKET.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="CSocket.cpp">

@@ -99,7 +99,7 @@ void CNetwork::MoveZoneServer ()
 //-------------------------------------------------------------------------------------------------
 void CNetwork::Proc_WorldPacket ()
 {
-	CshoClientSOCK *pSocket = &this->m_WorldSOCKET;
+	CClientSOCKET* pSocket = &this->m_WorldSOCKET;
 
 	while( m_WorldSOCKET.Peek_Packet( m_pRecvPacket, true ) ) {
 		switch( m_pRecvPacket->m_HEADER.m_wType ) {
@@ -108,7 +108,6 @@ void CNetwork::Proc_WorldPacket ()
 				switch( m_pRecvPacket->m_NetSTATUS.m_btStatus ) {
 					case NETWORK_STATUS_ACCEPTED    :
 					{
-						pSocket->OnAccepted ( (int*)m_pRecvPacket->m_NetSTATUS.m_dwSocketIDs );
 						CGame::GetInstance().AcceptedConnectLoginSvr();
 						continue;
 					}
@@ -171,7 +170,6 @@ void CNetwork::Proc_WorldPacket ()
 			{
 				DWORD dwRet = Recv_srv_JOIN_SERVER_REPLY ();
 				if ( dwRet ) {
-					pSocket->OnAccepted( (int*)&dwRet );
 					this->Send_cli_CHAR_LIST ();
 				} else {
 					// TODO:: error
@@ -706,7 +704,7 @@ void CNetwork::Proc ()
 {
 	this->Proc_WorldPacket ();
 
-	CshoClientSOCK *pSocket = &this->m_ZoneSOCKET;
+	CClientSOCKET* pSocket = &this->m_ZoneSOCKET;
 	while( m_ZoneSOCKET.Peek_Packet( m_pRecvPacket, true ) ) 
 	{
 		// LogString (LOG_DEBUG, "Packet_Proc:: Type: 0x%x, Size: %d \n", m_pRecvPacket->m_HEADER.m_wType, m_pRecvPacket->m_HEADER.m_nSize );
@@ -717,8 +715,6 @@ void CNetwork::Proc ()
 				switch( m_pRecvPacket->m_NetSTATUS.m_btStatus ) {
 					case NETWORK_STATUS_ACCEPTED    :
 					{
-						pSocket->OnAccepted ( (int*)m_pRecvPacket->m_NetSTATUS.m_dwSocketIDs );
-						_ASSERT( 0 );
 						continue;
 					}
 					case NETWORK_STATUS_CONNECT		:
@@ -753,9 +749,6 @@ void CNetwork::Proc ()
 			{
 				DWORD dwRet = Recv_srv_JOIN_SERVER_REPLY ();
 				if ( dwRet ) {
-					pSocket->OnAccepted( (int*)&dwRet );
-					// 처음 접속한 존 서버? 면...
-
 					CLiveCheck::GetSingleton().ResetTime();
 				} else {
 					// TODO:: error

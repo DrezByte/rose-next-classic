@@ -219,6 +219,40 @@ void CClientSOCKET::OnSend (int nErrorCode)
 	}
 }
 
+bool CClientSOCKET::WndPROC(WPARAM wParam, LPARAM lParam)
+{
+	int nErrorCode = WSAGETSELECTERROR(lParam);
+	switch (WSAGETSELECTEVENT(lParam)) {
+		case FD_READ:
+		{
+			this->OnReceive(nErrorCode);
+			break;
+		}
+		case FD_WRITE:
+		{
+			this->OnSend(nErrorCode);
+			break;
+		}
+		case FD_CONNECT:
+		{
+			this->OnConnect(nErrorCode);
+
+			if (!nErrorCode)
+				this->Set_NetSTATUS(NETWORK_STATUS_CONNECT);
+			else
+				this->Set_NetSTATUS(NETWORK_STATUS_DERVERDEAD);
+			break;
+		}
+		case FD_CLOSE:
+		{
+			this->OnClose(nErrorCode);
+			this->Set_NetSTATUS(NETWORK_STATUS_DISCONNECT);
+		}
+	}
+
+	return true;
+}
+
 void CClientSOCKET::Packet_Register2RecvQ( t_PACKET *pRegPacket )
 {
 	t_PACKET *pNewPacket;

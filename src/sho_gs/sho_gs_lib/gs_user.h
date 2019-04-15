@@ -15,8 +15,6 @@
 #include "Calculation.h"
 #include "io_skill.h"
 
-extern CPacketCODEC *g_pPacketCODEC;
-
 #define	SOCKET_KEEP_ALIVE_TIME	( 5 * 60 * 1000 )		// 5분
 
 #define	PENALTY_EXP_TOWN	3	// 마을 부활 패널티 경험치 5%

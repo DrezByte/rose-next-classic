@@ -2,8 +2,6 @@
 #define __CLASSPACKET_H
 #include <crtdbg.h>
 #include "PacketHEADER.h"
-#include "CPacketCODEC.h"
-
 
 #ifndef __POINTF
 #define __POINTF

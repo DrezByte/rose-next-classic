@@ -108,7 +108,6 @@ char			 g_szURL[ MAX_PATH ];
 
 
 CLIB_GameSRV *CLIB_GameSRV::m_pInstance=NULL;
-CPacketCODEC *g_pPacketCODEC;
 
 #define	__GEN_TEXT
 
@@ -277,7 +276,6 @@ CLIB_GameSRV::~CLIB_GameSRV ()
 	CPoolSENDIO::Destroy ();
 	CPoolPACKET::Destroy ();
 
-	SAFE_DELETE( g_pPacketCODEC );
     CStr::Free ();
 
 	if ( CSocketWND::GetInstance() )
@@ -305,8 +303,6 @@ void CLIB_GameSRV::SystemINIT( HINSTANCE hInstance, char *szBaseDataDIR, int iLa
 
 	m_BaseDataDIR.Alloc( (WORD)( strlen(szBaseDataDIR) + 3 ) );
 	m_BaseDataDIR.Printf("%s\\", szBaseDataDIR );
-
-	g_pPacketCODEC = new CPacketCODEC;
 
 	CPoolPACKET::Instance (DEF_PACKET_POOL_SIZE,	INC_PACKET_POOL_SIZE );
 	CPoolRECVIO::Instance (DEF_RECV_IO_POOL_SIZE,	INC_RECV_IO_POOL_SIZE);
@@ -1001,7 +997,6 @@ bool CLIB_GameSRV::Start( HWND hMainWND, char *szServerName, char *szClientListe
 	g_pZoneLIST->InitZoneLIST( BASE_DATA_DIR );
 
 	m_dwRandomSEED = ::timeGetTime();
-	g_pPacketCODEC->Init( m_dwRandomSEED );
 
 	m_pWorldTIMER = new CTimer( m_hMainWND, GS_TIMER_WORLD_TIME, WORLD_TIME_TICK, (TIMERPROC)GS_TimerProc );
 	m_pWorldTIMER->Start ();

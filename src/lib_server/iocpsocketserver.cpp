@@ -22,12 +22,7 @@ IOCPSocketSERVER::IOCPSocketSERVER (char *szName, BYTE btMulCPU, char cAddCPU, b
 
 	SYSTEM_INFO	sSystemInfo;
 	::GetSystemInfo (&sSystemInfo);
-/*
-	CPoolPACKET::Instance ();
-	CPoolRECVIO::Instance ();
-	CPoolSENDIO::Instance ();
-	CPacketCODEC::Instance ();
-*/
+
 	m_pSocketIDX = NULL;
 	m_pAcceptTHREAD = NULL;
 	m_ppWorkerTHREAD = NULL;
@@ -44,13 +39,7 @@ IOCPSocketSERVER::~IOCPSocketSERVER ()
 	this->Shutdown ();
 	m_IOCP.ClosePort ();
 	SAFE_DELETE( m_pBlockingIP );
-/*
-	CPacketCODEC::Destroy ();
-	CPoolRECVIO::Destroy ();
-	CPoolSENDIO::Destroy ();
-	CPoolPACKET::Destroy ();
-	CRandom::Destroy ();
-*/
+
 	CSLList< tagAtkIP >::tagNODE *pNode;
 	pNode = m_AttackLIST.GetHeadNode();
 	while( pNode ) {

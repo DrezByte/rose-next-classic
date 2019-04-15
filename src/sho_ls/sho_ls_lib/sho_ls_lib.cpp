@@ -25,9 +25,6 @@ CLS_SqlTHREAD   *g_pThreadSQL = NULL;
 CLS_ListCLIENT  *g_pListCLIENT;
 CLS_ListSERVER  *g_pListSERVER;
 
-CPacketCODEC	*g_pPacketCODEC;
-
-
 classListBLOCK<tagBlockDATA>    *g_pListBlackIP=NULL;
 classListBLOCK<tagBlockDATA>    *g_pListBlackACCOUNT=NULL;
 
@@ -120,10 +117,6 @@ void SHO_LS::SystemINIT( HINSTANCE hInstance )
 {
 	::Sleep( 500 );
 
-	g_pPacketCODEC = new CPacketCODEC;
-	//g_pPacketCODEC->Default ();
-	g_pPacketCODEC->Init( PACKET_SEED );
-
 	CPoolPACKET::Instance (DEF_PACKET_POOL_SIZE,	INC_PACKET_POOL_SIZE );
 	CPoolRECVIO::Instance (DEF_RECV_IO_POOL_SIZE,	INC_RECV_IO_POOL_SIZE);
 	CPoolSENDIO::Instance (DEF_SEND_IO_POOL_SIZE,	INC_SEND_IO_POOL_SIZE);
@@ -194,14 +187,9 @@ SHO_LS::~SHO_LS ()
 	if ( CSocketWND::GetInstance() )
 		CSocketWND::GetInstance()->Destroy();
 
-//	CBS_Taiwan::Destroy();
-//	g_pTwainBS = NULL;
-
 	CPoolRECVIO::Destroy ();
 	CPoolSENDIO::Destroy ();
 	CPoolPACKET::Destroy ();
-
-	SAFE_DELETE( g_pPacketCODEC );
 }
 
 

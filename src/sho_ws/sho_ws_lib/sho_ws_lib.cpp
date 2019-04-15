@@ -66,8 +66,6 @@ CWS_ListCLIENT  *g_pUserLIST = NULL;
 WS_lsvSOCKET	*g_pSockLSV = NULL;
 //WS_logSOCKET	*g_pSockLOG = NULL;
 
-CPacketCODEC	*g_pPacketCODEC;
-
 CChatRoomLIST	*g_pChatROOMs=NULL;
 //CWSPartyBUFF	*g_pPartyBUFF=NULL;
 
@@ -164,8 +162,6 @@ void SHO_WS::SystemINIT( HINSTANCE hInstance, char *szBaseDataDIR, int iLangType
 	g_pSockLSV = new WS_lsvSOCKET;
 //	g_pSockLOG = new WS_logSOCKET( USE_MY_SQL_AGENT );
 
-	g_pPacketCODEC = new CPacketCODEC;
-
 	// 로그인 서버에 접속할 클라이언트 소켓 생성...
 	CSocketWND *pSockWND = CSocketWND::InitInstance( hInstance, 2 );
 	if ( pSockWND ) {
@@ -216,8 +212,6 @@ SHO_WS::~SHO_WS ()
 	CPoolRECVIO::Destroy ();
 	CPoolSENDIO::Destroy ();
 	CPoolPACKET::Destroy ();
-
-	SAFE_DELETE( g_pPacketCODEC );
 
 //	SAFE_DELETE( g_pSockLOG );
 	SAFE_DELETE( g_pSockLSV );
@@ -315,7 +309,6 @@ bool SHO_WS::Start (HWND hMainWND,
 	g_pListSERVER->Active( m_iServerListenPortNO, 512, 3*60 );					// 3분 대기
 
 	m_dwRandomSEED = ::timeGetTime();
-	g_pPacketCODEC->Init( m_dwRandomSEED );
 
 	this->ConnectToLOG ();
 

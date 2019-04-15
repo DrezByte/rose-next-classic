@@ -58,7 +58,7 @@ public:
 	virtual void	OnReceive		(int nErrorCode);
 	virtual void	OnSend			(int nErrorCode);
 	virtual void	OnAccepted		(int*pCode);
-	virtual	bool    WndPROC			( WPARAM wParam, LPARAM lParam )=0;
+	virtual	bool    WndPROC(WPARAM wParam, LPARAM lParam);
 
 public:
 	// user interface

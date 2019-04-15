@@ -9,8 +9,6 @@
 #define CLIENT_STEP_LOGEDIN     3
 #define CLIENT_STEP_SELECT_GS   4
 
-extern CPacketCODEC	*g_pPacketCODEC;
-
 //-------------------------------------------------------------------------------------------------
 #define	__VIEW_ACCOUNT
 

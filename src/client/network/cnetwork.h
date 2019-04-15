@@ -4,7 +4,7 @@
 #ifndef	__CNETWORK_H
 #define	__CNETWORK_H
 #include "NET_Prototype.h"
-#include "..\util\CshoSOCKET.H"
+#include "../util/CClientSOCKET.h"
 #include "Object.h"
 #include "RecvPACKET.h"
 #include "SendPACKET.h"
@@ -49,8 +49,8 @@ public  :
 #ifdef	__VIRTUAL_SERVER
 	CClientSOCKET	m_SOCKET;
 #else
-	CshoClientSOCK	m_WorldSOCKET;
-	CshoClientSOCK	m_ZoneSOCKET;
+	CClientSOCKET	m_WorldSOCKET;
+	CClientSOCKET	m_ZoneSOCKET;
 #endif
 	bool m_bWarping;	// 존 워프 중인가...
 
