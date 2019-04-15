@@ -15,6 +15,7 @@
 #include <windows.h>
 #include <winUser.h>
 #include <mmsystem.h>
+
 // C RunTime Header Files
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,6 +23,11 @@
 #include <memory.h>
 #include <tchar.h>
 #include <crtdbg.h>
+
+// C++ STL
+#include <string>
+#include <algorithm>
+#include <map>
 
 #include <d3d9.h>
 #include <D3DX9.h>
@@ -89,6 +95,4 @@ typedef	LPDIRECT3DVERTEXBUFFER9		LPD3DVERTEXBUFFER;
 #ifndef	GET_WHEEL_DELTA_WPARAM
 #define GET_WHEEL_DELTA_WPARAM(wParam)  ((short)HIWORD(wParam))
 #endif
-
-//-------------------------------------------------------------------------------------------------
 

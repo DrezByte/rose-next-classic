@@ -371,9 +371,6 @@
     <ClCompile Include="gamecommon\CDelegatedObservable.cpp">
       <Filter>Source Files\GameCommon</Filter>
     </ClCompile>
-    <ClCompile Include="GameCommon\CFilterWord.cpp">
-      <Filter>Source Files\GameCommon</Filter>
-    </ClCompile>
     <ClCompile Include="gamecommon\CItemEquip.cpp">
       <Filter>Source Files\GameCommon</Filter>
     </ClCompile>
@@ -1157,6 +1154,9 @@
     <ClCompile Include="Tutorial\TutorialEventUtility.cpp">
       <Filter>Source Files\Tutorial</Filter>
     </ClCompile>
+    <ClCompile Include="util\string_util.cpp">
+      <Filter>Source Files\Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCamera.h">
@@ -1484,9 +1484,6 @@
       <Filter>Source Files\winMAIN</Filter>
     </ClInclude>
     <ClInclude Include="gamecommon\CDelegatedObservable.h">
-      <Filter>Source Files\GameCommon</Filter>
-    </ClInclude>
-    <ClInclude Include="GameCommon\CFilterWord.h">
       <Filter>Source Files\GameCommon</Filter>
     </ClInclude>
     <ClInclude Include="gamecommon\CItemEquip.h">
@@ -2262,6 +2259,9 @@
     </ClInclude>
     <ClInclude Include="..\Engine\include\zz_interface.h">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="util\string_util.h">
+      <Filter>Source Files\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

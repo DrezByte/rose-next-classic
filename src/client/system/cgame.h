@@ -249,7 +249,6 @@ private:
 
 	CGameState*		MakeState( int iState );
 	
-	void	MakeBadWordTable();
 	void	ProcCommand();
 
 

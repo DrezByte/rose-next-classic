@@ -55,7 +55,6 @@
 #include "../gamedata/CPrivateStore.h"
 #include "../gamedata/CClan.h"
 
-#include "../gamecommon/CFilterword.h"
 #include "../Game_FUNC.h"
 #include "../Game.h"
 #include "../Bullet.h"
@@ -612,20 +611,14 @@ bool CGame::Load_BasicDATA()
 	g_TblItemGRADE.Load	( "3DDATA\\STB\\LIST_GRADE.STB");		
 	g_TblHELMET.Load	( "3DDATA\\STB\\LIST_Cap.STB",		true, true  );
 
-	g_TblFoulWord.Load2	( "3DDATA\\STB\\BADWORDS.STB",		false, false );
-	g_TblBadNames.Load2	( "3DDATA\\STB\\BADNAMES.STB",		false, false );
-
 	if( g_MotionFILE.Load	( "3DDATA\\STB\\FILE_MOTION.stb" ) == false )
 		return false;
 
 	if( g_LngTBL.Load ( iCurrentLang ) == false )
 		return false;
 
-
-	MakeBadWordTable();
 	InitScript ();
 	g_UserInputSystem.Init();
-
 
 	_RPT1(_CRT_WARN,"Loading Time Basic Data %d \n", timeGetTime() - dwStartTime );
 	return true;
@@ -848,8 +841,6 @@ void CGame::Free_BasicDATA ()
 
 	FreeScript ();
 
-	g_TblBadNames.Free();
-	g_TblFoulWord.Free();
 	g_TblNPC.Free ();
 	g_TblWEAPON.Free ();
 	g_TblHELMET.Free ();
@@ -1540,20 +1531,6 @@ DWORD CGame::GetRight()
 void CGame::SetRight( DWORD dwRight )
 {
 	m_dwRight = dwRight;
-}
-
-void CGame::MakeBadWordTable()
-{
-	CFilterWord& refFilter = CFilterWord::GetInstance();
-
-	if( g_TblFoulWord.m_ppVALUE[0][1].GetSTR() && strlen( g_TblFoulWord.m_ppVALUE[0][1].GetSTR() ) >= 1 )
-		refFilter.SetChangeWord( g_TblFoulWord.m_ppVALUE[0][1].GetSTR() );
-
-	for( int i = 1 ; i < g_TblFoulWord.m_nDataCnt; ++i )
-		refFilter.AddWord( g_TblFoulWord.m_ppVALUE[i][0].GetSTR(), g_TblFoulWord.m_ppVALUE[i][1].GetSTR() );
-	for( int i = 0 ; i < g_TblBadNames.m_nDataCnt; ++i )
-		refFilter.AddName( g_TblBadNames.m_ppVALUE[i][0].GetSTR() );
-
 }
 
 void CGame::SetAppraisalNpcSvrIdx( WORD wNpcSvrIdx )

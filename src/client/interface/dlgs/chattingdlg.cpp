@@ -1,3 +1,4 @@
+
 #include "StdAfx.h"
 #include "ChattingDLG.h"
 #include "CTargetMenu.h"
@@ -7,7 +8,7 @@
 #include "../CToolTipMgr.h"
 #include "../../GameData/CExchange.h"
 #include "../../Network/CNetwork.h"
-#include "../../GameCommon/CFilterWord.h"
+#include "util/string_util.h"
 #include "../../GameData/CParty.h"
 #include "../../Util/Localizing.h"
 
@@ -18,7 +19,7 @@
 #include "tgamectrl/actionevent.h"
 #include "tgamectrl/tcontrolmgr.h"
 
-#include <algorithm>
+using namespace Rose;
 
 int CChatDLG::m_iCaptureCount = 0;
 
@@ -90,20 +91,17 @@ CChatDLG::CChatDLG()
 	filter.Filters[5] = 2;
 	m_Filters.push_back( filter );///Allied
 
-
-	CFilterWord& Util = CFilterWord::GetInstance();
 	std::wstring	wstrTemp;
 
-
 	///ASCii
-	Util.MulityByte2WideString("!", wstrTemp ); m_ShoutCommands.push_back( wstrTemp );
-	Util.MulityByte2WideString("$", wstrTemp ); m_TradeCommands.push_back( wstrTemp );
-	Util.MulityByte2WideString("@", wstrTemp ); m_WhisperCommands.push_back( wstrTemp );
-	Util.MulityByte2WideString("&", wstrTemp ); m_ClanCommands.push_back( wstrTemp );
-	Util.MulityByte2WideString("#", wstrTemp ); m_PartyCommands.push_back( wstrTemp );
-	Util.MulityByte2WideString("~", wstrTemp ); m_AlliedCommands.push_back( wstrTemp );
-	Util.MulityByte2WideString( CStr::Printf("/%s", STR_HELP), wstrTemp); m_HelpCommands.push_back( wstrTemp );
-	Util.MulityByte2WideString( " ", wstrTemp); m_Spaces.push_back( wstrTemp );
+	Util::MulityByte2WideString("!", wstrTemp ); m_ShoutCommands.push_back( wstrTemp );
+	Util::MulityByte2WideString("$", wstrTemp ); m_TradeCommands.push_back( wstrTemp );
+	Util::MulityByte2WideString("@", wstrTemp ); m_WhisperCommands.push_back( wstrTemp );
+	Util::MulityByte2WideString("&", wstrTemp ); m_ClanCommands.push_back( wstrTemp );
+	Util::MulityByte2WideString("#", wstrTemp ); m_PartyCommands.push_back( wstrTemp );
+	Util::MulityByte2WideString("~", wstrTemp ); m_AlliedCommands.push_back( wstrTemp );
+	Util::MulityByte2WideString( CStr::Printf("/%s", STR_HELP), wstrTemp); m_HelpCommands.push_back( wstrTemp );
+	Util::MulityByte2WideString( " ", wstrTemp); m_Spaces.push_back( wstrTemp );
 
 
 	/// 2바이트 특문/ 일본어 전각시에도 처리가능하도록 추가한다.
@@ -118,7 +116,7 @@ CChatDLG::CChatDLG()
 
 	wchar[0] = 0xFF0F;
 	std::wstring wstrHelp = wchar;
-	Util.MulityByte2WideString( STR_HELP, wstrTemp); 
+	Util::MulityByte2WideString( STR_HELP, wstrTemp);
 	wstrHelp.append( wstrTemp );
 	m_HelpCommands.push_back( wstrHelp );
 
@@ -359,14 +357,6 @@ void CChatDLG::SendChatMsg( char* szMsg )
 
 	CTEditBox* pEditBox = (CTEditBox*) pCtrl;
 	pEditBox->clear_text();
-	
-
-	if( !CFilterWord::GetInstance().CheckString( (char*)stRealMsg.c_str() ) )
-		g_itMGR.AppendChatMsg(STR_FILTER_BADWORD,IT_MGR::CHAT_TYPE_SYSTEM );
-
-	stRealMsg = CFilterWord::GetInstance().GetChangedString();
-
-
 
 	DWORD dwCurrentTime = g_GameDATA.GetTime();
 
@@ -378,11 +368,6 @@ void CChatDLG::SendChatMsg( char* szMsg )
 			if( dwCurrentTime - prev_time < m_dwCheckChatTime )
 			{
 				g_itMGR.AppendChatMsg( STR_CHAT_RESTRICT, IT_MGR::CHAT_TYPE_SYSTEM );
-#ifdef _DEBUG
-#else
-				return;
-#endif
-				
 			}
 			m_PrevSendMessageTimes.pop();
 		}
@@ -480,9 +465,8 @@ int	 CChatDLG::ChatParser( string stMsg, string& stRealMsg ,string& stTargetID )
 {
 	const char*	pszMsg = stMsg.c_str();
 
-	CFilterWord& Util = CFilterWord::GetInstance();
 	std::wstring wstrMsg;
-	Util.MulityByte2WideString( pszMsg, wstrMsg );
+	Util::MulityByte2WideString( pszMsg, wstrMsg );
 
 
 	std::vector< std::wstring >::iterator iter;
@@ -509,7 +493,7 @@ int	 CChatDLG::ChatParser( string stMsg, string& stRealMsg ,string& stTargetID )
 		if( index == 0 )
 		{
 			std::wstring wstrRealMsg = wstrMsg.substr( 1, wstrMsg.size() - 1 );
-			Util.Wide2MultyByteString( wstrRealMsg, stRealMsg );
+			Util::Wide2MultiByteString( wstrRealMsg, stRealMsg );
 			return CHAT_SHOUT;
 		}
 	}
@@ -520,7 +504,7 @@ int	 CChatDLG::ChatParser( string stMsg, string& stRealMsg ,string& stTargetID )
 		if( index == 0 )
 		{
 			std::wstring wstrRealMsg = wstrMsg.substr( 1, wstrMsg.size() - 1 );
-			Util.Wide2MultyByteString( wstrRealMsg, stRealMsg );
+			Util::Wide2MultiByteString( wstrRealMsg, stRealMsg );
 			return CHAT_ALLIED;
 		}
 	}
@@ -543,7 +527,7 @@ int	 CChatDLG::ChatParser( string stMsg, string& stRealMsg ,string& stTargetID )
 		if( index == 0 )
 		{
 			std::wstring wstrRealMsg = wstrMsg.substr( 1, wstrMsg.size() - 1 );
-			Util.Wide2MultyByteString( wstrRealMsg, stRealMsg );
+			Util::Wide2MultiByteString( wstrRealMsg, stRealMsg );
 			return CHAT_CLAN;
 		}
 	}
@@ -558,7 +542,7 @@ int	 CChatDLG::ChatParser( string stMsg, string& stRealMsg ,string& stTargetID )
 			if( index == 0 )
 			{
 				std::wstring wstrRealMsg = wstrMsg.substr( 1, wstrMsg.size() - 1 );
-				Util.Wide2MultyByteString( wstrRealMsg, stRealMsg );
+				Util::Wide2MultiByteString( wstrRealMsg, stRealMsg );
 				return CHAT_PARTY;
 			}
 		}
@@ -580,10 +564,10 @@ int	 CChatDLG::ChatParser( string stMsg, string& stRealMsg ,string& stTargetID )
 					if( index >= 2 && index < wstrMsg.length() )
 					{
 						std::wstring wstrTargetID = wstrMsg.substr( 1, index - 1 );
-						Util.Wide2MultyByteString( wstrTargetID, stTargetID );
+						Util::Wide2MultiByteString( wstrTargetID, stTargetID );
 
 						std::wstring wstrRealMsg = wstrMsg.substr( index, wstrMsg.length() - index );
-						Util.Wide2MultyByteString( wstrRealMsg, stRealMsg );
+						Util::Wide2MultiByteString( wstrRealMsg, stRealMsg );
 						return CHAT_WHISPER;
 					}
 					else

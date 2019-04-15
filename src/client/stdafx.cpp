@@ -83,8 +83,6 @@ STBDATA			 g_TblHitSound;
 
 STBDATA			 g_TblAVATAR;		/// 아바타 초기 설정 데이타..
 STBDATA			 g_TblResolution;
-STBDATA			 g_TblFoulWord;
-STBDATA			 g_TblBadNames;
 
 STBDATA			 g_TblSTATE;
 

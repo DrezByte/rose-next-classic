@@ -15,8 +15,6 @@
 #include "../../System/CGame.h"
 #include "../../System/SystemProcScript.h"
 #include "../../GameData/CGameDataCreateAvatar.h"
-#include "../../GameCommon/CFilterWord.h"
-
 
 #include "../it_MGR.h"
 
@@ -110,8 +108,10 @@ bool CCreateAvata::RecvCreateAvata( t_PACKET* recvPacket )
 		g_EUILobby.ShowMsgBox( STR_CANT_CREATE_MORE_CHARACTER, CMsgBox::BT_OK , true, 0 );
 		break;
 	case RESULT_CREATE_CHAR_BLOCKED:
-		g_EUILobby.ShowMsgBox( "현재 서버에서는 캐릭터 생성이 불가능합니다. 자세한 내용은 홈페이지를 참고해주세요.", CMsgBox::BT_OK , true, 0 );
+		g_EUILobby.ShowMsgBox( "You have been blocked from creating a new character", CMsgBox::BT_OK , true, 0 );
 		break;
+	//case RESULT_CREATE_CHAR_ILLEGAL_NAME:
+	//	g_EUILobby.ShowMsgBox(STR_INVALID_CHARACTER_NAME, CTMsgBox::BT_OK, true, GetDialogType());
 	default:
 		g_EUILobby.ShowMsgBox( STR_FAIL_MAKE_NEW_CHARACTER, CMsgBox::BT_OK , true, 0 );
 		break;
@@ -144,15 +144,7 @@ void CCreateAvata::OnLButtonUp( unsigned iProcID )
 
 			strcpy( szName, pEditBox->get_text() );
 
-			if( CFilterWord::GetInstance().IsValidName( szName) )
-			{
-				CreateAvata( szName, 0, iSex, iBoneStone, iHair, iFace, iStartPos );
-			}
-			else
-			{
-				g_EUILobby.ShowMsgBox(STR_INVALID_CHARACTER_NAME,CTMsgBox::BT_OK ,true ,GetDialogType() );
-				pEditBox->clear_text();
-			}
+			CreateAvata( szName, 0, iSex, iBoneStone, iHair, iFace, iStartPos );
 				
 		}
 		break;

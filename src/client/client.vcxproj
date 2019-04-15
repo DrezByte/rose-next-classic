@@ -207,6 +207,7 @@
     <ClCompile Include="Util\JResourceContainer.cpp" />
     <ClCompile Include="Util\Localizing.cpp" />
     <ClCompile Include="Util\ResourceCache.cpp" />
+    <ClCompile Include="util\string_util.cpp" />
     <ClCompile Include="Util\SystemInfo.cpp" />
     <ClCompile Include="Util\SystemUtil.cpp" />
     <ClCompile Include="Util\VFSManager.cpp" />
@@ -266,7 +267,6 @@
     </ClCompile>
     <ClCompile Include="winMAIN.cpp" />
     <ClCompile Include="gamecommon\CDelegatedObservable.cpp" />
-    <ClCompile Include="GameCommon\CFilterWord.cpp" />
     <ClCompile Include="gamecommon\CItemEquip.cpp" />
     <ClCompile Include="gamecommon\CItemEtc.cpp" />
     <ClCompile Include="gamecommon\CItemPat.cpp" />
@@ -585,6 +585,7 @@
     <ClInclude Include="Util\ResourceCache.h" />
     <ClInclude Include="Util\RTTI.h" />
     <ClInclude Include="Util\SLLIST.h" />
+    <ClInclude Include="util\string_util.h" />
     <ClInclude Include="Util\SystemInfo.h" />
     <ClInclude Include="Util\SystemUtil.h" />
     <ClInclude Include="Util\VFSManager.h" />
@@ -642,7 +643,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="gamecommon\CDelegatedObservable.h" />
-    <ClInclude Include="GameCommon\CFilterWord.h" />
     <ClInclude Include="gamecommon\CItemEquip.h" />
     <ClInclude Include="gamecommon\CItemEtc.h" />
     <ClInclude Include="gamecommon\CItemPat.h" />

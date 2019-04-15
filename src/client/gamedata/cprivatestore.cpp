@@ -7,7 +7,6 @@
 #include "../GameCommon/Item.h"
 #include "../Network/CNetwork.h"
 #include "../interface/it_mgr.h"
-#include "../GameCommon/CFilterWord.h"
 #include "../IO_Terrain.h"
 
 
@@ -544,11 +543,7 @@ const char* CPrivateStore::GetTitle()
 }
 void CPrivateStore::SetTitle( const char* pszTitle )
 {
-	if( !CFilterWord::GetInstance().CheckString( (char*)pszTitle ) )
-	{
-		g_itMGR.AppendChatMsg(STR_FILTER_BADWORD,  IT_MGR::CHAT_TYPE_SYSTEM );
-	}
-	m_strTitle = CFilterWord::GetInstance().GetChangedString();
+	m_strTitle = pszTitle;
 }
 
 CItem*	CPrivateStore::GetWishItem( int iIndex )

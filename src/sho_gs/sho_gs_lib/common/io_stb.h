@@ -575,11 +575,6 @@ public :
 #define RESOLUTION_HEIGHT(I)				g_TblResolution.m_ppVALUE[ I ][ 2 ].GetINT();
 #define RESOLUTION_DEPTH(I)					g_TblResolution.m_ppVALUE[ I ][ 3 ].GetINT();
 
-#define FILTER_FOULWORD(I)					g_TblFoulWord.m_ppVALUE[ i ][ 0 ].GetSTR();
-#define FILTER_CHANGEWORD(I)				g_TblFoulWord.m_ppVALUE[ i ][ 1 ].GetSTR();
-
-
-
 /// 캐릭터 상태변경 정보
 #ifdef __SERVER
 	#define STATE_NAME(I)					g_TblSTATE.m_ppVALUE[ I ][ 0 ].GetSTR()
@@ -746,7 +741,6 @@ extern STBDATA	g_TblHitSound;		// 재질에 따른 타격시의 사운드
 
 extern STBDATA	g_TblAVATAR;		/// 아바타 초기 설정 데이타..
 extern STBDATA  g_TblResolution;	/// 옵션-해상도
-extern STBDATA	g_TblFoulWord;		/// 채팅시 Filtering될 단어들의 리스트 
 
 
 extern STBDATA  g_TblSTATE;			/// 캐릭터의 상태를 변경하는 정보.

@@ -6,7 +6,6 @@
 #include "../CTDrawImpl.h"
 #include "../IT_MGR.h"
 #include "../../Network/CNetwork.h"
-#include "../../GameCommon/CFilterWord.h"
 
 #include "tgamectrl/teditbox.h"
 CClanOrganizeDlg::CClanOrganizeDlg(void)
@@ -163,15 +162,6 @@ void CClanOrganizeDlg::OrganizeClan()
 		char* pszTitle = pEditBox->get_text();
 		if( pszTitle == NULL ) return;
 		if( !pszTitle[0] ) return;
-
-		if( !CFilterWord::GetInstance().IsValidName( pszTitle ) )
-		{
-			g_itMGR.OpenMsgBox(STR_INVALID_CHARACTER_NAME );
-			pEditBox->clear_text();
-			return;
-		}
-
-
 
 		pCtrl = Find( IID_EDIT_SLOGAN );
 		if( pCtrl == NULL ) return;
