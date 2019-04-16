@@ -57,7 +57,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\SHO_WS\SHO_WS_LIB;$(SolutionDir)src\SHO_WS\SHO_WS_LIB\Shared;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client;$(SolutionDir)src\Client\Common;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\SHO_WS\SHO_WS_LIB;$(SolutionDir)src\SHO_WS\SHO_WS_LIB\Shared;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client;$(SolutionDir)src\Client\Common;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\common\include;$(SolutionDir)src\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;Ndebug;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -85,7 +85,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\SHO_WS\SHO_WS_LIB;$(SolutionDir)src\SHO_WS\SHO_WS_LIB\Shared;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client;$(SolutionDir)src\Client\Common;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\SHO_WS\SHO_WS_LIB;$(SolutionDir)src\SHO_WS\SHO_WS_LIB\Shared;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client;$(SolutionDir)src\Client\Common;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\common\include;$(SolutionDir)src\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_debug;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
@@ -263,12 +263,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\LIB_Server\LIB_Server.vcxproj">
-      <Project>{07f4d39f-4aaf-4848-bec1-f0fb9a7a69b3}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

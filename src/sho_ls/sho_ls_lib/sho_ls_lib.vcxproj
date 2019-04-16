@@ -54,7 +54,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\lib_server;$(SolutionDir)src\client;$(SolutionDir)src\client\Common;$(SolutionDir)src\client\util;$(SolutionDir)src\lib_util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\SHO_GS\SHO_GS_DLL;$(SolutionDir)src\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\lib_server;$(SolutionDir)src\client;$(SolutionDir)src\client\Common;$(SolutionDir)src\client\util;$(SolutionDir)src\lib_util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\SHO_GS\SHO_GS_DLL;$(SolutionDir)src\common\include;$(SolutionDir)src\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;__SERVER;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
@@ -81,7 +81,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\lib_server;$(SolutionDir)src\client;$(SolutionDir)src\client\Common;$(SolutionDir)src\client\util;$(SolutionDir)src\lib_util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\SHO_GS\SHO_GS_DLL;$(SolutionDir)src\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\lib_server;$(SolutionDir)src\client;$(SolutionDir)src\client\Common;$(SolutionDir)src\client\util;$(SolutionDir)src\lib_util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_Common;$(SolutionDir)src\SHO_GS\SHO_GS_LIB;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Ai_lib;$(SolutionDir)src\SHO_GS\SHO_GS_DLL;$(SolutionDir)src\common\include;$(SolutionDir)src\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
