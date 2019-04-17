@@ -109,8 +109,6 @@ char			 g_szURL[ MAX_PATH ];
 
 CLIB_GameSRV *CLIB_GameSRV::m_pInstance=NULL;
 
-#define	__GEN_TEXT
-
 FILE	*g_fpTXT=NULL;
 
 //-------------------------------------------------------------------------------------------------
@@ -310,13 +308,7 @@ void CLIB_GameSRV::SystemINIT( HINSTANCE hInstance, char *szBaseDataDIR, int iLa
 
 	g_pCharDATA = CCharDatLIST::Instance ();
 
-#ifdef	__GEN_TEXT
-	g_fpTXT = fopen( "Lang_OUT.txt", "w" );
-#endif
 	Load_BasicDATA ();
-#ifdef	__GEN_TEXT
-	fclose( g_fpTXT );
-#endif
 
 	::ZeroMemory( g_iUserCount, sizeof(int)*USERCNT_MAX );
 
@@ -517,10 +509,6 @@ bool CLIB_GameSRV::CheckSTB_ListPRODUCT ()
 //-------------------------------------------------------------------------------------------------
 void CLIB_GameSRV::TranslateNameWithDescKey( STBDATA *pOri, char *szStbFile, int iLangCol )
 {
-#ifdef	__GEN_TEXT
-	fprintf( g_fpTXT, "\n\n\nLangCol:%d, FILE:%s \n", iLangCol, szStbFile );
-#endif
-
 	int iKeyCol = 0;
 
 	STBDATA	tmpTBL;
@@ -538,23 +526,10 @@ void CLIB_GameSRV::TranslateNameWithDescKey( STBDATA *pOri, char *szStbFile, int
 
 		iIdx = pLang->GetRowIndex( szKey );
 		if ( iIdx && pLang->m_ppVALUE[ iIdx ][ iLangCol ].GetStrLEN() ) {
-			// LogString(0xffff," %s :: %d : %s/%s\n", szKey, iIdx, pOri->m_ppNAME[ iL ], pLang->m_ppVALUE[ iIdx ][ iLangCol ].GetSTR() );
-			//szStr = pLang->m_ppVALUE[ iIdx ][ iLangCol ].GetSTR();
-			//while( *szStr ) {
-			//	if ( *szStr == '\'' ) 
-			//		*szStr = '`';
-			//	szStr ++;
-			//}
-
 			SAFE_DELETE( pOri->m_ppNAME[ iL ] );
 			pOri->m_ppNAME[ iL ] = new char[ pLang->m_ppVALUE[ iIdx ][ iLangCol ].GetStrLEN()+1 ];
 			strcpy( pOri->m_ppNAME[ iL ], pLang->m_ppVALUE[ iIdx ][ iLangCol ].GetSTR() );
 			// pOri->m_ppNAME[ iL ][ pLang->m_ppVALUE[ iIdx ][ iLangCol ].GetStrLEN() ] = 0;
-
-#ifdef	__GEN_TEXT
-			assert( pOri->m_ppNAME[ iL ] );
-			fprintf( g_fpTXT, "\t%d:: %s\n", iL, pOri->m_ppNAME[ iL ] );
-#endif
 		}
 	}
 
@@ -563,10 +538,6 @@ void CLIB_GameSRV::TranslateNameWithDescKey( STBDATA *pOri, char *szStbFile, int
 
 void CLIB_GameSRV::TranslateNameWithColoumKey ( STBDATA *pOri, char *szStbFile, int iLangCol, int iNameCol, int iDescCol )
 {
-#ifdef	__GEN_TEXT
-	fprintf( g_fpTXT, "\n\n\nLangCol:%d, FILE:%s \n", iLangCol, szStbFile );
-#endif
-
 	int iKeyCol = 0;
 
 	STBDATA	tmpTBL;
@@ -594,10 +565,6 @@ void CLIB_GameSRV::TranslateNameWithColoumKey ( STBDATA *pOri, char *szStbFile, 
 			// LogString(0xffff," %s :: %d:%d : %s/%s\n", szKey, iL, iIdx, pOri->m_ppVALUE[ iL ][ iNameCol ].GetSTR(), pLang->m_ppVALUE[ iIdx ][ iLangCol ].GetSTR() );
 
 			pOri->m_ppVALUE[ iL ][ iNameCol ].SetVALUE( pLang->m_ppVALUE[ iIdx ][ iLangCol ].GetSTR() );
-
-#ifdef	__GEN_TEXT
-			fprintf( g_fpTXT, "\t%d:: %s\n", iL, pOri->m_ppVALUE[ iL ][ iNameCol ].GetSTR() );
-#endif
 		} else 
 		if ( iIdx ) {
 #ifdef __KCHS_TEST
