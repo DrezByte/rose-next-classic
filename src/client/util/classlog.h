@@ -1,6 +1,7 @@
 #ifndef	__CLOG_H
 #define	__CLOG_H
-//-------------------------------------------------------------------------------------------------
+
+#include "rose/common/log.h"
 
 enum t_LOG {
     LOG_SCR=0,
@@ -15,12 +16,13 @@ enum t_LOG {
 #define LOG_DEBUG			0x04
 
 #define	LOG_STR_SIZE		1024
+
 class CLOG {
 private :
     static WORD	m_wLogMODE[ LOG_MAXOUT ];
 	static char m_StrBUFF [ LOG_STR_SIZE ];
 
-	CRITICAL_SECTION	m_csLOCK;
+	CRITICAL_SECTION m_csLOCK;
 
 public  :
     static WORD GetLogMODE   (t_LOG logType);
@@ -32,6 +34,16 @@ public  :
 
     void CS_OUT (WORD wLogMODE, char *szMSG);
     void CS_ODS (WORD wLogMODE, char *fmt, ...);         // critical OutputDebugString ...
+
+	// New logging facades
+	void log(Rose::Common::LogLevel level, const char* message, va_list args);
+	void log(Rose::Common::LogLevel level, const char* message, ...);
+
+	void trace(const char* message, ...);
+	void debug(const char* message, ...);
+	void info(const char* message, ...);
+	void warn(const char* message, ...);
+	void error(const char* message, ...);
 } ;
 
 #if	defined( _DEBUG ) || defined( _D_RELEASE )

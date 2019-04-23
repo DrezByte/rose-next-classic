@@ -1,66 +1,9 @@
-/*
-	$History: classLOG.cpp $
- * 
- * *****************  Version 3  *****************
- * User: Icarus       Date: 04-07-16   Time: 12:42a
- * Updated in $/7HeartsOnline/LIB_Util
- * 
- * *****************  Version 2  *****************
- * User: Icarus       Date: 04-03-30   Time: 8:16p
- * Updated in $/7HeartsOnline/LIB_Util
- * 
- * *****************  Version 1  *****************
- * User: Icarus       Date: 04-03-25   Time: 11:20a
- * Created in $/7HeartsOnline/LIB_Util
- * 
- * *****************  Version 1  *****************
- * User: Icarus       Date: 04-03-25   Time: 11:09a
- * Created in $/SevenHearts/LIB_Util
- * 
- * *****************  Version 1  *****************
- * User: Icarus       Date: 04-03-25   Time: 10:51a
- * Created in $/SevenHearts/LIB_Util/LIB_Util
- * 
- * *****************  Version 1  *****************
- * User: Icarus       Date: 04-03-25   Time: 10:47a
- * Created in $/SevenHearts/LIB_Util
- * 
- * *****************  Version 1  *****************
- * User: Icarus       Date: 04-03-25   Time: 10:35a
- * Created in $/SHO/LIB_Util
- * 
- * *****************  Version 1  *****************
- * User: Icarus       Date: 04-03-25   Time: 10:26a
- * Created in $/SevenHearts/LIB_Util/LIB_Util
- * 
- * *****************  Version 3  *****************
- * User: Icarus       Date: 04-03-23   Time: 4:41p
- * Updated in $/SevenHearts/LIB_Util
- * 
- * *****************  Version 2  *****************
- * User: Icarus       Date: 04-03-23   Time: 4:30p
- * Updated in $/SevenHearts/LIB_Util
- * 
- * *****************  Version 1  *****************
- * User: Icarus       Date: 03-07-03   Time: 11:38a
- * Created in $/LIB_Util
- * 
- * *****************  Version 3  *****************
- * User: Icarus       Date: 03-03-17   Time: 7:48p
- * Updated in $/Client/UTIL
- * 
- * *****************  Version 2  *****************
- * User: Icarus       Date: 03-03-17   Time: 5:21p
- * Updated in $/Client/Util
-*/
 #include <windows.h>
 #include <stdio.h>
 #include "classLOG.h"
-//-------------------------------------------------------------------------------------------------
 
-#ifdef  __BORLANDC__
-extern void WriteFILE (char *szString);
-#endif
+using namespace Rose::Common;
+
 extern void WriteLOG  (char *szString);
 
 CLOG g_LOG;
@@ -120,11 +63,6 @@ void CLOG::CS_ODS (WORD wLogMODE, char *fmt, ...)
 	if ( wLogMODE & m_wLogMODE[ LOG_SCR    ] )
 		WriteLOG ( m_StrBUFF );
 
-#ifdef  __BORLANDC__
-    if ( wLogMODE & m_wLogMODE[ LOG_FILE   ] )
-        WriteFILE( m_StrBUFF );
-#endif
-
     ::LeaveCriticalSection( &m_csLOCK );
 }
 
@@ -173,12 +111,60 @@ void CLOG::OutputString (WORD wLogMODE, char *fmt, ...)
         return;
     }
 
-#ifdef  __BORLANDC__
-    if ( wLogMODE & m_wLogMODE[ LOG_FILE   ] )
-        WriteFILE( m_StrBUFF );
-#endif
-
 	::OutputDebugString( m_StrBUFF );
 }
 
-//-------------------------------------------------------------------------------------------------
+void CLOG::log(LogLevel level, const char* message, va_list args) {
+	try {
+		vsprintf(m_StrBUFF, message, args);
+	}
+	catch (...) {
+		return;
+	}
+
+	::EnterCriticalSection(&m_csLOCK);
+	Rose::Common::logger_write(level, m_StrBUFF);
+	::LeaveCriticalSection(&m_csLOCK);
+
+}
+
+void CLOG::log(LogLevel level, const char* message, ...) {
+	va_list args;
+	va_start(args, message);
+	log(level, message, args);
+	va_end(args);
+}
+
+void CLOG::trace(const char* message, ...) {
+	va_list args;
+	va_start(args, message);
+	log(LogLevel::Trace, message, args);
+	va_end(args);
+}
+
+void CLOG::	debug(const char* message, ...) {
+	va_list args;
+	va_start(args, message);
+	log(LogLevel::Debug, message, args);
+	va_end(args);
+}
+
+void CLOG::info(const char* message, ...) {
+	va_list args;
+	va_start(args, message);
+	log(LogLevel::Info, message, args);
+	va_end(args);
+}
+void CLOG::warn(const char* message, ...) {
+	va_list args;
+	va_start(args, message);
+	log(LogLevel::Warn, message, args);
+	va_end(args);
+}
+
+void CLOG::error(const char* message, ...) {
+	va_list args;
+	va_start(args, message);
+	log(LogLevel::Error, message, args);
+	va_end(args);
+}

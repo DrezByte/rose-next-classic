@@ -1,0 +1,3 @@
+[build]
+target-dir="../bin"
+target="i686-pc-windows-msvc"

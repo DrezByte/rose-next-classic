@@ -54,7 +54,7 @@ protected :
 			pNextNODE = pDataNODE;
 		}
 
-		g_LOG.CS_ODS( 0xffff, (char*)">>>> Pool[ %s ] Increase %d data total: %d\n", m_PoolName.Get(), uiDataCNT, m_uiTotalDataCNT );
+		g_LOG.debug("Pool[ %s ] Increase %d data total: %d\n", m_PoolName.Get(), uiDataCNT, m_uiTotalDataCNT );
 
 
 		return pDataBLOCK;

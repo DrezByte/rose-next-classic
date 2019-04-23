@@ -25,7 +25,7 @@ void CAcceptTHREAD::Execute ()
     SOCKADDR_IN SockADDR;
     int         iAddrLEN;
 
-	g_LOG.CS_ODS( 0xffff, ">  > >> CAcceptTHREAD::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	g_LOG.debug("CAcceptTHREAD::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 
 //    Synchronize( LogSTART );
 
@@ -38,14 +38,8 @@ void CAcceptTHREAD::Execute ()
             // If user hits Ctrl+C or Ctrl+Brk or console window is closed, the control
             // handler will close the g_sdListen socket. The above WSAAccept call will
             // fail and we thus break out the loop,
-            g_LOG.CS_ODS (0xffff, "Accept return INVALID_SOCKET, LastERROR: %d(0x%x)\n", WSAGetLastError(), WSAGetLastError() );
-
-#ifdef  __BORLANDC__
-            // BCB 경우 WriteLOG에서 DeadLock 걸린다.
-            Synchronize( SocketERROR );
-#else
+			g_LOG.debug("Accept return INVALID_SOCKET, LastERROR: %d(0x%x)", WSAGetLastError(), WSAGetLastError());
 			Socket_Error("CAcceptTHREAD::Execute");
-#endif
 			break; //continue;	// break;
         }
 
@@ -57,11 +51,11 @@ void CAcceptTHREAD::Execute ()
             ::setsockopt (ClientSocket, SOL_SOCKET, SO_LINGER, (char *)&li, sizeof(li));
             ::closesocket(ClientSocket);
 
-			g_LOG.CS_ODS(0xffff, "Failed to accept a socket connection");
+			g_LOG.debug("Failed to accept a socket connection");
         }
     }
 
-	g_LOG.CS_ODS( 0xffff, "<  < << CAcceptTHREAD::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	g_LOG.debug("CAcceptTHREAD::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 
 //    Synchronize( LogSTOP );
 }
