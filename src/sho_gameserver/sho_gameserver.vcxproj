@@ -18,7 +18,6 @@
     <ClInclude Include="src\cchardata.h" />
     <ClInclude Include="src\cchatroom.h" />
     <ClInclude Include="src\cgameobj.h" />
-    <ClInclude Include="src\cgs_api.h" />
     <ClInclude Include="src\cingstatus.h" />
     <ClInclude Include="src\cobjavt.h" />
     <ClInclude Include="src\cobjchar.h" />

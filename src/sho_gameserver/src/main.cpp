@@ -7,15 +7,7 @@
 #endif
 
 #include "lib_util.h"
-#include "cgs_api.h"
 #include "LIB_gsMAIN.h"
-
-class ExeApi : public EXE_GS_API {
-public:
-	void  __stdcall WriteLOG(char *szString) {
-		std::cout << szString;
-	}
-};
 
 
 CLIB_GameSRV* g_instance;
@@ -46,8 +38,6 @@ int main() {
 	// Let login server load
 	Sleep(2000);
 
-	auto exe_api = new ExeApi();
-
 	HWND console_window = GetConsoleWindow();
 	HINSTANCE console_handle = GetModuleHandle(nullptr);
 	SetConsoleTitle("ROSE Next - Game Server");
@@ -68,7 +58,7 @@ int main() {
 	int charserver_port = 19001;
 
 	std::cout << "Initializing the server" << std::endl;
-	g_instance = CLIB_GameSRV::InitInstance(console_handle, data_dir, exe_api, ENGLISH);
+	g_instance = CLIB_GameSRV::InitInstance(console_handle, data_dir, ENGLISH);
 
 	std::cout << "Connecting to other servers" << std::endl;
 	g_instance->ConnectSERVER(

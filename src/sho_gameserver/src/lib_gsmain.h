@@ -1,7 +1,5 @@
 #ifndef	__LIB_GAMEMAIN_H
 #define	__LIB_GAMEMAIN_H
-#include "CGS_API.h"
-//-------------------------------------------------------------------------------------------------
 
 #ifndef	_WINDOWS_
 	#define	_WIN32_WINNT	0x0500
@@ -53,7 +51,6 @@
 class CLIB_GameSRV {
 private  :
 	static CLIB_GameSRV	*m_pInstance;
-	EXE_GS_API *m_pExeAPI;
 
 	HWND		m_hMainWND;				///< 윈도우 핸들
 	CTimer	   *m_pWorldTIMER;			///< 월드 타이머
@@ -90,7 +87,7 @@ private  :
 	int		m_iLangTYPE;				///< 국가 코드
 	bool	m_bTestServer;				///< 테스트 서버인가 ?
 
-	CLIB_GameSRV ( EXE_GS_API *pExeAPI );
+	CLIB_GameSRV();
 	virtual ~CLIB_GameSRV ();
 	void SystemINIT( HINSTANCE hInstance, char *szBaseDataDIR, int iLangType );
 
@@ -154,12 +151,11 @@ public   :
 	void  Set_UserLIMIT( DWORD dwUserLimit );
 	DWORD Get_UserLIMIT()						{	return m_dwUserLIMIT;		}
 	
-	static EXE_GS_API *ExeAPI()					{	return m_pInstance->m_pExeAPI;	}
 	static CLIB_GameSRV *GetInstance ()			{	return m_pInstance;	}
-	static CLIB_GameSRV *InitInstance( HINSTANCE hInstance, char *szBaseDataDIR, EXE_GS_API *pExeAPI, int iLangType )
+	static CLIB_GameSRV *InitInstance( HINSTANCE hInstance, char *szBaseDataDIR, int iLangType )
 	{
 		if ( NULL == m_pInstance ) {
-			m_pInstance = new CLIB_GameSRV( pExeAPI );
+			m_pInstance = new CLIB_GameSRV();
 			_ASSERT( m_pInstance );
 			m_pInstance->SystemINIT( hInstance, szBaseDataDIR, iLangType );
 		}

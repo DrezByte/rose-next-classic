@@ -1,1 +1,1 @@
-.\bin\debug\sho_gs_exe.exe
+.\bin\debug\sho_gameserver.exe

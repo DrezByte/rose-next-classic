@@ -1,3 +1,6 @@
+use std::io;
+use std::io::Write;
+
 use log::{Metadata, Record};
 use lazy_static::lazy_static;
 
@@ -20,7 +23,9 @@ impl log::Log for CoreLogger {
 
     fn log(&self, record: &Record) {
         if self.enabled(record.metadata()) {
-            println!("{} - {}", record.level(), record.args());
+            //println!("{} - {}", record.level(), record.args());
+            let stdout = io::stdout();
+            let _ = writeln!(&mut stdout.lock(), "[{}] {}", record.level(), record.args());
         }
     }
 

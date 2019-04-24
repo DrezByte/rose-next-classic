@@ -179,7 +179,7 @@ VOID CALLBACK GS_TimerProc (HWND hwnd/* handle to window */, UINT uMsg/* WM_TIME
 //-------------------------------------------------------------------------------------------------
 void WriteLOG (char *szMSG)
 {
-	CLIB_GameSRV::ExeAPI()->WriteLOG( szMSG );
+	g_LOG.info(szMSG);
 }
 
 #define	TAG_HG	0x4840		// @H G
@@ -198,6 +198,7 @@ void DecUserCNT( int iUserCNT, classUSER *pUSER )
 }
 
 #include "../SHO_GS.ver"
+
 DWORD GetServerBuildNO ()
 {
 	return BUILD_NUM;
@@ -216,9 +217,9 @@ DWORD GetServerStartTIME ()
 #define	USE_MY_SQL_AGENT		0
 
 
-CLIB_GameSRV::CLIB_GameSRV ( EXE_GS_API *pExeAPI )
+CLIB_GameSRV::CLIB_GameSRV()
 {
-#if ( _WIN32_WINNT < 0x0500 ) || !defined( __SERVER )
+#if !defined( __SERVER )
 	COMPILE_TIME_ASSERT( 0 );
 #endif
 
@@ -227,12 +228,6 @@ CLIB_GameSRV::CLIB_GameSRV ( EXE_GS_API *pExeAPI )
 	COMPILE_TIME_ASSERT( sizeof(gsv_SELECT_CHAR) < 1024 );
 	COMPILE_TIME_ASSERT( sizeof(tagGrowAbility) < 384 );
 	COMPILE_TIME_ASSERT( (sizeof(__int64) + sizeof(tagITEM)*INVENTORY_TOTAL_SIZE) == sizeof(CInventory) );
-
-	m_pExeAPI = pExeAPI; 
-#ifdef __SHO_GS1
-	m_dwMaxLevel = 210;
-	m_dwMaxStats = 300;
-#endif
 }
 
 CLIB_GameSRV::~CLIB_GameSRV ()
