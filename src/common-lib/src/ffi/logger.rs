@@ -1,9 +1,10 @@
 use std::ffi;
+use std::path::Path;
 
 use libc::*;
-use log::{debug, error, info, trace, warn };
+use log::{debug, error, info, trace, warn};
 
-use crate::logger::LOGGER;
+use crate::logger::CoreLogger;
 
 #[repr(C)]
 pub enum LogLevel {
@@ -17,7 +18,8 @@ pub enum LogLevel {
 
 #[no_mangle]
 pub extern "C" fn logger_init(level: LogLevel) {
-    log::set_logger(&*LOGGER).expect("Error initializing the logger");
+    // TODO: Init this from the C++ side
+    CoreLogger::init(Path::new("rose-next.log"));
 
     let level = match level {
         LogLevel::Trace => log::LevelFilter::Trace,
@@ -35,13 +37,13 @@ pub extern "C" fn logger_init(level: LogLevel) {
 pub extern "C" fn logger_write(level: LogLevel, msg: *const c_char) {
     let msg_string = unsafe {
         ffi::CStr::from_ptr(msg as *mut c_char)
-            .to_str().unwrap_or("")
+            .to_str()
+            .unwrap_or("")
     };
 
     if msg_string.is_empty() {
         return;
     }
-
 
     match level {
         LogLevel::Trace => trace!("{}", msg_string),
@@ -49,6 +51,6 @@ pub extern "C" fn logger_write(level: LogLevel, msg: *const c_char) {
         LogLevel::Info => info!("{}", msg_string),
         LogLevel::Warn => warn!("{}", msg_string),
         LogLevel::Error => error!("{}", msg_string),
-        LogLevel::Off => {},
+        LogLevel::Off => {}
     }
 }
