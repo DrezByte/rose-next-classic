@@ -103,7 +103,7 @@ void CLoading::Draw()
 	::drawSprite( m_hTexture, 
 					NULL,
 					NULL,
-					&D3DXVECTOR3( 0, 0, 0 ),								
+					&D3DXVECTOR3( 0, 0, 0 ),
 					D3DCOLOR_RGBA( 255, 255, 255, 255 ) );
 
 }

@@ -24,6 +24,7 @@
 
 #include "../util/clipboardutil.h"
 
+using namespace Rose;
 
 ///
 /// Construct
@@ -112,8 +113,7 @@ UINT CLogin::Process( UINT uiMsg, WPARAM wParam, LPARAM lParam )
 	UINT Ret = 0;
 	if( !IsVision())
 		return Ret;
-	//Dagnarus
-	g_pCApp->SetCaption( CStr::Printf("ROSE Online [Login]"));
+
 	CWinCtrl*  pCtrl	= NULL;
 	CTEditBox* pEditBox = NULL;
 
@@ -476,14 +476,8 @@ void CLogin::Draw()
 	D3DXMatrixTranslation( &mat, 50, 20, 0.0f );
 	::setTransformSprite( mat );
 
-#ifndef FRAROSE
-	//Dagnarus
-	//drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL_OUTLINE ], true, 0,0, g_dwWHITE, CStr::Printf("Version : %s",CGame::GetInstance().GetClientFileVersion().c_str() ));
-	drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL_OUTLINE ], true, 0, 0, g_dwWHITE, CStr::Printf("ROSE Online, Welcome!"));
-#else
-	drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL_OUTLINE ], true, 0,0, g_dwWHITE, CStr::Printf("FraRose Online Version 0.9"));
-#endif
-
+	// TODO: Dynamically set the version
+	drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL_OUTLINE ], true, 0, 0, g_dwWHITE, CStr::Printf("%s", Config::NAME));
 }
 
 bool CLogin::ConnectLoginServer()

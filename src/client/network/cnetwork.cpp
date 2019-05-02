@@ -126,18 +126,10 @@ void CNetwork::Proc_WorldPacket ()
 
 								break;
 						}
-						//Dagnarus
-						//g_pCApp->SetCaption ( "ROSE online" );
-						g_pCApp->SetCaption("ROSE Online"); 
-					#ifdef	__VIRTUAL_SERVER
-						g_pCApp->ErrorBOX( "가상 서버가 설정되어 있음..", "ERROR !!!", MB_OK);
-					#endif
 						continue;
 					}
 					case NETWORK_STATUS_DISCONNECT:
 					{
-						// g_pCApp->SetCaption ( "Disconnected" );
-
 						if ( NS_DIS_FORM_LSV  == m_nProcLEVEL ) {
 							// 게임 서버에 재접속 한다...
 							this->ConnectToServer( m_WSV_IP.Get(), m_wWSV_PORT, NS_CON_TO_WSV );

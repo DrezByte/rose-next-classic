@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
+using namespace Rose;
 
 bool Init_DEVICE (void)
 {
@@ -176,7 +177,7 @@ int APIENTRY WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	UINT iFullScreen = g_ClientStorage.GetVideoFullScreen();
 
 	g_pCApp->SetFullscreenMode( iFullScreen );
-	g_pCApp->CreateWND ("classCLIENT", "Tsuki Online [loading]", Resolution.iWidth, Resolution.iHeight,Resolution.iDepth, hInstance);
+	g_pCApp->CreateWND ("classCLIENT", CStr::Printf("%s", Config::NAME), Resolution.iWidth, Resolution.iHeight,Resolution.iDepth, hInstance);
 
 #ifndef _DEBUG
 	// 시스템 정보를 모음

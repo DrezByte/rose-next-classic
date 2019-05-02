@@ -59,12 +59,8 @@ int CGameStateTitle::Enter( int iPrevStateID )
 	/// 배경으로 사용할 존 번호를 얻어온다.
 	///
 	m_iBackGroundZone = SC_GetBGZoneNO();
-	
-	m_hTitleTexture = loadTexture ( "3DData\\Control\\Res\\ExUI1.dds", 
-								"3DData\\Control\\Res\\ExUI1.dds",
-								1, 
-								0 );
-	
+	m_hTitleTexture = loadTexture("logo.png", "logo.png", 1, 0);
+
 #ifdef __THREADED_LOADING
 	Draw();
 

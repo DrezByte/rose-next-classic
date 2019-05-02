@@ -66,6 +66,8 @@
 
 #include "triggerinfo/triggerinfo.h"
 
+using namespace Rose;
+
 void SetServerVAR( tagVAR_GLOBAL *pVAR )
 {
 	::Set_WorldPROD( pVAR->m_nWorld_PRODUCT );
@@ -508,11 +510,6 @@ void CRecvPACKET::Recv_gsv_INIT_DATA ()
 {
 	m_pRecvPacket->m_gsv_INIT_DATA.m_iRandomSEED;
 	m_pRecvPacket->m_gsv_INIT_DATA.m_wRandomINDEX;
-#ifdef FRAROSE
-	g_itMGR.AppendChatMsg("Bienvenu sur FraRose Online.",IT_MGR::CHAT_TYPE_SYSTEM);
-	g_itMGR.AppendChatMsg("Ne divulgez jamais votre nom de compte ou mot de passe à qui que ce soit, nos admin ne vous le demanderons jamais.",IT_MGR::CHAT_TYPE_SYSTEM);
-	g_itMGR.AppendChatMsg("Bon jeu!.",IT_MGR::CHAT_TYPE_SYSTEM, D3DCOLOR_ARGB( 255, 255, 255, 255));
-#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -706,11 +703,8 @@ void CRecvPACKET::Recv_gsv_SELECT_CHAR ()
 	} 
 	;*/
 	short nOffset=sizeof( gsv_SELECT_CHAR );
-	char *szName;
-	szName = Packet_GetStringPtr( m_pRecvPacket, nOffset);
-
-	//Dagnarus
-	g_pCApp->SetCaption( CStr::Printf("ROSE Online [ %s ]", szName));
+	char* szName = Packet_GetStringPtr( m_pRecvPacket, nOffset);
+	g_pCApp->SetCaption(CStr::Printf("%s [ %s ]", Config::NAME, szName));
 
 	LogString (LOG_NORMAL, "\n\n\n>>> AVATER( %s ) : Zone: %d, Pos: %f, %f <<<\n\n\n\n",
 		szName, 
