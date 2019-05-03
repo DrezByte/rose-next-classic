@@ -1,30 +1,12 @@
 #ifndef	__LIB_GAMEMAIN_H
 #define	__LIB_GAMEMAIN_H
 
-#ifndef	_WINDOWS_
-	#define	_WIN32_WINNT	0x0500
-#endif
-
-#if !defined(_WIN32_WINNT) || ( _WIN32_WINNT < 0x0500 )
-	#error >>> ERROR :: _WIN32_WINNT >= 0x0500 !!!
-#endif
-
 #define	__SHO_GS
 
 #define ENABLE_CHATROOM		// Enables the chatroom functions
 
-#ifdef FRAROSE
-	#define __KCHS_BATTLECART__
-#endif
 
 #include "LIB_Util.h"
-
-#include <windows.h>
-#include <wchar.h>
-#include <crtdbg.h>
-#include <math.h>
-#include <assert.h>
-#include <time.h>
 
 #include "md5.h"
 #include "CVector.h"
