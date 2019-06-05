@@ -7,6 +7,7 @@
 //  - Log level
 //  - Logging dir
 //  - Database connection info
+extern crate chrono;
 extern crate log;
 
 pub mod ffi;

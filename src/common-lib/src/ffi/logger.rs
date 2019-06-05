@@ -19,7 +19,7 @@ pub enum LogLevel {
 #[no_mangle]
 pub extern "C" fn logger_init(level: LogLevel) {
     // TODO: Init this from the C++ side
-    CoreLogger::init(Path::new("rose-next.log"));
+    CoreLogger::init(Path::new("log/rose-next.log"));
 
     let level = match level {
         LogLevel::Trace => log::LevelFilter::Trace,
