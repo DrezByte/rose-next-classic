@@ -21,7 +21,7 @@ void CMeshLIST::Free_FILE (tagFileDATA<HNODE> *pHNODE)
 {
 	if ( pHNODE->m_DATA ) 
 	{
-		//LogString ( LOG_DEBUG, "Free Mesh :: %s \n", pHNODE->m_FileName.Get() );
+		//LogString ( LOG_DEBUG_, "Free Mesh :: %s \n", pHNODE->m_FileName.Get() );
 		::unloadMesh( pHNODE->m_DATA );
 		pHNODE->m_DATA = NULL;
 	}
@@ -37,12 +37,12 @@ HNODE CMeshLIST::KEY_HNODE(t_HASHKEY HashKEY)
 		
 		pData = this->KEY_Find_DATA( HashKEY );
 		if ( pData ) {
-			LogString ( LOG_DEBUG, "Mesh ERROR:: %s ", pData->m_FileName.Get() );
+			LogString ( LOG_DEBUG_, "Mesh ERROR:: %s ", pData->m_FileName.Get() );
 
 			if ( (CVFSManager::GetSingleton()).IsExistFile( pData->m_FileName.Get() ) == true )			
-				LogString (LOG_DEBUG, " in exist file\n" );
+				LogString (LOG_DEBUG_, " in exist file\n" );
 			else
-				LogString (LOG_DEBUG, " file not found \n" );
+				LogString (LOG_DEBUG_, " file not found \n" );
 		}
 	}
 

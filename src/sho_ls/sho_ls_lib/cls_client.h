@@ -193,7 +193,7 @@ public :
 		}
 		pClient->UnlockSOCKET();
 #endif
-		//LogString (LOG_DEBUG, "    >>> Delete CLIENT socket : %s, %s UsedCnt: %d \n", 
+		//LogString (LOG_DEBUG_, "    >>> Delete CLIENT socket : %s, %s UsedCnt: %d \n", 
 		//				pSOCKET->m_IP.Get(), 
 		//				this->GetPoolNAME(), 
 		//				this->GetUsedCNT()-1 );

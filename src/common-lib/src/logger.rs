@@ -5,12 +5,45 @@ use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
 use chrono::{Date, Utc};
-use log::{Metadata, Record};
+use log::{Level, Metadata, Record};
+use yansi::{Color, Paint};
 
 pub struct CoreLogger {
     path: PathBuf,
     timestamp: Date<Utc>,
     file_stream: Mutex<io::BufWriter<File>>,
+}
+
+fn format_message(record: &Record, use_color: bool) -> String {
+    let level_color = if use_color {
+        match record.level() {
+            Level::Trace => Color::Default,
+            Level::Debug => Color::Blue,
+            Level::Info => Color::Green,
+            Level::Warn => Color::Yellow,
+            Level::Error => Color::Red,
+        }
+    } else {
+        Color::Unset
+    };
+
+    if !record.file().unwrap_or_default().is_empty() && record.line().unwrap_or_default() > 0 {
+        format!(
+            "{timestamp} [{level}] {file}({line}): {msg} \n",
+            timestamp = Utc::now().format("%Y-%m-%d %H:%M:%S"),
+            level = Paint::new(record.level()).fg(level_color),
+            file = record.file().unwrap(),
+            line = record.line().unwrap(),
+            msg = record.args()
+        )
+    } else {
+        format!(
+            "{timestamp} [{level}] {msg} \n",
+            timestamp = Utc::now().format("%Y-%m-%d %H:%M:%S"),
+            level = Paint::new(record.level()).fg(level_color),
+            msg = record.args()
+        )
+    }
 }
 
 impl CoreLogger {
@@ -25,6 +58,11 @@ impl CoreLogger {
         });
 
         log::set_boxed_logger(logger).expect("Failed to create the logger");
+
+        // Enable terminal colors on windows 10 (anniversary update)
+        if cfg!(windows) && !Paint::enable_windows_ascii() {
+            Paint::disable();
+        }
     }
 
     pub fn build_file_stream(path: &Path) -> io::BufWriter<File> {
@@ -65,11 +103,11 @@ impl log::Log for CoreLogger {
 
     fn log(&self, record: &Record) {
         if self.enabled(record.metadata()) {
-            let msg = format!("[{}] {} \n", record.level(), record.args());
-
+            let msg = format_message(&record, true);
             let _ = io::stdout().lock().write_all(msg.as_bytes());
 
             if let Ok(mut file_stream) = self.file_stream.lock() {
+                let msg = format_message(&record, false);
                 // Rotate log file
                 if Utc::today() != self.timestamp {
                     let open_path = PathBuf::from(&self.path);

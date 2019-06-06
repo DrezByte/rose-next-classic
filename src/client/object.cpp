@@ -323,7 +323,7 @@ void CObjectMANAGER::Del_Object (CGameOBJ *pObject)
 			break;
 
 		default:
-			LogString (LOG_DEBUG, "Del_Object : Invalid object type \n");
+			LogString (LOG_DEBUG_, "Del_Object : Invalid object type \n");
 			break;
 	}
 }
@@ -336,13 +336,13 @@ int CObjectMANAGER::Add_GndITEM( WORD wServerObjectIndex, tagITEM &sITEM, tPOINT
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add ground tree \n");
 		return 0;
 	}
 
 	CObjITEM *pITEM = new CObjITEM;
 	if ( NULL == pITEM ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add ground tree \n");
 		return 0;
 	}
 	
@@ -381,13 +381,13 @@ int	CObjectMANAGER::Add_MORPHER( short nObjID, D3DVECTOR &Position, D3DXQUATERNI
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add ground tree \n");
 		return 0;
 	}
 
 	CObjMORPH *pMORPH = new CObjMORPH;
 	if ( NULL == pMORPH ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add morpher object \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add morpher object \n");
 		return 0;
 	}
 	
@@ -411,13 +411,13 @@ int CObjectMANAGER::Add_GndTREE( short nTreeIdx, D3DVECTOR &Position, D3DXQUATER
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add ground tree \n");
 		return 0;
 	}
 
 	CObjTREE *pTREE = new CObjTREE;
 	if ( NULL == pTREE ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add ground tree \n");
 		return 0;
 	}
 	
@@ -443,13 +443,13 @@ int CObjectMANAGER::Add_GndCNST( short nCnstIdx, D3DVECTOR &Position, D3DXQUATER
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add ground cnst \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add ground cnst \n");
 		return 0;
 	}
 
 	CObjCNST *pCNST = new CObjCNST;
 	if ( NULL == pCNST ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add ground cnst \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add ground cnst \n");
 		return 0;
 	}
 
@@ -459,7 +459,7 @@ int CObjectMANAGER::Add_GndCNST( short nCnstIdx, D3DVECTOR &Position, D3DXQUATER
 	}
 
 	pCNST->m_nCnstIdx = nCnstIdx;
-	LogString (LOG_DEBUG, "Add_GndCNST( %d ) %f, %f \n", nCnstIdx, Position.x, Position.y);
+	LogString (LOG_DEBUG_, "Add_GndCNST( %d ) %f, %f \n", nCnstIdx, Position.x, Position.y);
 
 	::setUserData( pCNST->GetRootZNODE(), (HNODE)pCNST );
 
@@ -482,18 +482,18 @@ int CObjectMANAGER::Add_MobCHAR( WORD wServerObjectIndex, short nCharIdx, const 
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add mob char \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add mob char \n");
 		return 0;
 	}
 
 	CObjMOB *pCHAR = new CObjMOB;
 	if ( NULL == pCHAR ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add mob char \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add mob char \n");
 		return 0;
 	}
 	
 	if ( !pCHAR->Create( nCharIdx, Position, nQuestIDX, bRunMODE) ) {
-		LogString (LOG_DEBUG, "MOB Char[ %d ] create failed \n", nCharIdx);
+		LogString (LOG_DEBUG_, "MOB Char[ %d ] create failed \n", nCharIdx);
 		delete pCHAR;
 		return 0;
 	}
@@ -505,7 +505,7 @@ int CObjectMANAGER::Add_MobCHAR( WORD wServerObjectIndex, short nCharIdx, const 
 	g_AI_LIST.AI_Created ( NPC_AI_TYPE( nCharIdx ), pCHAR );
 #endif
 
-//	LogString (LOG_DEBUG, "Add_MobCHAR:: %d \n", nCharIdx);
+//	LogString (LOG_DEBUG_, "Add_MobCHAR:: %d \n", nCharIdx);
 
 	this->Set_EmptySlot( iObjSlot, wServerObjectIndex, pCHAR );
 	///ON_CharAppear( iObjSlot );
@@ -520,13 +520,13 @@ int	CObjectMANAGER::Add_WARP( short nEventID, D3DVECTOR &Position, D3DXQUATERNIO
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add ground tree \n");
 		return 0;
 	}
 
 	CObjTREE *pTREE = new CObjTREE;
 	if ( NULL == pTREE ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add ground tree \n");
 		return 0;
 	}
 	
@@ -554,13 +554,13 @@ int	CObjectMANAGER::Add_CollisionBox( int iReserved, D3DVECTOR &Position, D3DXQU
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add ground tree \n");
 		return 0;
 	}
 
 	CObjTREE *pTREE = new CObjTREE;
 	if ( NULL == pTREE ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add ground tree \n");
 		return 0;
 	}
 
@@ -584,18 +584,18 @@ int CObjectMANAGER::Add_NpcCHAR( WORD wServerObjectIndex, short nCharIdx, const 
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add npc char \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add npc char \n");
 		return 0;
 	}
 
 	CObjNPC *pCHAR = new CObjNPC;
 	if ( NULL == pCHAR ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add mob npc \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add mob npc \n");
 		return 0;
 	}
 	
 	if ( !pCHAR->Create( nCharIdx, Position, nQuestIDX, NPC_WALK_SPEED( nCharIdx )) ) {
-		LogString (LOG_DEBUG, "mob char create failed \n");
+		LogString (LOG_DEBUG_, "mob char create failed \n");
 		delete pCHAR;
 		return 0;
 	}
@@ -624,13 +624,13 @@ CObjUSER* CObjectMANAGER::New_UserCHAR (WORD wServerObjectIndex, char *szName)
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add avatar char \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add avatar char \n");
 		return NULL;
 	}
 
 	CObjUSER *pCHAR = CObjUSER::Instance ();
 	if ( NULL == pCHAR ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add avatar char \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add avatar char \n");
 		return NULL;
 	}
 	pCHAR->SetAvataName (szName);
@@ -652,13 +652,13 @@ CObjAVT* CObjectMANAGER::New_AvtCHAR (WORD wServerObjectIndex, char *szName)
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add avatar char \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add avatar char \n");
 		return NULL;
 	}
 
 	CObjAVT *pCHAR = new CObjAVT;
 	if ( NULL == pCHAR ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add avatar char \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add avatar char \n");
 		return NULL;
 	}
 	pCHAR->SetAvataName (szName);
@@ -682,7 +682,7 @@ CObjCART* CObjectMANAGER::Add_CartCHAR( int iPetType, CObjAVT* pOwner, WORD wSer
 	if ( !iObjSlot ) 
 	{
 		g_itMGR.OpenMsgBox( "IS NOT EMPTY OBJECT SLOT" );
-		LogString (LOG_DEBUG, "Out of object slot ... in Add_CartCHAR \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in Add_CartCHAR \n");
 		return NULL;
 	}
 
@@ -726,7 +726,7 @@ CObjCART* CObjectMANAGER::Add_CartCHAR( int iPetType, CObjAVT* pOwner, WORD wSer
 	}
 
 	if ( NULL == pCHAR ) {
-		LogString (LOG_DEBUG, "Out of memory ... in Add_CartCHAR \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in Add_CartCHAR \n");
 		return NULL;
 	}
 	
@@ -749,13 +749,13 @@ int CObjectMANAGER::Add_FixedEvent( int iEventID, short nObjID,
 
 	iObjSlot = Get_EmptySlot ();
 	if ( !iObjSlot ) {
-		LogString (LOG_DEBUG, "Out of object slot ... in add ground tree \n");
+		LogString (LOG_DEBUG_, "Out of object slot ... in add ground tree \n");
 		return 0;
 	}
 
 	CObjFixedEvent *pObj = new CObjFixedEvent;
 	if ( NULL == pObj ) {
-		LogString (LOG_DEBUG, "Out of memory ... in add event object \n");
+		LogString (LOG_DEBUG_, "Out of memory ... in add event object \n");
 		return 0;
 	}
 	

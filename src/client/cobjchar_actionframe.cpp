@@ -133,7 +133,7 @@ void CObjCHAR::ActionEVENT (int iActionIDX)
 		}
 
 	default :
-		//LogString (LOG_DEBUG, "Invalid Action event[ %d ] in %s \n", iActionIDX, Get_NAME() );
+		//LogString (LOG_DEBUG_, "Invalid Action event[ %d ] in %s \n", iActionIDX, Get_NAME() );
 		break;
 	}
 
@@ -221,16 +221,10 @@ void CObjCHAR::ActionSpecialFrame( int iActionIDX )
 					int iSoundIDX  = PAT_MOVE_SOUND( ((CObjCART*)this)->GetPetParts( RIDE_PART_LEG ) );
 					if ( iSoundIDX )
 					{		
-						/*CObjCHAR* pParent = NULL;
-						if( pParent )*/
 						{
 							D3DXVECTOR3 vCur = Get_CurPOS();
-							g_pSoundLIST->IDX_PlaySound3D( iSoundIDX, vCur );
-							Log_String( LOG_NORMAL, "Play sound[ %d ][ %d ][ %.2f, %.2f, %.2f ]\n", iDummyIDX, iSoundIDX, vCur.x, vCur.y, vCur.z );  
-						}/*else
-						{
-							assert( 0 && "The Parent of cart is invalid" );
-						}*/
+							g_pSoundLIST->IDX_PlaySound3D( iSoundIDX, vCur ); 
+						}
 					}
 				}
 			}

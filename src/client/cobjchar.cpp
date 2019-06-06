@@ -602,12 +602,10 @@ void CObjCHAR::RemoveFromScene (bool bIncludeEFFECT)
 /*override*/ void CObjCHAR::SetEffectedSkillFlag( bool bResult )
 { 
 	m_bProcEffectedSkill = bResult; 
-	///Log_String( LOG_NORMAL, "SetEffectedSkillFlag[ %d ]\n", bResult );
 }
 
 /*override*/ bool CObjCHAR::bCanActionActiveSkill()
 { 
-	///Log_String( LOG_NORMAL, "bCanActionActiveSkill[ %d ]\n", m_bProcEffectedSkill );
 	return m_bProcEffectedSkill; 
 }
 
@@ -1047,12 +1045,12 @@ bool CObjCHAR::LoadModelNODE (char *szName)
 {
 	HNODE hSkel  = this->Get_SKELETON ();
 	if ( hSkel == NULL ) {
-		LogString (LOG_DEBUG, "failed creat char.. SKEL == NULL !! \n");
+		LogString (LOG_DEBUG_, "failed creat char.. SKEL == NULL !! \n");
 		return false;
 	}
 
 	if ( !this->Set_CurMOTION( this->Get_MOTION(0) ) ) {		// default stop motion ..
-		LogString (LOG_DEBUG, "failed creat char.. MOTION == NULL !! \n");
+		LogString (LOG_DEBUG_, "failed creat char.. MOTION == NULL !! \n");
 		return false;
 	}
 
@@ -2093,8 +2091,6 @@ bool CObjCHAR::ProcEffectedSkill()
     m_EffectedSkillList.clear();
 	
 	SetEffectedSkillFlag( false );
-	Log_String( LOG_NORMAL, "ProcEffectedSkill\n" );
-
 	return bResult;
 }
 
@@ -3877,7 +3873,6 @@ void CObjCHAR::ProcQueuedCommand()
 	if( pCommand )
 	{
 		pCommand->Execute( this );
-		Log_String( LOG_NORMAL, "!!큐의정보로 부터 실행!!\n" ); 
 
 		/// Skill 명령이고 이미 Result 를 받은 명령이라면..
 		if( bSkillCommand )
@@ -3885,7 +3880,6 @@ void CObjCHAR::ProcQueuedCommand()
 			if( pCommand->bGetResultOfSkil() )
 			{
 				SetEffectedSkillFlag( true );
-				Log_String( LOG_NORMAL, "!!큐의정보로 부터 effectedskillflag 세팅!!\n" ); 
 			}
 		}
 	}
@@ -4140,7 +4134,7 @@ int	CObjCHAR::Add_HP (int iAdd)
 
 	if( m_iHP <= 0 )
 	{		
-		LogString( LOG_DEBUG,"Caution : HP < 0 @CObjCHAR::Add_HP" );
+		LogString( LOG_DEBUG_,"Caution : HP < 0 @CObjCHAR::Add_HP" );
 		m_iHP = 1;
 	}
 
@@ -4423,7 +4417,7 @@ CObjMOB::~CObjMOB ()
 		g_pEventLIST->Del_EVENT (xxx);
 	}
 	*/
-//	LogString (LOG_DEBUG, "   CObjMOB::~CObjMOB ( charNo:%d, %s ), Obj:%d  \n", m_nCharIdx, Get_NAME(), m_nIndex );
+//	LogString (LOG_DEBUG_, "   CObjMOB::~CObjMOB ( charNo:%d, %s ), Obj:%d  \n", m_nCharIdx, Get_NAME(), m_nIndex );
 }
 
 
@@ -4515,7 +4509,7 @@ bool CObjMOB::Create (short nCharIdx, const D3DVECTOR& Position, short nQuestIDX
 		return true;
 	}
 
-	LogString (LOG_DEBUG, "MOB Char create failed .. %d: %s \n", nCharIdx, NPC_NAME( nCharIdx ) );
+	LogString (LOG_DEBUG_, "MOB Char create failed .. %d: %s \n", nCharIdx, NPC_NAME( nCharIdx ) );
 
 	return false;
 }
@@ -6236,7 +6230,7 @@ BOOL CGoddessMgr::Register_RenderObj(GODDESSSTR& gds)
 		D3DXVECTOR3 cpos = pCHAR->Get_CurPOS();
 		if (!gds.pGODModel->Create(939,cpos,0,TRUE)) 
 		{
-			LogString (LOG_DEBUG, "Create Goddess Model Data\n");
+			LogString (LOG_DEBUG_, "Create Goddess Model Data\n");
 			delete gds.pGODModel; gds.pGODModel = NULL;
 		}
 		
@@ -6261,7 +6255,7 @@ BOOL CGoddessMgr::Register_RenderObj(GODDESSSTR& gds)
 	
 		if (!gds.pSprModel->Create(940,cpos,0,FALSE)) 
 		{
-			LogString (LOG_DEBUG, "Create Sprite Model Data\n");
+			LogString (LOG_DEBUG_, "Create Sprite Model Data\n");
 			delete gds.pSprModel; gds.pSprModel = NULL;
 		}
 	

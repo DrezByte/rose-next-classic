@@ -269,7 +269,7 @@ bool CModelDATA<CModelPart>::Load (char *szFileName, short nBoneIdx, short nDumm
 	{
 		pStr = CGameStr::ReadString ( pFileSystem );
 #ifdef	_DEBUG
-		LogString (LOG_DEBUG, "Model MESH::[ %s ] \n", pStr);
+		LogString (LOG_DEBUG_, "Model MESH::[ %s ] \n", pStr);
 #endif
 		pMeshKEY[ nI ] = g_MeshFILE.Add_FILE (pStr);
 		if ( !pMeshKEY[ nI ] ) {
@@ -308,7 +308,7 @@ bool CModelDATA<CModelPart>::Load (char *szFileName, short nBoneIdx, short nDumm
 		pFileSystem->ReadFloat3( fGlowColor );
 
 #ifdef	_DEBUG
-		LogString (LOG_DEBUG, "Model MAT ::[ %s ], skin:%d, alpha:%d, 2side:%d, alphatest:%d, alpharef:%d, ztest:%d, zwrite:%d, blendtype:%d, specular:%d, alphavalue:%f, glowtype:%d, glowcolor:%f,%f,%f \n",
+		LogString (LOG_DEBUG_, "Model MAT ::[ %s ], skin:%d, alpha:%d, 2side:%d, alphatest:%d, alpharef:%d, ztest:%d, zwrite:%d, blendtype:%d, specular:%d, alphavalue:%f, glowtype:%d, glowcolor:%f,%f,%f \n",
 			pStr, nIsSkin, nIsAlpha, nIs2Side, nAlphaTest, nAlphaRef, nZTest, nZWrite, nBlendType, nSpecular, fAlphaValue, nGlowType, fGlowColor[0], fGlowColor[1], fGlowColor[2]);
 #endif
 		pMatKEY[ nI ] = g_MatFILE.Add_MATERIAL (pStr, nIsSkin, nIsAlpha, nIs2Side,
@@ -350,7 +350,7 @@ bool CModelDATA<CModelPart>::Load (char *szFileName, short nBoneIdx, short nDumm
 				if ( !pEftKEY[ nI ] ) 
 				{
 					char *szMsg = CStr::Printf ("Effect File [%s] not found ...", pStr);			
-					LogString (LOG_DEBUG, "ERROR:: %s in %s \n", szMsg, szFileName);
+					LogString (LOG_DEBUG_, "ERROR:: %s in %s \n", szMsg, szFileName);
 				}
 			}
 		}
@@ -384,7 +384,7 @@ template <class CModelPart>
 CMODEL<CModelPart>*CModelDATA<CModelPart>::GetMODEL(short nIndex)
 {
 	if ( nIndex < 0 || nIndex >= m_nModelCNT ) {
-		LogString (LOG_DEBUG, "ERROR:: Invalid model data index[ %d / %d ] in %s \n", nIndex, m_nModelCNT, m_DataFileName.Get());
+		LogString (LOG_DEBUG_, "ERROR:: Invalid model data index[ %d / %d ] in %s \n", nIndex, m_nModelCNT, m_DataFileName.Get());
 		return NULL;
 	}
 

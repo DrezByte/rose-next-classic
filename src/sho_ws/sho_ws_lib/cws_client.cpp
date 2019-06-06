@@ -57,7 +57,7 @@ bool CWS_Client::Send_wsv_MOVE_SERVER( short nZoneNO )
 		return false;
 	}
 
-	// LogString( LOG_DEBUG, "moveCHANNEL[ %d ]: %d, %s \n", btChannelNO, this->m_iSocketIDX, this->Get_ACCOUNT() );
+	// LogString( LOG_DEBUG_, "moveCHANNEL[ %d ]: %d, %s \n", btChannelNO, this->m_iSocketIDX, this->Get_ACCOUNT() );
 
 	classPACKET *pCPacket = Packet_AllocNLock ();
 	if ( !pCPacket )
@@ -980,7 +980,7 @@ BYTE CWS_ListCLIENT::Del_ACCOUNT (char *szAccount, BYTE btDelLoginBIT, CWS_Serve
 							::SetTotalUserCNT( m_pHashACCOUNT->GetCount() );
 							// classTIME::GetCurrentAbsSecond ()
 							// pAccount->m_dwLoginTIME;
-							LogString( LOG_DEBUG, "%d Account, Sub_ACCOUNT( %s )\n", m_pHashACCOUNT->GetCount(), pAccount->Get_ACCOUNT() );
+							LogString( LOG_DEBUG_, "%d Account, Sub_ACCOUNT( %s )\n", m_pHashACCOUNT->GetCount(), pAccount->Get_ACCOUNT() );
 						}
 
 						g_pSockLSV->Send_zws_SUB_ACCOUNT( pAccount->m_dwLSID, pAccount->Get_ACCOUNT() );	// LS에 삭제 전송.

@@ -1073,7 +1073,7 @@ void IT_MGR::MoveDlgIcon2ListEnd( CIconDialog* pIcon )
 //	CTDialog* pDlg = FindDlg( DLG_TYPE_CHAT );
 //	if( pDlg == NULL )
 //	{
-//		LogString(LOG_DEBUG,"Not Found ChatDlg/IT_MGR::AppendChatMsg\n");
+//		LogString(LOG_DEBUG_,"Not Found ChatDlg/IT_MGR::AppendChatMsg\n");
 //		return;
 //	}
 //	CChatDLG* pChatDlg = ( CChatDLG* ) pDlg;
@@ -1085,7 +1085,7 @@ void IT_MGR::AppendChatMsg( const char* pszMsg, int iType ,DWORD forceapply_colo
 	CTDialog* pDlg = FindDlg( DLG_TYPE_CHAT );
 	if( pDlg == NULL )
 	{
-		LogString(LOG_DEBUG,"Not Found ChatDlg/IT_MGR::AppendChatMsg\n");
+		LogString(LOG_DEBUG_,"Not Found ChatDlg/IT_MGR::AppendChatMsg\n");
 		return;
 	}
 	

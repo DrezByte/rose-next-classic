@@ -121,9 +121,9 @@ dType CFileLIST<dType>::Get_DATAUseKEY(unsigned int uiKEY)
 {	
 	tagFileDATA<dType> *pData = KEY_Get_DATA(uiKEY );
 	if ( pData )
-		LogString (LOG_DEBUG, "key Get %s: [ %s ]\n", m_NameTAG.Get(), pData->m_FileName.Get());
+		LogString (LOG_DEBUG_, "key Get %s: [ %s ]\n", m_NameTAG.Get(), pData->m_FileName.Get());
 	else
-		LogString (LOG_DEBUG, "key Get %s == NULL\n", m_NameTAG.Get());
+		LogString (LOG_DEBUG_, "key Get %s == NULL\n", m_NameTAG.Get());
 	return	Get_DATA( pData );	
 }
 template <class dType>
@@ -131,9 +131,9 @@ dType CFileLIST<dType>::Get_DATAUseIDX(short nIndex)
 {	
 	tagFileDATA<dType> *pData = IDX_Get_DATA(nIndex);
 	if ( pData )
-		LogString (LOG_DEBUG, "idx Get %s: [ %s ]\n", m_NameTAG.Get(), pData->m_FileName.Get());
+		LogString (LOG_DEBUG_, "idx Get %s: [ %s ]\n", m_NameTAG.Get(), pData->m_FileName.Get());
 	else
-		LogString (LOG_DEBUG, "idx Get %s == NULL\n", m_NameTAG.Get());
+		LogString (LOG_DEBUG_, "idx Get %s == NULL\n", m_NameTAG.Get());
 	return  Get_DATA( pData );	
 }
 #endif
@@ -179,7 +179,7 @@ t_HASHKEY CFileLIST<dType>::Add_FILE( char *szFileName, short nIndex, dType DATA
 	{
 		char *szMSG = CStr::Printf ("ERROR File [%s] not found in %s ... \n", szFileName, m_NameTAG.Get());
 		// ::MessageBox (NULL, szMSG, "ERROR", MB_OK);
-		LogString ( LOG_DEBUG, szMSG );
+		LOG_DEBUG(szMSG );
 		return 0;
 	}
 #else
@@ -187,7 +187,7 @@ t_HASHKEY CFileLIST<dType>::Add_FILE( char *szFileName, short nIndex, dType DATA
 		CStrVAR str( 256 );
 		str.Printf ((char*)"ERROR File [%s] not found in %s ... \n", szFileName, m_NameTAG.Get());
 		// ::MessageBox (NULL, szMSG, "ERROR", MB_OK);
-		LogString ( LOG_DEBUG, str.Get() );
+		LOG_DEBUG(str.Get() );
 		return 0;
 	}
 #endif
@@ -213,7 +213,7 @@ t_HASHKEY CFileLIST<dType>::Add_FILE( char *szFileName, short nIndex, dType DATA
 		t_HASHKEY uiHashKey2;
 		uiHashKey2 = StrToHashKey( pData->m_FileName.Get() );
 
-		LogString ( LOG_DEBUG, (char*)"HashKey Collision (%d:%s,  %d:%s)\n", uiHashKey, szFileName, uiHashKey2, pData->m_FileName.Get() );
+		LOG_DEBUG((char*)"HashKey Collision (%d:%s,  %d:%s)\n", uiHashKey, szFileName, uiHashKey2, pData->m_FileName.Get() );
 
 		_ASSERT( !pData );
 		return 0;
@@ -236,7 +236,7 @@ t_HASHKEY CFileLIST<dType>::Add_FILE( char *szFileName, short nIndex, dType DATA
 			{
 				m_pDATAs[ nIndex ].m_bLoad = true;
 				m_nLoadCNT ++;
-				LogString ( LOG_DEBUG, (char*)"Add and Load FILE : %s, LoadCNT: %d\n", m_pDATAs[ nIndex ].m_FileName.Get(), Get_LoadCOUNT() );				
+				LOG_DEBUG((char*)"Add and Load FILE : %s, LoadCNT: %d", m_pDATAs[ nIndex ].m_FileName.Get(), Get_LoadCOUNT() );
 			}
 		}		
 
@@ -323,7 +323,7 @@ void CFileLIST<dType>::Delete_DATA (tagFileDATA<dType> *pDATA)
 		this->Free_FILE( pDATA );
 		m_nLoadCNT --;
 	#ifndef	__SERVER
-		LogString (LOG_DEBUG, "Free FILE : %s, LoadCNT: %d\n", pDATA->m_FileName.Get(), Get_LoadCOUNT() );
+		LogString (LOG_DEBUG_, "Free FILE : %s, LoadCNT: %d\n", pDATA->m_FileName.Get(), Get_LoadCOUNT() );
 	#endif
 		pDATA->m_bLoad = false;
 	}
@@ -351,7 +351,7 @@ dType CFileLIST<dType>::Get_DATA(tagFileDATA<dType> *pDATA)
 			pDATA->m_bLoad = true;
 			m_nLoadCNT ++;
 		#ifndef	__SERVER
-			LogString (LOG_DEBUG, "Load FILE : %s, LoadCNT: %d\n", pDATA->m_FileName.Get(), Get_LoadCOUNT() );
+			LogString (LOG_DEBUG_, "Load FILE : %s, LoadCNT: %d\n", pDATA->m_FileName.Get(), Get_LoadCOUNT() );
 		#endif
 		} else
 			return NULL;

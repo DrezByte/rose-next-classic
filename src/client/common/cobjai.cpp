@@ -175,7 +175,7 @@ void CObjAI::Start_ATTACK (CObjCHAR *pTarget)
 			if ( m_pCurMOTION->m_nActionPointCNT <= 0 ) {
 				char *szMsg = CStr::Printf("%s 공격 타점 프레임 설정 필요!!!", Get_NAME());
 				g_pCApp->ErrorBOX( szMsg, "ERROR" );
-				LogString (LOG_DEBUG, szMsg);
+				LogString (LOG_DEBUG_, szMsg);
 			}
 		#endif
 	}
@@ -271,7 +271,6 @@ int CObjAI::ProcSkillCastingAction( int iServerTarget, CObjCHAR* pTarget )
 		if ( this->GetANI_Casting() || this->IsA( OBJ_MOB ) ) 
 		{			
 			this->Set_MOTION( this->GetANI_Casting(), 0, g_SkillList.Get_CastingAniSPEED( m_nActiveSkillIDX ), false, 1 );			
-			Log_String( LOG_NORMAL, "스킬 캐스팅동작 세팅[%d]\n", this->GetANI_Casting() );
 			return 5;
 		}else
 			assert( 0 && "Invalid Casting animation" );
@@ -322,7 +321,6 @@ int CObjAI::ProcSkillCastingLoop( CObjCHAR *pTarget )
 							/// 스킬 동작중에는 맞는 동작도 적용 안된다.
 							this->m_wState = CS_CASTING;
 							this->Set_MOTION( this->GetANI_CastingRepeat(), 0, g_SkillList.Get_CastingAniSPEED( m_nActiveSkillIDX ), false, 1 );
-							Log_String( LOG_NORMAL, "스킬 반복동작 세팅[%d][Count:%d]\n", this->GetANI_CastingRepeat(), m_iWaitLoopCnt );
 							return 1;
 						}			
 					}
@@ -353,7 +351,6 @@ int CObjAI::ProcSkillAction( CObjCHAR *pTarget )
 			/// 스킬 동작중에는 맞는 동작도 적용 안된다.
 			m_wState = CS_NEXT_STOP2;
 			this->Set_MOTION( this->GetANI_Skill(), 0, g_SkillList.Get_ActionAniSPEED( m_nActiveSkillIDX ), true, 1 );
-			Log_String( LOG_NORMAL, "스킬 액션동작 세팅[%d]\n", this->GetANI_Skill() );
 		
 			SetNewCommandAfterSkill( m_nActiveSkillIDX );
 		
@@ -1050,7 +1047,6 @@ void CObjAI::SetCMD_Skill2SELF (short nSkillIDX)
 	}
 
 	SetEffectedSkillFlag( false );
-	Log_String( LOG_NORMAL, "SetCMD_Skill2SELF\n" );
 
 	if ( CS_BIT_INT & this->m_wState )
 		m_wState = CS_NEXT_STOP;
@@ -1117,7 +1113,6 @@ bool CObjAI::SetCMD_Skill2OBJ ( WORD wSrvDIST, const D3DVECTOR& PosTO, int iServ
 	}
 
 	 SetEffectedSkillFlag( false );
-	 Log_String( LOG_NORMAL, "SetCMD_Skill2OBJ\n" );
 
 	 //-----------------------------------------------------------------------------------------
 	/// 일단 여기서 깍자..소모치
@@ -1166,7 +1161,7 @@ bool CObjAI::SetCMD_Skill2OBJ ( WORD wSrvDIST, const D3DVECTOR& PosTO, int iServ
 
 		this->Set_TargetIDX( iServerTarget );
 
-		LogString (LOG_DEBUG,"SetCMD_Skill2OBJ[ Skill:%d ] %s==>%s \n", nSkillIDX, this->Get_NAME(), pDestCHAR->Get_NAME() );		
+		LogString (LOG_DEBUG_,"SetCMD_Skill2OBJ[ Skill:%d ] %s==>%s \n", nSkillIDX, this->Get_NAME(), pDestCHAR->Get_NAME() );		
 
 	}
 	else 
@@ -1219,9 +1214,7 @@ void CObjAI::SetCMD_Skill2POS (const D3DVECTOR& PosGOTO, short nSkillIDX)
 		return;
 	}
 
-
 	SetEffectedSkillFlag( false );
-	Log_String( LOG_NORMAL, "SetCMD_Skill2POS\n" );
 
 	/// 일단 여기서 깍자..소모치
 	/// 명령을 세팅할때 깍을까나?
@@ -1529,7 +1522,7 @@ int CObjAI::ProcCMD_MOVE ()
 
 	/*
 	if ( this->IsA( OBJ_AVATAR ) ) {
-		LogString (LOG_DEBUG, "%s Move (%.0f,%.0f) ==> (%.0f,%.0f) \n", this->Get_NAME(), this->m_PosCUR.x, this->m_PosCUR.y, this->m_PosGOTO.x, this->m_PosGOTO.y );
+		LogString (LOG_DEBUG_, "%s Move (%.0f,%.0f) ==> (%.0f,%.0f) \n", this->Get_NAME(), this->m_PosCUR.x, this->m_PosCUR.y, this->m_PosGOTO.x, this->m_PosGOTO.y );
 	}
 	*/
 

@@ -312,7 +312,7 @@ void CObjUSER::Update_SPEED ()
  	}
 
 
-	LogString (LOG_DEBUG, "CmPerSEC: %f, AniSpeed: %f \n", m_nRunSPEED, m_fRunAniSPEED );
+	LogString (LOG_DEBUG_, "CmPerSEC: %f, AniSpeed: %f \n", m_nRunSPEED, m_fRunAniSPEED );
 };
 
 //-------------------------------------------------------------------------------------------------

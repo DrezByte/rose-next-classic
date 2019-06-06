@@ -239,7 +239,7 @@ void CQuestDlg::UpdateQuestDescription()
 	CWinCtrl* pCtrl = FindChildInPane(IID_PANE_QUESTINFO, IID_LIST_QUESTINFO );
 	if( pCtrl == NULL || pCtrl->GetControlType() != CTRL_LISTBOX )
 	{
-		LogString( LOG_DEBUG,"Not Found ListBox : CQuestDlg::SetQuestDescption() \n");
+		LogString( LOG_DEBUG_,"Not Found ListBox : CQuestDlg::SetQuestDescption() \n");
 		pAbandonBtn->Hide();
 		return;
 	}
@@ -304,7 +304,7 @@ void CQuestDlg::UpdateQuestList()
 	CWinCtrl* pCtrl = FindChildInPane( IID_PANE_QUESTLIST, IID_ZLIST_QUEST );
 	if( pCtrl == NULL )
 	{
-		LogString( LOG_DEBUG,"Not Found ListBox : CQuestDlg::SetQuestDescption() \n");
+		LogString( LOG_DEBUG_,"Not Found ListBox : CQuestDlg::SetQuestDescption() \n");
 		return;
 	}
 

@@ -9,6 +9,7 @@
 #include "lib_util.h"
 #include "LIB_gsMAIN.h"
 
+#include "rose/common/util.h"
 
 CLIB_GameSRV* g_instance;
 
@@ -57,10 +58,20 @@ int main() {
 	char* charserver_ip = server_ip;
 	int charserver_port = 19001;
 
-	std::cout << "Initializing the server" << std::endl;
+	// Initialize the logger
+	char buffer[256] = { 0 };
+	Rose::Common::get_bin_dir(buffer, 256);
+
+	std::string log_path(buffer);
+	log_path.append("/log/gameserver.log");
+
+	Rose::Common::logger_init(log_path.c_str(), Rose::Common::LogLevel::Info);
+
+	// Initialize and start the server
+	LOG_INFO("Initializing the server");
 	g_instance = CLIB_GameSRV::InitInstance(console_handle, data_dir, ENGLISH);
 
-	std::cout << "Connecting to other servers" << std::endl;
+	LOG_INFO("Connecting to other servers");
 	g_instance->ConnectSERVER(
 		db_ip,
 		db_name,
@@ -76,13 +87,13 @@ int main() {
 		loginserver_port
 	);
 
-	std::cout << "Initializing all maps" << std::endl;
+	LOG_INFO("Initializing all maps");
 	g_instance->InitLocalZone(true);
 
-	std::cout << "Starting the server" << std::endl;
+	LOG_INFO("Starting the server");
 	g_instance->Start(console_window, server_name, server_ip, server_port, 1, 0, 0);
 
-	std::cout << "Setting user limit" << std::endl;
+	LOG_INFO("Setting user limit");
 	g_instance->Set_UserLIMIT(0);
 
 	SetConsoleCtrlHandler(CtrlHandler, true);

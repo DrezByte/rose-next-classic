@@ -54,7 +54,7 @@ protected :
 			pNextNODE = pDataNODE;
 		}
 
-		g_LOG.debug("Pool[ %s ] Increase %d data total: %d\n", m_PoolName.Get(), uiDataCNT, m_uiTotalDataCNT );
+		LOG_DEBUG("Pool[ %s ] Increase %d data total: %d", m_PoolName.Get(), uiDataCNT, m_uiTotalDataCNT );
 
 
 		return pDataBLOCK;

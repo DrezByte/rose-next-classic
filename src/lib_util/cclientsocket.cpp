@@ -36,7 +36,7 @@ unsigned __stdcall ClientSOCKET_SendTHREAD( void* lpParameter )
 {
 	CClientSOCKET *pClientSocket = (CClientSOCKET *) lpParameter;
 
-	LogString (LOG_DEBUG, "\n\n [ 0x%x ] >>>>> ClientSocket_Thread::0x%x\n\n\n", pClientSocket, pClientSocket->m_dwThreadID);
+	LOG_DEBUG("ClientSocket_Thread::0x%x", pClientSocket, pClientSocket->m_dwThreadID);
 
 	while ( 1 ) 
 	{
@@ -58,7 +58,7 @@ unsigned __stdcall ClientSOCKET_SendTHREAD( void* lpParameter )
 		} 
 #ifdef	_DEBUG
 		else
-			g_LOG.OutputString( LOG_DEBUG, " >>>>>>>> Send Failed[ %d Packet(s) ] :: Writable == false \n", pClientSocket->m_SendPacketQ.GetNodeCount() );
+			g_LOG.OutputString( LOG_DEBUG_, " >>>>>>>> Send Failed[ %d Packet(s) ] :: Writable == false \n", pClientSocket->m_SendPacketQ.GetNodeCount() );
 #endif
     }
 

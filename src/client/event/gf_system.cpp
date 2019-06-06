@@ -45,7 +45,7 @@ ZSTRING	GF_getName ( void )
 
 void	GF_setVariable ( int iVarTYPE, int iValue )
 {
-	LogString (LOG_DEBUG, "GF_setVariable( %d, %d ) \n", iVarTYPE, iValue);
+	LogString (LOG_DEBUG_, "GF_setVariable( %d, %d ) \n", iVarTYPE, iValue);
 
 	g_pNet->Send_cli_SET_VAR_REQ( iVarTYPE, iValue );
 	/*

@@ -12,3 +12,4 @@ extern crate log;
 
 pub mod ffi;
 pub mod logger;
+pub mod util;

@@ -18,7 +18,7 @@ void CIocpTHREAD::Execute ()
     DWORD        dwCompletionKey;
     LPOVERLAPPED lpOverlapped;
 
-	g_LOG.debug("CIocpTHREAD::Execute() threadID: %d(0x%x), WorkerNO: %d", this->ThreadID, this->ThreadID, m_iThreadNO);
+	LOG_DEBUG("CIocpTHREAD::Execute() threadID: %d(0x%x), WorkerNO: %d", this->ThreadID, this->ThreadID, m_iThreadNO);
 
 	while ( !this->Terminated )
 	{
@@ -85,7 +85,7 @@ void CIocpTHREAD::Execute ()
 		STATUS_ReturnTRUE( lpOverlapped, dwCompletionKey, dwBytesIO );
 	}
 
-	g_LOG.debug("CIocpTHREAD::Execute() ThreadID: %d(0x%x),  WorkerNO: %d", this->ThreadID, this->ThreadID, m_iThreadNO);
+	LOG_DEBUG("CIocpTHREAD::Execute() ThreadID: %d(0x%x),  WorkerNO: %d", this->ThreadID, this->ThreadID, m_iThreadNO);
 }
 
 
@@ -101,14 +101,14 @@ void CIocpTHREAD::Free (void)
 {
     this->Terminate ();
 
-	g_LOG.debug("CIocpTHREAD::Free ThreadID: %d(0x%x),  WorkerNO: %d", this->ThreadID, this->ThreadID, m_iThreadNO);
+	LOG_DEBUG("CIocpTHREAD::Free ThreadID: %d(0x%x),  WorkerNO: %d", this->ThreadID, this->ThreadID, m_iThreadNO);
 
 	do {
 		if ( 0 == ::PostQueuedCompletionStatus( m_hIOCP, -1, 0, NULL) ) {
-			g_LOG.debug("ThreadWORKER::Free() PostQueuedCompletionStatus() return 0, LastERROR: %d(0x%x)", GetLastError(), GetLastError());
+			LOG_DEBUG("ThreadWORKER::Free() PostQueuedCompletionStatus() return 0, LastERROR: %d(0x%x)", GetLastError(), GetLastError());
 			break;
 		}
 	} while( !this->IsFinished());
 
-	g_LOG.debug("CIocpTHREAD::Free ThreadID: %d(0x%x),  WorkerNO: %d", this->ThreadID, this->ThreadID, m_iThreadNO);
+	LOG_DEBUG("CIocpTHREAD::Free ThreadID: %d(0x%x),  WorkerNO: %d", this->ThreadID, this->ThreadID, m_iThreadNO);
 }

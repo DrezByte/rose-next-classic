@@ -219,7 +219,6 @@ void CObjCommandManager::SetValidResultOfSkill()
 				if( (*begin)->m_bGetResultOfSkill == false )
 				{
 					(*begin)->m_bGetResultOfSkill = true;
-					Log_String( LOG_NORMAL, "이것은 큐에 있는 스킬에 결과 정보를 저장\n" ); 
 					return;
 				}
 			}else

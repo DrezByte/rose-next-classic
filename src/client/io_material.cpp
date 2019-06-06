@@ -72,7 +72,7 @@ bool CMatLIST::Load_FILE (tagFileDATA<tagMATERIAL*> *pData)
 	{
 		if (0 == pData->m_DATA->m_nAlphaTest) 
 		{
-			LogString ( LOG_DEBUG, "CMatLIST::Load_FILE[ %s / %s] donotuse_alphatest\n",
+			LogString ( LOG_DEBUG_, "CMatLIST::Load_FILE[ %s / %s] donotuse_alphatest\n",
 				pData->m_DATA->m_RealFileName.Get(), pData->m_FileName.Get());
 		}
 
@@ -89,14 +89,14 @@ bool CMatLIST::Load_FILE (tagFileDATA<tagMATERIAL*> *pData)
 
 		return true;
 	} else {
-		LogString ( LOG_DEBUG, "ERROR:: LoadMaterial:: %s \n", pData->m_DATA->m_RealFileName.Get());
+		LogString ( LOG_DEBUG_, "ERROR:: LoadMaterial:: %s \n", pData->m_DATA->m_RealFileName.Get());
 	}
 
 	return false;
 }
 void CMatLIST::Free_FILE (tagFileDATA<tagMATERIAL*> *pData)
 {
-	//LogString (LOG_DEBUG, "CMatLIST::Free_FILE[ %s / %s ] \n", pData->m_DATA->m_RealFileName.Get(), pData->m_FileName.Get() );
+	//LogString (LOG_DEBUG_, "CMatLIST::Free_FILE[ %s / %s ] \n", pData->m_DATA->m_RealFileName.Get(), pData->m_FileName.Get() );
 	
 	if ( pData->m_DATA->m_hMAT ) 
 	{
@@ -133,7 +133,7 @@ t_HASHKEY CMatLIST::Add_MATERIAL (
 	{
 		char *szMSG = CStr::Printf ("ERROR Material File [%s] not found ... \n", szFileName);
 		// g_pCApp->ErrorBOX(szMSG, "ERROR", MB_OK);
-		LogString ( LOG_DEBUG, szMSG);
+		LogString ( LOG_DEBUG_, szMSG);
 		return 0;
 	}
 

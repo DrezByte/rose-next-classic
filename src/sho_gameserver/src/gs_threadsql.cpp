@@ -409,7 +409,7 @@ bool GS_CThreadSQL::UpdateUserRECORD (classUSER *pUSER)
 	m_sBE.m_btCharSlotNO  = pUSER->m_btPlatinumCHAR;
 
 	if ( m_sBE.m_nZoneNO < 0 || m_sBE.m_nReviveZoneNO < 0 ) {
-		g_LOG.CS_ODS( 0xffff, "**** Invalid ZoneNO [ %s ] Race: %d, Zone: %d ReviveZone: %d \n",
+		g_LOG.CS_ODS( 0xffff, "**** Invalid ZoneNO [ %s ] Race: %d, Zone: %d ReviveZone: %d",
 				pUSER->Get_NAME(),
 				m_sBE.m_btCharRACE,
 				m_sBE.m_nZoneNO, 
@@ -605,7 +605,7 @@ void GS_CThreadSQL::Execute ()
 	CDLList< tagQueryDATA >::tagNODE *pSqlNODE;
 	classDLLNODE< tagSqlUSER   > *pUsrNODE;
 
-	g_LOG.CS_ODS( 0xffff, ">  > >> GS_CThreadSQL::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	LOG_DEBUG("GS_CThreadSQL::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID );
 
 	this->ConvertBasicETC();
 
@@ -723,7 +723,7 @@ void GS_CThreadSQL::Execute ()
 	int iCnt = m_AddPACKET.GetNodeCount();
 	assert( iCnt == 0 );
 
-	g_LOG.CS_ODS( 0xffff, "<  < << GS_CThreadSQL::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	LOG_DEBUG("<  < << GS_CThreadSQL::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -257,7 +257,7 @@ bool GS_asvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 
 			// 받은 패킷 처리..
 			while( m_SockASV.Peek_Packet( m_pRecvPket, true ) ) {
-				// LogString( LOG_DEBUG, "Handle LS Packet: Type[ 0x%x ], Size[ %d ]\n", m_pRecvPket->m_HEADER.m_wType, m_pRecvPket->m_HEADER.m_nSize);
+				// LogString( LOG_DEBUG_, "Handle LS Packet: Type[ 0x%x ], Size[ %d ]\n", m_pRecvPket->m_HEADER.m_wType, m_pRecvPket->m_HEADER.m_nSize);
 				switch( m_pRecvPket->m_HEADER.m_wType ) {
 				/*
 					case LSV_CHECK_ALIVE :
@@ -311,7 +311,7 @@ bool GS_asvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 					m_pReconnectTimer->Start ();
 				if ( !m_bTryCONN ) {
 					m_bTryCONN = true;
-					g_LOG.CS_ODS( 0xffff, "Connect failed to ACCOUNT server \n");
+					g_LOG.CS_ODS( 0xffff, "Connect failed to ACCOUNT server");
 				}
 			}
 			break;
@@ -320,7 +320,7 @@ bool GS_asvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 		{
 			m_SockASV.OnClose ( nErrorCode );
 
-			g_LOG.CS_ODS( 0xffff, "Disconnected form ACCOUNT server \n");
+			g_LOG.CS_ODS( 0xffff, "Disconnected form ACCOUNT server");
 
 			if ( m_pReconnectTimer )
 				m_pReconnectTimer->Start ();

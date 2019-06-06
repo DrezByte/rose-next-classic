@@ -26,7 +26,7 @@ bool CParticle::RegisterToNZIN (char *szName, char *szParticleFile)
 {
 	if ( (CVFSManager::GetSingleton()).IsExistFile( szParticleFile ) == false )	
 	{
-		LogString ( LOG_DEBUG, "ERROR:: Particle File [%s] not found...\n", szParticleFile);
+		LogString ( LOG_DEBUG_, "ERROR:: Particle File [%s] not found...\n", szParticleFile);
 		return false;
 	}
 
@@ -184,7 +184,7 @@ bool CEffectDATA::Load (char *szFileName)
 		{			
 			char *szStr = CStr::Printf ("Sound file [%s] open error ", szName);
 			// g_pCApp->ErrorBOX(szStr, "ERROR", MB_OK);
-			LogString ( LOG_DEBUG, "%s \n", szStr);
+			LogString ( LOG_DEBUG_, "%s \n", szStr);
 			m_bUseSoundFile = false;
 		}
 	}
@@ -753,7 +753,7 @@ CEffectLIST::CEffectLIST (char *szFileEFFECT)
 					m_pHashKEY[ nI ] = this->Add_EffectFILE( szFileName );
 				}else
 				{
-					LogString ( LOG_DEBUG, "EffectFile:: %s 없다.\n", szFileName );
+					LogString ( LOG_DEBUG_, "EffectFile:: %s 없다.\n", szFileName );
 				}
 			}
 		}
@@ -785,7 +785,7 @@ t_HASHKEY CEffectLIST::Add_EffectFILE(char *szEffectFile)
 	{
 		char *szMSG = CStr::Printf ("ERROR Effect File [%s] not found ... \n", szEffectFile);
 		g_pCApp->ErrorBOX( szMSG, "ERROR" );
-		LogString ( LOG_DEBUG, szMSG);
+		LogString ( LOG_DEBUG_, szMSG);
 		return 0;
 	}
 

@@ -7,20 +7,9 @@
 namespace Rose {
 namespace Common {
 
-enum class LogLevel {
-  Trace,
-  Debug,
-  Info,
-  Warn,
-  Error,
-  Off,
-};
-
 extern "C" {
 
-void logger_init(const char *path, LogLevel level);
-
-void logger_write(LogLevel level, const char *file, uint32_t line, const char *msg);
+bool get_bin_dir(char *path, size_t size);
 
 } // extern "C"
 

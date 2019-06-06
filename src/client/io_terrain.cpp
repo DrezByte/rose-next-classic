@@ -968,7 +968,7 @@ void CMAP_PATCH::PlaySOUND ()
 			fMinDistance = fMaxDistance / 10;
 			if (fMinDistance < fMinStart) fMinDistance = fMinStart;
 
-			//LogString(LOG_DEBUG, "Range = %d, Min(%f), Max(%f)\n", pSndNode->DATA.m_uiRange, fMinDistance, fMaxDistance);
+			//LogString(LOG_DEBUG_, "Range = %d, Min(%f), Max(%f)\n", pSndNode->DATA.m_uiRange, fMinDistance, fMaxDistance);
 
 			g_pSoundLIST->KEY_PlaySound3D( pSndNode->DATA.m_HashKEY, pSndNode->DATA.m_Position, iVolume, 0, 0, fMinDistance, fMaxDistance );
 			pSndNode->DATA.m_dwLastPlayTIME = dwTime;
@@ -1292,7 +1292,7 @@ void CMAP::MappingToZONE (short nXFrom3x3, short nYFrom3x3)
 	short nViewPatchX = nXFrom3x3 * PATCH_COUNT_PER_MAP_AXIS;
 	short nViewPatchY = nYFrom3x3 * PATCH_COUNT_PER_MAP_AXIS;
 
-	LogString (LOG_DEBUG, "MappingToZONE::( %d, %d ) << ( %d, %d ) \n", nViewPatchX, nViewPatchY, nXFrom3x3, nYFrom3x3);
+	LogString (LOG_DEBUG_, "MappingToZONE::( %d, %d ) << ( %d, %d )", nViewPatchX, nViewPatchY, nXFrom3x3, nYFrom3x3);
 
 	int iH, iW;
 	if ( this->IsUsing() ) {
@@ -1515,7 +1515,7 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 				if ( !this->AddObject( iObjectIndex ) ) 
 				{
 					g_pObjMGR->Del_Object( iObjectIndex );
-					LogString (LOG_DEBUG, "TERRAIN CNST ERROR:: ID: %d \n", iObjID);
+					LogString (LOG_DEBUG_, "TERRAIN CNST ERROR:: ID: %d \n", iObjID);
 				}
 				continue;
 			}
@@ -1576,7 +1576,7 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 				if ( !this->AddObject( iObjectIndex, D3DXVECTOR3( Position ), Rotate, D3DXVECTOR3( Scale ) ) ) 
 				{
 					g_pObjMGR->Del_Object( iObjectIndex );
-					LogString (LOG_DEBUG, "TERRAIN Object ERROR:: ID: %d \n", iObjID);
+					LogString (LOG_DEBUG_, "TERRAIN Object ERROR:: ID: %d \n", iObjID);
 				}
 				break;
 			}
@@ -1586,7 +1586,7 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 				if ( !this->AddObject( iObjectIndex, D3DXVECTOR3( Position ), Rotate, D3DXVECTOR3( Scale ) ) ) 
 				{
 					g_pObjMGR->Del_Object( iObjectIndex );
-					LogString (LOG_DEBUG, "TERRAIN CNST ERROR:: ID: %d \n", iObjID);
+					LogString (LOG_DEBUG_, "TERRAIN CNST ERROR:: ID: %d \n", iObjID);
 				}
 				break;
 			}
@@ -1610,7 +1610,7 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 					if ( nIndex ) {
 						HashEVENT = g_pEventLIST->Add_EVENT( QUEST_FILE_FILENAME( nIndex ) );
 						if ( HashEVENT ) {
-							LogString (LOG_DEBUG, "Event File[ %s ]\n", szName);
+							LogString (LOG_DEBUG_, "Event File[ %s ]\n", szName);
 						}
 					}
 					*/
@@ -1637,7 +1637,7 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 				}
 
 				if ( !iObjectIndex ) {
-					LogString (LOG_DEBUG, "TERRAIN MOB ERROR:: ID: %d \n", iObjID);
+					LogString (LOG_DEBUG_, "TERRAIN MOB ERROR:: ID: %d \n", iObjID);
 					continue;
 				}
 			#endif
@@ -1651,7 +1651,7 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 					if ( !this->AddObject( iObjectIndex ) ) 
 					{
 						g_pObjMGR->Del_Object( iObjectIndex );
-						LogString (LOG_DEBUG, "TERRAIN WARP ERROR:: ID: %d \n", iObjID);
+						LogString (LOG_DEBUG_, "TERRAIN WARP ERROR:: ID: %d \n", iObjID);
 					}
 
 					continue;
@@ -1664,7 +1664,7 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 					if ( !this->AddObject( iObjectIndex ) ) 
 					{
 						g_pObjMGR->Del_Object( iObjectIndex );
-						LogString (LOG_DEBUG, "TERRAIN COLLISION ERROR:: ID: %d \n", iObjID);
+						LogString (LOG_DEBUG_, "TERRAIN COLLISION ERROR:: ID: %d \n", iObjID);
 					}
 
 					continue;
@@ -1690,7 +1690,7 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 					if ( !this->AddObject( iObjectIndex, D3DXVECTOR3( Position ), Rotate, D3DXVECTOR3( Scale ) ) ) 
 					{
 						g_pObjMGR->Del_Object( iObjectIndex );
-						LogString (LOG_DEBUG, "TERRAIN Object ERROR:: ID: %d \n", iObjID);
+						LogString (LOG_DEBUG_, "TERRAIN Object ERROR:: ID: %d \n", iObjID);
 					}					
 
 					break;
@@ -1699,13 +1699,13 @@ void CMAP::ReadObjINFO( CFileSystem* pFileSystem, long lOffset, int iLumpType)
 
 			default :
 			{
-				LogString (LOG_DEBUG, "Invalid map object type : %d \n", iLumpType );
+				LogString (LOG_DEBUG_, "Invalid map object type : %d \n", iLumpType );
 				continue;
 			}
 		}
 		this->m_pObjectIndex[ iLumpType ][ iC ] = iObjectIndex;
 
-		LogString (LOG_DEBUG, "Object:: Map[%02d,%02d], Type:%d, ID: %d, Pos[%d,%d] \n", m_nZoneMapXIDX, m_nZoneMapYIDX, iObjType, iObjID, iMapXPos, iMapYPos);
+		LogString (LOG_DEBUG_, "Object:: Map[%02d,%02d], Type:%d, ID: %d, Pos[%d,%d] \n", m_nZoneMapXIDX, m_nZoneMapYIDX, iObjType, iObjID, iMapXPos, iMapYPos);
 	}
 }
 
@@ -1819,9 +1819,9 @@ CMAP*CMAP::Load (char *szFileName, short nZoneMapXIDX, short nZoneMapYIDX)
 	if ( m_hLightMAP ) 
 	{
 		;
-		//LogString (LOG_DEBUG, "Load Lightmap[ %s / %s ] \n", szFullPathName, szFullPathName );
+		//LogString (LOG_DEBUG_, "Load Lightmap[ %s / %s ] \n", szFullPathName, szFullPathName );
 	} else {
-		LogString (LOG_DEBUG, "ERROR:: Load Lightmap:: %s \n", szFullPathName);
+		LogString (LOG_DEBUG_, "ERROR:: Load Lightmap:: %s \n", szFullPathName);
 	}
 
 
@@ -2045,7 +2045,7 @@ CMAP*CMAP::Load (char *szFileName, short nZoneMapXIDX, short nZoneMapYIDX)
 
 	m_nUseMODE = MAP_USING;
 
-	LogString (LOG_DEBUG, ">>>>>>> load MAP :: %d, %d \n", m_nZoneMapXIDX, m_nZoneMapYIDX );
+	LogString (LOG_DEBUG_, ">>>>>>> load MAP :: %d, %d \n", m_nZoneMapXIDX, m_nZoneMapYIDX );
 
 	
 	//Load quadManager
@@ -2069,7 +2069,7 @@ void CMAP::ClearFromNZIN (void)
 {
 	if (this->IsEmpty()) return; // 추가된 코드 by zho
 
-	LogString (LOG_DEBUG, "<<<<<<< Clear MAP :: %d, %d \n", m_nZoneMapXIDX, m_nZoneMapYIDX );
+	LogString (LOG_DEBUG_, "<<<<<<< Clear MAP :: %d, %d \n", m_nZoneMapXIDX, m_nZoneMapYIDX );
 
 #ifdef	__VIRTUAL_SERVER
 	classDLLNODE< CRegenPOINT* > *pPointNODE;
@@ -2242,7 +2242,7 @@ tPOINTF CTERRAIN::Get_EventPOS (char *szName)
 			OutPOS.x = m_pEventPOS[ iC ].m_Position.x;
 			OutPOS.y = m_pEventPOS[ iC ].m_Position.y;
 
-			LogString (LOG_DEBUG, "Pos[ %s ] = ( %f, %f ) \n", szName, OutPOS.x, OutPOS.y );
+			LogString (LOG_DEBUG_, "Pos[ %s ] = ( %f, %f ) \n", szName, OutPOS.x, OutPOS.y );
 
 			return OutPOS;
 		}
@@ -2251,7 +2251,7 @@ tPOINTF CTERRAIN::Get_EventPOS (char *szName)
 	OutPOS.x = 0;
 	OutPOS.y = 0;
 
-	LogString (LOG_DEBUG, "Pos[ %s ] not found \n", szName );
+	LogString (LOG_DEBUG_, "Pos[ %s ] not found \n", szName );
 
 	return OutPOS;
 }
@@ -2330,10 +2330,10 @@ void CTERRAIN::ReadZoneINFO( CFileSystem* pFileSystem, long lOffset )
 	pFileSystem->Seek( sizeof(int),	FILE_POS_CUR );
 	
 	pFileSystem->ReadInt32( &iValue );						// witdh
-	LogString (LOG_DEBUG, "Width:: %d ... \n", iValue);
+	LogString (LOG_DEBUG_, "Width:: %d ... \n", iValue);
 
 	pFileSystem->ReadInt32( &iValue );		// height
-	LogString (LOG_DEBUG, "Height:: %d ... \n", iValue);
+	LogString (LOG_DEBUG_, "Height:: %d ... \n", iValue);
 
 
 	// appended 03. 07. 25
@@ -2354,7 +2354,7 @@ void CTERRAIN::ReadZoneINFO( CFileSystem* pFileSystem, long lOffset )
 	pFileSystem->ReadInt32( &iValue );	// start pos
 	m_nCenterMapYIDX = iValue;
 
-	LogString (LOG_DEBUG, "Start (X:%d, Y:%d) \n", m_nCenterMapXIDX, m_nCenterMapYIDX);
+	LogString (LOG_DEBUG_, "Start (X:%d, Y:%d) \n", m_nCenterMapXIDX, m_nCenterMapYIDX);
 }
 
 void CTERRAIN::ReadEventObjINFO ( CFileSystem* pFileSystem, long lOffset)
@@ -2398,7 +2398,7 @@ void CTERRAIN::ReadEventObjINFO ( CFileSystem* pFileSystem, long lOffset)
 
 		m_pEventPOS[ iC ].m_Name.Set( szStr );
 
-		LogString (LOG_DEBUG, "Event Object:: %d / %s[%d] \n", iC, szStr, btStrLen);
+		LogString (LOG_DEBUG_, "Event Object:: %d / %s[%d] \n", iC, szStr, btStrLen);
 	}
 }
 
@@ -2423,7 +2423,7 @@ void CTERRAIN::ReadTileINFO( CFileSystem* pFileSystem, long lOffset )
 		pFileSystem->Read( szStr, sizeof(char) * btStrLen );
 		szStr[ btStrLen ] = 0;
 
-		LogString (LOG_DEBUG, "Tile Texture :: %d / %s[%d] \n", iC, szStr, btStrLen);
+		LogString (LOG_DEBUG_, "Tile Texture :: %d / %s[%d] \n", iC, szStr, btStrLen);
 
 		pMat = new tagMATERIAL;
 		pMat->m_nAlpha  = 1;
@@ -2536,7 +2536,7 @@ bool CTERRAIN::LoadZONE(short nZoneNO,bool bPlayBGM )
 		pStr[ iCount ] = 0;
 		m_ZoneDIR.Set( pStr );
 		m_WideTerrain.SetZoneDir( pStr );
-		LogString (LOG_DEBUG, "zone folder :: %s \n", pStr );
+		LogString (LOG_DEBUG_, "zone folder :: %s \n", pStr );
 	}
 
 	pFileSystem->ReadInt32( &iCount );
@@ -3038,7 +3038,7 @@ CMAP*CTERRAIN::GetMapPTR (short nZoneMapX, short nZoneMapY)
 
 #ifdef	_DEBUG
 	if ( NULL == m_pMAPS[ nZoneMapY ][ nZoneMapX ] ) {
-		LogString (LOG_DEBUG, " GetMapPTR:: Map[ %d, %d ] is NULL Filename( %s ) !!!!\n", nZoneMapX, nZoneMapY, this->GetMapFILE(nZoneMapX, nZoneMapY));
+		LogString (LOG_DEBUG_, " GetMapPTR:: Map[ %d, %d ] is NULL Filename( %s ) !!!!\n", nZoneMapX, nZoneMapY, this->GetMapFILE(nZoneMapX, nZoneMapY));
 	}
 #endif
 
@@ -3051,11 +3051,11 @@ void CTERRAIN::SetMapPTR (short nZoneMapX, short nZoneMapY, CMAP* pMAP)
 	if ( m_pMAPS[ nZoneMapY ][ nZoneMapX ] ) 
 	{
 		pMAP->SetUseMODE( MAP_USING );
-			LogString (LOG_DEBUG, " SetMapPTR:: Map[ %d, %d ] !!!!\n", nZoneMapX, nZoneMapY);
+			LogString (LOG_DEBUG_, " SetMapPTR:: Map[ %d, %d ] !!!!\n", nZoneMapX, nZoneMapY);
 	} 
 #ifdef	_DEBUG
 	else {
-		LogString (LOG_DEBUG, " SetMapPTR:: Map[ %d, %d ] is NULL Filename !!!!\n", nZoneMapX, nZoneMapY );
+		LogString (LOG_DEBUG_, " SetMapPTR:: Map[ %d, %d ] is NULL Filename !!!!\n", nZoneMapX, nZoneMapY );
 	}
 #endif
 }
@@ -3079,7 +3079,7 @@ void CTERRAIN::SubMAP (WORD wUpdateFLAG)
 			pMAP= m_pMAPS[ nZoneMapYIDX ][ nZoneMapXIDX ];
 			if ( pMAP ) 
 			{
-				LogString (LOG_DEBUG, "		FreeMAP: (%d, %d) --> ( %d, %d )\n", s_SecAdjPos[ s_SubSecIdx[ wUpdateFLAG ][ nI ] ].m_nX, s_SecAdjPos[ s_SubSecIdx[ wUpdateFLAG ][ nI ] ].m_nY, nZoneMapXIDX, nZoneMapYIDX);
+				LogString (LOG_DEBUG_, "		FreeMAP: (%d, %d) --> ( %d, %d )\n", s_SecAdjPos[ s_SubSecIdx[ wUpdateFLAG ][ nI ] ].m_nX, s_SecAdjPos[ s_SubSecIdx[ wUpdateFLAG ][ nI ] ].m_nY, nZoneMapXIDX, nZoneMapYIDX);
 				pMAP->Free ();				
 		
 				m_DirtyMapList.push_back( pMAP );
@@ -3163,7 +3163,7 @@ bool CTERRAIN::AddOneMap(short nCenterMapXIDX,short nCenterMapYIDX,WORD wUpdateI
 		 nZoneMapYIDX >= 0 && nZoneMapYIDX < MAP_COUNT_PER_ZONE_AXIS ) 
 	{
 
-		LogString (LOG_DEBUG, "Add One MAP: (%d, %d) --> ( %d, %d ) \n", s_SecAdjPos[ wUpdateIndex ].m_nX, 
+		LogString (LOG_DEBUG_, "Add One MAP: (%d, %d) --> ( %d, %d ) \n", s_SecAdjPos[ wUpdateIndex ].m_nX, 
 																s_SecAdjPos[ wUpdateIndex ].m_nY, 
 																nZoneMapXIDX, nZoneMapYIDX );
 
@@ -3183,7 +3183,7 @@ bool CTERRAIN::AddOneMap(short nCenterMapXIDX,short nCenterMapYIDX,WORD wUpdateI
 					this->SetMapPTR(nZoneMapXIDX, nZoneMapYIDX, pMAP->Load( szMapFile, nZoneMapXIDX, nZoneMapYIDX) );					
 				} else {
 					// 맵없다.
-					LogString (LOG_DEBUG, "Map not found ... \n" );
+					LogString (LOG_DEBUG_, "Map not found ... \n" );
 				}
 			}else
 			{
@@ -3230,7 +3230,7 @@ bool CTERRAIN::AddMAP (short nCenterMapXIDX, short nCenterMapYIDX, WORD wUpdateF
 				short nZoneX = pOneMapData->m_nCenterX + s_SecAdjPos[ pOneMapData->m_nUpdateIndex ].m_nX;
 				short nZoneY = pOneMapData->m_nCenterY + s_SecAdjPos[ pOneMapData->m_nUpdateIndex ].m_nY;
 
-				LogString (LOG_DEBUG, "LoadOneMapData: [ %d, %d ] (%d, %d) --> ( %d, %d ) \n", 
+				LogString (LOG_DEBUG_, "LoadOneMapData: [ %d, %d ] (%d, %d) --> ( %d, %d ) \n", 
 									nCenterMapXIDX, nCenterMapYIDX,
 									s_SecAdjPos[ pOneMapData->m_nUpdateIndex ].m_nX, 
 									s_SecAdjPos[ pOneMapData->m_nUpdateIndex ].m_nY, 
@@ -3250,7 +3250,7 @@ bool CTERRAIN::AddMAP (short nCenterMapXIDX, short nCenterMapYIDX, WORD wUpdateF
 			if ( nZoneMapXIDX >= 0 && nZoneMapXIDX < MAP_COUNT_PER_ZONE_AXIS &&
 				 nZoneMapYIDX >= 0 && nZoneMapYIDX < MAP_COUNT_PER_ZONE_AXIS ) {
 
-				LogString ( LOG_DEBUG, "AddMAP: (%d, %d) --> ( %d, %d ) \n", s_SecAdjPos[ s_AddSecIdx[ wUpdateFLAG ][ nI ] ].m_nX, s_SecAdjPos[ s_AddSecIdx[ wUpdateFLAG ][ nI ] ].m_nY, nZoneMapXIDX, nZoneMapYIDX);
+				LogString ( LOG_DEBUG_, "AddMAP: (%d, %d) --> ( %d, %d ) \n", s_SecAdjPos[ s_AddSecIdx[ wUpdateFLAG ][ nI ] ].m_nX, s_SecAdjPos[ s_AddSecIdx[ wUpdateFLAG ][ nI ] ].m_nY, nZoneMapXIDX, nZoneMapYIDX);
 
 				pMAP = this->FindLoadedMAP (nZoneMapXIDX, nZoneMapYIDX);
 				/// 이미 로드된 맵이라면..
@@ -3267,7 +3267,7 @@ bool CTERRAIN::AddMAP (short nCenterMapXIDX, short nCenterMapYIDX, WORD wUpdateF
 								return false;
 						} else {
 							// 맵없다.
-							LogString (LOG_DEBUG, "Map not found ... \n" );
+							LogString (LOG_DEBUG_, "Map not found ... \n" );
 						}
 					}
 					else
@@ -3403,14 +3403,14 @@ void CTERRAIN::SetCenterPosition (float fWorldX, float fWorldY)
 
 	if ( wUpdateFLAG ) 
 	{
-		LogString (LOG_DEBUG, "\n=====================================================\n" );
+		LogString (LOG_DEBUG_, "\n=====================================================\n" );
 
-		LogString (LOG_DEBUG, "(%d,%d)-->(%d,%d)    mapping ( %d, %d )\n", 
+		LogString (LOG_DEBUG_, "(%d,%d)-->(%d,%d)    mapping ( %d, %d )\n", 
 			m_nCenterMapXIDX, m_nCenterMapYIDX,
 			nZoneMapX, nZoneMapY,
 			nMappingX, nMappingY);
 
-		LogString (LOG_DEBUG, "=====================================================\n\n" );
+		LogString (LOG_DEBUG_, "=====================================================\n\n" );
 
 
 		//----------------------------------------------------------------------------------------------------
@@ -3532,7 +3532,7 @@ void CTERRAIN::ReOrginazationPatch( short nZoneMapX, short nZoneMapY )
 				short nViewPatchX = (1+nX) * PATCH_COUNT_PER_MAP_AXIS;
 				short nViewPatchY = (1+nZ) * PATCH_COUNT_PER_MAP_AXIS;
 
-				LogString (LOG_DEBUG, "NULL MappingToZONE::( %d, %d ) \n", nViewPatchX, nViewPatchY);
+				LogString (LOG_DEBUG_, "NULL MappingToZONE::( %d, %d ) \n", nViewPatchX, nViewPatchY);
 
 				int iH, iW;
 				for (iH=0; iH<PATCH_COUNT_PER_MAP_AXIS; iH++)

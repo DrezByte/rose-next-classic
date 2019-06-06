@@ -291,7 +291,7 @@ void CThreadLOG::Send_gsv_LOG_SQL()
 //-------------------------------------------------------------------------------------------------
 void CThreadLOG::Execute ()
 {
-	g_LOG.CS_ODS( 0xffff, ">  > >> CThreadLOG::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	LOG_DEBUG("ThreadLOG::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID );
 
     while( TRUE ) {
 		if ( !this->Terminated ) {
@@ -313,7 +313,7 @@ void CThreadLOG::Execute ()
 		this->Proc_QuerySTRING ();
 	}
 
-	g_LOG.CS_ODS( 0xffff, "<  < << CThreadLOG::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	LOG_DEBUG("CThreadLOG::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 }
 
 //-------------------------------------------------------------------------------------------------

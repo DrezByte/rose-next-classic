@@ -194,7 +194,7 @@ _PASS :
 				SYSTEMTIME st;
 				classTIME::AbsSecondToSystem( this->m_dwLastLoginTIME, st );
 
-				//LogString (LOG_DEBUG, "%s[%s] Last login time[ %d-%d-%d, %d:%d ] select server %s, channel:%d \n",
+				//LogString (LOG_DEBUG_, "%s[%s] Last login time[ %d-%d-%d, %d:%d ] select server %s, channel:%d \n",
 				//	pCAccount->m_Account.Get(),
 				//	pCAccount->m_IP.Get(),
 				//	st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute,
@@ -302,7 +302,7 @@ bool CLS_Client::HandlePACKET( t_PACKETHEADER *pPacket )
     패킷 디코딩...
     패킷 일련번호, 사이즈, CRC, CheckSUM등으로 적합패킷인지 판단.
 */
-//    LogString(LOG_DEBUG, "        >> %d CLS_Client::HandlePACKET:: Type: 0x%x, Length: %d\n", this->m_iSocketIDX, pPacket->m_wType, pPacket->m_nSize);
+//    LogString(LOG_DEBUG_, "        >> %d CLS_Client::HandlePACKET:: Type: 0x%x, Length: %d\n", this->m_iSocketIDX, pPacket->m_wType, pPacket->m_nSize);
 	short nOffset;
 
     switch( m_nProcSTEP ) {

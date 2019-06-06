@@ -236,7 +236,7 @@ void CZoneFILE::ReadObjINFO(FILE *fp, long lOffset, int iLumpType, short nMapXID
 					continue;
 				}
 
-				g_LOG.CS_ODS( LOG_DEBUG, "Set Default CHAR( %d:%s ), ( %f, %f ) \n", iObjID, pNewCHAR->Get_NAME(), fPosX, fPosY );
+				g_LOG.CS_ODS( LOG_DEBUG_, "Set Default CHAR( %d:%s ), ( %f, %f ) \n", iObjID, pNewCHAR->Get_NAME(), fPosX, fPosY );
 				continue;
 			}
 ///*
@@ -273,7 +273,7 @@ void CZoneFILE::ReadObjINFO(FILE *fp, long lOffset, int iLumpType, short nMapXID
 //*/
 		}
 
-		// LogString (LOG_DEBUG, "Object:: Map[%02d,%02d], Type:%d, ID: %d, Pos[%d,%d] \n", m_nZoneMapXIDX, m_nZoneMapYIDX, iObjType, iObjID, iMapXPos, iMapYPos);
+		// LogString (LOG_DEBUG_, "Object:: Map[%02d,%02d], Type:%d, ID: %d, Pos[%d,%d] \n", m_nZoneMapXIDX, m_nZoneMapYIDX, iObjType, iObjID, iMapXPos, iMapYPos);
 	}
 }
 
@@ -385,10 +385,10 @@ void CZoneFILE::ReadZoneINFO (FILE *fp, long lOffset)
 	fseek (fp, sizeof(int),	SEEK_CUR);
 
 	fread (&iValue,			sizeof(int),	1,	fp);	// witdh
-	LogString (LOG_DEBUG, "Width:: %d ... \n", iValue);
+	LogString (LOG_DEBUG_, "Width:: %d ... \n", iValue);
 
 	fread (&iValue,			sizeof(int),	1,	fp);	// height
-	LogString (LOG_DEBUG, "Height:: %d ... \n", iValue);
+	LogString (LOG_DEBUG_, "Height:: %d ... \n", iValue);
 
 
 	// appended 03. 07. 25
@@ -430,7 +430,7 @@ void CZoneFILE::ReadZoneINFO (FILE *fp, long lOffset)
 	fread (&iValue, sizeof(int), 1, fp);	// start pos
 	m_nCenterMapYIDX = iValue;
 
-	LogString (LOG_DEBUG, "Start (X:%d, Y:%d) \n", m_nCenterMapXIDX, m_nCenterMapYIDX);
+	LogString (LOG_DEBUG_, "Start (X:%d, Y:%d) \n", m_nCenterMapXIDX, m_nCenterMapYIDX);
 */
 }
 bool CZoneFILE::ReadECONOMY( FILE *fp, long lOffset )
@@ -523,7 +523,7 @@ void CZoneFILE::ReadEventObjINFO (FILE *fp, long lOffset)
 	if ( m_nZoneNO != 98 )
 		assert ( m_PosREVIVE.x != 0 && m_PosREVIVE.y != 0 );
 
-	LogString( LOG_DEBUG, "[[[ Zone %d, StartPOS :: ( %d, %d ) ]]]\n",  m_nZoneNO, m_PosSTART.x, m_PosSTART.y);
+	LogString( LOG_DEBUG_, "[[[ Zone %d, StartPOS :: ( %d, %d ) ]]]\n",  m_nZoneNO, m_PosSTART.x, m_PosSTART.y);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -644,7 +644,6 @@ bool CZoneFILE::LoadZONE (char *szBaseDIR, short nZoneNO)
 		this->m_pAgitPOS = new tPOINTF[ this->m_iAgitCNT ];
 		
 		for (iPos=0; iPos<this->m_iAgitCNT; iPos++) {
-			g_LOG.CS_ODS( 0xfff, "		Agit ZoneNO:%d, Pos( %f, %f ) \n", this->m_nZoneNO, pPos[ iPos ].x, pPos[ iPos ].y );
 			this->m_pAgitPOS[ iPos ] = pPos[ iPos ];
 		}
 		SAFE_DELETE_ARRAY( pPos );

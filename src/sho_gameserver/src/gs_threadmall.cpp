@@ -24,7 +24,7 @@ bool GS_CThreadMALL::Add_SqlPacketWithAVATAR (classUSER *pUSER, t_PACKET *pPacke
 //-------------------------------------------------------------------------------------------------
 void GS_CThreadMALL::Execute ()
 {
-	g_LOG.CS_ODS( 0xffff, ">  > >> GS_CThreadMALL::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	LOG_DEBUG("GS_CThreadMALL::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID );
 
 	CDLList< tagQueryDATA >::tagNODE *pSqlNODE;
 
@@ -59,7 +59,7 @@ void GS_CThreadMALL::Execute ()
 		}
 	}
 
-	g_LOG.CS_ODS( 0xffff, "<  < << GS_CThreadMALL::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	LOG_DEBUG("<  < << GS_CThreadMALL::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
 }
 
 //-------------------------------------------------------------------------------------------------

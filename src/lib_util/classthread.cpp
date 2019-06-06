@@ -108,7 +108,6 @@ classTHREAD::classTHREAD (bool bCreateSuspended)
 	if ( bCreateSuspended )
 		dwCreationFlags = CREATE_SUSPENDED;
 
-//	m_hThread = ::CreateThread(NULL, 0, ThreadFunc, this, dwCreationFlags, &this->ThreadID);
 	m_hThread = (HANDLE)_beginthreadex(NULL, 0, ThreadFunc, this, dwCreationFlags, &this->ThreadID);
 	if ( m_hThread != NULL ) {
         ::SetThreadPriority (m_hThread, THREAD_PRIORITY_NORMAL);
@@ -116,7 +115,6 @@ classTHREAD::classTHREAD (bool bCreateSuspended)
         return;
 	}
 
-        // Log_String ("CreateThread failed to create socket accept thread: ERROR_CODE[ %d ]\n", GetLastError());
 	if ( m_hThread != INVALID_HANDLE_VALUE ) 
 		::CloseHandle( m_hThread ); 
 

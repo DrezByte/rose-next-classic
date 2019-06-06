@@ -41,14 +41,14 @@ CIndexARRAY<DataType>::CIndexARRAY (char *szName, unsigned int uiBuffSize)
 
 	m_pINDEX = new DataType [ uiBuffSize ];
 	if ( NULL == m_pINDEX ) {
-		g_LOG.CS_ODS(0xffff, "ERROR :: Out of memory - create index buffer[ %d ] failed .. \n", uiBuffSize);
+		g_LOG.CS_ODS(0xffff, "ERROR :: Out of memory - create index buffer[ %d ] failed ..", uiBuffSize);
 		return;
 	}
 
 	for (unsigned int iL=0; iL<uiBuffSize; iL++)
 		m_pINDEX[ iL ] = NULL;
 
-	g_LOG.CS_ODS(0xffff, "Create [%s] index buffer :: %d \n", szName, uiBuffSize);
+	g_LOG.CS_ODS(0xffff, "Create [%s] index buffer :: %d", szName, uiBuffSize);
 }
 
 //-------------------------------------------------------------------------------------------------

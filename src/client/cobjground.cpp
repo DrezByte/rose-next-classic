@@ -15,7 +15,7 @@ HNODE CObjITEM::m_hMotion = NULL;
 //-------------------------------------------------------------------------------------------------
 CObjITEM::CObjITEM ()
 {
-	LogString (LOG_DEBUG, "CObjITEM::CObjITEM () \n");
+	LogString (LOG_DEBUG_, "CObjITEM::CObjITEM () \n");
 	m_dwCreatedTIME		= g_GameDATA.GetGameTime();
 	
 	m_hDummyPosition	= NULL;
@@ -24,7 +24,7 @@ CObjITEM::CObjITEM ()
 CObjITEM::~CObjITEM ()
 {
 	Delete();
-	LogString (LOG_DEBUG, "CObjITEM::~CObjITEM () \n");
+	LogString (LOG_DEBUG_, "CObjITEM::~CObjITEM () \n");
 }
 
 /// static member
@@ -172,12 +172,12 @@ int CObjITEM::Proc()
 CObjTREE::CObjTREE ()
 {
 	this->m_nTreeIdx = 0;
-	LogString (LOG_DEBUG, "CObjTREE::CObjTREE () \n");
+	LogString (LOG_DEBUG_, "CObjTREE::CObjTREE () \n");
 }
 CObjTREE::~CObjTREE ()
 {
 	_ASSERT( this->m_nTreeIdx >= 0 );
-//	LogString (LOG_DEBUG, "CObjTREE::~CObjTREE ( %d ) \n", this->m_nTreeIdx );
+//	LogString (LOG_DEBUG_, "CObjTREE::~CObjTREE ( %d ) \n", this->m_nTreeIdx );
 }
 
 
@@ -187,12 +187,12 @@ CObjTREE::~CObjTREE ()
 CObjCNST::CObjCNST ()
 {
 	this->m_nCnstIdx = 0;
-	LogString (LOG_DEBUG, "CObjCNST::CObjCNST () \n");
+	LogString (LOG_DEBUG_, "CObjCNST::CObjCNST () \n");
 }
 CObjCNST::~CObjCNST ()
 {
 	_ASSERT( this->m_nCnstIdx >= 0 );
-//	LogString (LOG_DEBUG, "CObjCNST::~CObjCNST ( %d ) %f, %f \n", this->m_nCnstIdx, this->m_PosCUR.x, this->m_PosCUR.y);
+//	LogString (LOG_DEBUG_, "CObjCNST::~CObjCNST ( %d ) %f, %f \n", this->m_nCnstIdx, this->m_PosCUR.x, this->m_PosCUR.y);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -135,7 +135,7 @@ CEvent::CEvent ( int iEventDlgType )
 
 	m_iEventDlgType	= iEventDlgType;
 
-	LogString (LOG_DEBUG, ">>>> Event CREATED ...\n");
+	LogString (LOG_DEBUG_, ">>>> Event CREATED ...\n");
 }
 CEvent::~CEvent ()
 {
@@ -148,7 +148,7 @@ CEvent::~CEvent ()
 	SAFE_DELETE_ARRAY( m_pLuaDATA );
 	SAFE_DELETE_ARRAY( m_pScrMSG );
 
-	LogString (LOG_DEBUG, "<<<< Event DELETED ...\n");
+	LogString (LOG_DEBUG_, "<<<< Event DELETED ...\n");
 }
 
 
@@ -237,7 +237,7 @@ bool CEvent::Load (char *szFileName)
 			*/
 
 			const char * szString = g_LngTBL.GetEventString ( tmpMsg.iStrID );
-			LogString (LOG_DEBUG, "MSG %d : %s \n", i, szString /*pMsg->szString*/ );
+			LogString (LOG_DEBUG_, "MSG %d : %s \n", i, szString /*pMsg->szString*/ );
 			// SAFE_DELETE_ARRAY( pMsg );
 		}
 		SAFE_DELETE_ARRAY( pMsgMMT );
@@ -261,7 +261,7 @@ bool CEvent::Load (char *szFileName)
 			pFileSystem->Seek( FileHeader.ConvOff+ConvHeader.m_dwMenuStartOff+pMenuCollMMT[i], FILE_POS_SET );
 			pFileSystem->Read( (void *)&tmpMenuColl, sizeof(SSC_MENU_COLL)-sizeof(DWORD *) );
 
-			LogString (LOG_DEBUG, "MENU %d ,  Alloc: %d \n", i, tmpMenuColl.m_iLength);
+			LogString (LOG_DEBUG_, "MENU %d ,  Alloc: %d \n", i, tmpMenuColl.m_iLength);
 			pMenuColl = (SSC_MENU_COLL *)new char[ tmpMenuColl.m_iLength ] ;
 
 			pFileSystem->Seek( FileHeader.ConvOff+ConvHeader.m_dwMenuStartOff+pMenuCollMMT[i], FILE_POS_SET );
@@ -275,7 +275,7 @@ bool CEvent::Load (char *szFileName)
 				m_pScrDATA[ i ].m_pScrITEM    = new tagSCRIPTITEM[ m_pScrDATA[ i ].m_iScrItemCNT ];
 				for (int j=0; j<pMenuColl->m_iNumSubMenu; j++)
 				{
-					LogString (LOG_DEBUG, "SubMMT %d => %d ", j, pMenuColl->m_SubMenuMMT[j] );
+					LogString (LOG_DEBUG_, "SubMMT %d => %d ", j, pMenuColl->m_SubMenuMMT[j] );
 
 					SSC_MenuItem * pMenuItem= (SSC_MenuItem *)((char *)pMenuColl+pMenuColl->m_SubMenuMMT[j]) ;
 					_ASSERT( pMenuItem->iType < 10 ) ;
@@ -290,7 +290,7 @@ bool CEvent::Load (char *szFileName)
 					m_pScrDATA[ i ].m_pScrITEM[ j ].m_Message.Set( (char *)szMSG );
 
 					/*
-					LogString (LOG_DEBUG, "	SubMENU %d, Type:%d, Child:%d, %d CheckFunc:%s, %d ClickFunc:%s : %s \n", 
+					LogString (LOG_DEBUG_, "	SubMENU %d, Type:%d, Child:%d, %d CheckFunc:%s, %d ClickFunc:%s : %s \n", 
 						j, 
 						m_pScrDATA[ i ].m_pScrITEM[ j ].m_iType,
 						m_pScrDATA[ i ].m_pScrITEM[ j ].m_lChildDataIDX,
@@ -404,7 +404,7 @@ bool CEvent::Load (char *szFileName)
 			m_pScrMSG[ i ].m_ClickFunc.Set( tmpMsg.szFunc2 );
 
 			const char * szMSG = g_LngTBL.GetEventString ( tmpMsg.iStrID );
-			LogString (LOG_DEBUG, "MSG %d : %s \n", i, szMSG /*pMsg->szString*/ );
+			LogString (LOG_DEBUG_, "MSG %d : %s \n", i, szMSG /*pMsg->szString*/ );
 			// SAFE_DELETE_ARRAY( pMsg );
         }
 		SAFE_DELETE_ARRAY( pMsgMMT );
@@ -428,7 +428,7 @@ bool CEvent::Load (char *szFileName)
             lseek(hf, FileHeader.ConvOff+ConvHeader.m_dwMenuStartOff+pMenuCollMMT[i], SEEK_SET) ;
             SCRREAD(hf, (void *)&tmpMenuColl, sizeof(SSC_MENU_COLL)-sizeof(DWORD *) );
 
-			LogString (LOG_DEBUG, "MENU %d ,  Alloc: %d \n", i, tmpMenuColl.m_iLength);
+			LogString (LOG_DEBUG_, "MENU %d ,  Alloc: %d \n", i, tmpMenuColl.m_iLength);
 			pMenuColl = (SSC_MENU_COLL *)new char[ tmpMenuColl.m_iLength ] ;
 
             lseek(hf, FileHeader.ConvOff+ConvHeader.m_dwMenuStartOff+pMenuCollMMT[i], SEEK_SET) ;
@@ -442,7 +442,7 @@ bool CEvent::Load (char *szFileName)
 				m_pScrDATA[ i ].m_pScrITEM    = new tagSCRIPTITEM[ m_pScrDATA[ i ].m_iScrItemCNT ];
                 for (int j=0; j<pMenuColl->m_iNumSubMenu; j++)
                 {
-					LogString (LOG_DEBUG, "SubMMT %d => %d ", j, pMenuColl->m_SubMenuMMT[j] );
+					LogString (LOG_DEBUG_, "SubMMT %d => %d ", j, pMenuColl->m_SubMenuMMT[j] );
 
                     SSC_MenuItem * pMenuItem= (SSC_MenuItem *)((char *)pMenuColl+pMenuColl->m_SubMenuMMT[j]) ;
                     _ASSERT( pMenuItem->iType < 10 ) ;
@@ -456,7 +456,7 @@ bool CEvent::Load (char *szFileName)
 					const char * szMSG = g_LngTBL.GetEventString ( pMenuItem->iStrID );
 					m_pScrDATA[ i ].m_pScrITEM[ j ].m_Message.Set( szMSG /* pMenuItem->szString */);
 
-					LogString (LOG_DEBUG, "	SubMENU %d, Type:%d, Child:%d, %d CheckFunc:%s, %d ClickFunc:%s : %s \n", 
+					LogString (LOG_DEBUG_, "	SubMENU %d, Type:%d, Child:%d, %d CheckFunc:%s, %d ClickFunc:%s : %s \n", 
 							j, 
 							m_pScrDATA[ i ].m_pScrITEM[ j ].m_iType,
 							m_pScrDATA[ i ].m_pScrITEM[ j ].m_lChildDataIDX,
@@ -483,7 +483,7 @@ bool CEvent::Load (char *szFileName)
 	SCRREAD(hf, m_pLuaDATA,	m_iLuaDataLEN );
 	Decode(m_pLuaDATA, m_iLuaDataLEN, m_iLuaDataLEN, lFileSize);//_tell(hf) + 1 + m_iLuaDataLEN) ; 
 #ifdef	_DEBUG
-	// m_pLuaDATA 길이가 길어서 -_-; LogString (LOG_DEBUG, "%s \n", m_pLuaDATA);
+	// m_pLuaDATA 길이가 길어서 -_-; LogString (LOG_DEBUG_, "%s \n", m_pLuaDATA);
 	//::OutputDebugString( m_pLuaDATA );
 #endif
 
@@ -517,7 +517,7 @@ void CEvent::Del_ClickITEMS (void)
 
 	pNode = m_EventITEM.GetHeadNode ();
 	while( pNode ) {
-		LogString (LOG_DEBUG, "del click items : %d \n", pNode->DATA.m_pScrITEM->m_lChildDataIDX );
+		LogString (LOG_DEBUG_, "del click items : %d \n", pNode->DATA.m_pScrITEM->m_lChildDataIDX );
 		m_EventITEM.DeleteNFree ( pNode );
 		pNode = m_EventITEM.GetHeadNode ();
 	}
@@ -613,13 +613,13 @@ short CEvent::Conversation (int iMenuIDX)
 			int iResult = lua_CallIntFUNC( m_pLUA->m_pState, fpCheck, ZZ_PARAM_INT, this, ZZ_PARAM_END);
 
 			if ( iResult < 1 ) {
-				LogString (LOG_DEBUG, "SKIP MENU %d / %d :: [%s], [%s] \n", iMenuIDX, nI, m_pScrDATA[ iMenuIDX ].m_pScrITEM[ nI ].m_Message.Get(), fpCheck);
+				LogString (LOG_DEBUG_, "SKIP MENU %d / %d :: [%s], [%s] \n", iMenuIDX, nI, m_pScrDATA[ iMenuIDX ].m_pScrITEM[ nI ].m_Message.Get(), fpCheck);
 				continue;
 			}
 		} // else 실행할 함수가 없으면 항상 출력...
 
 
-		LogString (LOG_DEBUG, "%d MENU %d / %d :: [%s], [%s] \n", 
+		LogString (LOG_DEBUG_, "%d MENU %d / %d :: [%s], [%s] \n", 
 				m_pScrDATA[ iMenuIDX ].m_pScrITEM[ nI ].m_iType,
 				iMenuIDX, nI, m_pScrDATA[ iMenuIDX ].m_pScrITEM[ nI ].m_Message.Get(), fpCheck);
 
@@ -694,7 +694,7 @@ bool CEvent::Start (short nEventIDX)
 		case LUA_ERRSYNTAX	:	// 3
 		case LUA_ERRMEM		:
 		case LUA_ERRERR		:
-			LogString (LOG_DEBUG, "Script File ERROR[ %d ] %s \n", iResult, m_pLuaDATA);
+			LogString (LOG_DEBUG_, "Script File ERROR[ %d ] %s \n", iResult, m_pLuaDATA);
 			SAFE_DELETE( m_pLUA );
 			return false;
 	}
@@ -705,7 +705,7 @@ bool CEvent::Start (short nEventIDX)
 	if ( nEventIDX >= 0 && nEventIDX < NUM_EVENT ) {
 		iResult = lua_CallIntFUNC( m_pLUA->m_pState, m_EventFUNC[ nEventIDX ].Get(), ZZ_PARAM_INT, this, ZZ_PARAM_END);
 		if ( iResult < 1 ) {
-			LogString (LOG_DEBUG, "SKIP EventIdxFUNC [%d: %s return %d], [%s] \n", nEventIDX, m_EventFUNC[ nEventIDX ].Get(), iResult);
+			LogString (LOG_DEBUG_, "SKIP EventIdxFUNC [%d: %s return %d], [%s] \n", nEventIDX, m_EventFUNC[ nEventIDX ].Get(), iResult);
 			return false;
 		}
 		return true;
@@ -716,7 +716,7 @@ bool CEvent::Start (short nEventIDX)
 	if ( szCheckFunc ) {
 		iResult = lua_CallIntFUNC( m_pLUA->m_pState, szCheckFunc, ZZ_PARAM_INT, this, ZZ_PARAM_END);
 		if ( iResult < 1 ) {
-			LogString (LOG_DEBUG, "SKIP Event [%s return %d], [%s] \n", szCheckFunc, iResult);
+			LogString (LOG_DEBUG_, "SKIP Event [%s return %d], [%s] \n", szCheckFunc, iResult);
 			return false;
 		}
 	}
@@ -737,7 +737,7 @@ bool CEvent::End ()
 			return true;
 		}
 		
-		LogString (LOG_DEBUG, "End Event [%s return %d], [%s] \n", fpCheck, iResult);
+		LogString (LOG_DEBUG_, "End Event [%s return %d], [%s] \n", fpCheck, iResult);
 	}
 
 /*
@@ -763,12 +763,12 @@ void CEvent::Click_ITEM( int iHandle )
 	classDLLNODE< tagEventITEM > *pClickItemNODE = (classDLLNODE< tagEventITEM > *)iHandle;
 	char *fpClick = pClickItemNODE->DATA.m_pScrITEM->m_ClickFunc.Get();
 
-	LogString (LOG_DEBUG, " ClickMENU : %d  call: %s \n", pClickItemNODE->DATA.m_pScrITEM->m_lChildDataIDX, fpClick );
+	LogString (LOG_DEBUG_, " ClickMENU : %d  call: %s \n", pClickItemNODE->DATA.m_pScrITEM->m_lChildDataIDX, fpClick );
 
 	if ( fpClick ) {
 		int iResult = lua_CallIntFUNC( pClickItemNODE->DATA.m_pEVENT->m_pLUA->m_pState, fpClick, ZZ_PARAM_INT, pClickItemNODE->DATA.m_pEVENT, ZZ_PARAM_END);
 		if ( iResult < 1 )
-			LogString (LOG_DEBUG, "click %s call failed \n", fpClick);
+			LogString (LOG_DEBUG_, "click %s call failed \n", fpClick);
 	}
 
 	if ( !pClickItemNODE->DATA.m_pEVENT->Conversation( pClickItemNODE->DATA.m_pScrITEM->m_lChildDataIDX ) ) {

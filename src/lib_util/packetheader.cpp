@@ -9,7 +9,7 @@ struct t_PACKET;
 char *Packet_GetStringPtr (t_PACKET *pPacket, short &nOffset, short &nOutStrLEN)
 {
     if ( nOffset >= ((t_PACKETHEADER*)pPacket)->m_nSize ) {
-		// iCARUS_LogString (LOG_DEBUG, "Packet_GetStringPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->cType, pPacket->m_nSize, *pOffset);
+		// iCARUS_LogString (LOG_DEBUG_, "Packet_GetStringPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->cType, pPacket->m_nSize, *pOffset);
         return NULL;
     }
 
@@ -28,7 +28,7 @@ char *Packet_GetStringPtr (t_PACKET *pPacket, short &nOffset, short &nOutStrLEN)
 char *Packet_GetStringPtr (t_PACKET *pPacket, short &nOffset)
 {
     if ( nOffset >= ((t_PACKETHEADER*)pPacket)->m_nSize ) {
-		// iCARUS_LogString (LOG_DEBUG, "Packet_GetStringPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->cType, pPacket->m_nSize, *pOffset);
+		// iCARUS_LogString (LOG_DEBUG_, "Packet_GetStringPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->cType, pPacket->m_nSize, *pOffset);
         return NULL;
     }
 
@@ -44,7 +44,7 @@ char *Packet_GetStringPtr (t_PACKET *pPacket, short &nOffset)
 void *Packet_GetDataPtr (t_PACKET *pPacket, short &nOffset, short nSize)
 {
     if ( nOffset+nSize > ((t_PACKETHEADER*)pPacket)->m_nSize ) {
-        // iCARUS_LogString (LOG_DEBUG, "Packet_GetDataPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->cType, pPacket->m_nSize, *pOffset);
+        // iCARUS_LogString (LOG_DEBUG_, "Packet_GetDataPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->cType, pPacket->m_nSize, *pOffset);
         return NULL;
     }
 

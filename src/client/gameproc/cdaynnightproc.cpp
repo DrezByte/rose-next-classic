@@ -191,11 +191,6 @@ void CDayNNightProc::SetWorldTime( int iZoneNO, DWORD dwWorldTime )
 	
 	m_dwStartWorldTime = g_GameDATA.GetGameTime();
 	m_dwElapsedWorldTime = 0;
-
-
-	Log_String( LOG_NORMAL, "월드타임[%d]\n", dwWorldTime );
-	Log_String( LOG_NORMAL, "존타임[%d]\n", m_dwZoneTime );
-
 	
 	GetCurrentTimeState();
 

@@ -21,7 +21,7 @@ unsigned int get_param_uint (lua_State * L, int& index_from_end, const char * wh
 	_ASSERT(index >= 1);
 	index_from_end++;
 	if (!lua_isnumber(L, index)) {
-		LogString(LOG_DEBUG, "script_lua: %s().parameter(uint) match failed\n", where);
+		LogString(LOG_DEBUG_, "script_lua: %s().parameter(uint) match failed\n", where);
 		return 0;
 	}
 	return (unsigned int)lua_tonumber(L, index);
@@ -34,7 +34,7 @@ int get_param_int (lua_State * L, int& index_from_end, const char * where)
 	_ASSERT(index >= 1);
 	index_from_end++;
 	if (!lua_isnumber(L, index)) {
-		LogString(LOG_DEBUG, "script_lua: %s().parameter(int) match failed\n", where);
+		LogString(LOG_DEBUG_, "script_lua: %s().parameter(int) match failed\n", where);
 		return 0;
 	}
 	return (int)lua_tonumber(L, index);
@@ -46,7 +46,7 @@ float get_param_float (lua_State * L, int& index_from_end, const char * where)
 	_ASSERT(index >= 1);
 	index_from_end++;
 	if (!lua_isnumber(L, index)) {
-		LogString(LOG_DEBUG, "_script_lua: %s().parameter(float) match failed\n", where);
+		LogString(LOG_DEBUG_, "_script_lua: %s().parameter(float) match failed\n", where);
 		return 0;
 	}
 	return (float)lua_tonumber(L, index);
@@ -58,7 +58,7 @@ float * get_param_float3 (lua_State * L, int& index_from_end, const char * where
 	_ASSERT(index >= 1);
 	index_from_end += 3;
 	if (!lua_isnumber(L, index-2) || !lua_isnumber(L, index-1) || !lua_isnumber(L, index)) {
-		LogString(LOG_DEBUG, "script_lua: %s().parameter(float3) match failed\n", where);
+		LogString(LOG_DEBUG_, "script_lua: %s().parameter(float3) match failed\n", where);
 		return NULL;
 	}
 	static float ret[3];
@@ -74,7 +74,7 @@ const char * get_param_string (lua_State * L, int& index_from_end, const char * 
 	_ASSERT(index >= 1);
 	index_from_end++;
 	if (!lua_isstring(L, index)) {
-		LogString(LOG_DEBUG, "script_lua: %s().parameter(string) match failed\n", where);
+		LogString(LOG_DEBUG_, "script_lua: %s().parameter(string) match failed\n", where);
 		return NULL;
 	}
 	return lua_tostring(L, index);
@@ -204,11 +204,11 @@ int lua_CallFUNC (lua_State *L, const char* function_name, va_list va)
 			int iType = lua_type( L, lua_gettop( L ) );
 			switch( iType )
 			{
-				case LUA_TNUMBER	: LogString (LOG_DEBUG, "script returned %d \n", lua_tonumber( L, lua_gettop( L ) ) );		break;
-				case LUA_TTABLE	: LogString (LOG_DEBUG, "script returned a table \n" ); break;
-				case LUA_TSTRING	: LogString (LOG_DEBUG, "script returned %s \n", lua_tostring( L, lua_gettop( L ) ) );		break;
-//				case LUA_TBOOLEAN	: LogString (LOG_DEBUG, "script returned %d \n", lua_toboolean( L, lua_gettop( L ) ) );	break;
-				default: LogString (LOG_DEBUG, "script returned unknown param  %d \n", iType );	break;
+				case LUA_TNUMBER	: LogString (LOG_DEBUG_, "script returned %d \n", lua_tonumber( L, lua_gettop( L ) ) );		break;
+				case LUA_TTABLE	: LogString (LOG_DEBUG_, "script returned a table \n" ); break;
+				case LUA_TSTRING	: LogString (LOG_DEBUG_, "script returned %s \n", lua_tostring( L, lua_gettop( L ) ) );		break;
+//				case LUA_TBOOLEAN	: LogString (LOG_DEBUG_, "script returned %d \n", lua_toboolean( L, lua_gettop( L ) ) );	break;
+				default: LogString (LOG_DEBUG_, "script returned unknown param  %d \n", iType );	break;
 			}
 			lua_pop( L, 1 );
 	   }
@@ -256,12 +256,12 @@ int lua_CallIntFUNC (lua_State *pLUA, const char *szFuncName, ...)
 		// 리턴된 결과가 있으므로 결과 값을 얻어온다.
 		lua_GetRETURN(pLUA, iResultCnt);
 
-		LogString (LOG_DEBUG, "lua function( %s ) return %d ... \n", szFuncName, iResultCnt );
+		LogString (LOG_DEBUG_, "lua function( %s ) return %d ... \n", szFuncName, iResultCnt );
 
 	    return iResultCnt;
 	}
 
-	LogString (LOG_DEBUG, "lua function( %s ) return %d result ... \n", szFuncName, iResultCnt );
+	LogString (LOG_DEBUG_, "lua function( %s ) return %d result ... \n", szFuncName, iResultCnt );
 
 	return 0x80000000;
 }

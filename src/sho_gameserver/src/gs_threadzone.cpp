@@ -97,7 +97,7 @@ void CZoneTHREAD::Execute()
 
     DWORD dwPassTIME, dwCurTIME;
 
-	g_LOG.debug("CZoneTHREAD::Execute() ThreadID: %d(0x%x),  Zone:%d, TotObjIN:%d",
+	LOG_DEBUG("CZoneTHREAD::Execute() ThreadID: %d(0x%x),  Zone:%d, TotObjIN:%d",
 		this->ThreadID,
 		this->ThreadID,
 		this->Get_ZoneNO(),
@@ -236,7 +236,7 @@ void CZoneTHREAD::Execute()
 	int iTotObjInZONE = m_ObjLIST.GetNodeCount();
 	this->DeleteZoneOBJ ();
 
-	g_LOG.debug("CZoneTHREAD::Execute() ThreadID: %d(0x%x), Zone:%d, TotObjIN:%d",
+	LOG_DEBUG("CZoneTHREAD::Execute() ThreadID: %d(0x%x), Zone:%d, TotObjIN:%d",
 		this->ThreadID,
 		this->ThreadID,
 		this->Get_ZoneNO(),

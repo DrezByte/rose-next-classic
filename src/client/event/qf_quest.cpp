@@ -12,7 +12,7 @@
 /// 퀘스트 트리거 조건을 체크한다... AddCODE: by icarus
 int		QF_checkQuestCondition ( ZSTRING szQuestTriggerName )
 {
-	LogString (LOG_DEBUG, "GF_checkQuestCondition( %s ) \n", szQuestTriggerName );
+	LogString (LOG_DEBUG_, "GF_checkQuestCondition( %s ) \n", szQuestTriggerName );
 
 
 	//--------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ int		QF_doQuestTrigger ( ZSTRING szQuestTriggerName )
 		return 0;
 	}
 
-	LogString (LOG_DEBUG, "GF_doQuestTrigger( %d ) ", szQuestTriggerName );
+	LogString (LOG_DEBUG_, "GF_doQuestTrigger( %d ) ", szQuestTriggerName );
 
 	//--------------------------------------------------------------------------------
 	LOGOUT( "QF_checkQuestCondition( %s ) success[ 서버에 트리거 실행요청 ] ", szQuestTriggerName );
@@ -82,7 +82,7 @@ int		QF_getQuestCount ( void )
 		if ( g_pAVATAR->m_Quests.m_QUEST[ nI ].GetID() )
 			iCnt ++;
 		
-	LogString (LOG_DEBUG, "%d = QF_getQuestCount () \n", iCnt );
+	LogString (LOG_DEBUG_, "%d = QF_getQuestCount () \n", iCnt );
 
 	//--------------------------------------------------------------------------------
 	LOGOUT( "QF_getQuestCount() [ %d ] ", iCnt );
@@ -94,7 +94,7 @@ int		QF_getQuestCount ( void )
 //-------------------------------------------------------------------------------------------------
 int		QF_findQuest ( int iQuestID )
 {
-	LogString (LOG_DEBUG, "QF_findQuest( %d ) \n", iQuestID );
+	LogString (LOG_DEBUG_, "QF_findQuest( %d ) \n", iQuestID );
 
 	//--------------------------------------------------------------------------------
 	LOGOUT( "QF_findQuest( %d ) ", iQuestID );
@@ -119,7 +119,7 @@ int		QF_findQuest ( int iQuestID )
 //-------------------------------------------------------------------------------------------------
 int		QF_getQuestID ( int hQUEST )
 {
-	LogString (LOG_DEBUG, "QF_getQuestID( %d ) \n", hQUEST );
+	LogString (LOG_DEBUG_, "QF_getQuestID( %d ) \n", hQUEST );
 
 	//--------------------------------------------------------------------------------
 	LOGOUT( "QF_getQuestID( %d ) ", hQUEST );
@@ -143,7 +143,7 @@ int		QF_getQuestID ( int hQUEST )
 //-------------------------------------------------------------------------------------------------
 int		QF_appendQuest ( int iQuestID )
 {
-	LogString (LOG_DEBUG, "QF_appendQuest( %d ) \n", iQuestID );
+	LogString (LOG_DEBUG_, "QF_appendQuest( %d ) \n", iQuestID );
 
 	//--------------------------------------------------------------------------------
 	LOGOUT( "QF_appendQuest( %d ) ", iQuestID );
@@ -172,7 +172,7 @@ int		QF_appendQuest ( int iQuestID )
 //-------------------------------------------------------------------------------------------------
 void	QF_deleteQuest ( int iQuestID )
 {
-	LogString (LOG_DEBUG, "QF_deleteQuest( %d ) \n", iQuestID );
+	LogString (LOG_DEBUG_, "QF_deleteQuest( %d ) \n", iQuestID );
 
 	//--------------------------------------------------------------------------------
 	LOGOUT( "QF_deleteQuest( %d ) ", iQuestID );
@@ -195,7 +195,7 @@ void	QF_deleteQuest ( int iQuestID )
 //-------------------------------------------------------------------------------------------------
 int		QF_getQuestVar ( int hQUEST, int iVarNO )
 {
-	LogString (LOG_DEBUG, "QF_getQuestVar( %d, %d ) \n", hQUEST, iVarNO );
+	LogString (LOG_DEBUG_, "QF_getQuestVar( %d, %d ) \n", hQUEST, iVarNO );
 
 	//--------------------------------------------------------------------------------
 	LOGOUT( "QF_getQuestVar( %d, %d ) ", hQUEST, iVarNO );
@@ -221,7 +221,7 @@ int		QF_getQuestVar ( int hQUEST, int iVarNO )
 //-------------------------------------------------------------------------------------------------
 void	QF_setQuestVar ( int hQUEST, int iVarNO, int iValue )
 {
-	LogString (LOG_DEBUG, "QF_setQuestVar( %d, %d, %d ) \n", hQUEST, iVarNO, iValue );
+	LogString (LOG_DEBUG_, "QF_setQuestVar( %d, %d, %d ) \n", hQUEST, iVarNO, iValue );
 
 	if ( hQUEST<0 || hQUEST>QUEST_PER_PLAYER )
 		return;
@@ -234,7 +234,7 @@ void	QF_setQuestVar ( int hQUEST, int iVarNO, int iValue )
 //-------------------------------------------------------------------------------------------------
 int		QF_getQuestSwitch ( int hQUEST, int iSwitchNO )
 {
-	LogString (LOG_DEBUG, "QF_getQuestSwitch( %d, %d ) \n", hQUEST, iSwitchNO );
+	LogString (LOG_DEBUG_, "QF_getQuestSwitch( %d, %d ) \n", hQUEST, iSwitchNO );
 
 	//--------------------------------------------------------------------------------
 	LOGOUT( "QF_getQuestSwitch( %d, %d ) ", hQUEST, iSwitchNO );
@@ -259,7 +259,7 @@ int		QF_getQuestSwitch ( int hQUEST, int iSwitchNO )
 //-------------------------------------------------------------------------------------------------
 void	QF_setQuestSwitch ( int hQUEST, int iSwitchNO, int iValue )
 {
-	LogString (LOG_DEBUG, "QF_setQuestSwitch( %d, %d, %d ) \n", hQUEST, iSwitchNO, iValue );
+	LogString (LOG_DEBUG_, "QF_setQuestSwitch( %d, %d, %d ) \n", hQUEST, iSwitchNO, iValue );
 
 	if ( hQUEST<0 || hQUEST>QUEST_PER_PLAYER )
 		return;

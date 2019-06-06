@@ -898,10 +898,10 @@ void CThreadGUILD::Test_del (char *pGuildName)
 		}
 		switch( iResultSP ) {
 			case 0 :	// 성공
-				g_LOG.CS_ODS( 0xffff, "Delete clan success : dwCladID::%d\n", dwClanID );
+				LOG_INFO("Delete clan success : dwCladID::%d", dwClanID );
 				break;
 			default :	// 실패
-				g_LOG.CS_ODS( 0xffff, "Delete clan failed : %d\n", iResultSP );
+				LOG_INFO( "Delete clan failed : %d", iResultSP );
 		}
 	} else {
 		// 디비 SP 오류...
@@ -910,16 +910,7 @@ void CThreadGUILD::Test_del (char *pGuildName)
 
 void CThreadGUILD::Execute ()
 {
-	//this->Test_add( "aa", "bb" );
-	//this->Test_add( "bb", "bb" );
-	//this->Test_add( "cc", "bb" );
-	//this->Test_add( "dd", "bb" );
-
-	//this->Test_del ("bb");
-	//this->Test_del ("cc");
-	//this->Test_del ("ff");
-
-	g_LOG.CS_ODS( 0xffff, ">  > >> CThreadGUILD::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	DEBUG("CThreadGUILD::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID );
 
 	CDLList< tagCLAN_CMD >::tagNODE *pCmdNODE;
 	
@@ -954,7 +945,7 @@ void CThreadGUILD::Execute ()
 	int iCnt = m_AddPACKET.GetNodeCount();
 	_ASSERT( iCnt == 0 );
 
-	g_LOG.CS_ODS( 0xffff, "<<<< CThreadGUILD::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID );
+	DEBUG("CThreadGUILD::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 }
 
 

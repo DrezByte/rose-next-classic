@@ -40,7 +40,7 @@ t_HASHKEY CEventLIST::Add_EVENT (char *szFileName)
 		return 0;
 	}
 
-	LogString ( LOG_DEBUG, "Add_EVENT:: %s \n", szFileName);
+	LogString ( LOG_DEBUG_, "Add_EVENT:: %s \n", szFileName);
 
 	return this->Add_FILE(szFileName);
 }

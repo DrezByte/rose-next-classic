@@ -182,7 +182,7 @@ bool classODBC::ReigsterDsnIfNone (char *szDSN, char *szDBName, char *szServerIP
 			if ( !strcmpi( szFindDSN, szDSN ) )
 				bFindDSN = true;
 
-			g_LOG.CS_ODS( 0xffff, "Find DSN ::: %s \n", szFindDSN );
+			g_LOG.CS_ODS( 0xffff, "Find DSN ::: %s", szFindDSN );
 		} while( this->NextDSN( szFindDSN, MAX_PATH ) );
 	}
 

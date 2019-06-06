@@ -109,7 +109,7 @@ void CCamera::ResetToAvatarCamera()
 
 	if( m_hNODE == NULL )
 	{
-		LogString( LOG_DEBUG, "Load camera failed[ cameras/camera01.zca ]"  );
+		LogString( LOG_DEBUG_, "Load camera failed[ cameras/camera01.zca ]"  );
 		return;
 	}
 
@@ -144,7 +144,7 @@ void CCamera::SetMotion( const char* strMotion )
 
 	if( m_hMotion == NULL )
 	{
-		LogString( LOG_DEBUG, "Camera motion loading failed[ %s ]", strMotion );
+		LogString( LOG_DEBUG_, "Camera motion loading failed[ %s ]", strMotion );
 		return;
 	}
 

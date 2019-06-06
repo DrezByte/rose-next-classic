@@ -310,7 +310,7 @@ bool CMotionLIST::Load_FILE (tagFileDATA<tagMOTION*> *pData)
 	SAFE_DELETE( pData->m_DATA );
 	pData->m_DATA = new tagMOTION;
 	if ( pData->m_DATA->LoadZMO( pData->m_FileName.Get() ) ) {
-		// LogString (LOG_DEBUG, "Load Motion[ %s ] file \n", pData->m_FileName.Get() );
+		// LogString (LOG_DEBUG_, "Load Motion[ %s ] file \n", pData->m_FileName.Get() );
 
 #ifndef __SERVER
 		char *szName = CStr::Printf (NAME_MOTION, pData->m_nTag);

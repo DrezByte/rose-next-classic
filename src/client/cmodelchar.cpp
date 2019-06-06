@@ -38,9 +38,9 @@ tagMOTION* CCharMODEL::GetMOTION (short nIndex)
 	
 	if ( NULL == pData ) {
 #ifdef	_DEBUG
-		LogString (LOG_DEBUG, "(%s) Motion ERROR :: %s [ %d / %d ] \n", m_Name.Get(), g_MotionFILE.Get_FileNAME( m_BoneAniFILE[nIndex] ), m_BoneAniFILE[nIndex], nIndex );
+		LogString (LOG_DEBUG_, "(%s) Motion ERROR :: %s [ %d / %d ] \n", m_Name.Get(), g_MotionFILE.Get_FileNAME( m_BoneAniFILE[nIndex] ), m_BoneAniFILE[nIndex], nIndex );
 #else
-		LogString (LOG_DEBUG, "Motion ERROR :: %s [ %d / %d ] \n", g_MotionFILE.Get_FileNAME( m_BoneAniFILE[nIndex] ), m_BoneAniFILE[nIndex], nIndex );
+		LogString (LOG_DEBUG_, "Motion ERROR :: %s [ %d / %d ] \n", g_MotionFILE.Get_FileNAME( m_BoneAniFILE[nIndex] ), m_BoneAniFILE[nIndex], nIndex );
 #endif
 	}
 
@@ -183,7 +183,7 @@ bool CCharMODEL::Load_MOBorNPC ( CFileSystem* pFileSystem, t_HASHKEY *pSkelKEY, 
 		m_pBodyPART[ nI ] = g_DATA.m_ModelMOBnNPC.GetMODEL( nIndex );
 	}
 
-	LogString (LOG_DEBUG, "SKEL:: %s \n", g_DATA.m_SKELETON.Get_FileNAME( m_HashSkelFILE ) );
+	LogString (LOG_DEBUG_, "SKEL:: %s \n", g_DATA.m_SKELETON.Get_FileNAME( m_HashSkelFILE ) );
 
 	// read ani index counter
 	short nCnt, nAniIDX;
@@ -200,7 +200,7 @@ bool CCharMODEL::Load_MOBorNPC ( CFileSystem* pFileSystem, t_HASHKEY *pSkelKEY, 
 		}
 
 		m_BoneAniFILE[ nAniIDX ] = pAniKEY[ nIndex ];
-		LogString (LOG_DEBUG, "		HashMotionFILE::%d: %s %d / %d \n", nIndex,  
+		LogString (LOG_DEBUG_, "		HashMotionFILE::%d: %s %d / %d \n", nIndex,  
 			g_MotionFILE.Get_FileNAME( m_BoneAniFILE[nAniIDX] ), m_BoneAniFILE[ nAniIDX ], nAniIDX);
 	}
 
@@ -340,7 +340,7 @@ bool CCharModelDATA::Load_MOBorNPC (char *szFileName)
 	{
 		pStr = CGameStr::ReadString (pFileSystem);
 		pEftKEY[ nI ] = g_pEffectLIST->Add_EffectFILE( pStr );
-		LogString (LOG_DEBUG, "Bone EFFECT FILE : %d / %s \n", nI, pStr);
+		LogString (LOG_DEBUG_, "Bone EFFECT FILE : %d / %s \n", nI, pStr);
 	}
 
 	pFileSystem->ReadInt16( &m_nModelCNT );

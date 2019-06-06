@@ -25,7 +25,7 @@ CExternalUILobby		g_EUILobby;
 
 void	ResetAvataList()
 {
-	LogString (LOG_DEBUG, "Deplicated Operation :: ResetAvataList\n" );
+	LogString (LOG_DEBUG_, "Deplicated Operation :: ResetAvataList\n" );
 //	g_EUILobby.ReSetAvataListBox();
 }
 

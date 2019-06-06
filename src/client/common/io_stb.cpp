@@ -31,11 +31,11 @@ void STBVALUE::SetVALUE (char *szValue)
 			m_bString = true;
 			m_pString = new CStrVAR;
 			m_pString->Set( szValue );
-			//LogString (LOG_DEBUG, "S: %s ", szValue);
+			//LogString (LOG_DEBUG_, "S: %s ", szValue);
 			return;
 		}
 	}
-	// LogString (LOG_DEBUG, "D: %d ", m_nValue);
+	// LogString (LOG_DEBUG_, "D: %d ", m_nValue);
 }
 void STBVALUE::SetVALUE (int iValue)
 {

@@ -14,3 +14,4 @@ cbindgen = "0.8"
 chrono = "0.4"
 libc = "0.2"
 log = { version = "0.4", features = ["std"] }
+yansi = "0.5"

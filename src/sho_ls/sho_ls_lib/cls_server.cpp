@@ -347,7 +347,7 @@ bool CLS_Server::Send_wls_CONFIRM_ACCOUNT_REPLY (BYTE btResult, DWORD dwLSID, DW
 //-------------------------------------------------------------------------------------------------
 bool CLS_Server::Recv_gsv_CHECK_ALIVE (t_PACKET *pPacket)
 {
-	// LogString (LOG_DEBUG, "CLS_Server::Recv_gsv_CHECK_ALIVE[ %s:%s ] \n", m_ServerNAME.Get(), m_ServerIP.Get() );
+	// LogString (LOG_DEBUG_, "CLS_Server::Recv_gsv_CHECK_ALIVE[ %s:%s ] \n", m_ServerNAME.Get(), m_ServerIP.Get() );
 
     this->m_dwCheckSEC = classTIME::GetCurrentAbsSecond ();
 
@@ -444,7 +444,7 @@ bool CLS_Server::Recv_zws_CONFIRM_ACCOUNT_REQ (t_PACKET *pPacket)
 */
 bool CLS_Server::Recv_zws_ADD_ACCOUNT (t_PACKET *pPacket)
 {
-//    LogString (LOG_DEBUG, "CLS_Server::Recv_gsv_ADD_ACCOUNT:: Type: 0x%x, Length: %d\n", pPacket->m_HEADER.m_wType, pPacket->m_HEADER.m_nSize);
+//    LogString (LOG_DEBUG_, "CLS_Server::Recv_gsv_ADD_ACCOUNT:: Type: 0x%x, Length: %d\n", pPacket->m_HEADER.m_wType, pPacket->m_HEADER.m_nSize);
 
     short nOffset=sizeof(zws_ADD_ACCOUNT);
     char *szAccount = Packet_GetStringPtr (pPacket, nOffset);
@@ -560,7 +560,7 @@ bool CLS_Server::HandlePACKET (t_PACKETHEADER *pPacket )
     패킷 디코딩...
     패킷 일련번호, 사이즈, CRC, CheckSUM등으로 적합패킷인지 판단.
 */
-//    LogString (LOG_DEBUG, "        >> %d CLS_Server::HandlePACKET:: Type: 0x%x, Length: %d\n", this->m_iSocketIDX, pPacket->m_wType, pPacket->m_nSize);
+//    LogString (LOG_DEBUG_, "        >> %d CLS_Server::HandlePACKET:: Type: 0x%x, Length: %d\n", this->m_iSocketIDX, pPacket->m_wType, pPacket->m_nSize);
 
     switch ( pPacket->m_wType ) {
 		case SRV_ACTIVE_MODE :

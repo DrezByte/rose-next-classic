@@ -85,7 +85,7 @@ LRESULT CApplication::MessageProc ( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
 				m_wActive = ( ( LOWORD( wParam ) != WA_INACTIVE ) && ( HIWORD( wParam ) == 0 ) ); // INVACIVE 가 아니고, 미니마이즈도 아닌 경우에만 활성화
 				//m_wActive = true;
 				
-				LogString( LOG_DEBUG, "WM_ACTIVATE: [%s]\n",
+				LogString( LOG_DEBUG_, "WM_ACTIVATE: [%s]\n",
 					( HIWORD(wParam) != 0) ? "[MINIMIZED]" :
 						( LOWORD(wParam) == WA_ACTIVE ) ? "ACTIVATE" : 
 							( LOWORD(wParam) == WA_CLICKACTIVE ) ? "CLICKACTIVE" : "DEACTIVE" );

@@ -498,13 +498,13 @@ bool CLogin::ConnectLoginServer()
 			else
 			{
 				pEditBox->SetFocus( true );
-				LogString (LOG_DEBUG, "Empty ID EditBox in CLogin::SendLoginReq()\n" );
+				LogString (LOG_DEBUG_, "Empty ID EditBox in CLogin::SendLoginReq()\n" );
 				return false;
 			}
 		}
 		else
 		{
-			LogString (LOG_DEBUG, "Not Found ID EditBox in CLogin::SendLoginReq()\n" );
+			LogString (LOG_DEBUG_, "Not Found ID EditBox in CLogin::SendLoginReq()\n" );
 			return false;
 		}
 	
@@ -521,13 +521,13 @@ bool CLogin::ConnectLoginServer()
 			else
 			{
 				pEditBox->SetFocus( true );
-				LogString (LOG_DEBUG, "Empty Password EditBox in CLogin::SendLoginReq()\n" );
+				LogString (LOG_DEBUG_, "Empty Password EditBox in CLogin::SendLoginReq()\n" );
 				return false;
 			}
 		}
 		else
 		{
-			LogString (LOG_DEBUG, "Not Found ID EditBox in CLogin::SendLoginReq()\n" );
+			LogString (LOG_DEBUG_, "Not Found ID EditBox in CLogin::SendLoginReq()\n" );
 			return false;
 		}
 	}

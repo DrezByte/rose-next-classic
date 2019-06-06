@@ -136,9 +136,9 @@ public  :
 	classODBC COdbc;
 
 	if ( COdbc.Connect ("TriggerNET", "icarus", "xxxx") )
-		Log_String ("ODBC Connected ...");
+		LOG_INFO("ODBC Connected ...");
 	else
-		Log_String ("ODBC Connect failed");
+		LOG_INFO("ODBC Connect failed");
 
 	if ( COdbc.Query ("select * from tblUSER") ) {
 		while ( COdbc.Fetch () != SQL_NO_DATA ) {

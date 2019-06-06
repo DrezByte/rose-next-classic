@@ -253,7 +253,7 @@ bool WS_lsvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 
 			// 받은 패킷 처리..
 			while( m_SockLSV.Peek_Packet( m_pRecvPket, true ) ) {
-				// LogString( LOG_DEBUG, "Handle LS Packet: Type[ 0x%x ], Size[ %d ]\n", m_pRecvPket->m_HEADER.m_wType, m_pRecvPket->m_HEADER.m_nSize);
+				// LogString( LOG_DEBUG_, "Handle LS Packet: Type[ 0x%x ], Size[ %d ]\n", m_pRecvPket->m_HEADER.m_wType, m_pRecvPket->m_HEADER.m_nSize);
 				switch( m_pRecvPket->m_HEADER.m_wType ) {
 					case LSV_CHECK_ALIVE :
 						Recv_lsv_CHECK_ALIVE ();

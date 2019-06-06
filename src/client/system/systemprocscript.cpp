@@ -137,7 +137,7 @@ int CSystemProcScript::CallLuaFunction( const char* strFuncName, ... )
 	    return iResultCnt;
 	}
 
-	LogString (LOG_DEBUG, "lua function( %s ) return %d result ... \n", strFuncName, iResultCnt );
+	LogString (LOG_DEBUG_, "lua function( %s ) return %d result ... \n", strFuncName, iResultCnt );
 	return 0;
 }
 
@@ -150,14 +150,14 @@ int CSystemProcScript::CallLuaFunction( int& iReturn, const char* strFuncName, .
 
 	if ( iResultCnt > 0 ) 
 	{
-		LogString (LOG_DEBUG, "lua function( %s ) return %d ... \n", strFuncName, iResultCnt );		
+		LogString (LOG_DEBUG_, "lua function( %s ) return %d ... \n", strFuncName, iResultCnt );		
 		if( lua_GetRETURN( m_pLUA->m_pState, iReturn ) == false )
 			return 0;
 
 	    return iResultCnt;
 	}
 
-	LogString (LOG_DEBUG, "lua function( %s ) return %d result ... \n", strFuncName, iResultCnt );
+	LogString (LOG_DEBUG_, "lua function( %s ) return %d result ... \n", strFuncName, iResultCnt );
 	return 0;
 }
 
@@ -170,7 +170,7 @@ int CSystemProcScript::CallLuaFunction( char** pChar, const char* strFuncName, .
 
 	if ( iResultCnt > 0 ) 
 	{
-		LogString (LOG_DEBUG, "lua function( %s ) return %d ... \n", strFuncName, iResultCnt );
+		LogString (LOG_DEBUG_, "lua function( %s ) return %d ... \n", strFuncName, iResultCnt );
 
 		if( lua_GetRETURN( m_pLUA->m_pState, pChar ) == false )
 			return 0;
@@ -178,7 +178,7 @@ int CSystemProcScript::CallLuaFunction( char** pChar, const char* strFuncName, .
 	    return iResultCnt;
 	}
 
-	LogString (LOG_DEBUG, "lua function( %s ) return %d result ... \n", strFuncName, iResultCnt );
+	LogString (LOG_DEBUG_, "lua function( %s ) return %d result ... \n", strFuncName, iResultCnt );
 	return 0;
 }
 
@@ -191,14 +191,14 @@ int CSystemProcScript::CallLuaFunction( float& fResult, const char* strFuncName,
 
 	if ( iResultCnt > 0 ) 
 	{
-		LogString (LOG_DEBUG, "lua function( %s ) return %d ... \n", strFuncName, iResultCnt );
+		LogString (LOG_DEBUG_, "lua function( %s ) return %d ... \n", strFuncName, iResultCnt );
 		if( lua_GetRETURN( m_pLUA->m_pState, fResult ) == false )
 			return 0;
 
 	    return iResultCnt;
 	}
 
-	LogString (LOG_DEBUG, "lua function( %s ) return %d result ... \n", strFuncName, iResultCnt );
+	LogString (LOG_DEBUG_, "lua function( %s ) return %d result ... \n", strFuncName, iResultCnt );
 	return 0;
 }
 void CSystemProcScript::set_initial_globals()

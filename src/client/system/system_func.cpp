@@ -119,7 +119,7 @@ HNODE SC_LoadModel( ZSTRING pModelName,
 	HNODE hNodeMODEL = ::loadModel ( pModelName, hSkeleton, hMotion, 1.0f );
 
 	if( hNodeMODEL == NULL )
-		Log_String( LOG_NORMAL, "SC_LoadModel failed(in system sript)[ %s ]\n", pModelName );
+		LOG_ERROR("SC_LoadModel failed(in system sript)[ %s ]", pModelName );
 
 	return hNodeMODEL;
 }
@@ -129,7 +129,7 @@ HNODE SC_LoadSkeleton ( ZSTRING pSkeletonName, ZSTRING pSkeletonPath )
 	HNODE hSkeleton = ::loadSkeleton( pSkeletonName, pSkeletonPath );
 
 	if( hSkeleton == NULL )
-		Log_String( LOG_NORMAL, "SC_LoadSkeleton failed(in system sript)[ %s ]\n", pSkeletonName );
+		LOG_ERROR("SC_LoadSkeleton failed(in system sript)[ %s ]", pSkeletonName );
 
 	return hSkeleton;
 }
@@ -139,7 +139,7 @@ HNODE SC_GetSkeleton ( int iIsfeMale )
 	HNODE hSkeleton = g_DATA.Get_SKELETON( iIsfeMale );
 
 	if( hSkeleton == NULL )
-		Log_String( LOG_NORMAL, "SC_GetSkeleton failed(in system sript)[ %d ]\n", iIsfeMale );
+		LOG_ERROR("SC_GetSkeleton failed(in system sript)[ %d ]", iIsfeMale );
 
 	return hSkeleton;
 }
@@ -149,7 +149,7 @@ HNODE SC_FindNode ( ZSTRING pNodeName )
 	HNODE hNode = ::findNode( pNodeName );
 
 	if( hNode == NULL )
-		Log_String( LOG_NORMAL, "SC_FindNode failed(in system sript)[ %s ]\n", pNodeName );
+		LOG_ERROR("SC_FindNode failed(in system sript)[ %s ]", pNodeName );
 
 	return hNode;
 }
@@ -165,9 +165,9 @@ HNODE SC_LoadMotion ( ZSTRING pMotionName, ZSTRING pMotionFileName, int bUseLoop
 								bForModel );
 
 	if( hNode == NULL )
-		Log_String( LOG_NORMAL, "SC_LoadMotion failed(in system sript)[ %s ]\n", pMotionName );
+		LOG_ERROR("SC_LoadMotion failed(in system sript)[ %s ]\n", pMotionName );
 
-	Log_String( LOG_NORMAL, "SC_LoadMotion (in system sript)[ %s ]\n", pMotionName );
+	LOG_INFO("SC_LoadMotion (in system sript)[ %s ]\n", pMotionName );
 
 	return hNode;
 }
@@ -177,7 +177,7 @@ void SC_AttachMotion ( HNODE hNode, HNODE hMotion )
 {
 	if( hNode == 0 )
 	{
-		Log_String( LOG_NORMAL, "SC_AttachMotion failed(in system sript)\n" );
+		LOG_ERROR("SC_AttachMotion failed(in system sript)");
 		return;
 	}
 
@@ -209,7 +209,7 @@ HNODE SC_LoadCamera ( ZSTRING pCameraName, ZSTRING pCameraPath, HNODE hCameraMot
 								hCameraMotion );
 
 	if( hNode == NULL )
-		Log_String( LOG_NORMAL, "SC_LoadCamera failed(in system sript)[ %s ]", pCameraPath );
+		LOG_ERROR("SC_LoadCamera failed(in system sript)[ %s ]", pCameraPath );
 
 	::controlAnimatable( hNode, 0 );
 	::setCameraAspectRatio( hNode, 1.3333 );
@@ -227,7 +227,7 @@ void SC_UnloadNode( HNODE hNode )
 {
 	if( hNode == 0 )
 	{
-		Log_String( LOG_NORMAL, "SC_UnloadNode failed(in system sript)" );
+		LOG_ERROR("SC_UnloadNode failed(in system sript)" );
 		return;
 	}
 	unloadNode( hNode );
@@ -237,7 +237,7 @@ int SC_SetRepeatCount ( HNODE hAnimatable, int iRepeatCount )
 {
 	if( hAnimatable == 0 )
 	{
-		Log_String( LOG_NORMAL, "SC_SetRepeatCount failed(in system sript)" );
+		LOG_ERROR("SC_SetRepeatCount failed(in system sript)" );
 		return 0;
 	}
 	return setRepeatCount ( hAnimatable, iRepeatCount );
@@ -246,7 +246,7 @@ HNODE SC_GetMotion ( HNODE hAnimatable )
 {
 	if( hAnimatable == 0 )
 	{
-		Log_String( LOG_NORMAL, "SC_GetMotion failed(in system sript)" );
+		LOG_ERROR("SC_GetMotion failed(in system sript)" );
 		return 0;
 	}
 	return getMotion( hAnimatable );
@@ -255,7 +255,7 @@ HNODE SC_GetMotion ( HNODE hAnimatable )
 void SC_SetModelPosition ( HNODE hModel, float x, float y, float z )
 {
 	if( hModel == 0 )
-		Log_String( LOG_NORMAL, "SC_SetModelPosition failed(in system sript)");
+		LOG_ERROR("SC_SetModelPosition failed(in system sript)");
 
 	::setPosition( hModel, x, y, z );	
 }
@@ -264,7 +264,7 @@ void SC_SetModelDirection ( HNODE hModel, float fAngleDegree )
 {
 	if( hModel == 0 )
 	{
-		Log_String( LOG_NORMAL, "SC_SetModelDirection failed(in system sript)" );
+		LOG_ERROR("SC_SetModelDirection failed(in system sript)" );
 		return;
 	}
 	int iRet = setModelDirection( hModel, fAngleDegree, false );
@@ -274,7 +274,7 @@ void SC_SetScale ( HNODE hVisible, float x, float y, float z )
 {
 	if( hVisible == 0 )
 	{
-		Log_String( LOG_NORMAL, "SC_SetScale failed(in system sript)" );
+		LOG_ERROR("SC_SetScale failed(in system sript)");
 		return;
 	}
 	setScale( hVisible, x, y, z );

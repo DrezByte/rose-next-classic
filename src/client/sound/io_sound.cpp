@@ -45,7 +45,7 @@ bool CSoundLIST::Load (char *szSTBFile, short nFileNameColNO)
 //-------------------------------------------------------------------------------------------------
 bool CSoundLIST::Load_FILE(tagFileDATA<tagSndFILE*> *pDATA)
 {
-	LogString (LOG_DEBUG, "Load_FILE::[ %s ] \n", pDATA->m_FileName.Get () );
+	LogString (LOG_DEBUG_, "Load_FILE::[ %s ] \n", pDATA->m_FileName.Get () );
 
 	if( pDATA == NULL )
 		return false;

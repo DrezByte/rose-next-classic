@@ -601,7 +601,7 @@ bool CWS_Server::Recv_gsv_ADJ_CLAN_VAR( t_PACKET *pPacket )
 // 존 서버로 부터 받은 패킷...
 bool CWS_Server::HandlePACKET (t_PACKETHEADER *pPacket )
 {
-//    LogString (LOG_DEBUG, "        >> %d CWS_Server::HandlePACKET:: Type: 0x%x, Length: %d\n", this->m_iSocketIDX, pPacket->m_wType, pPacket->m_nSize);
+//    LogString (LOG_DEBUG_, "        >> %d CWS_Server::HandlePACKET:: Type: 0x%x, Length: %d\n", this->m_iSocketIDX, pPacket->m_wType, pPacket->m_nSize);
 
     switch ( pPacket->m_wType ) {
 		case ZWS_SERVER_INFO :		// 존서버 정보.

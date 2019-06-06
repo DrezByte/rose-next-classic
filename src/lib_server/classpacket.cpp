@@ -12,7 +12,7 @@ char* classPACKET::GetStringPtr (short *pOffset)
     char *pStr;
 
     if ( *pOffset >= this->m_HEADER.m_nSize ) {
-		// iCARUS_LogString (LOG_DEBUG, "Packet_GetStringPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->sNormalHeader.cType, pPacket->sNormalHeader.nSize, *pOffset);
+		// iCARUS_LogString (LOG_DEBUG_, "Packet_GetStringPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->sNormalHeader.cType, pPacket->sNormalHeader.nSize, *pOffset);
         return NULL;
     }
 
@@ -28,7 +28,7 @@ BYTE* classPACKET::GetDataPtr (short *pOffset, short nSize)
     BYTE *pData;
 
     if ( *pOffset+nSize > this->m_HEADER.m_nSize ) {
-        // iCARUS_LogString (LOG_DEBUG, "Packet_GetDataPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->sNormalHeader.cType, pPacket->sNormalHeader.nSize, *pOffset);
+        // iCARUS_LogString (LOG_DEBUG_, "Packet_GetDataPtr return NULL !!! Type: [0x%x], Size: [%d], Offset: [%d]", pPacket->sNormalHeader.cType, pPacket->sNormalHeader.nSize, *pOffset);
         return NULL;
     }
 

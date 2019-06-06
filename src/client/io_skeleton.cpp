@@ -66,7 +66,7 @@ t_HASHKEY CSKELETON::Add_SKELETON (char *szFileName)
 {
 	t_HASHKEY HashKEY = CStr::GetHASH(szFileName);
 
-	LogString (LOG_DEBUG, "SKELETON ::[ %s ] \n", szFileName);
+	LogString (LOG_DEBUG_, "SKELETON ::[ %s ] \n", szFileName);
 
 	if ( (CVFSManager::GetSingleton()).IsExistFile( szFileName ) == false )	
 	{

@@ -464,7 +464,7 @@ void CObjFIXED::SetLightMap (short nPartSEQ, char *szLightMapFile, int iXPos, in
 	}
 
 	char *szName = CStr::Printf ("@P%dx%d@%s", iXPos, iYPos, szLightMapFile);
-	LogString (LOG_DEBUG, "SET LIGHT MAP map Obj: %d, Part: %d->%d, %s /  %s \n", m_nIndex, nPartSEQ, nPartIdx, szLightMapFile, szName);
+	LogString (LOG_DEBUG_, "SET LIGHT MAP map Obj: %d, Part: %d->%d, %s /  %s \n", m_nIndex, nPartSEQ, nPartIdx, szLightMapFile, szName);
 
 	// 기본 메트리얼의 정보로 새로운 메트이얼을 생성한다.
 	m_pLightMapMaterial[ nPartIdx ] = g_MatFILE.Add_MATERIAL (

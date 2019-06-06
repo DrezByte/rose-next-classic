@@ -237,7 +237,7 @@ bool CUtil::Get_IPAddressFromHostName (const char *szHostName, char *szBuffer, s
 				else
 					strncpy (szBuffer, pAddr, nBufferSize-1);
 
-				iCARUS_LogString(LOG_DEBUG,"%s\n",szBuffer);
+				iCARUS_LogString(LOG_DEBUG_,"%s\n",szBuffer);
 			}
 		}
 */

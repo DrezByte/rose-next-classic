@@ -103,7 +103,7 @@ void CBasicPART::UnloadVisible (HNODE hVIS)
 
 	if ( hVIS ) 
 	{		
-		LogString (LOG_DEBUG, "unloadVisible :: %d %s \n", hVIS, getName( hVIS ));
+		LogString (LOG_DEBUG_, "unloadVisible :: %d %s \n", hVIS, getName( hVIS ));
 		::unloadVisible (hVIS);
 	}
 }
@@ -168,7 +168,7 @@ bool CCharPART::Load( CFileSystem* pFileSystem, short nLinkBoneNo, short nLinkDu
 					}
 					m_pMeshAniFILE[ btTAG ] = g_MotionFILE.Add_FILE ( szAniFile );
 
-					LogString (LOG_DEBUG, "MESH ANI:: %d / %d : %s \n", btTAG, m_pMeshAniFILE[ btTAG ], szAniFile);
+					LogString (LOG_DEBUG_, "MESH ANI:: %d / %d : %s \n", btTAG, m_pMeshAniFILE[ btTAG ], szAniFile);
 				} else
 					pFileSystem->Seek( btLen, FILE_POS_CUR );					
 		}
@@ -228,7 +228,7 @@ HNODE CCharPART::Load_ZMODEL(char *szName, HNODE hModelNODE)
 		if ( hReturn ) {
 			::linkBone ( hModelNODE, hReturn, this->m_nLinkBoneIDX );
 		} else {
-			LogString (LOG_DEBUG, "ERROR:: loadMorpher(%s) == NULL !!!\n", szName);
+			LogString (LOG_DEBUG_, "ERROR:: loadMorpher(%s) == NULL !!!\n", szName);
 			_ASSERT( hReturn );
 		}
 		return hReturn;
@@ -239,7 +239,7 @@ HNODE CCharPART::Load_ZMODEL(char *szName, HNODE hModelNODE)
 		if ( hReturn ) {
 			::linkBone ( hModelNODE, hReturn, this->m_nLinkBoneIDX );
 		} else {
-			LogString (LOG_DEBUG, "ERROR:: loadVisible(%s) == NULL !!!\n", szName);
+			LogString (LOG_DEBUG_, "ERROR:: loadVisible(%s) == NULL !!!\n", szName);
 			_ASSERT( hReturn );
 		}
 		HNODE hTemp = ::findNode( szName );
@@ -251,7 +251,7 @@ HNODE CCharPART::Load_ZMODEL(char *szName, HNODE hModelNODE)
 		if ( hReturn ) {
 			::linkDummy( hModelNODE, hReturn, this->m_nLinkDummyIDX);
 		} else {
-			LogString (LOG_DEBUG, "ERROR:: loadVisible(%s) == NULL !!!\n", szName);
+			LogString (LOG_DEBUG_, "ERROR:: loadVisible(%s) == NULL !!!\n", szName);
 			_ASSERT( hReturn );
 		}
 		HNODE hTemp = ::findNode( szName );
@@ -344,7 +344,7 @@ bool  CFixedPART::Load ( CFileSystem* pFileSystem, short nLinkBoneNo, short nLin
 				szZmoFile[ btLen ] = 0;
 
 				m_HashZMOFile = g_MotionFILE.Add_FILE ( szZmoFile );
-				LogString (LOG_DEBUG, "Cnst ZMO :: %d : %s \n", m_HashZMOFile, szZmoFile);
+				LogString (LOG_DEBUG_, "Cnst ZMO :: %d : %s \n", m_HashZMOFile, szZmoFile);
 				if ( !m_HashZMOFile )
 					g_pCApp->ErrorBOX ( szZmoFile, "File not found ..." );
 				break;
@@ -391,7 +391,7 @@ HNODE CFixedPART::LoadVisible (char *szName, D3DVECTOR BasePOS, HNODE hParent)
 	hMat  = g_MatFILE.KEY_HNODE ( m_uiMatKEY  );
 
 	if ( !hMesh ) {
-		LogString (LOG_DEBUG, "ERROR:: LoadVisible[ %s ] hMesh: %d, hMat: %d \n", szName, hMesh, hMat);
+		LogString (LOG_DEBUG_, "ERROR:: LoadVisible[ %s ] hMesh: %d, hMat: %d \n", szName, hMesh, hMat);
 		_ASSERT ( 0 );
 		return NULL;
 	}
@@ -401,10 +401,10 @@ HNODE CFixedPART::LoadVisible (char *szName, D3DVECTOR BasePOS, HNODE hParent)
 		HNODE hMotion = g_MotionFILE.KEY_GetZMOTION( m_HashZMOFile );
 		hVis = ::loadAnimatable ( szName, hMesh, hMotion, hMat, g_GameDATA.m_hLight );
 		_ASSERT( hVis );
-		LogString (LOG_DEBUG, "loadAnimatable :: %d / %d, %s \n", hVis, hMesh, getName( hMesh ));
+		LogString (LOG_DEBUG_, "loadAnimatable :: %d / %d, %s \n", hVis, hMesh, getName( hMesh ));
 	} else {
 		hVis = ::loadVisible ( szName, hMesh, hMat, g_GameDATA.m_hLight );
-		LogString (LOG_DEBUG, "loadVisible :: %d / %d, %s \n", hVis, hMesh, getName( hMesh ));
+		LogString (LOG_DEBUG_, "loadVisible :: %d / %d, %s \n", hVis, hMesh, getName( hMesh ));
 	}
 
 	if ( hVis ) {

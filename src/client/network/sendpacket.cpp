@@ -1230,7 +1230,6 @@ void CSendPACKET::Send_cli_TARGET_SKILL (int iClientTarget, BYTE btSkillSLOT)
 		m_pSendPacket->m_cli_TARGET_SKILL.m_wDestObjIDX = g_pObjMGR->Get_ServerObjectIndex(  iClientTarget );
 		m_pSendPacket->m_cli_TARGET_SKILL.m_btSkillSLOT	= btSkillSLOT;
 #endif
-		Log_String( LOG_NORMAL, "Send Target Skill[%d]\n", g_pAVATAR->m_Skills.m_nSkillINDEX[ btSkillSLOT ] );
 		this->Send_PACKET( m_pSendPacket );
 }
 

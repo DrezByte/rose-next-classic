@@ -12,7 +12,7 @@ CWS_Account::~CWS_Account ()
 	{
 		char * szAccount = this->m_Account.Get() ? this->m_Account.Get() : "unknown user";
 		
-		LogString( LOG_DEBUG, "Invalid logout process found for [ %s ]\n", szAccount );
+		LogString( LOG_DEBUG_, "Invalid logout process found for [ %s ]\n", szAccount );
 	}
 
 	// assert( 0 == m_btLoginBIT );

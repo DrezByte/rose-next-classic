@@ -180,7 +180,7 @@ bool CObjCART::Create ( CObjCHAR* pParent, int iCartType, D3DVECTOR &Position )
 		return true;
 	}	
 
-	LogString (LOG_DEBUG, "Cart create failed .. %d: %s \n", szName );
+	LogString (LOG_DEBUG_, "Cart create failed .. %d: %s \n", szName );
 
 	/// 카트 및 캐슬기어 크기 1.2 배 확대..
 	::setScale( this->GetZMODEL(), 1.2f, 1.2f, 1.2f );

@@ -729,7 +729,7 @@ void CObjCHAR_Collision::GetCollisionState ( void )
 				if (::intersectNodeTriSphereMoving( hNode, sp->center, sp->radius, prevCenter, closestCenter, MAX_DISTANCE_SQUARE)) {
 					sp->collided.push_back( hNode );
 					m_State = CollisionState::CS_BODY_FRONT;
-					//LogString(LOG_DEBUG, "CS_BODY_FRONT\n");
+					//LogString(LOG_DEBUG_, "CS_BODY_FRONT\n");
 					return;
 				}
 			}
@@ -740,7 +740,7 @@ void CObjCHAR_Collision::GetCollisionState ( void )
 				if ( !ZZ_IS_MOVEABLE(collisionLevel) && ::intersectNodeTriSphere( hNode, sp->center, sp->m_fRadius )) { // collided not moveable object
 					sp->collided.push_back( hNode );
 					m_State = CollisionState::CS_FOOT_FRONT;
-					//LogString(LOG_DEBUG, "CS_FOOT_FRONT\n");
+					//LogString(LOG_DEBUG_, "CS_FOOT_FRONT\n");
 					return;
 				}
 				*/
@@ -756,7 +756,7 @@ void CObjCHAR_Collision::GetCollisionState ( void )
 				continue;
 			}
 			else {
-				LogString( LOG_DEBUG, "error: Cannot reach here. CObjCHAR_Collision.cpp" );
+				LogString( LOG_DEBUG_, "error: Cannot reach here. CObjCHAR_Collision.cpp" );
 				// cannot reach here
 			}
 		}
@@ -827,7 +827,7 @@ void CObjCHAR_Collision::GetCollisionStateAvatar ( void )
 					{
 						sp->collided.push_back( hNode );
 						m_State = CollisionState::CS_BODY_FRONT;
-						LogString(LOG_DEBUG, "CS_BODY_FRONT\n");
+						LogString(LOG_DEBUG_, "CS_BODY_FRONT\n");
 						return;
 					}
 
@@ -853,7 +853,7 @@ void CObjCHAR_Collision::GetCollisionStateAvatar ( void )
 						{
 							sp->collided.push_back( hNode );
 							m_State = CollisionState::CS_BODY_FRONT;
-							LogString(LOG_DEBUG, "CS_BODY_FRONT\n");
+							LogString(LOG_DEBUG_, "CS_BODY_FRONT\n");
 							return;
 						}
 
@@ -879,7 +879,7 @@ void CObjCHAR_Collision::GetCollisionStateAvatar ( void )
 					{
 						sp->collided.push_back( hNode );
 						m_State = CollisionState::CS_BODY_FRONT;
-						LogString(LOG_DEBUG, "CS_BODY_FRONT\n");
+						LogString(LOG_DEBUG_, "CS_BODY_FRONT\n");
 						return;
 					}
 				}            
@@ -910,7 +910,7 @@ void CObjCHAR_Collision::GetCollisionStateAvatar ( void )
 				continue;
 			}
 			else {
-				LogString( LOG_DEBUG, "error: Cannot reach here. CObjCHAR_Collision.cpp" );
+				LogString( LOG_DEBUG_, "error: Cannot reach here. CObjCHAR_Collision.cpp" );
 				// cannot reach here
 			}
 		}
@@ -984,7 +984,7 @@ void CObjCHAR_Collision::GetCollisionStateCart ( void )
 					{
 						sp->collided.push_back( hNode );
 						m_State = CollisionState::CS_BODY_FRONT;
-						LogString(LOG_DEBUG, "CS_BODY_FRONT\n");
+						LogString(LOG_DEBUG_, "CS_BODY_FRONT\n");
 						return;
 					}
 
@@ -1010,7 +1010,7 @@ void CObjCHAR_Collision::GetCollisionStateCart ( void )
 						{
 							sp->collided.push_back( hNode );
 							m_State = CollisionState::CS_BODY_FRONT;
-							LogString(LOG_DEBUG, "CS_BODY_FRONT\n");
+							LogString(LOG_DEBUG_, "CS_BODY_FRONT\n");
 							return;
 						}
 
@@ -1037,7 +1037,7 @@ void CObjCHAR_Collision::GetCollisionStateCart ( void )
 					{
 						sp->collided.push_back( hNode );
 						m_State = CollisionState::CS_BODY_FRONT;
-						LogString(LOG_DEBUG, "CS_BODY_FRONT\n");
+						LogString(LOG_DEBUG_, "CS_BODY_FRONT\n");
 						return;
 					}
 					
@@ -1069,7 +1069,7 @@ void CObjCHAR_Collision::GetCollisionStateCart ( void )
 				continue;
 			}
 			else {
-				LogString( LOG_DEBUG, "error: Cannot reach here. CObjCHAR_Collision.cpp" );
+				LogString( LOG_DEBUG_, "error: Cannot reach here. CObjCHAR_Collision.cpp" );
 				// cannot reach here
 			}
 		}

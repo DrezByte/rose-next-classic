@@ -249,16 +249,7 @@ int CGame::Init()
 
 	::activateLog (true);
 
-#ifdef	_DEBUG
-	CLOG::SetLogMODE ( LOG_NORMAL,	LOG_SCR );
-	CLOG::SetLogMODE ( LOG_NORMAL,	LOG_DBGOUT );
-#else
-	CLOG::SetLogMODE ( 0,			LOG_SCR );
-	CLOG::SetLogMODE ( 0,			LOG_DBGOUT );
-#endif
-	CLOG::SetLogMODE ( 0,	LOG_FILE );
-
-	LogString (LOG_DEBUG, "tagBasicINFO: %d, tagBasicAbility: %d, tagGrowAbility: %d, tagSkillAbility: %d, tagQuestData: %d, CInventory: %d = %d \n",
+	LOG_DEBUG("tagBasicINFO: %d, tagBasicAbility: %d, tagGrowAbility: %d, tagSkillAbility: %d, tagQuestData: %d, CInventory: %d = %d",
 			sizeof(tagBasicINFO),
 			sizeof(tagBasicAbility),
 			sizeof(tagGrowAbility),

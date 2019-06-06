@@ -20,6 +20,8 @@
 #include "CThreadGUILD.h"
 #include "GS_ThreadMALL.h"
 
+#include "rose/common/util.h"
+
 #define	TEST_ZONE_NO 100
 #define	DB_INI_STRING		30
 
@@ -179,7 +181,7 @@ VOID CALLBACK GS_TimerProc (HWND hwnd/* handle to window */, UINT uMsg/* WM_TIME
 //-------------------------------------------------------------------------------------------------
 void WriteLOG (char *szMSG)
 {
-	g_LOG.info(szMSG);
+	LOG_INFO(szMSG);
 }
 
 #define	TAG_HG	0x4840		// @H G
@@ -189,12 +191,12 @@ void WriteLOG (char *szMSG)
 
 void IncUserCNT( int iUserCNT, classUSER *pUSER )
 {
-	g_LOG.info("User connected, total count: %d", iUserCNT);
+	LOG_INFO("User connected, total count: %d", iUserCNT);
 }
 
 void DecUserCNT( int iUserCNT, classUSER *pUSER )
 {
-	g_LOG.info("User disconnected, total count: %d", iUserCNT);
+	LOG_INFO("User disconnected, total count: %d", iUserCNT);
 }
 
 #include "../SHO_GS.ver"
@@ -582,12 +584,6 @@ bool CLIB_GameSRV::Load_BasicDATA ()
 {
 	size_t ttt = sizeof( tagGrowAbility );
 
-	g_LOG.SetLogMODE( 0,			LOG_FILE );
-	g_LOG.SetLogMODE( LOG_NORMAL,	LOG_SCR );
-	g_LOG.SetLogMODE( LOG_NORMAL,	LOG_DBGOUT );
-
-	Rose::Common::logger_init(Rose::Common::LogLevel::Info);
-
 	if ( !g_AI_LIST.Load( BASE_DATA_DIR, "3DDATA\\STB\\FILE_AI.STB", "3DDATA\\AI\\AI_s.STB", m_iLangTYPE ) )
 		return false;
 
@@ -698,11 +694,6 @@ bool CLIB_GameSRV::Load_BasicDATA ()
 	#define	ZONE_KEY_STR_COLOUM		26
 //	assert( g_TblZONE.m_nColCnt == 30 );
 	this->TranslateNameWithColoumKey( &g_TblZONE,"Language\\LIST_ZONE_s.STB",	1+2*m_iLangTYPE, ZONE_NAME_STR_COLUMN, ZONE_KEY_STR_COLOUM);
-
-/*
-	this->TranslateNameWithDescKey( , "Language\\LIST_ZONE_s.stb     
-*/
-	g_LOG.SetLogMODE( LOG_NORMAL | LOG_VERBOSE | LOG_DEBUG );
 
 //	CheckSTB_AllITEM ();
 	CheckSTB_UseITEM ();

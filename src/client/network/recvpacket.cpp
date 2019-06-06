@@ -382,7 +382,7 @@ bool CRecvPACKET::Recv_lsv_LOGIN_REPLY ()
 
 		nServerID ++;
 
-		LogString (LOG_DEBUG, "\n\n[[ Server: %s, ID: %d ]]\n\n\n", szServerName, *pServerID );
+		LogString (LOG_DEBUG_, "\n\n[[ Server: %s, ID: %d ]]\n\n\n", szServerName, *pServerID );
 
 		///서버네임에@에 붙은경우 개발자 권한에서만 리스트에 보여준다.
 		if( g_GameDATA.m_bForOpenTestServer )
@@ -450,7 +450,7 @@ bool CRecvPACKET::Recv_lsv_LOGIN_REPLY ()
 //-------------------------------------------------------------------------------------------------
 int CRecvPACKET::Recv_lsv_SELECT_SERVER ()
 {
-	LogString (LOG_DEBUG, "Recv_lsv_SELECT_SERVER:: Result: %d ", m_pRecvPacket->m_lsv_SELECT_SERVER.m_btResult);
+	LogString (LOG_DEBUG_, "Recv_lsv_SELECT_SERVER:: Result: %d ", m_pRecvPacket->m_lsv_SELECT_SERVER.m_btResult);
 
 	CSelectServer* pSelectServer = (CSelectServer*)g_EUILobby.GetEUI( EUI_SELECT_SERVER );
 
@@ -475,7 +475,7 @@ int CRecvPACKET::Recv_lsv_SELECT_SERVER ()
 	this->m_wWSV_PORT  = *pServerPort;
 	this->m_dwWSV_ID   = m_pRecvPacket->m_lsv_SELECT_SERVER.m_dwIDs[0];
 
-	LogString (LOG_DEBUG, "Recv_lsv_SELECT_SERVER:: Result: %d, IP: %s, Port: %d ", m_pRecvPacket->m_lsv_SELECT_SERVER.m_btResult, szServerIP, *pServerPort);
+	LogString (LOG_DEBUG_, "Recv_lsv_SELECT_SERVER:: Result: %d, IP: %s, Port: %d ", m_pRecvPacket->m_lsv_SELECT_SERVER.m_btResult, szServerIP, *pServerPort);
 
 	this->DisconnectFromServer( NS_DIS_FORM_LSV );	
 
@@ -496,7 +496,7 @@ int CRecvPACKET::Recv_srv_JOIN_SERVER_REPLY ()
 			"RESULT_JOIN_SERVER_ALREADY_LOGGEDIN"
 	} ;
 
-	LogString (LOG_DEBUG, "Recv_srv_JOIN_SERVER_REPLY:: Result: %d [ %s ]", m_pRecvPacket->m_srv_JOIN_SERVER_REPLY.m_btResult, szResult[ m_pRecvPacket->m_srv_JOIN_SERVER_REPLY.m_btResult ]);
+	LogString (LOG_DEBUG_, "Recv_srv_JOIN_SERVER_REPLY:: Result: %d [ %s ]", m_pRecvPacket->m_srv_JOIN_SERVER_REPLY.m_btResult, szResult[ m_pRecvPacket->m_srv_JOIN_SERVER_REPLY.m_btResult ]);
 
 	if ( RESULT_JOIN_SERVER_OK != m_pRecvPacket->m_srv_JOIN_SERVER_REPLY.m_btResult ) {
 		return 0;
@@ -706,7 +706,7 @@ void CRecvPACKET::Recv_gsv_SELECT_CHAR ()
 	char* szName = Packet_GetStringPtr( m_pRecvPacket, nOffset);
 	g_pCApp->SetCaption(CStr::Printf("%s [ %s ]", Config::NAME, szName));
 
-	LogString (LOG_NORMAL, "\n\n\n>>> AVATER( %s ) : Zone: %d, Pos: %f, %f <<<\n\n\n\n",
+	LogString (LOG_NORMAL, "AVATER( %s ) : Zone: %d, Pos: %f, %f",
 		szName, 
 		m_pRecvPacket->m_gsv_SELECT_CHAR.m_nZoneNO,
 		m_pRecvPacket->m_gsv_SELECT_CHAR.m_PosSTART.x, m_pRecvPacket->m_gsv_SELECT_CHAR.m_PosSTART.y);
@@ -1931,10 +1931,6 @@ void CRecvPACKET::Recv_gsv_DAMAGE ()
 		return;
 	}
 
-	if( !pAtkOBJ )
-		Log_String( LOG_NORMAL, "공격자가 없다~~~~!! \n" );
-
-
 	/// 공격자가 없는데 죽는 패킷이 왔을경우...
 	if ( (m_pRecvPacket->m_gsv_DAMAGE.m_Damage.m_wDamage & DMG_BIT_DEAD ) ) 
 	{
@@ -2685,8 +2681,7 @@ void CRecvPACKET::Recv_gsv_SELF_SKILL ()
 		{			
 			if ( m_pRecvPacket->m_HEADER.m_nSize == ( sizeof( gsv_SELF_SKILL ) + sizeof(char) ) )
 			{
-				((CObjMOB*)pCHAR)->SetMobAniSkill( m_pRecvPacket->m_gsv_SELF_SKILL.cNpcSkillMOTION[0] );						
-				Log_String( LOG_NORMAL, "SELF SKILL : cNpcSkillMOTION[0][ %d ]\n", m_pRecvPacket->m_gsv_SELF_SKILL.cNpcSkillMOTION[0] );			
+				((CObjMOB*)pCHAR)->SetMobAniSkill( m_pRecvPacket->m_gsv_SELF_SKILL.cNpcSkillMOTION[0] );									
 			}
 		}	
 
@@ -2707,7 +2702,6 @@ void CRecvPACKET::Recv_gsv_SELF_SKILL ()
 
 void CRecvPACKET::Recv_gsv_TARGET_SKILL ()
 {
-	Log_String( LOG_NORMAL, "Recv Target Skill[%d]\n", m_pRecvPacket->m_gsv_TARGET_SKILL.m_nSkillIDX );
 	CObjCHAR *pCHAR = g_pObjMGR->Get_ClientCharOBJ( m_pRecvPacket->m_gsv_TARGET_SKILL.m_wSourObjIDX, true );
 	if ( pCHAR ) 
 	{
@@ -2721,7 +2715,6 @@ void CRecvPACKET::Recv_gsv_TARGET_SKILL ()
 			if ( m_pRecvPacket->m_HEADER.m_nSize == ( sizeof( gsv_TARGET_SKILL ) + sizeof(char) ) )
 			{
 				((CObjMOB*)pCHAR)->SetMobAniSkill( m_pRecvPacket->m_gsv_TARGET_SKILL.cNpcSkillMOTION[0] );
-				Log_String( LOG_NORMAL, "TARGET SKILL : cNpcSkillMOTION[0][ %d ]\n", m_pRecvPacket->m_gsv_TARGET_SKILL.cNpcSkillMOTION[0] );
 			}
 		}
 
@@ -2757,7 +2750,6 @@ void CRecvPACKET::Recv_gsv_POSITION_SKILL ()
 			if ( m_pRecvPacket->m_HEADER.m_nSize == ( sizeof( gsv_POSITION_SKILL ) + sizeof(char) ) )
 			{
 				((CObjMOB*)pCHAR)->SetMobAniSkill( m_pRecvPacket->m_gsv_POSITION_SKILL.cNpcSkillMOTION[0] );
-				Log_String( LOG_NORMAL, "TARGET SKILL : cNpcSkillMOTION[0][ %d ]\n", m_pRecvPacket->m_gsv_POSITION_SKILL.cNpcSkillMOTION[0] );
 			}
 		}
 
@@ -2789,10 +2781,6 @@ void CRecvPACKET::Recv_gsv_SKILL_START()
 	CObjCHAR *pCHAR = g_pObjMGR->Get_ClientCharOBJ( m_pRecvPacket->m_gsv_SKILL_START.m_wObjectIDX, true );
 	if ( pCHAR ) 
 	{
-#ifdef _DEBUG		
-		Log_String( LOG_NORMAL, "스킬 시작[%d]\n", m_pRecvPacket->m_gsv_SKILL_START.m_wObjectIDX );
-#endif		
-
 		/// 현재 시전할려는 스킬은 스타트를 받았다.
 		if( pCHAR->bCanStartSkill() )
 		{
@@ -2992,9 +2980,6 @@ void CRecvPACKET::Recv_gsv_EFFECT_OF_SKILL ()
 ///
 void CRecvPACKET::Recv_gsv_DAMAGE_OF_SKILL ()			
 {
-	Log_String( LOG_NORMAL, "스킬 데미지 받음[%d]\n", m_pRecvPacket->m_gsv_DAMAGE_OF_SKILL.m_wDamage );
-
-
 	if( m_pRecvPacket->m_gsv_EFFECT_OF_SKILL.m_btSuccessBITS )
 	{
 		Recv_gsv_EFFECT_OF_SKILL();
@@ -3175,8 +3160,6 @@ void CRecvPACKET::Recv_gsv_RESULT_OF_SKILL ()
 
 		/// 결과가 온것에 대해서만 마나를 소모한다..
 		CSkillManager::UpdateUseProperty( pObjCHAR, m_pRecvPacket->m_gsv_RESULT_OF_SKILL.m_nSkillIDX );		
-
-		Log_String( LOG_NORMAL, "스킬 결과받음[%d][%d]\n",pObjCHAR->bCanActionActiveSkill(), m_pRecvPacket->m_gsv_SKILL_START.m_wObjectIDX );
 	}
 	else
 	{		

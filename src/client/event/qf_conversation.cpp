@@ -44,10 +44,10 @@ void	QF_gotoCon ( int hEvent, int iDataIDX, int iItemIDX )
 		;
 	}
 
-	LogString (LOG_DEBUG, "%d/%d: %s \n", iDataIDX, iItemIDX, pEvent->m_pScrDATA[ iDataIDX ].m_pScrITEM[ iItemIDX ].m_Message.Get());
+	LogString (LOG_DEBUG_, "%d/%d: %s \n", iDataIDX, iItemIDX, pEvent->m_pScrDATA[ iDataIDX ].m_pScrITEM[ iItemIDX ].m_Message.Get());
 	if ( pEvent->m_pScrDATA[ iDataIDX ].m_pScrITEM[ iItemIDX ].m_lChildDataIDX >= 0 ) {
 		iDataIDX = pEvent->m_pScrDATA[ iDataIDX ].m_pScrITEM[ iItemIDX ].m_lChildDataIDX;
-		LogString (LOG_DEBUG, "%d/%d: %s \n", iDataIDX, iItemIDX, pEvent->m_pScrDATA[ iDataIDX ].m_pScrITEM[ iItemIDX ].m_Message.Get());
+		LogString (LOG_DEBUG_, "%d/%d: %s \n", iDataIDX, iItemIDX, pEvent->m_pScrDATA[ iDataIDX ].m_pScrITEM[ iItemIDX ].m_Message.Get());
 	}
 	*/
 }

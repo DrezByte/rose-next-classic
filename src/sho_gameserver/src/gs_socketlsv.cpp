@@ -471,7 +471,7 @@ bool GS_lsvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 
 			// 받은 패킷 처리..
 			while( m_SockLSV.Peek_Packet( m_pRecvPket, true ) ) {
-				// LogString( LOG_DEBUG, "Handle LS Packet: Type[ 0x%x ], Size[ %d ]\n", m_pRecvPket->m_HEADER.m_wType, m_pRecvPket->m_HEADER.m_nSize);
+				// LogString( LOG_DEBUG_, "Handle LS Packet: Type[ 0x%x ], Size[ %d ]\n", m_pRecvPket->m_HEADER.m_wType, m_pRecvPket->m_HEADER.m_nSize);
 				switch( m_pRecvPket->m_HEADER.m_wType ) {
 					case LSV_CHECK_ALIVE :
 						Recv_lsv_CHECK_ALIVE ();
@@ -540,7 +540,7 @@ bool GS_lsvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 		{
 			m_SockLSV.OnConnect ( nErrorCode );
 			if ( !nErrorCode ) {
-				g_LOG.CS_ODS( 0xffff, "Connected to WORLD server \n");
+				LOG_INFO("Connected to WORLD server");
 				m_bTryCONN = false;
 
 				if ( m_pReconnectTimer )
@@ -555,7 +555,7 @@ bool GS_lsvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 					m_pReconnectTimer->Start ();
 				if ( !m_bTryCONN ) {
 					m_bTryCONN = true;
-					g_LOG.CS_ODS( 0xffff, "Connect failed to WORLD server \n");
+					LOG_INFO("Connect failed to WORLD server");
 				}
 			}
 			break;
@@ -564,7 +564,7 @@ bool GS_lsvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 		{
 			m_SockLSV.OnClose ( nErrorCode );
 
-		g_LOG.CS_ODS( 0xffff, "Disconnected from WORLD server \n");
+			LOG_INFO("Disconnected from WORLD server");
 
 			if ( m_pReconnectTimer )
 				m_pReconnectTimer->Start ();
@@ -573,6 +573,3 @@ bool GS_lsvSOCKET::Proc_SocketMSG (WPARAM wParam, LPARAM lParam)
 
 	return true;
 }
-
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
