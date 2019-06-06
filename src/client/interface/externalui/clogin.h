@@ -89,11 +89,8 @@ protected:
 	void OnLButtonUp( unsigned iProcID );
 	void OnLButtonDown( unsigned iProcID );
 
-	HNODE				m_hCopyRight;					/// 저작권 Texture Node
-	HNODE				m_hUserGrade;					/// 사용자 등급 Texture Node
-
-	int					m_iHeightCopyRight;
-	int					m_iWidthUserGrade;
+	HNODE m_hUserGrade;
+	int m_iWidthUserGrade;
 
 };
 

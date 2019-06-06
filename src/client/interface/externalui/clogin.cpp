@@ -36,7 +36,6 @@ CLogin::CLogin()
 
 	m_pEUIManager    = NULL;
 
-	m_hCopyRight	= 0;///저작권
 	m_hUserGrade	= 0;///사용자 등급
 
 }
@@ -280,12 +279,6 @@ void CLogin::SendLoginReq( )
 void CLogin::Hide()
 {
 	CTDialog::Hide();
-	if( m_hCopyRight )
-	{
-		unloadTexture( m_hCopyRight );
-		m_hCopyRight = NULL;
-	}
-
 	if( m_hUserGrade )
 	{
 		unloadTexture( m_hUserGrade );
@@ -305,40 +298,13 @@ void CLogin::Show()
 	if( pCtrl && pCtrl->GetControlType() == CTRL_EDITBOX )
 	{
 		pEditBox = (CTEditBox*)pCtrl;
-	/*
-	 05. 10. 24 - 김주현
-	 서버 디스컨넥트 후에 재로그인하면 로그인 창에 아뒤랑 비번이 적혀있는 관계로;; 막음.
-
-		pEditBox->SetText( g_GameDATA.m_Account.Get() );
-	*/
 	}
 	
 	pCtrl = Find( IID_EDIT_PWD );
 	if( pCtrl && pCtrl->GetControlType() == CTRL_EDITBOX )
 	{
 		pEditBox = (CTEditBox*)pCtrl;
-	/*
-	 05. 10. 24 - 김주현
-	 서버 디스컨넥트 후에 재로그인하면 로그인 창에 아뒤랑 비번이 적혀있는 관계로;; 막음.
-
-		pEditBox->SetText( g_GameDATA.m_Password.Get() );
-	*/
 	}
-
-	
-	///저작권
-	m_hCopyRight = loadTexture ( "3DData\\Control\\Res\\copyright.dds", 
-								"3DData\\Control\\Res\\copyright.dds",
-								1, 
-								0 );
-	assert( m_hCopyRight );
-
-	int iTempWidth;
-	int iTempHeight;
-
-	if( m_hCopyRight )
-		getTextureSize( m_hCopyRight, iTempWidth,  m_iHeightCopyRight);
-
 
 	if( pCtrl =  Find( IID_CHECKBOX_SAVE_LASTCONECTID ) )
 	{
@@ -458,19 +424,6 @@ void CLogin::Draw()
 						&D3DXVECTOR3( 0, 0, 0 ),								
 						D3DCOLOR_RGBA( 255, 255, 255, 255 ) );
 	}
-	
-	if( m_hCopyRight )
-	{
-		D3DXMATRIX mat;	
-		D3DXMatrixTranslation( &mat, 50,g_pCApp->GetHEIGHT() - m_iHeightCopyRight - 10 , 0.0f );
-		::setTransformSprite( mat );
-		::drawSprite( m_hCopyRight, 
-						NULL,
-						NULL,
-						&D3DXVECTOR3( 0, 0, 0 ),								
-						D3DCOLOR_RGBA( 255, 255, 255, 255 ) );
-	}
-
 
 	D3DXMATRIX mat;	
 	D3DXMatrixTranslation( &mat, 50, 20, 0.0f );
