@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string>
 #include "classODBC.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 
 
 #pragma	comment( lib, "odbc32.lib" )

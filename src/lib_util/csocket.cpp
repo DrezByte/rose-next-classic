@@ -4,7 +4,7 @@
 
 #include "winsock2.h"
 #include "CSocket.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 
 #pragma	comment	(lib, "WSock32.lib")
 

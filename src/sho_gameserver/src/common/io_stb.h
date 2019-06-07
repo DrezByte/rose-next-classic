@@ -4,6 +4,9 @@
 #ifndef __SERVER
 	#include "../GameCommon/StringManager.h"
 #endif
+
+#include "rose/common/log.h"
+
 //-------------------------------------------------------------------------------------------------
 
 /**

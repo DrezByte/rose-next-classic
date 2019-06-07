@@ -10,7 +10,7 @@ fn main() {
     .with_autogen_warning(warning)
     .generate()
     .expect("Unable to generate bindings")
-    .write_to_file("include/rose/common/log.h");
+    .write_to_file("include/rose/common/log_interface.h");
 
   cbindgen::Builder::new()
     .with_src("src/ffi/util.rs")
@@ -18,5 +18,5 @@ fn main() {
     .with_autogen_warning(warning)
     .generate()
     .expect("Unable to generate bindings")
-    .write_to_file("include/rose/common/util.h");
+    .write_to_file("include/rose/common/util_interface.h");
 }

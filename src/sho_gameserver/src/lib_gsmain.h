@@ -14,7 +14,6 @@
 #include "NET_Prototype.h"
 #include "DLLIST.h"
 #include "SLLIST.h"
-#include "classLOG.h"
 #include "classSTR.h"
 #include "classUTIL.h"
 #include "classHASH.h"
@@ -29,6 +28,7 @@
 #include "IO_STB.h"
 #include "OBJECT.h"
 
+#include "rose/common/log.h"
 
 class CLIB_GameSRV {
 private  :

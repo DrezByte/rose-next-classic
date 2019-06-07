@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <mstcpip.h>
 #include "CSocket.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 #include "CAcceptTHREAD.h"
 
 //-------------------------------------------------------------------------------------------------

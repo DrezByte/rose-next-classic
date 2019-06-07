@@ -1,21 +1,19 @@
-#include <windows.h>
-#include <stdio.h>
-#include "classLOG.h"
+#include "log.h"
 
 using namespace Rose::Common;
 
-CLOG g_LOG;
+Log g_LOG;
 
-CLOG::CLOG ():
+Log::Log ():
 	_buffer{}
 {
 }
 
-CLOG::~CLOG ()
+Log::~Log ()
 {
 }
 
-void CLOG::CS_ODS (WORD log_mode, char *msg, ...)
+void Log::CS_ODS (unsigned short log_mode, char *msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
@@ -24,7 +22,7 @@ void CLOG::CS_ODS (WORD log_mode, char *msg, ...)
 
 }
 
-void CLOG::OutputString (WORD log_mode, char *msg, ...)
+void Log::OutputString (unsigned short log_mode, char *msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
@@ -32,7 +30,7 @@ void CLOG::OutputString (WORD log_mode, char *msg, ...)
 	va_end(args);
 }
 
-void CLOG::log(LogLevel level, const char* file, uint32_t line, const char* message, va_list args) {
+void Log::log(LogLevel level, const char* file, uint32_t line, const char* message, va_list args) {
 	std::lock_guard<std::mutex> lock(_log_mutex);
 
 	try {
@@ -46,41 +44,41 @@ void CLOG::log(LogLevel level, const char* file, uint32_t line, const char* mess
 
 }
 
-void CLOG::log(LogLevel level, const char* file, uint32_t line, const char* message, ...) {
+void Log::log(LogLevel level, const char* file, uint32_t line, const char* message, ...) {
 	va_list args;
 	va_start(args, message);
 	log(level, file, line, message, args);
 	va_end(args);
 }
 
-void CLOG::trace(const char* file, uint32_t line, const char* message, ...) {
+void Log::trace(const char* file, uint32_t line, const char* message, ...) {
 	va_list args;
 	va_start(args, message);
 	log(LogLevel::Trace, file, line, message, args);
 	va_end(args);
 }
 
-void CLOG::	debug(const char* file, uint32_t line, const char* message, ...) {
+void Log::	debug(const char* file, uint32_t line, const char* message, ...) {
 	va_list args;
 	va_start(args, message);
 	log(LogLevel::Debug, file, line, message, args);
 	va_end(args);
 }
 
-void CLOG::info(const char* file, uint32_t line, const char* message, ...) {
+void Log::info(const char* file, uint32_t line, const char* message, ...) {
 	va_list args;
 	va_start(args, message);
 	log(LogLevel::Info, file, line, message, args);
 	va_end(args);
 }
-void CLOG::warn(const char* file, uint32_t line, const char* message, ...) {
+void Log::warn(const char* file, uint32_t line, const char* message, ...) {
 	va_list args;
 	va_start(args, message);
 	log(LogLevel::Warn, file, line, message, args);
 	va_end(args);
 }
 
-void CLOG::error(const char* file, uint32_t line, const char* message, ...) {
+void Log::error(const char* file, uint32_t line, const char* message, ...) {
 	va_list args;
 	va_start(args, message);
 	log(LogLevel::Error, file, line, message, args);

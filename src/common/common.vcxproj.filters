@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="config">
+      <UniqueIdentifier>{f2e9e794-1985-4e6c-a054-4f4e3e82506e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\rose\common\rosenext_config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rose\common\log.h" />
+    <ClInclude Include="..\common-lib\include\rose\common\log_interface.h" />
+    <ClInclude Include="..\common-lib\include\rose\common\util_interface.h" />
+    <ClInclude Include="include\rose\common\util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\log.cpp" />
+  </ItemGroup>
+</Project>

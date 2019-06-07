@@ -12,7 +12,7 @@
 #endif
 
 #include "CThreadGUILD.h"
-#include "classLOG.h"
+//#include "classLOG.h"
 #include "IO_Skill.h"
 
 

@@ -5,7 +5,7 @@
 
 #include "LIB_Util.h"
 #include "classTHREAD.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 #include "../client/util/CClientSOCKET.h"
 #include "../client/util/CSocketWND.h"
 

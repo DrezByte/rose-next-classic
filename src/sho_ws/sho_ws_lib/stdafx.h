@@ -31,11 +31,11 @@
 	#define __KCHS_BATTLECART__
 #endif
 
+#include "rose/common/log.h"
 
 #include "LIB_Util.h"
 #include "classHASH.h"
 #include "classTIME.h"
-#include "classLOG.h"
 #include "classSTR.h"
 #include "classSTB.h"
 #include "classSYNCOBJ.h"

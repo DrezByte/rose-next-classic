@@ -1,7 +1,7 @@
 
 #include <windows.h>
 #include <process.h>
-#include "classLOG.h"
+#include "rose/common/log.h"
 #include "classTHREAD.h"
 
 

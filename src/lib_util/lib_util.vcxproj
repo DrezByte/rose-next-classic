@@ -61,7 +61,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\common;$(SolutionDir)src\client\util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\common-lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\client\util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
@@ -82,8 +82,9 @@
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalDependencies>rose_common.lib; Userenv.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)bin\i686-pc-windows-msvc\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Message>copy libs</Message>
@@ -93,7 +94,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\common;$(SolutionDir)src\client\util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)src\common-lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\client\util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -116,8 +117,9 @@
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalDependencies>rose_common.lib; Userenv.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)bin\i686-pc-windows-msvc\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Message>copy libs</Message>
@@ -126,6 +128,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="classLOG.h" />
     <ClInclude Include="CProcess.h" />
     <ClInclude Include="CRandom.h" />
     <ClInclude Include="..\Client\Util\CClientSOCKET.h" />
@@ -139,7 +142,6 @@
     <ClInclude Include="CDXHPC.H" />
     <ClInclude Include="classCRC.h" />
     <ClInclude Include="..\Client\Util\classHASH.h" />
-    <ClInclude Include="..\Client\Util\classLOG.h" />
     <ClInclude Include="..\Client\Util\classLUA.h" />
     <ClInclude Include="..\Client\Util\classMD5.h" />
     <ClInclude Include="classMD5Defines.h" />
@@ -183,15 +185,6 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="classHASH.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Disabled</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='release|Win32'">MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="classLOG.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>

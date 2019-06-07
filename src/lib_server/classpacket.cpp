@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <crtdbg.h>
-#include "classLOG.h"
+#include "rose/common/log.h"
 #include "classUTIL.h"
 #include "ioDataPOOL.h"
 

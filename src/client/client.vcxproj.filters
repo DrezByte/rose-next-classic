@@ -1222,9 +1222,6 @@
     <ClInclude Include="Util\classHASH.h">
       <Filter>Source Files\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Util\classLOG.h">
-      <Filter>Source Files\Util</Filter>
-    </ClInclude>
     <ClInclude Include="Util\classLUA.h">
       <Filter>Source Files\Util</Filter>
     </ClInclude>

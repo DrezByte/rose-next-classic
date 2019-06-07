@@ -25,10 +25,11 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "rose/common/log.h"
+
 #include "LIB_Util.h"
 #include "classHASH.h"
 #include "classTIME.h"
-#include "classLOG.h"
 #include "classSTR.h"
 
 #include "classSYNCOBJ.h"

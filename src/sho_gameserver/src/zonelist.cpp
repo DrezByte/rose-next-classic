@@ -4,9 +4,7 @@
 #include "IO_STB.h"
 #include "GS_ThreadSQL.h"
 #include "GS_SocketLSV.h"
-#include "classLOG.h"
 
-//-------------------------------------------------------------------------------------------------
 
 IMPLEMENT_INSTANCE( CZoneLIST )
 

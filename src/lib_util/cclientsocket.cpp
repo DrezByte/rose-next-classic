@@ -6,8 +6,9 @@
 #include <tchar.h>
 #include <crtdbg.h>
 #include <process.h>
-#include "classLOG.h"
 #include "CClientSOCKET.h"
+
+#include "rose/common/log.h"
 
 #define CLIENTSOCKET_SERVERDEAD		(-1)
 #define CLIENTSOCKET_DISCONNECTED	0x000

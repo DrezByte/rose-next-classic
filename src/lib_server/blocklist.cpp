@@ -1,6 +1,6 @@
 
 #include <windows.h>
-#include "classLOG.h"
+#include "rose/common/log.h"
 #include "blockLIST.h"
 
 //-------------------------------------------------------------------------------------------------

@@ -204,7 +204,7 @@
     </Lib>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);$(SolutionDir)bin\i686-pc-windows-msvc\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lib_util.lib;lib_server.lib;rose_common.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -246,7 +246,7 @@
     </Lib>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);$(SolutionDir)bin\i686-pc-windows-msvc\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lib_util.lib;lib_server.lib;rose_common.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>

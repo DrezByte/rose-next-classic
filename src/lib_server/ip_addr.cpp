@@ -4,7 +4,7 @@
 #include <tchar.h>
 #include <crtdbg.h>
 #include "classUTIL.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 #include "classSTR.h"
 #include "IP_Addr.h"
 

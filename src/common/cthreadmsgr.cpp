@@ -7,7 +7,7 @@
 #endif
 
 #include "CThreadMSGR.h"
-#include "classLOG.h"
+//#include "classLOG.h"
 #include "IO_STB.h"
 
 //-------------------------------------------------------------------------------------------------

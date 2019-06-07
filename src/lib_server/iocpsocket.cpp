@@ -3,7 +3,7 @@
 #include <tchar.h>
 #include <crtdbg.h>
 #include "LIB_Util.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 #include "classUTIL.h"
 #include "classIOCP.h"
 #include "classPACKET.h"

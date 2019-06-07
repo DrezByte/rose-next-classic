@@ -1,7 +1,7 @@
 
 #include <windows.h>
 #include "classUTIL.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 #include "CSqlTHREAD.h"
 
 //-------------------------------------------------------------------------------------------------

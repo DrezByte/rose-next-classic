@@ -7,7 +7,6 @@
 #include <string.h>
 #include <io.h>
 #include "classLUA.h"
-#include "classLOG.h"
 
 
 classLUA::classLUA (int iStackSize)

@@ -4,7 +4,7 @@
 #include "SLLIST.h"
 #include "classSYNCOBJ.h"
 #include "classSTR.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 //-------------------------------------------------------------------------------------------------
 
 template <class t_DATA>

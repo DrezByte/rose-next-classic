@@ -6,7 +6,7 @@
 #include "classSTB.h"
 #include "classSTR.h"
 #include "classHASH.h"
-#include "classLOG.h"
+#include "rose/common/log.h"
 #ifndef	__SERVER
 	#include "CGameSTB.h"
 	#include "Util\\VFSManager.h"

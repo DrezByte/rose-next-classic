@@ -47,13 +47,13 @@ typedef	LPDIRECT3DVERTEXBUFFER9		LPD3DVERTEXBUFFER;
 #pragma warning( disable : 4651 ) 
 
 #include "rose/common/rosenext_config.h"
+#include "rose/common/log.h"
 
 #include "util\CVector.h"
 #include "common\DataTYPE.h"
 
 #include "util\CD3DUtil.h"
 #include "util\classSTR.h"
-#include "util\classLOG.h"
 #include "util\classLUA.h"
 #include "util\classHASH.h"
 #include "util\classUTIL.h"
