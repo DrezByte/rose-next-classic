@@ -7,7 +7,6 @@
 
 #include "../../JCommandState.h"
 #include "../../Object.h"
-#include "../it_mgr.h"
 
 #include "../../Network/CNetwork.h"
 #include "../../GameData/CExchange.h"

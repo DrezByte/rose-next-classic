@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "exchangedlg.h"
-#include "../it_mgr.h"
 #include "../command/uicommand.h"
 #include "../command/dragcommand.h"
 #include "../command/ctcmdnumberinput.h"

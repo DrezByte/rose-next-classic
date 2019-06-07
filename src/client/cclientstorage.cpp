@@ -4,7 +4,6 @@
 #include "interface/Dlgs/QuickToolBar.h"
 #include "Game.h"
 #include "Common/IO_STB.H"
-#include "IO_Terrain.h"
 
 
 CClientStorage	g_ClientStorage;

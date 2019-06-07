@@ -6,7 +6,6 @@
 #include "JCommandState.h"	
 #include "Network\CNetWork.h"	
 #include "../Interface/SlotContainer/CSkillSlot.h"	
-#include "../Interface/it_Mgr.h"	
 #include "../Interface/IO_ImageRes.h"
 #include "../Interface/Dlgs/ChattingDlg.h"
 #include "../Interface/Dlgs/CPartyDlg.h"
@@ -14,7 +13,6 @@
 #include "CSkillCommand.h"
 #include "ReloadProcess.h"
 #include "GameData/CParty.h"
-#include "IO_Terrain.h"
 #include "GameProc/SkillCommandDelay.h"
 #include "../GameProc/UseItemDelay.h"
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ExternalUILobby.h"
 
-#include "IO_Terrain.h"
 #include "Game.h"
 #include "Game_FUNC.h"
 
@@ -15,7 +14,6 @@
 #include "../../Game.h"
 #include "../../CClientStorage.h"
 #include "../../System/CGame.h"
-#include "../it_mgr.h"
 #include "../../CCamera.h"
 #include "../../CSkyDome.h"
 #include "../Dlgs/CMsgBox.h"

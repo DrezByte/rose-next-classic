@@ -4,7 +4,6 @@
 #include "../common/citem.h"
 #include "../icon/ciconitemdelivery.h"
 #include "../GameCommon/Item.h"
-#include "../it_mgr.h"
 #include "../command/CTCmdNumberInput.h"
 #include "../command/uicommand.h"
 #include "../../Network/CNetwork.h"

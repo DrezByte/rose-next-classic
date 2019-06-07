@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\delayedexp.h"
-#include "../interface/it_mgr.h"
 #include "../CObjCHAR.h"
 #include "../Object.h"
 #include "../GameCommon/StringManager.h"

@@ -2,7 +2,6 @@
 #include ".\tutorialeventutility.h"
 #include "../System/SystemProcScript.h"
 #include "../Object.h"
-#include "../Interface/it_MGR.h"
 
 CTutorialEventUtility _TutorialEventUtility;
 

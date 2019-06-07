@@ -7,7 +7,6 @@
 #include "../ICon/CIconSkill.h"
 #include "../ICon/CIconDialog.h"
 #include "../ICon/CIconSkillClan.h"
-#include "../it_Mgr.h"
 #include "../gamecommon/item.h"
 
 

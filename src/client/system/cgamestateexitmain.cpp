@@ -2,7 +2,6 @@
 #include "cgamestateexitmain.h"
 #include <process.h>
 #include "CGame.h"
-#include "../IO_Terrain.h"
 #include "../CCamera.h"
 #include "../interface/CLoading.h"
 #include "../interface/dlgs/CItemDlg.h"
@@ -13,7 +12,6 @@
 #include "../gamedata/cprivatestore.h"
 #include "../gamedata/cclan.h"
 #include "../gamedata/cparty.h"
-#include "../interface/it_mgr.h"
 #include "../interface/ClanMarkManager.h"
 #include "../interface/dlgs/QuickToolBAR.h"
 #include "../interface/dlgs/CCommDlg.h"

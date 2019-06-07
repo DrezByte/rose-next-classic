@@ -8,8 +8,6 @@
 #include "CObjCHAR.h"
 #include "common\IO_AI.h"
 #include "Game_FUNC.h"
-#include "IO_Terrain.h"
-#include "Interface/it_mgr.h"
 #include "CObjCart.h"
 #include "ObjCastleGear.h"
 #include "CViewMSG.h"

@@ -8,7 +8,6 @@
 #include "../../../Network/CNetwork.h"
 #include "../../../Game.h"
 #include "../../command/uicommand.h"
-#include "../../it_mgr.h"
 #include "../../io_imageres.h"
 #include "../../TypeResource.h"
 #include "../../../Object.h"

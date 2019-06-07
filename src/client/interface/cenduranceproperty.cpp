@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <functional>
 #include "../CObjCHAR.h"	
-#include "it_mgr.h"	
 #include "CToolTipMgr.h"
 #include "IO_ImageRes.h"
 #include "TypeResource.h"

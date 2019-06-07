@@ -49,6 +49,9 @@ typedef	LPDIRECT3DVERTEXBUFFER9		LPD3DVERTEXBUFFER;
 #include "rose/common/rosenext_config.h"
 #include "rose/common/log.h"
 
+#include "interface/it_mgr.h"
+#include "io_terrain.h"
+
 #include "util\CVector.h"
 #include "common\DataTYPE.h"
 

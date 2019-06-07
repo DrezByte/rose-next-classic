@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CStoreDLG.h"
 #include "DealDlg.h"
-#include "../it_mgr.h"
 #include "../CTDrawImpl.h"
 #include "../IO_ImageRes.h"
 #include "../TypeResource.h"

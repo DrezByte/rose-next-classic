@@ -13,10 +13,8 @@
 #include "OBJECT.h"
 #include "..\Network\CNetwork.h"
 #include "../GameCommon/Skill.h"
-#include "it_mgr.h"
 #include "../CommandFilter.h"
 
-#include "../IO_Terrain.h"
 
 enum SKILL_STATE
 {

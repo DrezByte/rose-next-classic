@@ -2,10 +2,8 @@
 #include ".\ctcmdnumberinput.h"
 
 #include "../IO_ImageRes.h"
-#include "../IO_Terrain.h"
 #include "../InterfaceType.h"
 
-#include "../it_Mgr.h"
 #include "../InterfaceType.h"
 #include "../Dlgs/SubClass/CSlot.h"
 #include "../Dlgs/DealDlg.h"

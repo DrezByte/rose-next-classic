@@ -2,7 +2,6 @@
 #include ".\cpartydlg.h"
 #include "CPartyMember.h"
 #include "ExchangeDlg.h"
-#include "../IT_MGR.h"
 #include "../CToolTipMgr.h"
 #include "../IO_ImageRes.h"
 #include "../CTDrawImpl.h"

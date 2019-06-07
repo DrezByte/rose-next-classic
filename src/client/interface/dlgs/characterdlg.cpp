@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "CharacterDLG.h"
-#include "../it_mgr.h"
 #include "../CTDrawImpl.h"
 #include "../CToolTipMgr.h"
 #include "../CDragItem.h"

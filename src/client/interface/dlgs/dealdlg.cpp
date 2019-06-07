@@ -2,7 +2,6 @@
 #include "StdAfx.h"
 #include "DealDLG.h"
 #include "CMsgBox.h"
-#include "../it_mgr.h"
 #include "../TypeResource.h"
 #include "../InterfaceType.h"
 #include "../CTDrawImpl.h"

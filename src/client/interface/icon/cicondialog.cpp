@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\cicondialog.h"
-#include "../it_mgr.h"
 #include "../CToolTipMgr.h"
 #include "../CDragNDropMgr.h"
 #include "../CDragItem.h"

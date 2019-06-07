@@ -2,12 +2,10 @@
 #include "cgamestatetitle.h"
 #include <process.h>
 #include "CGame.h"
-#include "../IO_Terrain.h"
 #include "../CCamera.h"
 #include "System_FUNC.h"
 #include "SystemProcScript.h"
 #include "../interface/IO_ImageRes.h"
-#include "../interface/it_mgr.h"
 
 static bool tDone = false;
 int CGameStateTitle::m_iBackGroundZone  = 1;

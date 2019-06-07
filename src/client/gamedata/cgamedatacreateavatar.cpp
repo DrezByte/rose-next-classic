@@ -3,7 +3,6 @@
 
 #include "../CJustModelAVT.h"
 #include "../Game.h"
-#include "../Interface/it_mgr.h"
 #include "../Interface/CToolTipMgr.h"
 #include "../Interface/TypeResource.h"
 #include "../System/SystemProcScript.h"

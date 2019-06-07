@@ -4,10 +4,8 @@
 #include "System\\CGame.h"
 #include "GameProc/ObjectTargetEffect.h"
 #include "CCamera.h"
-#include "IO_Terrain.h"
 #include "GameData/CParty.h"
 
-#include "Interface/it_mgr.h"
 
 CUserInputSystem _UserInputSystem;
 

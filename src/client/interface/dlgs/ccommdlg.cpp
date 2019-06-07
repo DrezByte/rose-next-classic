@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\ccommdlg.h"
-#include "../it_mgr.h"
 #include "../../Network/CNetwork.h"
 #include "subclass/CFriendListItem.h"
 #include "subclass/CMailBoxListItem.h"

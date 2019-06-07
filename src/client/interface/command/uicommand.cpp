@@ -2,7 +2,6 @@
 #include "uicommand.h"
 #include "CTCmdNumberInput.h"
 
-#include "../it_Mgr.h"
 #include "../../Object.h"
 #include "../../System/CGame.h"
 

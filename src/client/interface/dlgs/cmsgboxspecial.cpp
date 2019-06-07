@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\cmsgboxspecial.h"
-#include "../IT_MGR.h"
 #include "../externalui/externaluilobby.h"
 #include "../../System/CGame.h"
 

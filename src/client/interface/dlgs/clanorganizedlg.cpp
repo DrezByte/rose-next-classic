@@ -4,7 +4,6 @@
 #include "subclass/ClanMark.h"
 #include "../IO_ImageRes.h"
 #include "../CTDrawImpl.h"
-#include "../IT_MGR.h"
 #include "../../Network/CNetwork.h"
 
 #include "tgamectrl/teditbox.h"

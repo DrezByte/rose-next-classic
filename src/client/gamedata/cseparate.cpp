@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\cseparate.h"
 #include "../GameCommon/Item.h"
-#include "../interface/it_mgr.h"
 #include "../Common/CItem.h"
 #include "../Common/IO_STB.h"
 #include "../Network/CNetwork.h"

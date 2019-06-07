@@ -1,6 +1,11 @@
 #ifndef	__IO_MOTION_H
 #define	__IO_MOTION_H
 #include "..\Util\CFileLIST.h"
+
+#ifndef SAFE_DELETE
+#define SAFE_DELETE(p)       { if(p) { delete (p);     (p)=NULL; } }
+#endif
+
 typedef unsigned int HNODE;
 //-------------------------------------------------------------------------------------------------
 struct tagMOTION {

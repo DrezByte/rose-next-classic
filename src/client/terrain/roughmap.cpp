@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include ".\roughMap.h"
-#include "IO_Terrain.h"
-#include "../Interface/it_Mgr.h"
 
 
 CRoughMap::CRoughMap(void)

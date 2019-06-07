@@ -3,7 +3,6 @@
 #include <process.h>
 #include "CGame.h"
 #include "SystemProcScript.h"
-#include "../IO_Terrain.h"
 #include "../CCamera.h"
 #include "../CSkyDOME.H"
 #include "../Interface/ExternalUI/ExternalUILobby.h"

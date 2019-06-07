@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\eventdialog.h"
 #include "../../Object.h"
-#include "../it_MGR.h"
 #include "subclass/CDialogNpcScriptItem.h"
 #include "subclass/CDialogNpcScriptAnswerItem.h"
 #include "subclass/CDialogNpcScriptAnswerItemNew.h"

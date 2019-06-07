@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\CITStateRideCart.h"
-#include "../it_mgr.h"
 #include "../../Object.h"
 
 // 카트모드에서 할 수 있는 동작//

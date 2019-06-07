@@ -4,7 +4,6 @@
 #include "stdAFX.h"
 #include "Game.h"
 #include "OBJECT.h"
-#include "IO_Terrain.h"
 #include "Network\CNetwork.h"
 #include "common\Calculation.h"
 #include "Game_FUNC.h"

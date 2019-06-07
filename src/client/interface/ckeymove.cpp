@@ -4,7 +4,6 @@
 #include "../CCamera.h"	
 #include "../OBJECT.h"	
 #include "../Network\\CNetwork.h"
-#include "../interface/it_mgr.h"
 #include "../system/CGame.h"
 #include "tgamectrl/teditbox.h"
 #include "../Misc/GameUtil.h"

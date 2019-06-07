@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CRestartDLG.h"
 #include "..\\..\\NetWork\\CNetwork.h"
-#include "../../IO_Terrain.h"
 
 
 CRestartDLG::CRestartDLG()

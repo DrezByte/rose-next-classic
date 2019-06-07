@@ -10,13 +10,11 @@
 #include "../Interface/CTFontImpl.h"
 #include "../Interface/IO_ImageRes.h"
 #include "../interface/CUIMediator.h"
-#include "../Interface/IT_MGR.H"
 #include "../Interface/Command/CTCmdHotExec.h"
 #include "../Interface/Cursor/CCursor.h"
 
 #include "../Common/IO_Quest.h"
 
-#include "../IO_Terrain.h"
 #include "../CCamera.h"
 #include "../CSkyDOME.H"
 #include "../Misc/GameUtil.h"

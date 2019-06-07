@@ -8,7 +8,6 @@
 #include "../../Common/IO_QUEST.h"
 #include "../../Util/Localizing.h"
 #include "../CTDrawImpl.h"
-#include "../it_MGR.h"
 #include "../CToolTipMgr.h"
 #include "../IO_ImageRes.h"
 

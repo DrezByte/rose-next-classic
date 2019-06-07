@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\patchmanager.h"
 #include "../Game.h"
-#include "../IO_TERRAIN.h"
 #include "CCamera.h"
 #include "CClientStorage.h"
 //#include "../../../engine/include/zz_interface.h"

@@ -5,7 +5,6 @@
 #include "subclass/CDialogNpcScriptAnswerItem.h"
 
 #include "../../Object.h"
-#include "../it_mgr.h"
 
 
 #include "tgamectrl/resourcemgr.h"

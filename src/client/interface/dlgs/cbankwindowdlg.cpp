@@ -5,7 +5,6 @@
 #include "../../Object.h"
 #include "../../Network/CNetwork.h"
 #include "../../GameData/CBank.h"
-#include "../IT_MGR.h"
 #include "../CToolTipMgr.h"
 
 

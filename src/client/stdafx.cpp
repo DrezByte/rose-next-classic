@@ -1,7 +1,3 @@
-// stdafx.cpp : source file that includes just the standard includes
-// Client.pch will be the pre-compiled header
-// stdafx.obj will contain the pre-compiled type information
-
 #include "stdafx.h"
 #include "sound\IO_Sound.h"
 #include "util\CMessageQ.h"
@@ -14,7 +10,6 @@
 #include "IO_MATERIAL.h"
 #include "IO_EFFECT.h"
 #include "IO_EVENT.h"
-#include "IO_TERRAIN.h"
 #include "CCamera.h"
 #include "CViewMSG.h"
 

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "item.h"
 #include "../Object.h"
-#include "../io_terrain.h"
 #include "../JCommandState.h"
 #include "../interface/icon/ciconitem.h"
 #include "../interface/icon/ciconskill.h"
@@ -9,8 +8,7 @@
 
 #include "../interface/interfacetype.h"
 #include "../util/Localizing.h"
-//#include "../interface/it_mgr.h"
-//#include "../interface/dlgs/MakeDlg.h"
+////#include "../interface/dlgs/MakeDlg.h"
 //#include "../interface/dlgs/ChattingDlg.h"
 #include "../interface/command/UICommand.h"
 #include "../network/cnetwork.h"

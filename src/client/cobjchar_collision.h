@@ -5,7 +5,6 @@
 #define	__COBJCOLLISION_H
 
 #include <vector>
-#include "IO_Terrain.h"
 
 class CObjCHAR_Collision
 {

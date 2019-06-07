@@ -9,7 +9,6 @@
 #include "Game_FUNC.h"
 #include "..\IO_EVENT.h"
 #include "tgamectrl/TGameCtrl.h"
-#include "..\interface\It_mgr.h"
 #include "OBJECT.h"
 
 #include "Util\\VFSManager.h"

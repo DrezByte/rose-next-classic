@@ -14,12 +14,10 @@
 */
 #include "stdafx.h"
 #include "CMinimapDLG.h"
-#include "../IT_MGR.h"
 #include "../CTDrawImpl.h"
 #include "../CToolTipMgr.h"
 #include "../CTDrawImpl.h"
 #include "../IO_ImageRes.h"
-#include "../../IO_Terrain.h"
 #include "../../System/CGame.h"
 #include "zz_interface.h"
 #include "../../GameData/CParty.h"

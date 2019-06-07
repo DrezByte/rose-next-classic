@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ctcmdopendlg.h"
-#include "../it_mgr.h"
 #include "CTCmdNumberInput.h"
 #include <algorithm>
 #include "DLGs/CMsgBoxCartRide.h"

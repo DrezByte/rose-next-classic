@@ -9,7 +9,6 @@
 #include "../../Misc/GameUtil.h"
 
 #include "../IO_ImageRes.h"
-#include "../it_mgr.h"
 #include "../icon/ciconitem.h"
 
 

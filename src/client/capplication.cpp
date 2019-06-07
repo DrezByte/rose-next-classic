@@ -9,7 +9,6 @@
 #include "Game.h"
 #include "tgamectrl/TGameCtrl.h"
 
-#include "Interface\\it_MGR.h"
 #include "System/CGame.h"
 #include "interface/cursor/ccursor.h"
 #include "Sound/MusicMgr.h"

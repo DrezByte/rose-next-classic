@@ -3,7 +3,6 @@
 */
 #include "stdAFX.h"
 #include "IO_Basic.h"
-#include "IO_Terrain.h"
 #include "CModelCHAR.h"
 #include "Util\\VFSManager.h"
 

@@ -2,7 +2,6 @@
 #include "CNetwork.h"
 #include "Game.h"
 #include "CCamera.h"
-#include "IO_Terrain.h"
 #include "Game_FUNC.h"
 #include "JCommandState.h"	
 
@@ -25,7 +24,6 @@
 #include "../Util/CCheat.h"
 #include "../GameProc/CDayNNightProc.h"
 
-#include "../Interface/it_MGR.h"
 #include "../Interface/TypeResource.h"	
 #include "../Interface/CHelpMgr.h"
 #include "../Interface/CUIMediator.h"

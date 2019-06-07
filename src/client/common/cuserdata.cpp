@@ -9,8 +9,7 @@
 	#include "IO_PAT.h"
 	#include "NET_Prototype.h"
 	#include "../Interface/Dlgs/ChattingDlg.h"
-	#include "../Interface/it_mgr.h"
-	#include "../Game.h"
+		#include "../Game.h"
 #endif
 #define	MAX_INT		0x07fffffff
 

@@ -3,7 +3,6 @@
 #include "../../Game.h"
 #include "../../GameData/CChatRoom.h"
 #include "../../Network/CNetwork.h"
-#include "../it_mgr.h"
 
 
 #include "tgamectrl/tscrollbar.h"

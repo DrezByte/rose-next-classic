@@ -3,7 +3,6 @@
 #include "tgamectrl/tradiobox.h"
 #include "tgamectrl/teditbox.h"
 #include "CGoodsDlg.h"
-#include "../it_mgr.h"
 #include "../../Object.h"
 #include "../CDragItem.h"
 #include "../Icon/CIconItem.h"

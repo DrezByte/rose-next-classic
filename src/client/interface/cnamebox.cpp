@@ -88,7 +88,6 @@ void CNameBox::Draw(float x,float y,float z)
 	
 }
 
-#include "../IO_Terrain.h"
 /// @bug name 가 NULL 일때는 안그리게 했다. 이건?
 void CNameBox::Draw( CObjCHAR* pCharOBJ, float x, float y, float z )
 {	

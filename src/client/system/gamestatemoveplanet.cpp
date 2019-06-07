@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\gamestatemoveplanet.h"
 #include "CCamera.h"
-#include "IO_Terrain.h"
 #include "CGame.h"
 #include "CSkyDome.h"
 #include "SystemProcScript.h"

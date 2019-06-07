@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\chelpmgr.h"
-#include "it_mgr.h"
 #include "dlgs/CSystemMsgDlg.h"
 #include "interfacetype.h"
 #include "../Common/IO_STB.h"

@@ -6,7 +6,6 @@
 #include "ChattingDlg.h"
 #include "JCommandState.h"
 
-#include "../it_mgr.h"
 #include "../CDragItem.h"
 #include "../TypeResource.h"
 //#include "../LookUpImageIndex.h"

@@ -3,6 +3,7 @@
 */
 #ifndef	__COBJCHAR_H
 #define	__COBJCHAR_H
+
 #include "IO_Model.h"
 #include "CModelCHAR.h"
 #include "Common\CObjAI.h"
@@ -12,6 +13,7 @@
 #include "Interface/CEnduranceProperty.h"
 #include "GameProc/CDayNNightProc.h"
 #include "GameProc/Objvibration.h"
+#include "util/cd3dutil.h"
 
 #include "ObjectCommand/ObjCommand.h"
 

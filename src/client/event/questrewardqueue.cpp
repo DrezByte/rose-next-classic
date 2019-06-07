@@ -2,7 +2,6 @@
 #include ".\questrewardqueue.h"
 #include <algorithm>
 #include "../Object.h"
-#include "../Interface/it_MGR.h"
 
 
 CQuestRewardQueue g_QuestRewardQueue;

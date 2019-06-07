@@ -6,14 +6,12 @@
 #include "CObjUSER.h"
 #include "Game_FUNC.h"
 #include "Network/CNetwork.h"
-#include "interface/it_mgr.h"
 #include "interface/dlgs/cpartydlg.h"
 #include "gamedata/cbank.h"
 #include "gamedata/cparty.h"
 #include "system/cgame.h"
 #include "gamecommon/item.h"
 #include "common/io_pat.h"
-#include "IO_Terrain.h"
 #include "CommandFilter.h"
 
 //¹ÚÁöÈ£

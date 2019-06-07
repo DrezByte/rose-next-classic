@@ -7,7 +7,6 @@
 #include "../interface/CUIMediator.h"
 #include "../interface/ExternalUI/CSelectAvata.h"
 #include "../CClientStorage.h"
-#include "../IO_Terrain.h"
 #include "../CCamera.h"
 #include "../CSkyDOME.H"
 #include "../GameData/CGameDataCreateAvatar.h"

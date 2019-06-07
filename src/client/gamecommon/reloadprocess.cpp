@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\reloadprocess.h"
 #include "../Game.h"
-#include "../Interface/it_MGR.h"
 #include "../Interface/CTDrawImpl.h"
 
 CReloadProcess::CReloadProcess(void)

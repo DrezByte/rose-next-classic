@@ -4,7 +4,6 @@
 #include "../object.h"
 #include "../network/cnetwork.h"
 #include "../System/CGame.h"
-#include "../interface/it_mgr.h"
 #include "../interface/dlgs/chattingdlg.h"
 #include "../interface/dlgs/makedlg.h"
 #include "../interface/command/ctcmdhotexec.h"
@@ -14,7 +13,6 @@
 #include "../GameProc/UseItemDelay.h"
 #include "../Common/CItem.h"
 #include "../IO_Event.h"
-#include "../io_terrain.h"
 
 
 //Item base command에서 필요한 글로벌 함수들

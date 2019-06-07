@@ -15,7 +15,6 @@
 
 #include "../IO_ImageRes.h"
 #include "../CTDrawImpl.h"
-#include "../IT_MGR.h"
 #include "../CDragItem.h"
 #include "../command/uicommand.h"
 

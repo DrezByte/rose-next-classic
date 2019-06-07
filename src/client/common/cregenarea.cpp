@@ -2,7 +2,6 @@
 #ifndef	__SERVER
 #include "CRegenAREA.h"
 #include "Game.h"
-#include "IO_Terrain.h"
 	#if defined( _DEBUG )
 	#include "tgamectrl/TGameCtrl.h"
 	#endif
@@ -141,7 +140,6 @@ bool CRegenPOINT::Load ( CFileSystem* pFileSystem )
 
 
 #ifndef	__SERVER
-#include "../interface/it_mgr.h"
 void CRegenPOINT::RegenCharacter (int iIndex, int iCount)
 {
 	if ( iIndex < 1 || iCount < 1 )

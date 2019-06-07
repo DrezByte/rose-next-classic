@@ -2,7 +2,6 @@
 #include ".\cmakestatenormal.h"
 #include "../../Icon/CIconItem.h"
 #include "../MakeDLG.h"
-#include "../../it_mgr.h"
 #include "../../CToolTipMgr.h"
 
 #include "../../Command/UICommand.h"

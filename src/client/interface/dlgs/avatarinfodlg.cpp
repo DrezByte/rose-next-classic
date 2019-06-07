@@ -3,7 +3,6 @@
 #include "tgamectrl/tguage.h"
 #include "tgamectrl/resourcemgr.h"
 
-#include "../it_mgr.h"
 #include "../CToolTipMgr.h"
 #include "../CTDrawImpl.h"
 #include "../IO_ImageRes.h"

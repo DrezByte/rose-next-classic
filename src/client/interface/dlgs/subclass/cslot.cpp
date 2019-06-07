@@ -7,7 +7,6 @@
 #include "../../IO_ImageRes.h"
 #include "../../../Common/IO_STB.h"
 #include "../../CInfo.h"
-#include "../../it_mgr.h"
 #include "../../CToolTipMgr.h"
 #include "../../../GameData/CPrivateStore.h"
 #include "../../../System/CGame.h"

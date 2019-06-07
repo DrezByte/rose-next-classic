@@ -16,7 +16,6 @@
 #include "../../System/SystemProcScript.h"
 #include "../../GameData/CGameDataCreateAvatar.h"
 
-#include "../it_MGR.h"
 
 CCreateAvata::CCreateAvata()
 {

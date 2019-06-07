@@ -7,9 +7,7 @@
 #include "Game_FUNC.h"
 #include "OBJECT.h"
 #include "Network\CNetwork.h"
-#include "IO_Terrain.h"
 #include "Game.h"
-#include "..\\interface\\it_mgr.h"
 #include "../GameData/CStore.h"
 
 //-------------------------------------------------------------------------------------------------

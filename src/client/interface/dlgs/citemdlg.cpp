@@ -3,7 +3,6 @@
 #include "../../GameData/Event/CTEventItem.h"
 #include "../../GameCommon/Item.h"
 #include "../CDragItem.h"
-#include "../it_mgr.h"
 #include "../../Object.h"
 
 #include "../Icon/CIconItem.h"

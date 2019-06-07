@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CSkillCommand.h"
-#include "it_mgr.h"
 #include "OBJECT.h"	
 #include "Skill.h"	
 #include "../Network/CNetwork.h"	
@@ -10,7 +9,6 @@
 #include "GameData/CParty.h"
 #include "GameData/CExchange.h"
 #include "GameData/CPrivateStore.h"
-#include "io_terrain.h"
 #include "../System/CGame.h"
 
 

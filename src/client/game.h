@@ -2,6 +2,9 @@
 #define __GAME_H
 
 #include "Util/JSingleton.h"
+#include "util/classstr.h"
+#include "common/datatype.h"
+
 #include <string>
 
 #define SHADER_NOLIT_SKIN 0

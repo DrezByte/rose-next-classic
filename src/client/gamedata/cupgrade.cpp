@@ -2,7 +2,6 @@
 #include ".\cupgrade.h"
 #include "CRequireMaterial.h"
 #include "../gamecommon/item.h"
-#include "../interface/it_mgr.h"
 #include "../interface/typeresource.h"
 #include "event/CTEventItem.h"
 #include "../Network/CNetwork.h"

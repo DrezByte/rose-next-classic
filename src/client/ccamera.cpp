@@ -4,7 +4,6 @@
 #include "stdAFX.h"
 #include "CCamera.h"
 #include "Game.h"
-#include "IO_Terrain.h"
 
 
 #define	MIN_DISTANCE	300.f

@@ -458,9 +458,6 @@
     <ClCompile Include="GameData\ServerList.cpp">
       <Filter>Source Files\GameData</Filter>
     </ClCompile>
-    <ClCompile Include="GameData\Event\CTEvenSkill.cpp">
-      <Filter>Source Files\GameData\Event</Filter>
-    </ClCompile>
     <ClCompile Include="GameData\Event\CTEvent.cpp">
       <Filter>Source Files\GameData\Event</Filter>
     </ClCompile>
@@ -1569,9 +1566,6 @@
     </ClInclude>
     <ClInclude Include="GameData\ServerList.h">
       <Filter>Source Files\GameData</Filter>
-    </ClInclude>
-    <ClInclude Include="GameData\Event\CTEvenSkill.h">
-      <Filter>Source Files\GameData\Event</Filter>
     </ClInclude>
     <ClInclude Include="GameData\Event\CTEvent.h">
       <Filter>Source Files\GameData\Event</Filter>

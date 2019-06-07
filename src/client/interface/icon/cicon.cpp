@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\cicon.h"
 #include "../CTDrawImpl.h"
-#include "../it_mgr.h"
 #include "../CToolTipMgr.h"
 #include "../dlgs/subclass/CSlot.h"
 

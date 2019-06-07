@@ -2,7 +2,6 @@
 #include ".\cgamestateselectsvr.h"
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../CCamera.h"
-#include "../IO_Terrain.h"
 #include "../interface/CUIMediator.h"
 
 
@@ -16,7 +15,6 @@
 #include "../Interface/CTFontImpl.h"
 #include "../Interface/IO_ImageRes.h"
 
-#include "../Interface/IT_MGR.H"
 #include "../Interface/Command/CTCmdHotExec.h"
 #include "../Interface/Cursor/CCursor.h"
 

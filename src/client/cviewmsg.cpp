@@ -7,7 +7,6 @@
 #include "Object.h"
 #include "Interface\\CUIMediator.h"
 #include "Interface/CTDrawImpl.h"
-#include "Interface/it_mgr.h"
 #include "interface/IO_ImageRes.h"
 
 CViewMSG* CViewMSG::m_pInstance = NULL;

@@ -10,7 +10,6 @@
 #include "../GameCommon/Skill.h"
 #include "../Util/ClassTIME.h"
 
-#include "../Interface/it_mgr.h"
 #include "../System/CGame.h"
 
 #include "../Util/LogWnd.h"

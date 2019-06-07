@@ -4,7 +4,6 @@
 #include "CTargetMenu.h"
 #include "ExchangeDlg.h"
 #include "CPartyDlg.h"
-#include "../it_mgr.h"
 #include "../CToolTipMgr.h"
 #include "../../GameData/CExchange.h"
 #include "../../Network/CNetwork.h"

@@ -9,12 +9,10 @@
 
 #include "./dlgs/CDialogDlg.h"
 #include "InterfaceType.h"
-#include "../Interface/it_mgr.h"
 #include "../Interface/IO_ImageRes.h"
 #include "CObjCART.h"
 #include "OBJECT.h"
 #include "CCamera.h"
-#include "../IO_Terrain.h"
 
 //-------------------------------------------------------------------------------------------------
 int		QF_getEventOwner ( int hEvent )

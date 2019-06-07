@@ -3,7 +3,6 @@
 #include "../CTDrawImpl.h"
 #include "../interfacetype.h"
 #include "../dlgs/subclass/cslot.h"
-#include "../it_mgr.h"
 #include "../TypeResource.h"
 #include "../IO_ImageRes.h"
 #include "../slotcontainer/CItemSlot.h"

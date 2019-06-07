@@ -13,7 +13,6 @@
 #include "Dlgs/ChattingDlg.h"
 #include "Dlgs/MakeDlg.h"
 #include "Dlgs/CSkillDlg.h"
-#include "it_mgr.h"
 #include "../object.h"
 #include "../gamecommon/Skill.h"
 

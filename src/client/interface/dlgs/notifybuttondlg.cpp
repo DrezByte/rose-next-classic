@@ -2,7 +2,6 @@
 #include ".\notifybuttondlg.h"
 
 #include "../../Tutorial/TutorialEventUtility.h"
-#include "../it_mgr.h"
 #include "../../system/system_func.h"
 
 #include "tgamectrl/tbutton.h"

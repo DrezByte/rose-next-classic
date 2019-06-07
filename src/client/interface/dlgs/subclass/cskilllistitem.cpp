@@ -12,7 +12,6 @@
 #include "../../CDragItem.h"
 #include "../../command/dragcommand.h"
 #include "../../../Network/CNetwork.h"
-#include "../../it_mgr.h"
 #include "../CSkillDlg.h"
 #include "../../../GameCommon/Skill.h"
 

@@ -4,7 +4,6 @@
 #include "../../System/CGame.h"
 #include "../../GameData/CParty.h"
 #include "../Command/CTCmdHotExec.h"
-#include "../it_mgr.h"
 
 CSystemDLG::CSystemDLG()
 {

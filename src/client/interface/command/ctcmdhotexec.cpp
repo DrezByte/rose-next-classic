@@ -3,7 +3,6 @@
 #include ".\ctcmdhotexec.h"
 #include "../../CApplication.h"
 #include "../../Network/CNetwork.h"
-#include "../it_mgr.h"
 #include "../Dlgs/ExchangeDlg.h"
 #include "../Dlgs/CStoreDlg.h"
 #include "../Dlgs/MakeDlg.h"

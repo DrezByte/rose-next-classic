@@ -3,7 +3,6 @@
 #include "event/CTEventExchange.h"
 #include "../gamecommon/item.h"
 #include "../Network/CNetwork.h"
-#include "../interface/it_mgr.h"
 //#include "../gamecommon/citemequip.h"
 //#include "../gamecommon/citemuse.h"
 //#include "../gamecommon/citemetc.h"

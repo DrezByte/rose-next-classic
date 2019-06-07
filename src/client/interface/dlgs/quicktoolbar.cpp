@@ -1,7 +1,6 @@
 ﻿
 #include "StdAfx.h"
 #include "QuickToolBAR.h"
-#include "../it_mgr.h"
 #include "../CDragItem.h"
 #include "../CTDrawImpl.h"
 #include "../IO_ImageRes.h"

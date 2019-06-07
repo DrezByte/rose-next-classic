@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\citstaterepair.h"
-#include "../it_mgr.h"
 #include "../../System/CGame.h"
 #include "../dlgs/CItemDlg.h"
 

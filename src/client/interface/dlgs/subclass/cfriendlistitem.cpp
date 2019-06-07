@@ -3,7 +3,6 @@
 #include "../CPrivateChatDlg.h"
 #include "../CMemoDlg.h"
 
-#include "../../it_mgr.h"
 #include "../../TypeResource.h"
 #include "../../IO_ImageRes.h"
 #include "../../CTDrawImpl.h"

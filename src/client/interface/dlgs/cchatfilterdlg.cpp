@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\cchatfilterdlg.h"
-#include "../it_mgr.h"
 
 #include "tgamectrl/tcheckbox.h"
 CChatFilterDlg::CChatFilterDlg(void)

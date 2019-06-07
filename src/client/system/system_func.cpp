@@ -6,7 +6,6 @@
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../Interface/ExternalUI/CCreateAVata.h"
 #include "../Interface/ExternalUI/CExternalUI.h"
-#include "../Interface/it_MGR.h"
 #include "../Interface/dlgs/notifydlg.h"
 #include "../Interface/dlgs/cminimapdlg.h"
 #include "../ObjFixedEvent.h"

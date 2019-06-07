@@ -5,7 +5,6 @@
 #include "../../Game.h"
 #include "../../System/CGame.h"
 #include "../../CApplication.h"
-#include "../it_mgr.h"
 #include "../../Common/IO_STB.h"
 #include "../../JCommandState.h"
 #include "../Cursor/CCursor.h"
@@ -22,7 +21,6 @@
 #include "tgamectrl/tcontrolmgr.h"
 #include "tgamectrl/teditbox.h"
 
-#include "../../IO_Terrain.h"
 #include "triggerinfo/triggerinfo.h"
 
 COptionDlg::COptionDlg(void)

@@ -20,6 +20,7 @@
   µ·   : 5 + 10 + xx
 */
 
+#include "common/datatype.h"
 
 #define	MAX_ITEM_LIFE			1000
 

@@ -3,7 +3,6 @@
 #include "Net_Prototype.h"
 #include "../../Network/CNetwork.h"
 #include "../../Game.h"
-#include "../it_mgr.h"
 #include "../Command/CTCmdOpenDlg.h"
 #include "CCommDlg.h"
 #include "subclass/CFriendListItem.h"

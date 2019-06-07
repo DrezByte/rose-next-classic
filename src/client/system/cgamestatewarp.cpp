@@ -4,12 +4,10 @@
 #include "../Object.h"
 #include "../CCamera.h"
 #include "../CClientStorage.h"
-#include "../IO_Terrain.h"
 #include "../CSkyDOME.h"
 #include "../Network/CNetwork.h"
 #include "../interface/ExternalUI/ExternalUILobby.h"
 #include "../interface/CLoading.h"
-#include "../interface/it_mgr.h"
 #include "../interface/CUIMediator.h"
 #include "../interface/Dlgs/CMinimapDlg.h"
 

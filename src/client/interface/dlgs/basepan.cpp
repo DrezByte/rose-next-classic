@@ -1,7 +1,6 @@
 
 #include "StdAfx.h"
 #include "BasePAN.h"
-#include "../IT_MGR.h"
 #include "../CToolTipMgr.h"
 #include "../../OBJECT.h"
 

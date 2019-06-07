@@ -6,10 +6,8 @@
 #include "..\OBJECT.h"
 #include "..\\Game.h"
 
-#include "IO_Terrain.h"
 #include "CCamera.h"
 #include "../Event/Quest_FUNC.h"
-#include "../Interface/it_mgr.h"
 #include "../Interface/dlgs/ChattingDlg.h"
 #include "../Interface/cursor/CCursor.h"
 #include "../System/CGame.h"

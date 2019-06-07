@@ -5,8 +5,6 @@
 #include "../gamecommon/item.h"
 #include "../gamedata/cstore.h"
 #include "../Network/CNetwork.h"
-#include "../IO_Terrain.h"
-#include "../interface/it_mgr.h"
 #include "Event/CTEventItem.h"
 
 CDealData::CDealData(void)

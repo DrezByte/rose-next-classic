@@ -6,8 +6,6 @@
 #include "Event/CTEventItem.h"
 #include "../GameCommon/Item.h"
 #include "../Network/CNetwork.h"
-#include "../interface/it_mgr.h"
-#include "../IO_Terrain.h"
 
 
 

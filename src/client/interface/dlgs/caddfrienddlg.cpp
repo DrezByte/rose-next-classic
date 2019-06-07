@@ -2,7 +2,6 @@
 #include ".\caddfrienddlg.h"
 #include "tgamectrl/teditbox.h"
 #include "CCommDlg.h"
-#include "../it_mgr.h"
 #include "../../Network/CNetwork.h"
 CAddFriendDlg::CAddFriendDlg( int iDlgType )
 {

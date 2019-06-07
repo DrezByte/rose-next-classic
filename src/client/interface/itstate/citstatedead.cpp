@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\citstatedead.h"
-#include "../it_mgr.h"
 #include "../../Object.h"
 
 CITStateDead::CITStateDead(void)

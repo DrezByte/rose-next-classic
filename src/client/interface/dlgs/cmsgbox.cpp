@@ -6,7 +6,6 @@
 
 #include "../IO_ImageRes.h"
 
-#include "../it_mgr.h"
 #include "../ExternalUI/ExternalUILobby.h"
 #include "../../System/CGame.h"
 #include "../Command/CTCmdOpenDlg.h"

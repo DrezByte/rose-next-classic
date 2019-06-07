@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "CSkillDLG.h"
-#include "../it_Mgr.h"
 #include "../CToolTipMgr.h"
 #include "../Object.h"
 #include "../IO_ImageRes.h"

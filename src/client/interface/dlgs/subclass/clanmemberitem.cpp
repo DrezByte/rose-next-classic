@@ -6,7 +6,6 @@
 #include "../../../GameData/CClan.h"
 #include "../../CTDrawImpl.h"
 #include "../../IO_ImageRes.h"
-#include "../../it_mgr.h"
 #include "../../CToolTipMgr.h"
 #include "../CClanDlg.h"
 #include "../../TypeResource.h"

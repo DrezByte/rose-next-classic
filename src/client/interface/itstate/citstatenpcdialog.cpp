@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\citstatenpcdialog.h"
-#include "../IT_MGR.h"
 #include "../SFX/SFXManager.h"
 
 CITStateNpcDialog::CITStateNpcDialog(void)

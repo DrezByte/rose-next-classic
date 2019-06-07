@@ -15,6 +15,8 @@
 #include <algorithm>
 
 
+extern CSoundLIST *g_pSoundLIST;
+
 struct SummonMobInfo
 {
 	int		iIndex;

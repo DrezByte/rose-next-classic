@@ -4,7 +4,6 @@
 
 #include "../Interface/CTDrawImpl.h"
 #include "../Interface/IO_ImageRes.h"
-#include "../Interface/it_Mgr.h"
 #include "../OBJECT.h"
 
 #include "../JCommandState.h"

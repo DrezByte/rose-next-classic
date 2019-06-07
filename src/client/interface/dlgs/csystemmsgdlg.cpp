@@ -2,7 +2,6 @@
 #include "csystemmsgdlg.h"
 #include "../../Game.h"
 #include "../CHelpMgr.h"
-#include "../it_MGR.h"
 #include "../CTDrawImpl.h"
 #include "../IO_ImageRes.h"
 #include "../../util/Localizing.h"

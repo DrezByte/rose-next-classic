@@ -9,7 +9,6 @@
 #include "../gamecommon/itemcommand.h"
 #include "../interface/command/CTCmdNumberInput.h"
 #include "../interface/command/UICOMMAND.h"
-#include "../interface/it_mgr.h"
 
 CStore::CStore(void)
 {

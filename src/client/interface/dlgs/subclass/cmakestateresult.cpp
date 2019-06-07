@@ -5,7 +5,6 @@
 #include "../../IO_ImageRes.h"
 #include "../MakeDLG.h"
 #include "../../../Network/CNetwork.h"
-#include "../../it_mgr.h"
 #include "../../Command/CTCmdHotExec.h"
 #include "../../Icon/CIconItem.h"
 #include "../../../Game_Func.h"

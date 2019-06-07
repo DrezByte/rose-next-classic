@@ -171,6 +171,8 @@
 #define	__DATATYPE_H
 //-------------------------------------------------------------------------------------------------
 
+#include "util/cvector.h"
+
 #define	BONE_IDX_PELVIS		0
 #define	BONE_IDX_HEAD		4
 

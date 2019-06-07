@@ -5,7 +5,6 @@
 #include "../Game.h"
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../CCamera.h"
-#include "../IO_Terrain.h"
 #include "../interface/CUIMediator.h"
 #include "SystemProcScript.h"
 #include "CGame.h"

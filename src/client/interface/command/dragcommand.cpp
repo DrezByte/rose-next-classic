@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "dragcommand.h"
 
-#include "../it_mgr.h"
 #include "../dlgs/QuickToolBar.h"
 #include "../dlgs/CPatDlg.h"
 #include "../dlgs/CItemDlg.h"

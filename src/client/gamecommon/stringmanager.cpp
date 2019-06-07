@@ -6,7 +6,6 @@
 #include "../Common/IO_skill.h"
 #include "../Common/IO_Quest.h"
 #include "../Interface/CHelpMgr.h"
-#include "../interface/it_MGR.h"
 #include "item.h"
 
 #include <algorithm>
@@ -831,7 +830,7 @@ char* CStringManager::GetString( int iIndex )
 const char* CStringManager::GetClanClass( int iClassNo )
 {
 	std::string strKey( CStr::Printf("%d",iClassNo));
-	return GetNormalTypeTableString( STR_CLAN, strKey );
+	return GetNormalTypeTableString( STR_CLAN_CLASS, strKey );
 }
 
 const char* CStringManager::GetPlanetName( int iPlanetNo )

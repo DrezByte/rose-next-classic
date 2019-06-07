@@ -2,7 +2,6 @@
 #include ".\cmailboxlistitem.h"
 
 #include "../CMemoViewDlg.h"
-#include "../../it_mgr.h"
 #include "../../../Game.h"
 #include "../../../Util/classTime.h"
 

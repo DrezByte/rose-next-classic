@@ -6,7 +6,6 @@
 #include "OBJECT.h"
 #include "Game_FUNC.h"
 #include "Event/Quest_FUNC.h"
-#include "interface/it_mgr.h"
 #include "gamedata/cbank.h"
 #include "gamedata/cseparate.h"
 #include "gamedata/cupgrade.h"

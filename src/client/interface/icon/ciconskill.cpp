@@ -5,7 +5,6 @@
 #include "../../GameCommon/Skill.h"
 #include "../Dlgs/SubClass/CSlot.h"
 #include "../interfacetype.h"
-#include "../it_mgr.h"
 #include "../../util/Localizing.h"
 
 #include "tgamectrl/SplitHangul.h"

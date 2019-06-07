@@ -2,7 +2,6 @@
 #include ".\cparty.h"
 #include "Object.h"
 #include "../interface/interfacetype.h"
-#include "../interface/it_mgr.h"
 #include "../interface/dlgs/CMsgBox.h"
 #include "../interface/Command/CTCmdHotExec.h"
 #include "common/Calculation.h"

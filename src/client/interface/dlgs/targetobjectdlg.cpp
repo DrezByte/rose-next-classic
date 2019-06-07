@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "TargetObjectDLG.h"
 #include "../CTDrawImpl.h"
-#include "../it_Mgr.h"
 #include "../IO_ImageRes.h"
 #include "../../OBJECT.h"
 #include "../../Game.h"

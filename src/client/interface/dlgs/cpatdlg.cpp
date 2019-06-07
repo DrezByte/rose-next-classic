@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\cpatdlg.h"
-//#include "../it_mgr.h"
-//#include "../CDragItem.h"
+////#include "../CDragItem.h"
 //#include "../Icon/CIconItem.h"
 //#include "../Command/UICommand.h"
 //#include "../Command/dragcommand.h"

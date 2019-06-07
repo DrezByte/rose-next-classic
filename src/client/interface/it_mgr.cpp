@@ -1,7 +1,6 @@
-
 #include "StdAfx.h"
-#include "..\\Object.h"
 #include "it_mgr.h"
+#include "..\\Object.h"
 #include "IO_ImageRes.h"
 #include "InterfaceType.h"
 #include "CTDrawImpl.h"
@@ -83,7 +82,6 @@
 #include "cursor/CCursor.h"
 
 #include "../util/CCheat.h"
-#include "../IO_Terrain.h"
 #include "../Network/CNetwork.h"
 #include "../JCommandState.h"	
 #include "../System/CGame.h"

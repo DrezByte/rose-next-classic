@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\helpdlg.h"
 #include "../InterfaceType.h"
-#include "../it_mgr.h"
 #include "../IO_ImageRes.h"
 
 

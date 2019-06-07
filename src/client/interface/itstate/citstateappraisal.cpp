@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include ".\citstateappraisal.h"
-#include "../it_mgr.h"
 #include "../../System/CGame.h"
 #include "../dlgs/CItemDlg.h"
 

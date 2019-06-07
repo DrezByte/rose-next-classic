@@ -2,7 +2,6 @@
 #include ".\cseparatedlg.h"
 #include "../CDragItem.h"
 #include "../icon/ciconitem.h"
-#include "../it_mgr.h"
 #include "../command/uicommand.h"
 #include "../../common/cinventory.h"
 #include "../../gamedata/event/cteventseparate.h"

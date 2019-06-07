@@ -90,6 +90,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <debugInformationFormat>ProgramDatabase</debugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_debug;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -138,6 +139,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <debugInformationFormat>ProgramDatabase</debugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>Ndebug;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -165,6 +167,7 @@
       <ImportLibrary>
       </ImportLibrary>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Message>
@@ -297,7 +300,6 @@
     <ClCompile Include="GameData\CStoreUnion.cpp" />
     <ClCompile Include="GameData\CUpgrade.cpp" />
     <ClCompile Include="GameData\ServerList.cpp" />
-    <ClCompile Include="GameData\Event\CTEvenSkill.cpp" />
     <ClCompile Include="GameData\Event\CTEvent.cpp" />
     <ClCompile Include="GameData\Event\CTEventAvatarStore.cpp" />
     <ClCompile Include="GameData\Event\CTEventChatRoom.cpp" />
@@ -673,7 +675,6 @@
     <ClInclude Include="GameData\CStoreUnion.h" />
     <ClInclude Include="GameData\CUpgrade.h" />
     <ClInclude Include="GameData\ServerList.h" />
-    <ClInclude Include="GameData\Event\CTEvenSkill.h" />
     <ClInclude Include="GameData\Event\CTEvent.h" />
     <ClInclude Include="GameData\Event\CTEventAvatarStore.h" />
     <ClInclude Include="GameData\Event\CTEventChatRoom.h" />

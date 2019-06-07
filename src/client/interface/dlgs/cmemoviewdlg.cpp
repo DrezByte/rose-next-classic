@@ -3,7 +3,6 @@
 #include "../../Game.h"
 #include "../../SqliteDB.h"
 #include "../../object.h"
-#include "../it_mgr.h"
 #include "CCommDlg.h"
 
 

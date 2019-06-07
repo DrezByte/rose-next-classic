@@ -6,7 +6,10 @@
 #include "classSTB.h"
 #include "classSTR.h"
 #include "classHASH.h"
+#include "util/dllist.h"
+
 #include "rose/common/log.h"
+
 #ifndef	__SERVER
 	#include "CGameSTB.h"
 	#include "Util\\VFSManager.h"
@@ -50,8 +53,8 @@ protected:
 
 	classHASH< tagFileDATA<dType>* >	m_HASH;
 
-	short								m_nMaxLoadCNT;
-	classDLLIST< tagFileDATA<dType>* >	m_DelLIST;
+	short m_nMaxLoadCNT;
+	classDLLIST<tagFileDATA<dType>*> m_DelLIST;
 
 	void Delete_DATA (tagFileDATA<dType> *pData);
 	void Delete_LIST (void);

@@ -5,7 +5,6 @@
 
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../interface/CUIMediator.h"
-#include "../IO_Terrain.h"
 #include "../CCamera.h"
 #include "../CJustModelAVT.h"
 

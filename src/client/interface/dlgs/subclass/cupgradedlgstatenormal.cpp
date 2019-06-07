@@ -2,7 +2,6 @@
 #include ".\cupgradedlgstatenormal.h"
 #include "../CUpgradeDlg.h"
 #include "../../../GameData/CUpgrade.h"
-#include "../../it_mgr.h"
 #include "../../../object.h"
 
 CUpgradeDlgStateNormal::CUpgradeDlgStateNormal(CUpgradeDlg* pParent)

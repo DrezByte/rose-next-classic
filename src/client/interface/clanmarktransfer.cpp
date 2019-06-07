@@ -4,7 +4,6 @@
 #include "../System/CGame.h"
 #include "CClanMarkUserDefined.h"
 #include "../util/classCRC.h"
-#include "it_mgr.h"
 
 #include "zlib.h"
 

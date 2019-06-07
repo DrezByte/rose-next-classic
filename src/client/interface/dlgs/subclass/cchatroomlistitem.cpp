@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include ".\cchatroomlistitem.h"
 #include "../../../Game.h"
-#include "../../it_mgr.h"
 #include "../../../GameData/CChatRoom.h"
 #include "tgamectrl/zlistbox.h"
 

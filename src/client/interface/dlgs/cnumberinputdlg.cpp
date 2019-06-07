@@ -8,7 +8,6 @@
 #include "../Command/CTCmdNumberInput.h"
 
 #include "../../Game.h"
-#include "../it_mgr.h"
 
 CNumberInputDlg::CNumberInputDlg(void)
 {

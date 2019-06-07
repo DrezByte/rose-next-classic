@@ -3,7 +3,6 @@
 #include "../../Game.h"
 #include "../CTDrawImpl.h"
 #include "../IO_ImageRes.h"
-#include "../it_mgr.h"
 #include "../TypeResource.h"
 #include "../../GameData/Event/CTEventClan.h"
 #include "../../GameData/CClan.h"
@@ -14,7 +13,6 @@
 #include "../Network/CNetwork.h"
 #include "../JCommandState.h"
 #include "../Command/UICommand.h"
-#include "../../IO_Terrain.h"
 #include "../ClanMarkTransfer.h"
 
 #include "tgamectrl/tbutton.h"

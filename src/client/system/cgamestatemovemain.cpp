@@ -2,7 +2,6 @@
 #include ".\cgamestateMoveMain.h"
 #include "CGame.h"
 #include "SystemProcScript.h"
-#include "../IO_Terrain.h"
 #include "../CCamera.h"
 #include "../interface/CUIMediator.h"
 CGameStateMoveMain::CGameStateMoveMain( int iID )
