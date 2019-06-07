@@ -136,15 +136,12 @@ bool CCharDatLIST::Load_MOBorNPC (char *szBaseDIR, char *szFileName)
 		pStr = CStr::ReadString (fp);
 		if ( szBaseDIR ) {
 			pFullPath = CStr::Printf ("%s%s", szBaseDIR, pStr);
-		} else
+		} else {
 			pFullPath = pStr;
-/*
-		if ( nI == 331 ) {
-			int i=0;
 		}
-*/
+
 		if ( !CUtil::Is_FileExist( pFullPath ) ) {
-			::MessageBox( NULL, pFullPath, "모션 파일 없음", MB_OK );
+			LOG_WARN("Could not load mob or npc file: %s", pFullPath);
 		}
 		pAniKEY[ nI ] = g_MotionFILE.Add_FILE ( pFullPath );
 		assert( pAniKEY[ nI ] );

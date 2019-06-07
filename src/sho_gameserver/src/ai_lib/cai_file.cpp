@@ -492,7 +492,7 @@ bool CAI_FILE::Load (char *szFileName, STBDATA *pSTB, int iLangCol)
 
 	for (int iP=0; iP<sFileH.iNumOfPattern; iP++) {
 		if ( !m_pPattern[ iP ].Load( fp, pSTB, iLangCol ) ) {
-			::MessageBox( NULL, szFileName, "AI File ERROR", MB_OK );
+			LOG_ERROR("Error loading AI file: %s", szFileName);
 			fclose(fp);
 			return false;
 		}

@@ -6,7 +6,12 @@
 #include "classSTB.h"
 #include "classSTR.h"
 #include "classHASH.h"
+
+#ifdef CLIENT
 #include "util/dllist.h"
+#else
+#include "dllist.h"
+#endif
 
 #include "rose/common/log.h"
 

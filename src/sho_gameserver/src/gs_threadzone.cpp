@@ -105,7 +105,7 @@ void CZoneTHREAD::Execute()
 	);
 
 	if ( !m_Timer.Start() ) {
-		::MessageBox (NULL, "Not support hpc system", "Timer ERROR !!!", MB_OK);
+		LOG_ERROR("Could not sart the CZoneThread timer");
 		this->Terminate ();
 	} else {
 		m_Timer.GetValue();

@@ -299,8 +299,7 @@ bool STBDATA::LoadWSTB (bool bCheckQuotationMark, char *szFileName, int iKeyColI
 								if ( !pStr[ iP ] )
 									break;
 								if ( pStr[ iP ] != ' ' ) {
-									// ::MessageBox( NULL, CStr::Printf("[ %s: %s / %s ] dupicated key ...", szFileName, cFILE.GetNAME(nY), cFILE.GetNAME(nFindKEY) ), "ERROR", MB_OK );
-									LogString(0xffff,"       >>>>>> Duplicated Key[ %d:%s ] in %s\n", nY, pStr,  szFileName);
+									LOG_WARN("Duplicate key[ %d:%s ] in %s", nY, pStr,  szFileName);
 									break;
 								}
 							}
