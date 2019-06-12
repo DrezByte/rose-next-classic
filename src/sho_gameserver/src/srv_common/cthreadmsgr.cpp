@@ -80,134 +80,14 @@ void CThreadMSGR::Check_FRIENDS ()
 }
 
 //-------------------------------------------------------------------------------------------------
-	struct tagRU
-	{
-		CStrVAR		m_Char;
-		int			m_iCnt;
-//		CInventory *m_pINV;
-	} ;
+struct tagRU
+{
+	CStrVAR m_Char;
+	int m_iCnt;
+};
+
 void CThreadMSGR::Check_ItemCNT (int iItemType, int iItemNo)
 {
-/*
-	int iCharID=0, iMaxCNT=-1, iCurCNT, iTotCNT=0;
-	char *szName, *szAccount;
-	CInventory *pINV;
-	tagITEM *pITEM;
-
-
-
-	CDLList< tagRU >		   RoseUSER;
-	CDLList< tagRU >::tagNODE *pUserNODE;
-
-
-#define	TOP_CNT	40
-	struct {
-		CStrVAR m_Acc;
-		CStrVAR m_Name;
-		short	m_nCnt;
-	} ll[ TOP_CNT ];
-	short nI;
-	for (nI=0; nI<TOP_CNT; nI++) {
-		ll[nI].m_nCnt = 0;
-	}
-	short nMinIdx=0;
-
-	g_LOG.CS_ODS( 0xffff, "!!!!!!!!! start Check_ItemCNT( %d, %d ) \n", iItemType, iItemNo );
-
-	// this->SetPriority( THREAD_PRIORITY_HIGHEST );	// Priority 2 point above the priority class
-	this->SetPriority( THREAD_PRIORITY_ABOVE_NORMAL );	// Priority 2 point above the priority class
-
-	FILE *fp = fopen( "item_cnt.txt", "w" );
-	while( true ) 
-	{
-		if ( !this->m_pSQL->QuerySQL( "SELECT TOP 500 intCharID, txtACCOUNT, txtNAME, blobINV FROM tblGS_AVATAR WHERE intCharID > %d ORDER BY intCharID ASC", iCharID ) ) {
-			g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR() );
-			break;
-		}
-
-		if ( !this->m_pSQL->GetNextRECORD() ) 
-			break;
-
-		do {
-			iCharID	  = this->m_pSQL->GetInteger( 0 );
-			szAccount = this->m_pSQL->GetStrPTR( 1 );
-			szName	  = this->m_pSQL->GetStrPTR( 2 );
-			pINV = (CInventory*)this->m_pSQL->GetDataPTR( 3 );
-			
-			iCurCNT = 0;
-			for (int iC=0; iC<INVENTORY_PAGE_SIZE; iC++) {
-				//pITEM = &pINV->m_ItemPAGE[ INV_USE ][ iC ];
-				pITEM = &pINV->m_ItemPAGE[ INV_ETC ][ iC ];
-				if ( 0 == pITEM->GetHEADER() )
-					continue;
-				if ( iItemType == pITEM->GetTYPE() && iItemNo == pITEM->GetItemNO () ) {
-					iCurCNT += pITEM->GetQuantity ();
-					pITEM->Clear ();
-				}
-			}
-
-			if ( iCurCNT > 0 ) {
-				pUserNODE = new CDLList< tagRU >::tagNODE;
-				pUserNODE->m_VALUE.m_Char.Set( szName );
-				pUserNODE->m_VALUE.m_iCnt = iCurCNT;
-				//pUserNODE->m_VALUE.m_pINV = new CInventory;
-				//CopyMemory( pUserNODE->m_VALUE.m_pINV, pINV, sizeof( CInventory ) );
-
-				RoseUSER.AppendNode( pUserNODE );
-
-				// LogString (0xffff, "%s:%s : %d\n", szAccount, szName, iCurCNT );
-				// LogString (0xffff, "( \'%s\', \'%s\', \'%d\' ), \n", szAccount, szName, iCurCNT );
-
-				if ( iCurCNT > iMaxCNT ) {
-					iMaxCNT = iCurCNT;
-				}
-				if ( iCurCNT > ll[ nMinIdx ].m_nCnt ) {
-					short nMin = 9999;
-					ll[ nMinIdx ].m_Acc.Set( szAccount );
-					ll[ nMinIdx ].m_Name.Set( szName );
-					ll[ nMinIdx ].m_nCnt = iCurCNT;
-					for (nI=0; nI<TOP_CNT; nI++) {
-						if ( ll[nI].m_nCnt < nMin ) {
-							nMinIdx = nI;
-							nMin = ll[nI].m_nCnt; 
-						}
-					}
-				}
-			}
-			iTotCNT ++;
-		} while( this->m_pSQL->GetNextRECORD() );
-	}
-	for (nI=0; nI<TOP_CNT; nI++) {
-		fprintf (fp, "  %d %s %s %d \n", nI, ll[nI].m_Acc.Get(), ll[nI].m_Name.Get(), ll[nI].m_nCnt );
-	}
-	fprintf( fp, ">>>>>>>>>>>>> Totcal record %d \n", iTotCNT );
-	fclose( fp );
-	g_LOG.CS_ODS( 0xffff, "!!!!!!!!! end Check_ItemCNT( %d, %d :: %d ) //  \n", iItemType, iItemNo, RoseUSER.GetNodeCount() );
-*/
-
-/*
-	// ******** 테이블 뻑남...
-	int ii = 0;
-	pUserNODE = RoseUSER.GetHeadNode();
-	while( pUserNODE ) {
-		// 포인터인 m_pINV앞에 & 붙여서 뻑???
-		//this->m_pSQL->BindPARAM( 1, (BYTE*)&pUserNODE->m_VALUE.m_pINV,			sizeof( CInventory )		);
-		this->m_pSQL->BindPARAM( 1, (BYTE*)pUserNODE->m_VALUE.m_pINV,			sizeof( CInventory )		);
-		this->m_pSQL->MakeQuery( "UPDATE tblGS_AVATAR SET blobINV=",
-													MQ_PARAM_BINDIDX,	1,
-					MQ_PARAM_ADDSTR, "WHERE txtNAME=",	MQ_PARAM_STR,		pUserNODE->m_VALUE.m_Char.Get(),
-													MQ_PARAM_END );
-		if ( this->m_pSQL->ExecSQLBuffer() < 0 ) {
-			// 고치기 실패 !!!
-			// log ...
-			g_LOG.CS_ODS(LOG_NORMAL, "SQL Exec ERROR:: UPDATE Char:%s %s \n", pUserNODE->m_VALUE.m_Char.Get(), m_pSQL->GetERROR() );
-		} else
-			LogString( 0xffff, "%d update inv: %s \n", ++ii, pUserNODE->m_VALUE.m_Char.Get() );
-//		g_LOG.CS_ODS( 0xffff, "roseUSER: %s : %d \n", pUserNODE->m_VALUE.m_Char.Get(), pUserNODE->m_VALUE.m_iCnt );
-
-		pUserNODE = RoseUSER.GetNextNode( pUserNODE );
-	} ;
-*/
 }
 
 //-------------------------------------------------------------------------------------------------
