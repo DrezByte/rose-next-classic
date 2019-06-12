@@ -1,5 +1,5 @@
 ---
-AccessModifierOffset: 0
+AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
@@ -46,7 +46,7 @@ IndentCaseLabels: true
 # IndentPPDirectives: BeforeHash
 IndentWidth: 4
 IndentWrappedFunctionNames: false
-KeepEmptyLinesAtTheStartOfBlocks: false
+KeepEmptyLinesAtTheStartOfBlocks: true
 # MacroBlockBegin:
 # MacroBlockEnd:
 MaxEmptyLinesToKeep: 1
