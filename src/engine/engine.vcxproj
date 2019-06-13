@@ -125,7 +125,7 @@
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir);$(SolutionDir)3rdParty\include;$(SolutionDir)3rdParty\include\lua500;$(SolutionDir)3rdParty\dx90csdk\include;$(SolutionDir)src\triggervfs\include;$(SolutionDir)src\lib_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)src\lib_util;$(SolutionDir)src\triggervfs\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-5.0\include;$(SolutionDir)thirdparty\zlib-1.2.3;$(SolutionDir)thirdparty\zlib-1.2.3\contrib\minizip;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ZZ_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -140,9 +140,9 @@
       <ResourceOutputFileName>$(IntDir)znzin.res</ResourceOutputFileName>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>lua500.lib;triggervfs.lib;lib_util.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>triggervfs.lib;lib_util.lib;lualib5.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)3rdParty\lib;$(SolutionDir)3rdParty\dx90csdk\lib;$(SolutionDir)bin\$(Configuration);$(SolutionDir)bin\$(Configuration\thirdparty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);$(SolutionDir)bin\$(Configuration)\thirdparty;$(SolutionDir)thirdparty\directx9\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcp.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GeneratedebugInformation>true</GeneratedebugInformation>
       <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
