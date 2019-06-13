@@ -18,6 +18,25 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\cas_gums.cpp" />
+    <ClCompile Include="src\cls_account.cpp" />
+    <ClCompile Include="src\cls_client.cpp" />
+    <ClCompile Include="src\cls_server.cpp" />
+    <ClCompile Include="src\cls_sqlthread.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\sho_ls_lib.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\cas_gums.h" />
+    <ClInclude Include="src\cls_account.h" />
+    <ClInclude Include="src\cls_api.h" />
+    <ClInclude Include="src\cls_client.h" />
+    <ClInclude Include="src\cls_server.h" />
+    <ClInclude Include="src\cls_sqlthread.h" />
+    <ClInclude Include="src\sho_lis_lib.h" />
+    <ClInclude Include="src\stdafx.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{0E758012-2825-4521-8FDA-76CA8594D598}</ProjectGuid>
@@ -83,13 +102,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_ls\sho_ls_lib;$(SolutionDir)src\lib_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_server;$(SolutionDir)src\lib_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sho_ls_lib.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;sho_ls_lib.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -108,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_ls\sho_ls_lib;$(SolutionDir)src\lib_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_server;$(SolutionDir)src\lib_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -116,7 +135,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sho_ls_lib.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;sho_ls_lib.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,9 +152,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

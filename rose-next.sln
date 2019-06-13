@@ -27,25 +27,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_util", "src\lib_util\li
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_server", "src\lib_server\lib_server.vcxproj", "{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_ls_lib", "src\sho_ls\sho_ls_lib\sho_ls_lib.vcxproj", "{ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B4DDE42E-8878-441E-87AE-62B2F0E5A9CF} = {B4DDE42E-8878-441E-87AE-62B2F0E5A9CF}
-		{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3} = {07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_ws_lib", "src\sho_ws\sho_ws_lib\sho_ws_lib.vcxproj", "{A4BD70F5-CE47-4747-8723-72C37983D063}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B4DDE42E-8878-441E-87AE-62B2F0E5A9CF} = {B4DDE42E-8878-441E-87AE-62B2F0E5A9CF}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_ls_exe", "src\sho_ls\sho_ls_exe\sho_ls_exe.vcxproj", "{0E758012-2825-4521-8FDA-76CA8594D598}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_ws_exe", "src\sho_ws\sho_ws_exe\sho_ws_exe.vcxproj", "{6A71147E-E679-40BD-98B0-0B49AE4EEA72}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B4DDE42E-8878-441E-87AE-62B2F0E5A9CF} = {B4DDE42E-8878-441E-87AE-62B2F0E5A9CF}
-		{ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF} = {ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF}
+		{862A7536-0465-45D1-89DF-576AB2D865D6} = {862A7536-0465-45D1-89DF-576AB2D865D6}
 		{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3} = {07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}
+		{A4BD70F5-CE47-4747-8723-72C37983D063} = {A4BD70F5-CE47-4747-8723-72C37983D063}
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_ws_exe", "src\sho_ws\sho_ws_exe\sho_ws_exe.vcxproj", "{6A71147E-E679-40BD-98B0-0B49AE4EEA72}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_gameserver", "src\sho_gameserver\sho_gameserver.vcxproj", "{782AF9C9-40B2-4844-BE58-D73710823F16}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -55,6 +48,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_gameserver", "src\sho_g
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "src\common\common.vcxproj", "{862A7536-0465-45D1-89DF-576AB2D865D6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_loginserver", "src\sho_loginserver\sho_loginserver.vcxproj", "{0E758012-2825-4521-8FDA-76CA8594D598}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B4DDE42E-8878-441E-87AE-62B2F0E5A9CF} = {B4DDE42E-8878-441E-87AE-62B2F0E5A9CF}
+		{862A7536-0465-45D1-89DF-576AB2D865D6} = {862A7536-0465-45D1-89DF-576AB2D865D6}
+		{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3} = {07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,26 +106,12 @@ Global
 		{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}.release|x64.ActiveCfg = release|Win32
 		{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}.release|x86.ActiveCfg = release|Win32
 		{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}.release|x86.Build.0 = release|Win32
-		{ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF}.debug|x64.ActiveCfg = Debug|Win32
-		{ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF}.debug|x86.ActiveCfg = Debug|Win32
-		{ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF}.debug|x86.Build.0 = Debug|Win32
-		{ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF}.release|x64.ActiveCfg = Release|Win32
-		{ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF}.release|x86.ActiveCfg = Release|Win32
-		{ABFAB753-FF1C-47E7-AA06-60FFCEC3C8FF}.release|x86.Build.0 = Release|Win32
 		{A4BD70F5-CE47-4747-8723-72C37983D063}.debug|x64.ActiveCfg = debug|Win32
 		{A4BD70F5-CE47-4747-8723-72C37983D063}.debug|x86.ActiveCfg = debug|Win32
 		{A4BD70F5-CE47-4747-8723-72C37983D063}.debug|x86.Build.0 = debug|Win32
 		{A4BD70F5-CE47-4747-8723-72C37983D063}.release|x64.ActiveCfg = release|Win32
 		{A4BD70F5-CE47-4747-8723-72C37983D063}.release|x86.ActiveCfg = release|Win32
 		{A4BD70F5-CE47-4747-8723-72C37983D063}.release|x86.Build.0 = release|Win32
-		{0E758012-2825-4521-8FDA-76CA8594D598}.debug|x64.ActiveCfg = Debug|x64
-		{0E758012-2825-4521-8FDA-76CA8594D598}.debug|x64.Build.0 = Debug|x64
-		{0E758012-2825-4521-8FDA-76CA8594D598}.debug|x86.ActiveCfg = Debug|Win32
-		{0E758012-2825-4521-8FDA-76CA8594D598}.debug|x86.Build.0 = Debug|Win32
-		{0E758012-2825-4521-8FDA-76CA8594D598}.release|x64.ActiveCfg = Release|x64
-		{0E758012-2825-4521-8FDA-76CA8594D598}.release|x64.Build.0 = Release|x64
-		{0E758012-2825-4521-8FDA-76CA8594D598}.release|x86.ActiveCfg = Release|Win32
-		{0E758012-2825-4521-8FDA-76CA8594D598}.release|x86.Build.0 = Release|Win32
 		{6A71147E-E679-40BD-98B0-0B49AE4EEA72}.debug|x64.ActiveCfg = Debug|x64
 		{6A71147E-E679-40BD-98B0-0B49AE4EEA72}.debug|x64.Build.0 = Debug|x64
 		{6A71147E-E679-40BD-98B0-0B49AE4EEA72}.debug|x86.ActiveCfg = Debug|Win32
@@ -146,11 +132,25 @@ Global
 		{862A7536-0465-45D1-89DF-576AB2D865D6}.release|x64.ActiveCfg = release|Win32
 		{862A7536-0465-45D1-89DF-576AB2D865D6}.release|x86.ActiveCfg = release|Win32
 		{862A7536-0465-45D1-89DF-576AB2D865D6}.release|x86.Build.0 = release|Win32
+		{0E758012-2825-4521-8FDA-76CA8594D598}.debug|x64.ActiveCfg = Debug|x64
+		{0E758012-2825-4521-8FDA-76CA8594D598}.debug|x64.Build.0 = Debug|x64
+		{0E758012-2825-4521-8FDA-76CA8594D598}.debug|x86.ActiveCfg = Debug|Win32
+		{0E758012-2825-4521-8FDA-76CA8594D598}.debug|x86.Build.0 = Debug|Win32
+		{0E758012-2825-4521-8FDA-76CA8594D598}.release|x64.ActiveCfg = Release|x64
+		{0E758012-2825-4521-8FDA-76CA8594D598}.release|x64.Build.0 = Release|x64
+		{0E758012-2825-4521-8FDA-76CA8594D598}.release|x86.ActiveCfg = Release|Win32
+		{0E758012-2825-4521-8FDA-76CA8594D598}.release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7D4BF58-FB42-4410-8BDE-E698B777F7D7}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
