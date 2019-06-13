@@ -431,161 +431,39 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
     pUSER->m_BasicINFO.m_cFaceIDX = (char)pUSER->m_PartITEM[BODY_PART_FACE].m_nItemNo;
     pUSER->m_BasicINFO.m_cHairIDX = (char)pUSER->m_PartITEM[BODY_PART_HAIR].m_nItemNo;
 
-    this->m_pSQL->BindPARAM(1, (BYTE*)&this->m_sBE, sizeof(tagBasicETC));
-    this->m_pSQL->BindPARAM(2, (BYTE*)&pUSER->m_BasicINFO, sizeof(tagBasicINFO));
-    this->m_pSQL->BindPARAM(3, (BYTE*)&pUSER->m_BasicAbility, sizeof(tagBasicAbility));
-    this->m_pSQL->BindPARAM(4, (BYTE*)&pUSER->m_GrowAbility, sizeof(tagGrowAbility));
-    this->m_pSQL->BindPARAM(5, (BYTE*)&pUSER->m_Skills, sizeof(tagSkillAbility));
-    this->m_pSQL->BindPARAM(6, (BYTE*)&pUSER->m_Inventory, sizeof(CInventory));
-    this->m_pSQL->BindPARAM(7, (BYTE*)&pUSER->m_Quests, sizeof(tagQuestData));
-    this->m_pSQL->BindPARAM(8, (BYTE*)&pUSER->m_HotICONS, sizeof(CHotICONS));
-    this->m_pSQL->BindPARAM(9, (BYTE*)&pUSER->m_WishLIST, sizeof(tagWishLIST));
+    // Update character data
+    std::string query("UPDATE tblGS_AVATAR SET binBasicE=?, binBasicI=?, binBasicA=?, "
+                      "binGrowA=?, binSkillA=?, blobINV=?, blobQUEST=?, binHotICON=?, "
+                      "binWishLIST=?, btLEVEL=?, intMoney=?, intJOB=?, dwRegTIME=?, "
+                      "dwPartyIDX=?, dwItemSN=? WHERE txtNAME=?");
 
-#ifdef __KCHS_BATTLECART__ // MQ_PARAM_INT16,		DATA_VER_2,
-    this->m_pSQL->MakeQuery("UPDATE tblGS_AVATAR SET binBasicE=",
-        MQ_PARAM_BINDIDX,
-        1,
-        MQ_PARAM_ADDSTR,
-        ",binBasicI=",
-        MQ_PARAM_BINDIDX,
-        2,
-        MQ_PARAM_ADDSTR,
-        ",binBasicA=",
-        MQ_PARAM_BINDIDX,
-        3,
-        MQ_PARAM_ADDSTR,
-        ",binGrowA=",
-        MQ_PARAM_BINDIDX,
-        4,
-        MQ_PARAM_ADDSTR,
-        ",binSkillA=",
-        MQ_PARAM_BINDIDX,
-        5,
-        MQ_PARAM_ADDSTR,
-        ",blobINV=",
-        MQ_PARAM_BINDIDX,
-        6,
-        MQ_PARAM_ADDSTR,
-        ",blobQUEST=",
-        MQ_PARAM_BINDIDX,
-        7,
-        MQ_PARAM_ADDSTR,
-        ",binHotICON=",
-        MQ_PARAM_BINDIDX,
-        8,
-        MQ_PARAM_ADDSTR,
-        ",binWishLIST=",
-        MQ_PARAM_BINDIDX,
-        9,
-        MQ_PARAM_ADDSTR,
-        ",btLEVEL=",
-        MQ_PARAM_INT,
-        pUSER->m_GrowAbility.m_nLevel,
-        MQ_PARAM_ADDSTR,
-        ",intMoney=",
-        MQ_PARAM_INT64,
-        pUSER->GetCur_MONEY(),
-        MQ_PARAM_ADDSTR,
-        ",intJOB=",
-        MQ_PARAM_INT,
-        pUSER->m_BasicINFO.m_nClass,
-        MQ_PARAM_ADDSTR,
-        ",dwRegTIME=",
-        MQ_PARAM_INT,
-        this->m_dwCurTIME,
-        MQ_PARAM_ADDSTR,
-        ",dwPartyIDX=",
-        MQ_PARAM_INT,
-        pUSER->GetPARTY() ? pUSER->m_pPartyBUFF->m_wPartyWSID : 0,
-        MQ_PARAM_ADDSTR,
-        ",dwItemSN=",
-        MQ_PARAM_INT,
-        pUSER->m_dwItemSN,
-        MQ_PARAM_ADDSTR,
-        ",intDataVER=",
-        MQ_PARAM_INT16,
-        DATA_VER_2,
-        MQ_PARAM_ADDSTR,
-        "WHERE txtNAME=",
-        MQ_PARAM_STR,
-        pUSER->Get_NAME(),
-        MQ_PARAM_END);
-#else
-    this->m_pSQL->MakeQuery("UPDATE tblGS_AVATAR SET binBasicE=",
-        MQ_PARAM_BINDIDX,
-        1,
-        MQ_PARAM_ADDSTR,
-        ",binBasicI=",
-        MQ_PARAM_BINDIDX,
-        2,
-        MQ_PARAM_ADDSTR,
-        ",binBasicA=",
-        MQ_PARAM_BINDIDX,
-        3,
-        MQ_PARAM_ADDSTR,
-        ",binGrowA=",
-        MQ_PARAM_BINDIDX,
-        4,
-        MQ_PARAM_ADDSTR,
-        ",binSkillA=",
-        MQ_PARAM_BINDIDX,
-        5,
-        MQ_PARAM_ADDSTR,
-        ",blobINV=",
-        MQ_PARAM_BINDIDX,
-        6,
-        MQ_PARAM_ADDSTR,
-        ",blobQUEST=",
-        MQ_PARAM_BINDIDX,
-        7,
-        MQ_PARAM_ADDSTR,
-        ",binHotICON=",
-        MQ_PARAM_BINDIDX,
-        8,
-        MQ_PARAM_ADDSTR,
-        ",binWishLIST=",
-        MQ_PARAM_BINDIDX,
-        9,
-        MQ_PARAM_ADDSTR,
-        ",btLEVEL=",
-        MQ_PARAM_INT,
-        pUSER->m_GrowAbility.m_nLevel,
-        MQ_PARAM_ADDSTR,
-        ",intMoney=",
-        MQ_PARAM_INT64,
-        pUSER->GetCur_MONEY(),
-        MQ_PARAM_ADDSTR,
-        ",intJOB=",
-        MQ_PARAM_INT,
-        pUSER->m_BasicINFO.m_nClass,
-        MQ_PARAM_ADDSTR,
-        ",dwRegTIME=",
-        MQ_PARAM_INT,
-        this->m_dwCurTIME,
-        MQ_PARAM_ADDSTR,
-        ",dwPartyIDX=",
-        MQ_PARAM_INT,
-        pUSER->GetPARTY() ? pUSER->m_pPartyBUFF->m_wPartyWSID : 0,
-        MQ_PARAM_ADDSTR,
-        ",dwItemSN=",
-        MQ_PARAM_INT,
-        pUSER->m_dwItemSN,
-        MQ_PARAM_ADDSTR,
-        "WHERE txtNAME=",
-        MQ_PARAM_STR,
-        pUSER->Get_RNAME(),
-        MQ_PARAM_END);
-#endif
+    this->db()->bind_binary(1, (uint8_t*)&this->m_sBE, sizeof(tagBasicETC));
+    this->db()->bind_binary(2, (uint8_t*)&pUSER->m_BasicINFO, sizeof(tagBasicINFO));
+    this->db()->bind_binary(3, (uint8_t*)&pUSER->m_BasicAbility, sizeof(tagBasicAbility));
+    this->db()->bind_binary(4, (uint8_t*)&pUSER->m_GrowAbility, sizeof(tagGrowAbility));
+    this->db()->bind_binary(5, (uint8_t*)&pUSER->m_Skills, sizeof(tagSkillAbility));
+    this->db()->bind_binary(6, (uint8_t*)&pUSER->m_Inventory, sizeof(CInventory));
+    this->db()->bind_binary(7, (uint8_t*)&pUSER->m_Quests, sizeof(tagQuestData));
+    this->db()->bind_binary(8, (uint8_t*)&pUSER->m_HotICONS, sizeof(CHotICONS));
+    this->db()->bind_binary(9, (uint8_t*)&pUSER->m_WishLIST, sizeof(tagWishLIST));
+    this->db()->bind_int16(10, pUSER->m_GrowAbility.m_nLevel);
+    this->db()->bind_int64(11, pUSER->GetCur_MONEY());
+    this->db()->bind_int16(12, pUSER->m_BasicINFO.m_nClass);
+    this->db()->bind_int32(13, this->m_dwCurTIME);
+    this->db()->bind_int32(14, pUSER->GetPARTY() ? pUSER->m_pPartyBUFF->m_wPartyWSID : 0);
+    this->db()->bind_int32(15, pUSER->m_dwItemSN);
+    this->db()->bind_string(16, pUSER->Get_RNAME(), pUSER->m_RName.Length());
 
-    if (this->m_pSQL->ExecSQLBuffer() < 0) {
-        g_LOG.CS_ODS(LOG_NORMAL,
-            "SQL Exec ERROR:: UPDATE Char:%s %s \n",
-            pUSER->Get_NAME(),
-            m_pSQL->GetERROR());
-    } else {
-        // 케릭 백업된 시간 로그 남기기..
-        g_pThreadLOG->When_BackUP(pUSER, "CHAR");
+    if (!this->db()->execute(query)) {
+        LOG_ERROR("failed to update charactacter. Character: (%s)", pUSER->Get_RNAME());
+        for (const std::string& msg: this->db()->get_error_messages()) {
+            LOG_WARN(msg.c_str());
+        }
+        return false;
     }
+
+    // TODO (Ralph): What does this do and can it be removed?
+    g_pThreadLOG->When_BackUP(pUSER, "CHAR");
 
     if (BANK_CHANGED != pUSER->m_btBankData) {
         return true;
@@ -594,9 +472,9 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
     // Update bank data
     this->db()->bind_binary(1, (uint8_t*)&pUSER->m_Bank, sizeof(tagBankData));
     this->db()->bind_string(2, pUSER->Get_ACCOUNT(), pUSER->Get_AccountLEN());
-    if (!this->db()->execute("UPDATE tblGS_BANK SET blobITEMS=? WHERE txtACCOUNT=?")) {
 
-        LOG_ERROR("Failed to update user(%s)'s storage", pUSER->Get_NAME());
+    if (!this->db()->execute("UPDATE tblGS_BANK SET blobITEMS=? WHERE txtACCOUNT=?")) {
+        LOG_ERROR("Failed to update storage. Account: %s", pUSER->Get_NAME());
         for (const std::string& msg: this->db()->get_error_messages()) {
             LOG_WARN(msg.c_str());
         }

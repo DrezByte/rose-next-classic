@@ -1000,6 +1000,21 @@ classODBC::bind_binary(size_t idx, uint8_t* data, uint32_t size) {
 }
 
 bool
+classODBC::bind_int16(size_t idx, int16_t i) {
+    return this->bind(idx, (uint8_t*)&i, sizeof(int16_t), SQL_C_SSHORT, SQL_SMALLINT);
+}
+
+bool
+classODBC::bind_int32(size_t idx, int32_t i) {
+    return this->bind(idx, (uint8_t*)&i, sizeof(int32_t), SQL_C_SLONG, SQL_INTEGER);
+}
+
+bool
+classODBC::bind_int64(size_t idx, int64_t i) {
+    return this->bind(idx, (uint8_t*)&i, sizeof(int64_t), SQL_C_SBIGINT, SQL_BIGINT);
+}
+
+bool
 classODBC::bind_string(uint32_t idx, const char* data, size_t size) {
     return this->bind(idx, (uint8_t*)data, size, SQL_C_CHAR, SQL_VARCHAR);
 }

@@ -156,6 +156,7 @@ public:
     // Bind parameters
     bool bind(uint32_t idx, uint8_t* data, uint32_t size, SQLSMALLINT c_type, SQLSMALLINT sql_type);
     bool bind_binary(size_t idx, uint8_t* blob, uint32_t size);
+    bool bind_int16(size_t idx, int16_t i);
     bool bind_int32(size_t idx, int32_t i);
     bool bind_int64(size_t idx, int64_t i);
     bool bind_string(size_t idx, const std::string& data);
