@@ -12,7 +12,6 @@
   <ItemGroup>
     <ClInclude Include="src\cas_gums.h" />
     <ClInclude Include="src\cls_account.h" />
-    <ClInclude Include="src\cls_api.h" />
     <ClInclude Include="src\cls_client.h" />
     <ClInclude Include="src\cls_server.h" />
     <ClInclude Include="src\cls_sqlthread.h" />

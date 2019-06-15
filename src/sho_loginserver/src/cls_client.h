@@ -75,13 +75,6 @@ public:
     }
 
     void Set_ACCOUNT(char* szAccount, DWORD* pMD5Pass) {
-#ifdef __VIEW_ACCOUNT
-        this->LockSOCKET();
-        if (m_pCliListITEM) {
-            SHO_LS::ExeAPI()->SetListItemSTR(m_pCliListITEM, -1, szAccount);
-        }
-        this->UnlockSOCKET();
-#endif
         m_Account.Set(szAccount);
         ::CopyMemory(m_dwMD5Pass, pMD5Pass, sizeof(DWORD) * 8);
     }
@@ -170,19 +163,6 @@ public:
         m_ConnLIST.DeleteNFree(pClient->m_pConnNODE);
         this->m_CS.Unlock();
 
-#ifdef __VIEW_ACCOUNT
-        pClient->LockSOCKET();
-        if (pClient->m_pCliListITEM) {
-            SHO_LS::ExeAPI()->DelConnectorITEM(pClient->m_pCliListITEM);
-            pClient->m_pCliListITEM = NULL;
-        }
-        pClient->UnlockSOCKET();
-#endif
-        // LogString (LOG_DEBUG_, "    >>> Delete CLIENT socket : %s, %s UsedCnt: %d \n",
-        //				pSOCKET->m_IP.Get(),
-        //				this->GetPoolNAME(),
-        //				this->GetUsedCNT()-1 );
-        // 검증없이 메모리 해제
         pClient->Free();
         this->Pool_Free(pClient);
     }

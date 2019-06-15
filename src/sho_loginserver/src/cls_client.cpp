@@ -31,34 +31,27 @@ CLS_Client::~CLS_Client() {
 //-------------------------------------------------------------------------------------------------
 bool
 CLS_Client::Send_lsv_LOGIN_REPLY(BYTE btResult, int iPayType) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
+    classPACKET packet = classPACKET();
 
-    pCPacket->m_HEADER.m_wType = LSV_LOGIN_REPLY;
-    pCPacket->m_HEADER.m_nSize = sizeof(srv_LOGIN_REPLY);
+    packet.m_HEADER.m_wType = LSV_LOGIN_REPLY;
+    packet.m_HEADER.m_nSize = sizeof(srv_LOGIN_REPLY);
 
-    pCPacket->m_srv_LOGIN_REPLY.m_btResult = btResult;
-    pCPacket->m_srv_LOGIN_REPLY.m_wRight =
-        (WORD)this->m_dwRIGHT; //>=0x0ffff ? 0x0ffff : (WORD)this->m_dwRIGHT;
-    pCPacket->m_srv_LOGIN_REPLY.m_wPayType = iPayType;
+    packet.m_srv_LOGIN_REPLY.m_btResult = btResult;
+    packet.m_srv_LOGIN_REPLY.m_wRight = (WORD)this->m_dwRIGHT;
+    packet.m_srv_LOGIN_REPLY.m_wPayType = iPayType;
 
     switch (btResult) {
         case RESULT_LOGIN_REPLY_KOREA_OK:
         case RESULT_LOGIN_REPLY_TAIWAN_OK:
         case RESULT_LOGIN_REPLY_JAPAN_OK:
             if (SHO_LS::IsShowOnlyWS()) {
-                // 채널 서버 표시없이 월드만 표시해서 운영될경우...
-                pCPacket->m_srv_LOGIN_REPLY.m_btResult |= 0x80;
+                packet.m_srv_LOGIN_REPLY.m_btResult |= 0x80;
             }
-            // 성공시는 서버 리스트 전송...
-            g_pListSERVER->Add_ServerList2Packet(pCPacket, this->m_dwRIGHT);
+            g_pListSERVER->Add_ServerList2Packet(&packet, this->m_dwRIGHT);
             break;
     }
 
-    this->Send_Start(pCPacket);
-
-    Packet_ReleaseNUnlock(pCPacket);
+    this->Send_Start(packet);
 
     return true;
 }
@@ -66,20 +59,16 @@ CLS_Client::Send_lsv_LOGIN_REPLY(BYTE btResult, int iPayType) {
 //-------------------------------------------------------------------------------------------------
 bool
 CLS_Client::Recv_cli_ACCEPT_REQ() {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
-
     DWORD dwSenqSEQ = ::timeGetTime();
 
-    pCPacket->m_HEADER.m_wType = SOCKET_NETWORK_STATUS;
-    pCPacket->m_HEADER.m_nSize = sizeof(t_NETWORK_STATUS);
+    classPACKET packet = classPACKET();
+    packet.m_HEADER.m_wType = SOCKET_NETWORK_STATUS;
+    packet.m_HEADER.m_nSize = sizeof(t_NETWORK_STATUS);
 
-    pCPacket->m_NetSTATUS.m_btStatus = NETWORK_STATUS_ACCEPTED;
-    pCPacket->m_NetSTATUS.m_dwSocketIDs[0] = dwSenqSEQ;
+    packet.m_NetSTATUS.m_btStatus = NETWORK_STATUS_ACCEPTED;
+    packet.m_NetSTATUS.m_dwSocketIDs[0] = dwSenqSEQ;
 
-    this->Send_Start(pCPacket);
-    Packet_ReleaseNUnlock(pCPacket);
+    this->Send_Start(packet);
 
     m_iRecvSeqNO = dwSenqSEQ;
 
@@ -97,15 +86,11 @@ bool
 CLS_Client::Recv_cli_CHANNEL_LIST_REQ(t_PACKET* pPacket) {
     CLS_Server* pServer =
         (CLS_Server*)g_pListSERVER->GetSOCKET(pPacket->m_cli_CHANNEL_LIST_REQ.m_dwServerID);
+
     if (pServer) {
-        classPACKET* pCPacket = Packet_AllocNLock();
-        if (!pCPacket)
-            return false;
-
-        pServer->Make_lsv_CHANNEL_LIST_REPLY(pCPacket);
-
-        this->Send_Start(pCPacket);
-        Packet_ReleaseNUnlock(pCPacket);
+        classPACKET packet = classPACKET();
+        pServer->Make_lsv_CHANNEL_LIST_REPLY(&packet);
+        this->Send_Start(packet);
     }
     return true;
 }
@@ -113,12 +98,9 @@ CLS_Client::Recv_cli_CHANNEL_LIST_REQ(t_PACKET* pPacket) {
 //-------------------------------------------------------------------------------------------------
 bool
 CLS_Client::Recv_cli_SELECT_SERVER(t_PACKET* pPacket) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
-
-    pCPacket->m_HEADER.m_wType = LSV_SELECT_SERVER;
-    pCPacket->m_HEADER.m_nSize = sizeof(lsv_SELECT_SERVER);
+    classPACKET packet = classPACKET();
+    packet.m_HEADER.m_wType = LSV_SELECT_SERVER;
+    packet.m_HEADER.m_nSize = sizeof(lsv_SELECT_SERVER);
 
     CLS_Server* pServer =
         (CLS_Server*)g_pListSERVER->GetSOCKET(pPacket->m_cli_SELECT_SERVER.m_dwServerID);
@@ -126,16 +108,16 @@ CLS_Client::Recv_cli_SELECT_SERVER(t_PACKET* pPacket) {
         char* szServerName = pServer->m_ServerNAME.Get();
         if (this->m_bFreeServerOnly && '@' != *szServerName) {
             // @ 서버가 아닌 서번 접속 못함...
-            pCPacket->m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_NEED_CHARGE;
+            packet.m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_NEED_CHARGE;
         } else if (0 == pPacket->m_cli_SELECT_SERVER.m_btChannelNO
             || pPacket->m_cli_SELECT_SERVER.m_btChannelNO >= MAX_CHANNEL_SERVER) {
-            pCPacket->m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_INVALID_CHANNEL;
+            packet.m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_INVALID_CHANNEL;
         } else if (0
             == pServer->m_CHANNEL[pPacket->m_cli_SELECT_SERVER.m_btChannelNO].m_btChannelNO) {
-            pCPacket->m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_CHANNEL_NOT_ACTIVE;
+            packet.m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_CHANNEL_NOT_ACTIVE;
         } else if (pServer->m_CHANNEL[pPacket->m_cli_SELECT_SERVER.m_btChannelNO].m_nUserPERCENT
             >= 100) {
-            pCPacket->m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_FULL;
+            packet.m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_FULL;
         } else {
 #define RIGHT_NG 0x00100 // 일반 GM
 #define RIGHT_MG 0x00200 // 마스타 GM
@@ -176,7 +158,7 @@ CLS_Client::Recv_cli_SELECT_SERVER(t_PACKET* pPacket) {
                                 goto _PASS;
                         }
 
-                        pCPacket->m_lsv_SELECT_SERVER.m_btResult = RESUTL_SELECT_SERVER_INVALID_AGE;
+                        packet.m_lsv_SELECT_SERVER.m_btResult = RESUTL_SELECT_SERVER_INVALID_AGE;
                         goto _INVALID_AGE;
                     }
                 }
@@ -209,90 +191,60 @@ CLS_Client::Recv_cli_SELECT_SERVER(t_PACKET* pPacket) {
                     g_pListWAIT->Mem_DEL(pCAccount);
                 }
 
-                pCPacket->m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_OK;
-                pCPacket->m_lsv_SELECT_SERVER.m_dwIDs[0] = pCAccount->m_dwLSID;
-                pCPacket->m_lsv_SELECT_SERVER.m_dwIDs[1] = pServer->m_dwRandomSEED;
+                packet.m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_OK;
+                packet.m_lsv_SELECT_SERVER.m_dwIDs[0] = pCAccount->m_dwLSID;
+                packet.m_lsv_SELECT_SERVER.m_dwIDs[1] = pServer->m_dwRandomSEED;
 
-                pCPacket->AppendString(pServer->m_ServerIP.Get());
-                pCPacket->AppendData(&pServer->m_wListenPORT, sizeof(WORD));
+                packet.AppendString(pServer->m_ServerIP.Get());
+                packet.AppendData(&pServer->m_wListenPORT, sizeof(WORD));
 
                 this->m_nProcSTEP = CLIENT_STEP_SELECT_GS;
             } else {
-                pCPacket->m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_FAILED;
+                packet.m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_FAILED;
             }
         }
     } else {
-        pCPacket->m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_FAILED;
+        packet.m_lsv_SELECT_SERVER.m_btResult = RESULT_SELECT_SERVER_FAILED;
     }
 
 _INVALID_AGE:
-    this->Send_Start(pCPacket);
-
-    Packet_ReleaseNUnlock(pCPacket);
-
+    this->Send_Start(packet);
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CLS_Client::Send_srv_ANNOUNCE_TEXT(char* szText) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
+    classPACKET packet = classPACKET();
+    packet.m_HEADER.m_wType = SRV_ANNOUNCE_TEXT;
+    packet.m_HEADER.m_nSize = sizeof(t_PACKETHEADER);
+    packet.AppendString(szText);
 
-    pCPacket->m_HEADER.m_wType = SRV_ANNOUNCE_TEXT;
-    pCPacket->m_HEADER.m_nSize = sizeof(t_PACKETHEADER);
-    pCPacket->AppendString(szText);
-
-    this->Send_Start(pCPacket);
-    Packet_ReleaseNUnlock(pCPacket);
-
+    this->Send_Start(packet);
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CLS_Client::Recv_mon_SERVER_LIST_REQ(t_PACKET* pPacket, bool bHideIP) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
-
     this->m_bMonClient = true;
-    g_pListSERVER->Make_srv_SERVER_LIST_REPLY(pCPacket);
 
-    this->Send_Start(pCPacket);
-    Packet_ReleaseNUnlock(pCPacket);
-
-#ifdef __VIEW_ACCOUNT
-    this->LockSOCKET();
-    if (m_pCliListITEM) {
-        if (bHideIP) {
-            SHO_LS::ExeAPI()->DelConnectorITEM(this->m_pCliListITEM);
-            this->m_pCliListITEM = NULL;
-        } // else
-          // SHO_LS::ExeAPI()->SetListItemSTR( m_pCliListITEM, -1, "<<monitor>>" );
-    }
-    this->UnlockSOCKET();
-#endif
-
+    classPACKET packet = classPACKET();
+    g_pListSERVER->Make_srv_SERVER_LIST_REPLY(&packet);
+    this->Send_Start(packet);
     return true;
 }
+
 bool
 CLS_Client::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
+    classPACKET packet = classPACKET();
+    packet.m_HEADER.m_wType = WLS_SERVER_STATUS_REPLY;
+    packet.m_HEADER.m_nSize = sizeof(wls_SERVER_STATUS_REPLY);
 
-    pCPacket->m_HEADER.m_wType = WLS_SERVER_STATUS_REPLY;
-    pCPacket->m_HEADER.m_nSize = sizeof(wls_SERVER_STATUS_REPLY);
-
-    pCPacket->m_wls_SERVER_STATUS_REPLY.m_dwTIME = pPacket->m_wls_SERVER_STATUS_REPLY.m_dwTIME;
-    pCPacket->m_wls_SERVER_STATUS_REPLY.m_nServerCNT = g_pListSERVER->Get_ServerCOUNT();
-    pCPacket->m_wls_SERVER_STATUS_REPLY.m_iUserCNT =
+    packet.m_wls_SERVER_STATUS_REPLY.m_dwTIME = pPacket->m_wls_SERVER_STATUS_REPLY.m_dwTIME;
+    packet.m_wls_SERVER_STATUS_REPLY.m_nServerCNT = g_pListSERVER->Get_ServerCOUNT();
+    packet.m_wls_SERVER_STATUS_REPLY.m_iUserCNT =
         g_pListJOIN->GetLSIDCount(); // g_pListSERVER->m_iCurUserCNT;
 
-    this->Send_Start(pCPacket);
-    Packet_ReleaseNUnlock(pCPacket);
+    this->Send_Start(packet);
     return true;
 }
 
@@ -504,16 +456,8 @@ CLS_ListCLIENT::InitClientSOCKET(iocpSOCKET* pCLIENT) {
         == SOCKET_ERROR) {
         assert("error:: Get SO_KEEPALIVE: ON");
     }
-    //	assert( iOptVal == 1 );	irose에서 발생하는데 왜 그런지 몰라..
-
-#ifdef __VIEW_ACCOUNT
-    pCLIENT->LockSOCKET();
-    ((CLS_Client*)pCLIENT)->m_pCliListITEM =
-        SHO_LS::ExeAPI()->AddConnectorITEM(pCLIENT, pCLIENT->m_IP.Get());
-    pCLIENT->UnlockSOCKET();
-#endif
 }
-//-------------------------------------------------------------------------------------------------
+
 bool
 CLS_ListCLIENT::Send_lsv_LOGIN_REPLY(int iSocketIDX, BYTE btResult, int iPayType) {
     CLS_Client* pClient = (CLS_Client*)this->GetSOCKET(iSocketIDX);
@@ -522,8 +466,3 @@ CLS_ListCLIENT::Send_lsv_LOGIN_REPLY(int iSocketIDX, BYTE btResult, int iPayType
 
     return pClient->Send_lsv_LOGIN_REPLY(btResult, iPayType);
 }
-
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------

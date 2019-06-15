@@ -1,63 +1,9 @@
-#include <iostream>
-
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_ANDMEAN
-#include <windows.h>
-#endif
+#include "stdafx.h"
 
 #undef __T_PACKET
 
-#include "cls_api.h"
-#include "lib_util.h"
+#include "rose/common/util.h"
 #include "sho_ls_lib.h"
-
-class ExeApi: public EXE_LS_API {
-public:
-    void __stdcall WriteLOG(char* szString) { std::cout << szString; }
-
-    void __stdcall SetListItemINT(void* pListItem, int iSubStrIDX, int iValue) {
-        std::cout << "Setting list item int" << std::endl;
-    }
-
-    void __stdcall SetListItemSTR(void* pListItem, int iSubStrIDX, char* szStr) {
-        std::cout << "Setting list item str: " << szStr << std::endl;
-    }
-
-    void* __stdcall AddConnectorITEM(void* pOwner, char* szIP) {
-        std::cout << "Adding connector item, ip: " << szIP << std::endl;
-        return nullptr;
-    }
-
-    void __stdcall DelConnectorITEM(void* pListItem) {
-        std::cout << "Deleting connector item" << std::endl;
-    }
-
-    void* __stdcall AddWorldITEM(void* pOwner,
-        char* szWorld,
-        char* szIP,
-        int iPort,
-        unsigned int dwRight) {
-        std::cout << "Adding world item, world: " << szWorld << " , ip: " << szIP << std::endl;
-        return nullptr;
-    }
-
-    void __stdcall DelWorldITEM(void* pListItem) {
-        std::cout << "Deleting world item" << std::endl;
-    }
-
-    void* __stdcall AddBlockITEM(void* pOwner, char* szIP, unsigned int dwEndTime) {
-        std::cout << "Adding block item, ip: " << szIP << std::endl;
-        return nullptr;
-    }
-
-    void __stdcall DelBlockITEM(void* pListItem) {
-        std::cout << "Deleting block item" << std::endl;
-    }
-
-    void __stdcall SetStatusBarTEXT(unsigned int iItemIDX, char* szText) {
-        std::cout << "Setting status bar text: " << szText << std::endl;
-    }
-};
 
 SHO_LS* g_instance;
 
@@ -84,8 +30,6 @@ CtrlHandler(DWORD fdwCtrlType) {
 
 int
 main() {
-    auto exe_api = new ExeApi();
-
     HWND console_window = GetConsoleWindow();
     HINSTANCE console_handle = GetModuleHandle(nullptr);
     SetConsoleTitle("ROSE Next - Login Server");
@@ -95,18 +39,26 @@ main() {
     int client_port = 29000;
     byte* server_password = (byte*)"rose-next";
 
-    std::cout << "Initializing the server" << std::endl;
-    g_instance = SHO_LS::InitInstance(console_handle, exe_api);
+    // Initialize the logger
+    char buffer[256] = {0};
+    Rose::Common::get_bin_dir(buffer, 256);
 
-    std::cout << "Starting the server socket" << std::endl;
+    std::string log_path(buffer);
+    log_path.append("/log/loginserver.log");
+
+    Rose::Common::logger_init(log_path.c_str(), Rose::Common::LogLevel::Info);
+
+    // Start server
+    LOG_INFO("Initializing the server");
+    g_instance = SHO_LS::InitInstance(console_handle);
+
+    LOG_INFO("Starting the server socket");
     g_instance->StartServerSOCKET(console_window, db_ip, server_port, 0, nullptr, 0, false);
 
-    std::cout << "Initializing the client socket" << std::endl;
+    LOG_INFO("Initializing the client socket");
     g_instance->StartClientSOCKET(client_port, 0, server_password);
 
     SetConsoleCtrlHandler(CtrlHandler, true);
-
-    std::cout << "Starting main loop" << std::endl;
 
     while (true) {
         MSG msg;

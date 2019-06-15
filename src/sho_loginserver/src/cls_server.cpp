@@ -1,4 +1,3 @@
-
 #include "stdAFX.h"
 
 #include "CLS_Account.h"
@@ -38,56 +37,19 @@ CLS_Server::Inc_UserCNT() {
     m_iCurUserCNT++;
     if (m_iCurUserCNT > m_iMaxUserCNT) {
         m_iMaxUserCNT = m_iCurUserCNT;
-        this->LockSOCKET();
-        if (this->m_pSrvListITEM) {
-            SHO_LS::GetInstance()->ExeAPI()->SetListItemINT(
-                this->m_pSrvListITEM, LIST_COL_MAX_USERS, m_iMaxUserCNT);
-        }
-        this->UnlockSOCKET();
     }
-
-    this->LockSOCKET();
-    if (this->m_pSrvListITEM) {
-        SHO_LS::GetInstance()->ExeAPI()->SetListItemINT(
-            this->m_pSrvListITEM, LIST_COL_CUR_USERS, m_iCurUserCNT);
-    }
-    this->UnlockSOCKET();
 
     g_pListSERVER->m_iCurUserCNT++;
     if (g_pListSERVER->m_iCurUserCNT > g_pListSERVER->m_iMaxUserCNT) {
         // 최대 동접 갱신
         g_pListSERVER->m_iMaxUserCNT = g_pListSERVER->m_iCurUserCNT;
     }
-
-    sprintf_s(g_pListSERVER->m_szStatusSTR,
-        "U:%d/%d, W:%d, J:%d/%d\0",
-        g_pListSERVER->m_iCurUserCNT,
-        g_pListSERVER->m_iMaxUserCNT,
-        g_pListWAIT->GetLSIDCount(),
-        g_pListJOIN->GetAcntCount(),
-        g_pListJOIN->GetLSIDCount());
-    SHO_LS::GetInstance()->ExeAPI()->SetStatusBarTEXT(0, g_pListSERVER->m_szStatusSTR);
 }
 
 void
 CLS_Server::Dec_UserCNT() {
     g_pListSERVER->m_iCurUserCNT--;
-    sprintf_s(g_pListSERVER->m_szStatusSTR,
-        "U:%d/%d, W:%d, J:%d/%d\0",
-        g_pListSERVER->m_iCurUserCNT,
-        g_pListSERVER->m_iMaxUserCNT,
-        g_pListWAIT->GetLSIDCount(),
-        g_pListJOIN->GetAcntCount(),
-        g_pListJOIN->GetLSIDCount());
-    SHO_LS::GetInstance()->ExeAPI()->SetStatusBarTEXT(0, g_pListSERVER->m_szStatusSTR);
-
     m_iCurUserCNT--;
-    this->LockSOCKET();
-    if (this->m_pSrvListITEM) {
-        SHO_LS::GetInstance()->ExeAPI()->SetListItemINT(
-            this->m_pSrvListITEM, LIST_COL_CUR_USERS, m_iCurUserCNT);
-    }
-    this->UnlockSOCKET();
 }
 
 void
@@ -208,50 +170,25 @@ CLS_Server::Recv_zws_SERVER_INFO(t_PACKET* pPacket) {
         else
             this->m_ServerIP.Set(this->m_IP.Get()); // load the normal IP received from WorldServer
     }
-    //}
-
-    //////////////////////////////////////////////////////////////////////////
 
     this->m_wListenPORT = pPacket->m_zws_SERVER_INFO.m_wPortNO;
     this->m_dwRandomSEED = pPacket->m_zws_SERVER_INFO.m_dwSeed;
 
-    g_LOG.CS_ODS(0xffff,
-        "Start World SERVER :: %s / %s / %d\n",
-        szServerName,
-        m_ServerIP.Get(),
-        this->m_wListenPORT);
-
-    DWORD dwRight = 0; // TODO::
-    this->LockSOCKET();
-    // this->m_pSrvListITEM = SHO_LS::ExeAPI()->AddWorldITEM( this, szServerName, this->m_IP.Get(),
-    // this->m_wListenPORT, dwRight ); // Original Code
-    this->m_pSrvListITEM = SHO_LS::ExeAPI()->AddWorldITEM(
-        this, szServerName, this->m_ServerIP.Get(), this->m_wListenPORT, dwRight);
-    this->UnlockSOCKET();
+    LOG_INFO("World server %s (%s) connected.", szServerName, m_ServerIP.Get());
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CLS_Server::Send_str_PACKET(WORD wType, char* szString) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket) {
-        g_LOG.CS_ODS(0xffff,
-            "CLS_Server(%s:%s)::Send_str_PACKET(), Paclet allock falied... \n",
-            this->m_ServerNAME.Get(),
-            this->m_ServerIP.Get());
-        return false;
+    classPACKET packet = classPACKET();
+    packet.m_HEADER.m_wType = wType;
+    packet.m_HEADER.m_nSize = sizeof(t_PACKETHEADER);
+
+    if (szString) {
+        packet.AppendString(szString);
     }
 
-    pCPacket->m_HEADER.m_wType = wType;
-    pCPacket->m_HEADER.m_nSize = sizeof(t_PACKETHEADER);
-    if (szString)
-        pCPacket->AppendString(szString);
-
-    this->Send_Start(pCPacket);
-
-    Packet_ReleaseNUnlock(pCPacket);
-
+    this->Send_Start(packet);
     return true;
 }
 
@@ -315,14 +252,6 @@ CLS_Server::Recv_wls_CHANNEL_LIST(t_PACKET* pPacket) {
     }
     this->m_csLIST.Unlock();
 
-    // 채널 갯수...
-    this->LockSOCKET();
-    if (this->m_pSrvListITEM) {
-        SHO_LS::GetInstance()->ExeAPI()->SetListItemINT(
-            this->m_pSrvListITEM, LIST_COL_CHANNELS, pPacket->m_wls_CHANNEL_LIST.m_btChannelCNT);
-    }
-    this->UnlockSOCKET();
-
     return true;
 }
 
@@ -336,40 +265,23 @@ CLS_Server::Send_wls_CONFIRM_ACCOUNT_REPLY(BYTE btResult,
     DWORD dwPayFLAG,
     BYTE btChannelNO,
     char* szAccount) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket) {
-        g_LOG.CS_ODS(0xffff,
-            (char*)"CLS_Server(%s:%s)::Send_lsv_ADD_ACCOUNT_REPLY(), Paclet allock falied... \n",
-            this->m_ServerNAME.Get(),
-            this->m_ServerIP.Get());
-        return false;
+
+    classPACKET packet = classPACKET();
+    packet.m_HEADER.m_wType = WLS_CONFIRM_ACCOUNT_REPLY;
+    packet.m_HEADER.m_nSize = sizeof(wls_CONFIRM_ACCOUNT_REPLY);
+    packet.m_wls_CONFIRM_ACCOUNT_REPLY.m_btResult = btResult;
+    packet.m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLSID = dwLSID;
+    packet.m_wls_CONFIRM_ACCOUNT_REPLY.m_dwWSID = dwWSID;
+    packet.m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLoginTIME = dwLoginTIME;
+    packet.m_wls_CONFIRM_ACCOUNT_REPLY.m_dwRIGHT = dwRight;
+    packet.m_wls_CONFIRM_ACCOUNT_REPLY.m_dwPayFLAG = dwPayFLAG;
+    packet.m_wls_CONFIRM_ACCOUNT_REPLY.m_btChannelNO = btChannelNO;
+
+    if (szAccount) {
+        packet.AppendString(szAccount);
     }
 
-    pCPacket->m_HEADER.m_wType = WLS_CONFIRM_ACCOUNT_REPLY;
-    pCPacket->m_HEADER.m_nSize = sizeof(wls_CONFIRM_ACCOUNT_REPLY);
-    pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_btResult = btResult;
-    pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLSID = dwLSID;
-    pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwWSID = dwWSID;
-    pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLoginTIME = dwLoginTIME;
-    pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwRIGHT = dwRight;
-    pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwPayFLAG = dwPayFLAG;
-    pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_btChannelNO = btChannelNO;
-    /*
-        pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_bFirstZONE  = false;		// 존서버에서만
-    사용함... pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwIngStatusFLAG = 0;		// 존서버에서만
-    사용함...
-
-    #ifndef	__SKIP_WS_PARTY
-        pCPacket->m_wls_CONFIRM_ACCOUNT_REPLY.m_wPartyWSID  = 0;			// 존서버에서만
-    사용함... #endif
-    */
-    if (szAccount)
-        pCPacket->AppendString(szAccount);
-
-    this->Send_Start(pCPacket);
-
-    Packet_ReleaseNUnlock(pCPacket);
-
+    this->Send_Start(packet);
     return true;
 }
 

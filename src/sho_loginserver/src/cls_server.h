@@ -75,8 +75,6 @@ public:
     int m_iCurUserCNT;
     int m_iMaxUserCNT;
 
-    void* m_pSrvListITEM;
-
     CLS_Server();
     ~CLS_Server();
 
@@ -86,7 +84,6 @@ public:
         m_iSocketIDX = 0; // CUserLIST::InitData
 
         m_ListNODE.DATA = this;
-        m_pSrvListITEM = NULL;
     }
     void Free();
 
@@ -145,25 +142,13 @@ public:
     void FreeClientSOCKET(iocpSOCKET* pSOCKET) {
         CLS_Server* pServer = (CLS_Server*)pSOCKET;
 
-        pServer->LockSOCKET();
-        if (pServer->m_pSrvListITEM) {
-            SHO_LS::ExeAPI()->DelWorldITEM(pServer->m_pSrvListITEM);
-            pServer->m_pSrvListITEM = NULL;
-        }
-        pServer->UnlockSOCKET();
-
         this->LockLIST();
         m_LIST.DeleteNode(&pServer->m_ListNODE);
         this->UnlockLIST();
 
-        g_LOG.CS_ODS(0xffff,
-            "%%% Delete World SERVER : %s, %s  ( %s UsedCnt: %d ) \n",
-            pServer->m_ServerNAME.Get(),
-            pSOCKET->m_IP.Get(),
-            this->GetPoolNAME(),
-            this->GetUsedCNT() - 1);
+        LOG_INFO(
+            "World server %s (%s) disconnected", pServer->m_ServerNAME.Get(), pSOCKET->m_IP.Get());
 
-        // 검증없이 메모리 해제
         ((CLS_Server*)pSOCKET)->Free();
         this->Pool_Free(pServer);
     }

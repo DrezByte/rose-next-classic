@@ -53,8 +53,7 @@ classListBLOCK<tagBlockDATA>* g_pListServerIP = NULL;
 //-------------------------------------------------------------------------------------------------
 void
 WriteLOG(char* szMSG) {
-    // Á¤¸»·Î Áß¿äÇÑ ¸Þ¼¼Áö¸¸...
-    SHO_LS::ExeAPI()->WriteLOG(szMSG);
+    LOG_INFO(szMSG);
 }
 
 #define LS_TIMER_CHECK_WAIT_LIST 1
@@ -86,8 +85,7 @@ GetServerStartTIME() {
     return g_dwStartTIME;
 }
 
-SHO_LS::SHO_LS(EXE_LS_API* pExeAPI) {
-    m_pExeAPI = pExeAPI;
+SHO_LS::SHO_LS() {
     m_pTIMER = NULL;
 }
 
@@ -117,7 +115,6 @@ void
 SHO_LS::SystemINIT(HINSTANCE hInstance) {
     ::Sleep(500);
 
-    CPoolPACKET::Instance(DEF_PACKET_POOL_SIZE, INC_PACKET_POOL_SIZE);
     CPoolRECVIO::Instance(DEF_RECV_IO_POOL_SIZE, INC_RECV_IO_POOL_SIZE);
     CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
 
@@ -187,7 +184,6 @@ SHO_LS::~SHO_LS() {
 
     CPoolRECVIO::Destroy();
     CPoolSENDIO::Destroy();
-    CPoolPACKET::Destroy();
 }
 
 //-------------------------------------------------------------------------------------------------
