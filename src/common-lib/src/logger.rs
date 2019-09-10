@@ -98,7 +98,7 @@ impl CoreLogger {
 
 impl log::Log for CoreLogger {
     fn enabled(&self, metadata: &Metadata) -> bool {
-        metadata.level() <= log::STATIC_MAX_LEVEL
+        metadata.level() <= log::max_level()
     }
 
     fn log(&self, record: &Record) {
