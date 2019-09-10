@@ -1,27 +1,26 @@
-#ifndef	__LIB_GAMEMAIN_H
-#define	__LIB_GAMEMAIN_H
+#ifndef __LIB_GAMEMAIN_H
+#define __LIB_GAMEMAIN_H
 
-#define	__SHO_GS
+#define __SHO_GS
 
-#define ENABLE_CHATROOM		// Enables the chatroom functions
-
+#define ENABLE_CHATROOM // Enables the chatroom functions
 
 #include "LIB_Util.h"
 
-#include "md5.h"
+#include "CClientSOCKET.h"
 #include "CVector.h"
+#include "DLLIST.h"
 #include "DataTYPE.h"
 #include "NET_Prototype.h"
-#include "DLLIST.h"
 #include "SLLIST.h"
-#include "classSTR.h"
-#include "classUTIL.h"
 #include "classHASH.h"
 #include "classINDEX.h"
 #include "classIOCP.h"
-#include "classTIME.h"
+#include "classSTR.h"
 #include "classSYNCOBJ.h"
-#include "CClientSOCKET.h"
+#include "classTIME.h"
+#include "classUTIL.h"
+#include "md5.h"
 
 #include "ETC_Math.h"
 
@@ -31,151 +30,165 @@
 #include "rose/common/log.h"
 
 class CLIB_GameSRV {
-private  :
-	static CLIB_GameSRV	*m_pInstance;
+private:
+    static CLIB_GameSRV* m_pInstance;
 
-	HWND		m_hMainWND;				///< 윈도우 핸들
-	CTimer	   *m_pWorldTIMER;			///< 월드 타이머
-	bool	   *m_pCheckedLocalZONE;
+    HWND m_hMainWND; ///< 윈도우 핸들
+    CTimer* m_pWorldTIMER; ///< 월드 타이머
+    bool* m_pCheckedLocalZONE;
 
-	CStrVAR	m_BaseDataDIR;				///< 게임 데이타 폴더
-	CStrVAR	m_ServerNAME;				///< 설정된 서버 이름
-	CStrVAR m_ServerIP;					///< 서버 IP
-	int		m_iListenPortNO;			///< 사용자 접속 포트번호
+    CStrVAR m_BaseDataDIR; ///< 게임 데이타 폴더
+    CStrVAR m_ServerNAME; ///< 설정된 서버 이름
+    CStrVAR m_ServerIP; ///< 서버 IP
+    int m_iListenPortNO; ///< 사용자 접속 포트번호
 
-	CStrVAR	m_DBServerIP;				///< 디비 서버 IP
-	CStrVAR	m_DBName;					///< 디비 네임
-	CStrVAR	m_DBUser;					///< 디비 사용자
-	CStrVAR	m_DBPassword;				///< 디비 사용자 비밀번호
-	CStrVAR	m_LogUser;
-	CStrVAR	m_LogPW;
+    CStrVAR m_DBServerIP; ///< 디비 서버 IP
+    CStrVAR m_DBName; ///< 디비 네임
+    CStrVAR m_DBUser; ///< 디비 사용자
+    CStrVAR m_DBPassword; ///< 디비 사용자 비밀번호
+    CStrVAR m_LogUser;
+    CStrVAR m_LogPW;
 
-	CStrVAR m_AccountServerIP;			///< sho_as에 접속할 IP
-	int		m_iAccountServerPORT;		///< sho_as에 접속할 port no
+    CStrVAR m_AccountServerIP; ///< sho_as에 접속할 IP
+    int m_iAccountServerPORT; ///< sho_as에 접속할 port no
 
-	CStrVAR m_LoginServerIP;			///< sho_ws에 접속할 IP
-	int		m_iLoginServerPORT;			///< sho_ws에 접속할 port no
+    CStrVAR m_LoginServerIP; ///< sho_ws에 접속할 IP
+    int m_iLoginServerPORT; ///< sho_ws에 접속할 port no
 
-	DWORD	m_dwRandomSEED;
+    DWORD m_dwRandomSEED;
 
-	BYTE	m_btChannelNO;				///< 동작중인 채널 번호
-	BYTE	m_btLowAGE;					///< 연령 접속 제한 최저 나이
-	BYTE	m_btHighAGE;				///< 연령 접속 제한 최고 나이
-	DWORD	m_dwUserLIMIT;				///< 최대 접속 가능한 인원수
+    BYTE m_btChannelNO; ///< 동작중인 채널 번호
+    BYTE m_btLowAGE; ///< 연령 접속 제한 최저 나이
+    BYTE m_btHighAGE; ///< 연령 접속 제한 최고 나이
+    DWORD m_dwUserLIMIT; ///< 최대 접속 가능한 인원수
 
-	DWORD	m_dwMaxLevel;
-	DWORD	m_dwMaxStats;
+    DWORD m_dwMaxLevel;
+    DWORD m_dwMaxStats;
 
-	int		m_iLangTYPE;				///< 국가 코드
-	bool	m_bTestServer;				///< 테스트 서버인가 ?
+    int m_iLangTYPE; ///< 국가 코드
+    bool m_bTestServer; ///< 테스트 서버인가 ?
 
-	CLIB_GameSRV();
-	virtual ~CLIB_GameSRV ();
-	void SystemINIT( HINSTANCE hInstance, char *szBaseDataDIR, int iLangType );
+    CLIB_GameSRV();
+    virtual ~CLIB_GameSRV();
+    void SystemINIT(HINSTANCE hInstance, char* szBaseDataDIR, int iLangType);
 
+    bool CheckSTB_UseITEM();
+    bool CheckSTB_NPC();
+    bool CheckSTB_DropITEM();
+    bool CheckSTB_ItemRateTYPE();
+    bool CheckSTB_Motion();
+    bool CheckSTB_GemITEM();
+    bool CheckSTB_ListPRODUCT();
 
-	bool CheckSTB_UseITEM ();
-	bool CheckSTB_NPC ();
-	bool CheckSTB_DropITEM ();
-	bool CheckSTB_ItemRateTYPE ();
-	bool CheckSTB_Motion ();
-	bool CheckSTB_GemITEM ();
-	bool CheckSTB_ListPRODUCT ();
+    bool Load_BasicDATA();
+    void Free_BasicDATA();
 
-	bool Load_BasicDATA ();
-	void Free_BasicDATA ();
+    bool ConnectToLSV();
+    void DisconnectFromLSV();
 
-	bool ConnectToLSV ();
-	void DisconnectFromLSV ();
+    bool ConnectToASV();
+    void DisconnectFromASV();
 
-	bool ConnectToASV ();
-	void DisconnectFromASV ();
+    bool ConnectToLOG();
+    void DisconnectFromLOG();
 
-	bool ConnectToLOG ();
-	void DisconnectFromLOG ();
+    void TranslateNameWithDescKey(STBDATA* pOri, char* szStbFile, int iNameCol);
+    void TranslateNameWithColoumKey(STBDATA* pOri,
+        char* szStbFile,
+        int iLangCol,
+        int iNameCol,
+        int iDescCol);
 
-	void TranslateNameWithDescKey	( STBDATA *pOri, char *szStbFile, int iNameCol );
-	void TranslateNameWithColoumKey ( STBDATA *pOri, char *szStbFile, int iLangCol, int iNameCol, int iDescCol );
+    friend VOID CALLBACK GS_TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
-	friend VOID CALLBACK GS_TimerProc ( HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime );
+public:
+    bool ConnectSERVER(char* szDBServerIP,
+        char* szDBName,
+        char* szDBUser,
+        char* szDBPW,
+        char* szLogUser,
+        char* szLogPW,
+        char* szMallUser,
+        char* szMallPW,
+        char* szLoginServerIP,
+        int iLoginServerPort,
+        char* szLogServerIP,
+        int iLogServerPortNO);
 
-public   :
-	bool ConnectSERVER( char *szDBServerIP,		char *szDBName,
-						char *szDBUser,			char *szDBPW,
-						char *szLogUser,		char *szLogPW,
-						char *szMallUser,		char *szMallPW,
-						char *szLoginServerIP,	int iLoginServerPort,
-						char *szLogServerIP,	int iLogServerPortNO );
+    bool Start(HWND hMainWND,
+        char* szServerName,
+        char* szClientListenIP,
+        int iClientListenPort,
+        BYTE btChannelNO,
+        BYTE btLowAge,
+        BYTE btHighAge);
+    void Shutdown();
 
-	bool Start( HWND hMainWND, char *szServerName, char *szClientListenIP, int iClientListenPort, BYTE btChannelNO, BYTE btLowAge, BYTE btHighAge );
-	void Shutdown ();
+    short InitLocalZone(bool bAllActive);
+    bool CheckZoneToLocal(short nZoneNO, bool bChecked);
+    char* GetZoneName(short nZoneNO);
+    bool IsLocalCheckedZONE(short nZoneNO) { return m_pCheckedLocalZONE[nZoneNO]; }
 
-	short InitLocalZone( bool bAllActive );
-	bool  CheckZoneToLocal(short nZoneNO, bool bChecked);
-	char* GetZoneName( short nZoneNO );
-	bool  IsLocalCheckedZONE( short nZoneNO )	{	return m_pCheckedLocalZONE[nZoneNO];	}	
+    char* GetServerName() { return m_ServerNAME.Get(); }
+    char* GetServerIP() { return m_ServerIP.Get(); }
+    int GetListenPort() { return m_iListenPortNO; }
+    DWORD GetRandomSeed() { return m_dwRandomSEED; }
+    DWORD GetMaxStats() { return m_dwMaxStats; }
+    DWORD GetMaxLevel() { return m_dwMaxLevel; }
 
-	char* GetServerName()						{	return m_ServerNAME.Get();	}
-	char* GetServerIP()							{	return m_ServerIP.Get();	}
-	int	  GetListenPort()						{	return m_iListenPortNO;		}
-	DWORD GetRandomSeed()						{	return m_dwRandomSEED;		}
-	DWORD GetMaxStats()							{	return m_dwMaxStats;		}
-	DWORD GetMaxLevel()							{	return m_dwMaxLevel;		}
+    BYTE GetChannelNO() { return m_btChannelNO; }
+    BYTE GetLowAGE() { return m_btLowAGE; }
+    BYTE GetHighAGE() { return m_btHighAGE; }
+    bool IsTestServer() { return m_bTestServer; }
 
-	BYTE  GetChannelNO ()						{	return m_btChannelNO;		}
-	BYTE  GetLowAGE ()							{	return m_btLowAGE;			}
-	BYTE  GetHighAGE ()							{	return m_btHighAGE;			}
-	bool  IsTestServer()						{	return m_bTestServer;		}
+    int GetLangTYPE() { return m_iLangTYPE; }
 
-	int	  GetLangTYPE()							{	return m_iLangTYPE;			}
+    void Send_ANNOUNCE(short nZoneNO, char* szMsg);
+    void Set_UserLIMIT(DWORD dwUserLimit);
+    DWORD Get_UserLIMIT() { return m_dwUserLIMIT; }
 
-	void  Send_ANNOUNCE( short nZoneNO, char *szMsg );
-	void  Set_UserLIMIT( DWORD dwUserLimit );
-	DWORD Get_UserLIMIT()						{	return m_dwUserLIMIT;		}
-	
-	static CLIB_GameSRV *GetInstance ()			{	return m_pInstance;	}
-	static CLIB_GameSRV *InitInstance( HINSTANCE hInstance, char *szBaseDataDIR, int iLangType )
-	{
-		if ( NULL == m_pInstance ) {
-			m_pInstance = new CLIB_GameSRV();
-			_ASSERT( m_pInstance );
-			m_pInstance->SystemINIT( hInstance, szBaseDataDIR, iLangType );
-		}
-		return m_pInstance;
-	}
-	void Destroy ()								{	SAFE_DELETE( m_pInstance );	}
-} ;
+    static CLIB_GameSRV* GetInstance() { return m_pInstance; }
+    static CLIB_GameSRV* InitInstance(HINSTANCE hInstance, char* szBaseDataDIR, int iLangType) {
+        if (NULL == m_pInstance) {
+            m_pInstance = new CLIB_GameSRV();
+            _ASSERT(m_pInstance);
+            m_pInstance->SystemINIT(hInstance, szBaseDataDIR, iLangType);
+        }
+        return m_pInstance;
+    }
+    void Destroy() { SAFE_DELETE(m_pInstance); }
+};
 
-#define	GS_TIMER_LSV			1
-#define	GS_TIMER_LOG			2
-#define	GS_TIMER_WORLD_TIME		3
-#define	GS_TIMER_ASV			4
+#define GS_TIMER_LSV 1
+#define GS_TIMER_LOG 2
+#define GS_TIMER_WORLD_TIME 3
+#define GS_TIMER_ASV 4
 
-#define	RECONNECT_TIME_TICK		10000	// 10 sec
+#define RECONNECT_TIME_TICK 10000 // 10 sec
 
-extern VOID CALLBACK GS_TimerProc ( HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime );
+extern VOID CALLBACK GS_TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
-extern void Save_AllUSER ();
+extern void Save_AllUSER();
 
-extern DWORD GetServerBuildNO ();
-extern DWORD GetServerStartTIME ();
+extern DWORD GetServerBuildNO();
+extern DWORD GetServerStartTIME();
 
-inline short Get_ServerChannelNO()
-{
-	return CLIB_GameSRV::GetInstance()->GetChannelNO();
+inline short
+Get_ServerChannelNO() {
+    return CLIB_GameSRV::GetInstance()->GetChannelNO();
 }
-inline int	 Get_ServerLangTYPE()
-{
-	return CLIB_GameSRV::GetInstance()->GetLangTYPE();
+inline int
+Get_ServerLangTYPE() {
+    return CLIB_GameSRV::GetInstance()->GetLangTYPE();
 }
 
-inline DWORD Get_ServerMaxStats()
-{
-	return CLIB_GameSRV::GetInstance()->GetMaxStats();
+inline DWORD
+Get_ServerMaxStats() {
+    return CLIB_GameSRV::GetInstance()->GetMaxStats();
 }
-inline DWORD Get_ServerMaxLevel()
-{
-	return CLIB_GameSRV::GetInstance()->GetMaxLevel();
+inline DWORD
+Get_ServerMaxLevel() {
+    return CLIB_GameSRV::GetInstance()->GetMaxLevel();
 }
 
 //-------------------------------------------------------------------------------------------------
