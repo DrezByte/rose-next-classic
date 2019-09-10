@@ -1,1 +1,1 @@
-.\bin\debug\sho_ws_exe.exe
+.\bin\debug\sho_worldserver.exe

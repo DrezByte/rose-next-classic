@@ -18,6 +18,53 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\cchatroom.cpp" />
+    <ClCompile Include="..\common\cinventory.cpp" />
+    <ClCompile Include="..\common\citem.cpp" />
+    <ClCompile Include="..\common\cthreadguild.cpp" />
+    <ClCompile Include="..\common\cthreadlog.cpp" />
+    <ClCompile Include="..\common\cthreadmsgr.cpp" />
+    <ClCompile Include="..\common\etc_math.cpp" />
+    <ClCompile Include="..\common\io_pat.cpp" />
+    <ClCompile Include="..\common\io_skill.cpp" />
+    <ClCompile Include="..\common\io_stb.cpp" />
+    <ClCompile Include="src\cws_account.cpp" />
+    <ClCompile Include="src\cws_client.cpp" />
+    <ClCompile Include="src\cws_party.cpp" />
+    <ClCompile Include="src\cws_server.cpp" />
+    <ClCompile Include="src\etc_math.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\sho_ws_lib.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\ws_socketlsv.cpp" />
+    <ClCompile Include="src\ws_threadsql.cpp" />
+    <ClCompile Include="src\ws_zonelist.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\cchatroom.h" />
+    <ClInclude Include="..\common\cinventory.h" />
+    <ClInclude Include="..\common\citem.h" />
+    <ClInclude Include="..\common\cthreadguild.h" />
+    <ClInclude Include="..\common\cthreadlog.h" />
+    <ClInclude Include="..\common\cthreadmsgr.h" />
+    <ClInclude Include="..\common\etc_math.h" />
+    <ClInclude Include="..\common\io_pat.h" />
+    <ClInclude Include="..\common\io_skill.h" />
+    <ClInclude Include="src\cws_account.h" />
+    <ClInclude Include="src\cws_api.h" />
+    <ClInclude Include="src\cws_client.h" />
+    <ClInclude Include="src\cws_party.h" />
+    <ClInclude Include="src\cws_server.h" />
+    <ClInclude Include="src\cw_client.h" />
+    <ClInclude Include="src\etc_math.h" />
+    <ClInclude Include="src\object.h" />
+    <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\who_ws_lib.h" />
+    <ClInclude Include="src\ws_socketlsv.h" />
+    <ClInclude Include="src\ws_threadsql.h" />
+    <ClInclude Include="src\ws_zonelist.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{6A71147E-E679-40BD-98B0-0B49AE4EEA72}</ProjectGuid>
@@ -83,13 +130,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_ws\sho_ws_lib;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;$(SolutionDir)src\client\util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sho_ws_lib.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>true</EnableUAC>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <UACUIAccess>false</UACUIAccess>
@@ -111,14 +158,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\sho_ws\sho_ws_lib;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;$(SolutionDir)src\client\util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sho_ws_lib.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>true</EnableUAC>
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <UACUIAccess>false</UACUIAccess>
@@ -138,9 +185,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

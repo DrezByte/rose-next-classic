@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\cws_account.cpp" />
+    <ClCompile Include="src\cws_client.cpp" />
+    <ClCompile Include="src\cws_party.cpp" />
+    <ClCompile Include="src\cws_server.cpp" />
+    <ClCompile Include="src\etc_math.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\sho_ws_lib.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\ws_socketlsv.cpp" />
+    <ClCompile Include="src\ws_threadsql.cpp" />
+    <ClCompile Include="src\ws_zonelist.cpp" />
+    <ClCompile Include="..\common\cthreadguild.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cthreadlog.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cthreadmsgr.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cchatroom.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\cinventory.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\citem.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\etc_math.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\io_pat.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\io_skill.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\io_stb.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\cw_client.h" />
+    <ClInclude Include="src\cws_account.h" />
+    <ClInclude Include="src\cws_api.h" />
+    <ClInclude Include="src\cws_party.h" />
+    <ClInclude Include="src\cws_server.h" />
+    <ClInclude Include="src\etc_math.h" />
+    <ClInclude Include="src\object.h" />
+    <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\who_ws_lib.h" />
+    <ClInclude Include="src\ws_socketlsv.h" />
+    <ClInclude Include="src\ws_threadsql.h" />
+    <ClInclude Include="src\ws_zonelist.h" />
+    <ClInclude Include="..\common\cthreadguild.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cthreadlog.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cthreadmsgr.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cchatroom.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\cinventory.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\citem.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\etc_math.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\io_pat.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\io_skill.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cws_client.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{406b33e6-8e3c-4750-bbbf-17af6de89b7f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
