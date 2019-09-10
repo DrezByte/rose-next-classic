@@ -870,8 +870,8 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
 
         //	// 소모될 스테미나 :: {(획득 경험치 + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
         //	iGetExp= (int)( ( (iExp + 80) / (this->Get_LEVEL()+5) ) * ( ::Get_WorldSTAMINA() ) /
-        //100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() - iGetExp;
-        //		this->SetCur_STAMINA( nNewStamina>0 ? nNewStamina : 0 );
+        // 100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() -
+        // iGetExp; 		this->SetCur_STAMINA( nNewStamina>0 ? nNewStamina : 0 );
         //	}
         //} else
         // if ( this->GetCur_STAMINA() >= YELLOW_STAMINA ) {
@@ -879,11 +879,11 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
         //	if ( iExp <= 0 ) return;
 
         //	iGetExp= (int)( ( (iExp + 80) / (this->Get_LEVEL()+5) ) * ( ::Get_WorldSTAMINA() ) /
-        //100.f );
+        // 100.f );
         //	// 소모될 스테미나 :: {(획득 경험치 + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
         //	iGetExp= (int)( ( (iExp + 80) / (this->Get_LEVEL()+5) ) * ( ::Get_WorldSTAMINA() ) /
-        //100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() - iGetExp; 		if (
-        //nNewStamina < YELLOW_STAMINA && this->GetPARTY() ) {
+        // 100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() -
+        // iGetExp; if ( nNewStamina < YELLOW_STAMINA && this->GetPARTY() ) {
         //			// 파티원에게 스테미너 정보 전송.
         //			this->m_pPartyBUFF->Change_ObjectIDX( this );
         //		}
@@ -895,8 +895,8 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
 
         //	// 소모될 스테미나 :: {(획득 경험치 + 80) / (A_LV+5) } * (WORLD_STAMINA) / 100
         //	iGetExp= (int)( ( (iExp + 80) / (this->Get_LEVEL()+5) ) * ( ::Get_WorldSTAMINA() ) /
-        //100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() - iGetExp;
-        //		this->SetCur_STAMINA( nNewStamina>0 ? nNewStamina : 0 );
+        // 100.f ); 	if ( iGetExp > 0 ) { 		short nNewStamina = this->GetCur_STAMINA() -
+        // iGetExp; 		this->SetCur_STAMINA( nNewStamina>0 ? nNewStamina : 0 );
         //	}
         //}
     } else {
@@ -1056,7 +1056,7 @@ classUSER::Send_gsv_LOGOUT_REPLY(WORD wWaitSec) {
     pCPacket->m_HEADER.m_nSize = sizeof(gsv_LOGOUT_REPLY);
     pCPacket->m_gsv_LOGOUT_REPLY.m_wWaitSec = wWaitSec;
 
-    this->Send_Start(pCPacket);
+    this->Send_Start(*pCPacket);
 
     Packet_ReleaseNUnlock(pCPacket);
     return true;
@@ -1083,7 +1083,7 @@ classUSER::Send_gsv_CHECK_NPC_EVENT(short nNpcIDX) {
     pCPacket->m_HEADER.m_nSize = sizeof(gsv_CHECK_NPC_EVENT);
 
     pCPacket->m_gsv_CHECK_NPC_EVENT.m_nNpcIDX = nNpcIDX;
-    this->Send_Start(pCPacket);
+    this->Send_Start(*pCPacket);
 
     Packet_ReleaseNUnlock(pCPacket);
 
@@ -1581,7 +1581,7 @@ classUSER::Send_gsv_INVENTORYnQUEST_DATA(void) {
     //	// ::CopyMemory( &pCPacket->m_gsv_QUEST_DATA.m_Quests, &this->m_Quests, sizeof( tagQuestData
     //) );
     //	// ::CopyMemory( &pCPacket->m_gsv_QUEST_DATA.m_WishLIST, &this->m_WishLIST, sizeof(
-    //tagWishLIST ) );
+    // tagWishLIST ) );
 
     //	this->SendPacket( pCPacket );
     //	Packet_ReleaseNUnlock( pCPacket );
@@ -6226,14 +6226,14 @@ classUSER::Recv_cli_QUEST_REQ(t_PACKET* pPacket) {
     switch (pPacket->m_cli_QUEST_REQ.m_btTYPE) {
             // case TYPE_QUEST_REQ_ADD :
             //	if ( this->Quest_Append( pPacket->m_cli_QUEST_REQ.m_btQuestSLOT,
-            //pPacket->m_cli_QUEST_REQ.m_iQuestID ) ) {
+            // pPacket->m_cli_QUEST_REQ.m_iQuestID ) ) {
             //		// 퀘스트 등록 로그...
             //		#ifdef	__NEW_LOG
             //			g_pThreadLOG->When_QuestLOG( this, pPacket->m_cli_QUEST_REQ.m_iQuestID,
-            //NEWLOG_QUEST_RECV ); 		#else 			g_pThreadLOG->When_RecvQUEST( this,
-            //pPacket->m_cli_QUEST_REQ.m_iQuestID ); 		#endif 		return this->Send_gsv_QUEST_REPLY(
-            //RESULT_QUEST_REPLY_ADD_SUCCESS, pPacket->m_cli_QUEST_REQ.m_btQuestSLOT,
-            //pPacket->m_cli_QUEST_REQ.m_iQuestID );
+            // NEWLOG_QUEST_RECV ); 		#else 			g_pThreadLOG->When_RecvQUEST( this,
+            // pPacket->m_cli_QUEST_REQ.m_iQuestID ); 		#endif 		return
+            // this->Send_gsv_QUEST_REPLY( RESULT_QUEST_REPLY_ADD_SUCCESS,
+            // pPacket->m_cli_QUEST_REQ.m_btQuestSLOT, pPacket->m_cli_QUEST_REQ.m_iQuestID );
             //	}
             //	break;
 
@@ -7298,7 +7298,7 @@ classUSER::Recv_mon_SERVER_LIST_REQ(t_PACKET* pPacket) {
     pCPacket->m_srv_SERVER_LIST_REPLY.m_dwStartTIME = GetServerStartTIME();
     pCPacket->m_srv_SERVER_LIST_REPLY.m_nServerCNT = 0;
 
-    this->Send_Start(pCPacket);
+    this->Send_Start(*pCPacket);
     Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
@@ -7316,7 +7316,7 @@ classUSER::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
     pCPacket->m_wls_SERVER_STATUS_REPLY.m_nServerCNT = 0; // g_pZoneLIST->GetZoneCNT();
     pCPacket->m_wls_SERVER_STATUS_REPLY.m_iUserCNT = g_pUserLIST->Get_AccountCNT();
 
-    this->Send_Start(pCPacket);
+    this->Send_Start(*pCPacket);
     Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
@@ -8196,7 +8196,7 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
 
             // case CLI_CHANGE_SKIN :
             //	return Send_gsv_CHANGE_SKIL( pPacket->m_cli_CHANGE_SKIN.m_btBodyIDX,
-            //pPacket->m_cli_CHANGE_SKIN.m_nItemNO ); 	return Recv_cli_CHANGE_SKIN( pPacket );
+            // pPacket->m_cli_CHANGE_SKIN.m_nItemNO ); 	return Recv_cli_CHANGE_SKIN( pPacket );
 
         case CLI_DROP_ITEM:
             return Recv_cli_DROP_ITEM(pPacket);
@@ -8624,7 +8624,7 @@ classUSER::ProcLogOUT() {
         pRecvNODE = m_RecvList.GetHeadNode();
 
         while (pRecvNODE) {
-            pPacket = (t_PACKETHEADER*)pRecvNODE->DATA.m_pCPacket->m_pDATA;
+            pPacket = (t_PACKETHEADER*)pRecvNODE->DATA.m_pCPacket.m_pDATA;
             do {
                 nTotalPacketLEN = pPacket->m_nSize;
                 if (!nTotalPacketLEN) {
@@ -8705,7 +8705,7 @@ classUSER::Proc(void) {
         pRecvNODE = m_RecvList.GetHeadNode();
 
         while (pRecvNODE) {
-            pPacket = (t_PACKETHEADER*)pRecvNODE->DATA.m_pCPacket->m_pDATA;
+            pPacket = (t_PACKETHEADER*)pRecvNODE->DATA.m_pCPacket.m_pDATA;
             do {
                 nTotalPacketLEN = pPacket->m_nSize;
                 if (!nTotalPacketLEN) {
@@ -8728,7 +8728,7 @@ classUSER::Proc(void) {
                             pPacket = (t_PACKETHEADER*)(pPacket->m_pDATA + nTotalPacketLEN);
                             // 처리하고 남은 부분 다음에 처리 할수 있도록...
                             for (WORD wI = 0; wI < pRecvNODE->DATA.m_dwIOBytes; wI++) {
-                                pRecvNODE->DATA.m_pCPacket->m_pDATA[wI] = pPacket->m_pDATA[wI];
+                                pRecvNODE->DATA.m_pCPacket.m_pDATA[wI] = pPacket->m_pDATA[wI];
                             }
                         }
                         m_csRecvQ.Unlock();

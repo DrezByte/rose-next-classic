@@ -414,7 +414,9 @@ CZoneTHREAD::SendShout(CGameOBJ* pGameOBJ, classPACKET* pCPacket, int iTeamNo) {
     pNewNODE->DATA->m_HEADER.m_nSize = sizeof( gsv_SHOUT );
     pNewNODE->DATA->AppendString( szName );
     pNewNODE->DATA->AppendString( szChatMSG );
-    
+    
+
+
     m_csPacketLIST.Lock ();
     m_ToSendPacketLIST.AppendNode( pNewNODE );
     m_csPacketLIST.Unlock ();

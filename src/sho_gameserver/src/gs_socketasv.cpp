@@ -183,14 +183,10 @@ GS_asvSOCKET::Recv_zas_CHECK_ACCOUNT() {
             classUSER* pUser = g_pUserLIST->Find_ACCOUNT(szAccount);
             if (pUser) {
                 classPACKET pCPacket;
-                if (pCPacket) {
-                    // 살아 있는지 패킷함 날려 보고...
-                    pCPacket->m_HEADER.m_wType = SRV_ERROR;
-                    pCPacket->m_HEADER.m_nSize = sizeof(gsv_ERROR);
-                    pCPacket->m_gsv_ERROR.m_wErrorCODE = 0;
-                    bAlive = pUser->Send_Start(pCPacket);
-                    Packet_ReleaseNUnlock(pCPacket);
-                }
+                pCPacket.m_HEADER.m_wType = SRV_ERROR;
+                pCPacket.m_HEADER.m_nSize = sizeof(gsv_ERROR);
+                pCPacket.m_gsv_ERROR.m_wErrorCODE = 0;
+                bAlive = pUser->Send_Start(pCPacket);
             }
 
             if (bAlive) {

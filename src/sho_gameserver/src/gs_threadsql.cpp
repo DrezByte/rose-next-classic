@@ -1518,7 +1518,7 @@ GS_CThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
 
                     pCPacket->m_wsv_DELETE_CHAR.m_dwDelRemainTIME = 0xffffffff;
                     pCPacket->AppendString(pCharName);
-                    pFindUSER->Send_Start(pCPacket);
+                    pFindUSER->Send_Start(*pCPacket);
 
                     Packet_ReleaseNUnlock(pCPacket);
                 }
@@ -1562,7 +1562,7 @@ GS_CThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
             pCPacket->m_wsv_DELETE_CHAR.m_dwDelRemainTIME = dwReaminSEC;
             pCPacket->AppendString(pCharName);
 
-            pFindUSER->Send_Start(pCPacket);
+            pFindUSER->Send_Start(*pCPacket);
 
             Packet_ReleaseNUnlock(pCPacket);
         }
@@ -2173,7 +2173,7 @@ GS_CThreadSQL::Proc_cli_MALL_ITEM_REQ(tagQueryDATA* pSqlPACKET) {
             pCPacket->m_gsv_MALL_ITEM_REPLY.m_btReplyTYPE = REPLY_MALL_ITEM_CHECK_CHAR_NONE;
         }
 
-        pUSER->Send_Start(pCPacket);
+        pUSER->Send_Start(*pCPacket);
     }
 
     Packet_ReleaseNUnlock(pCPacket);

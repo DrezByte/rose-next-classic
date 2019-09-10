@@ -158,7 +158,7 @@ GS_CThreadMALL::Give_MallITEM(tagQueryDATA* pSqlPACKET, BYTE btMallInvIDX, short
             pCPacket->m_gsv_MALL_ITEM_REPLY.m_BringITEM[0].m_ITEM =
                 pUSER->m_MALL.m_ITEMS[btMallInvIDX].m_ITEM;
 
-            pUSER->Send_Start(pCPacket);
+            pUSER->Send_Start(*pCPacket);
             Packet_ReleaseNUnlock(pCPacket);
             return true;
         }
@@ -257,7 +257,7 @@ GS_CThreadMALL::Bring_MallITEM(tagQueryDATA* pSqlPACKET, BYTE btMallInvIDX, shor
                 pCPacket->m_gsv_MALL_ITEM_REPLY.m_btReplyTYPE = REPLY_MALL_ITEM_BRING_FAILED;
             }
 
-            pUSER->Send_Start(pCPacket);
+            pUSER->Send_Start(*pCPacket);
             Packet_ReleaseNUnlock(pCPacket);
             return true;
         }
@@ -268,17 +268,13 @@ GS_CThreadMALL::Bring_MallITEM(tagQueryDATA* pSqlPACKET, BYTE btMallInvIDX, shor
 //-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadMALL::Send_gsv_MALL_ITEM_REPLAY(classUSER* pUSER, BYTE btType, BYTE btData) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
-
-    pCPacket->m_HEADER.m_wType = GSV_MALL_ITEM_REPLY;
-    pCPacket->m_HEADER.m_nSize = sizeof(gsv_MALL_ITEM_REPLY);
-    pCPacket->m_gsv_MALL_ITEM_REPLY.m_btReplyTYPE = btType;
-    pCPacket->m_gsv_MALL_ITEM_REPLY.m_btCntOrIdx = btData;
+    classPACKET pCPacket;
+    pCPacket.m_HEADER.m_wType = GSV_MALL_ITEM_REPLY;
+    pCPacket.m_HEADER.m_nSize = sizeof(gsv_MALL_ITEM_REPLY);
+    pCPacket.m_gsv_MALL_ITEM_REPLY.m_btReplyTYPE = btType;
+    pCPacket.m_gsv_MALL_ITEM_REPLY.m_btCntOrIdx = btData;
 
     pUSER->Send_Start(pCPacket);
-    Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
 
@@ -351,7 +347,7 @@ GS_CThreadMALL::List_MallITEM(int iScoketIDX, char* szAccount) {
                 if (pCPacket->m_HEADER.m_nSize >= MAX_PACKET_SIZE - 140) {
                     pCPacket->m_gsv_MALL_ITEM_REPLY.m_btCntOrIdx = btCnt;
 
-                    pUSER->Send_Start(pCPacket);
+                    pUSER->Send_Start(*pCPacket);
                     Packet_ReleaseNUnlock(pCPacket);
 
                     btCnt = 0;
@@ -364,7 +360,7 @@ GS_CThreadMALL::List_MallITEM(int iScoketIDX, char* szAccount) {
             }
             if (btCnt) {
                 pCPacket->m_gsv_MALL_ITEM_REPLY.m_btCntOrIdx = btCnt;
-                pUSER->Send_Start(pCPacket);
+                pUSER->Send_Start(*pCPacket);
             }
             Packet_ReleaseNUnlock(pCPacket);
 
