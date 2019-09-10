@@ -1,4 +1,3 @@
-
 #include "stdAFX.h"
 
 #include "CThreadGUILD.h"
