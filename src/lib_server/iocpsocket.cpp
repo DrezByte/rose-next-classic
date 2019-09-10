@@ -117,7 +117,6 @@ iocpSOCKET::Recv_Complete(tagIO_DATA* pRecvDATA) {
     this->LockSOCKET();
 
     if (pRecvDATA->m_dwIOBytes < sizeof(t_PACKETHEADER)) {
-        _ASSERT(0 == pRecvDATA->m_pCPacket->size);
         eResult = this->Recv_Continue(pRecvDATA); // 이어 받기.
         goto _JUMP_RETURN;
     }
@@ -130,8 +129,6 @@ iocpSOCKET::Recv_Complete(tagIO_DATA* pRecvDATA) {
             0xffff, "ERROR: Packet received with no header from [ %s ]\n", this->m_IP.Get());
         return eRESULT_PACKET_BLOCK; // false;
     }
-
-    _ASSERT(pRecvDATA->m_pCPacket->size >= sizeof(t_PACKETHEADER));
 
     if ((short)pRecvDATA->m_dwIOBytes < pRecvDATA->m_pCPacket.size) {
         eResult = this->Recv_Continue(pRecvDATA); // 이어 받기.
@@ -147,8 +144,6 @@ iocpSOCKET::Recv_Complete(tagIO_DATA* pRecvDATA) {
     // 뭉쳐온 패킷 분리.
     t_PACKETHEADER* pHEADER;
     short nRemainBytes, nPacketSIZE;
-
-    _ASSERT(pRecvDATA->m_dwIOBytes > pRecvDATA->m_pCPacket->size);
 
     nRemainBytes = (short)pRecvDATA->m_dwIOBytes - pRecvDATA->m_pCPacket.size;
     pHEADER = (t_PACKETHEADER*)&pRecvDATA->m_pCPacket.m_pDATA[pRecvDATA->m_pCPacket.size];

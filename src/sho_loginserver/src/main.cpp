@@ -16,7 +16,7 @@ CtrlHandler(DWORD fdwCtrlType) {
         case CTRL_BREAK_EVENT:
         case CTRL_LOGOFF_EVENT:
         case CTRL_SHUTDOWN_EVENT:
-            std::cout << "Shutting down..." << std::endl;
+            LOG_INFO("Shutting down...");
             g_instance->CloseClientSOCKET();
             g_instance->Shutdown();
             g_instance->Destroy();
@@ -58,6 +58,8 @@ main() {
     g_instance->StartClientSOCKET(client_port, 0, server_password);
 
     SetConsoleCtrlHandler(CtrlHandler, true);
+
+    LOG_INFO("Server ready");
 
     while (true) {
         MSG msg;
