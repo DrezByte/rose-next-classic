@@ -98,7 +98,7 @@ CClan::LogIn_ClanUSER(char* szCharName, int iSenderSockIDX, int iContribute) {
         pNode = m_ListUSER.GetHeadNode();
         while (pNode) {
             if (HashName == pNode->m_VALUE.m_HashName
-                && !strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
+                && !_strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
                 // Find..
                 CWS_Client* pUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(iSenderSockIDX);
                 if (pUSER) {
@@ -156,7 +156,7 @@ CClan::LogOut_ClanUSER(char* szCharName) {
         pNode = m_ListUSER.GetHeadNode();
         while (pNode) {
             if (HashName == pNode->m_VALUE.m_HashName
-                && !strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
+                && !_strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
                 // Find..
                 pNode->m_VALUE.m_iConnSockIDX = 0;
                 pNode->m_VALUE.m_btChannelNo = 0xff;
@@ -222,8 +222,12 @@ CClan::AddClanSKILL(short nSkillNo) {
                     return false;
                 }
                 // skill log...
-                g_pThreadLOG->When_ws_CLAN(
-                    "Clan master", "?", "?", this, NEWLOG_CLAN_ADD_SKILL_DONE, nSkillNo);
+                g_pThreadLOG->When_ws_CLAN((char*)"Clan master",
+                    (char*)"?",
+                    (char*)"?",
+                    this,
+                    NEWLOG_CLAN_ADD_SKILL_DONE,
+                    nSkillNo);
 
                 this->m_ClanBIN.m_SKILL[nI] = ClanBIN.m_SKILL[nI];
                 this->Send_UpdateInfo();
@@ -252,8 +256,12 @@ CClan::DelClanSKILL(short nSkillNo) {
                 return false;
             }
             // skill log...
-            g_pThreadLOG->When_ws_CLAN(
-                "Clan master", "?", "?", this, NEWLOG_CLAN_DEL_SKILL, nSkillNo);
+            g_pThreadLOG->When_ws_CLAN((char*)"Clan master",
+                (char*)"?",
+                (char*)"?",
+                this,
+                NEWLOG_CLAN_DEL_SKILL,
+                nSkillNo);
 
             this->m_ClanBIN.m_SKILL[nI] = ClanBIN.m_SKILL[nI];
             this->Send_UpdateInfo();
@@ -275,7 +283,7 @@ CClan::SetJOBnLEV(t_HASHKEY HashCHAR, char* szCharName, short nJob, short nLev) 
         pNode = m_ListUSER.GetHeadNode();
         while (pNode) {
             if (HashName == pNode->m_VALUE.m_HashName
-                && !strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
+                && !_strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
                 // Find..
                 pNode->m_VALUE.m_nLevel = nLev;
                 pNode->m_VALUE.m_nJob = nJob;
@@ -447,7 +455,7 @@ CClan::Delete_MEMBER(t_HASHKEY HashCommander, char* szCharName, BYTE btCMD, char
         pNode = m_ListUSER.GetHeadNode();
         while (pNode) {
             if (HashName == pNode->m_VALUE.m_HashName
-                && !strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
+                && !_strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
                 if (HashName == HashCommander) {
                     // 자기 자신은 안돼 !!!!
                     this->Unlock();
@@ -512,7 +520,7 @@ CClan::Adjust_MEMBER(t_HASHKEY HashCommander,
         pNode = m_ListUSER.GetHeadNode();
         while (pNode) {
             if (HashName == pNode->m_VALUE.m_HashName
-                && !strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
+                && !_strcmpi(szCharName, pNode->m_VALUE.m_Name.Get())) {
                 if (HashName == HashCommander) {
                     // 자기 자신은 안돼 !!!!
                     goto _JUMP_RETURN;
@@ -541,7 +549,7 @@ CClan::Adjust_MEMBER(t_HASHKEY HashCommander,
                     if (g_pThreadGUILD->Query_AdjustClanMember(szCharName, iAdjContr, iAdjPos)) {
                         // 직위 변경 로그...
                         g_pThreadLOG->When_ws_CLAN(szCharName,
-                            "?",
+                            (char*)"?",
                             szMaster,
                             this,
                             NEWLOG_CLAN_CHANGE_POSITION,
@@ -693,13 +701,10 @@ CClan::Send_UpdateInfo() {
 
 void
 CClan::SendRoster(int iSenderSockIDX) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return;
-
-    pCPacket->m_HEADER.m_wType = WSV_CLAN_COMMAND;
-    pCPacket->m_HEADER.m_nSize = sizeof(wsv_CLAN_COMMAND);
-    pCPacket->m_wsv_CLAN_COMMAND.m_btRESULT = RESULT_CLAN_ROSTER;
+    classPACKET pCPacket;
+    pCPacket.m_HEADER.m_wType = WSV_CLAN_COMMAND;
+    pCPacket.m_HEADER.m_nSize = sizeof(wsv_CLAN_COMMAND);
+    pCPacket.m_wsv_CLAN_COMMAND.m_btRESULT = RESULT_CLAN_ROSTER;
 
     CDLList<CClanUSER>::tagNODE* pNODE;
     tag_CLAN_MEMBER sMember;
@@ -713,35 +718,33 @@ CClan::SendRoster(int iSenderSockIDX) {
             sMember.m_nLEVEL = pNODE->m_VALUE.m_nLevel;
             sMember.m_nJOB = pNODE->m_VALUE.m_nJob;
 
-            pCPacket->AppendData(&sMember, sizeof(tag_CLAN_MEMBER));
-            pCPacket->AppendString(pNODE->m_VALUE.m_Name.Get());
+            pCPacket.AppendData(&sMember, sizeof(tag_CLAN_MEMBER));
+            pCPacket.AppendString(pNODE->m_VALUE.m_Name.Get());
 
-            if (pCPacket->m_HEADER.m_nSize >= MAX_PACKET_SIZE - 34) {
+            if (pCPacket.m_HEADER.m_nSize >= MAX_PACKET_SIZE - 34) {
                 g_pUserLIST->SendPacketToSocketIDX(iSenderSockIDX, pCPacket);
-                Packet_ReleaseNUnlock(pCPacket);
 
-                pCPacket = Packet_AllocNLock();
-                if (!pCPacket)
-                    break;
-
-                pCPacket->m_HEADER.m_wType = WSV_CLAN_COMMAND;
-                pCPacket->m_HEADER.m_nSize = sizeof(wsv_CLAN_COMMAND);
-                pCPacket->m_wsv_CLAN_COMMAND.m_btRESULT = RESULT_CLAN_ROSTER;
+                pCPacket = classPACKET();
+                pCPacket.m_HEADER.m_wType = WSV_CLAN_COMMAND;
+                pCPacket.m_HEADER.m_nSize = sizeof(wsv_CLAN_COMMAND);
+                pCPacket.m_wsv_CLAN_COMMAND.m_btRESULT = RESULT_CLAN_ROSTER;
             }
             pNODE = pNODE->GetNext();
         }
     }
     this->Unlock();
 
-    if (pCPacket && pCPacket->m_HEADER.m_nSize > sizeof(wsv_CLAN_COMMAND)) {
+    if (pCPacket.m_HEADER.m_nSize > sizeof(wsv_CLAN_COMMAND)) {
         g_pUserLIST->SendPacketToSocketIDX(iSenderSockIDX, pCPacket);
-    }
-    Packet_ReleaseNUnlock(pCPacket);
+    };
 }
 
 //-------------------------------------------------------------------------------------------------
 void
-CClan::SendPacketToMEMBER(classPACKET* pCPacket) {
+CClan::SendPacketToMEMBER(classPACKET* packet) {
+    // Temporary until all packets are refactored
+    classPACKET pCPacket = *packet;
+
     CDLList<CClanUSER>::tagNODE* pNODE;
     CWS_Client* pUSER;
     this->Lock();
@@ -795,25 +798,18 @@ CClan::SetClanMARK(BYTE* pMarkData, short nDataLen, WORD wMarkCRC16, CWS_Client*
     //	클랜 마크를 디비에 기록....
     WORD wResult = g_pThreadGUILD->Query_UpdateClanMARK(this, wMarkCRC16, pMarkData, nDataLen);
     if (wResult) {
-        classPACKET* pCPacket = Packet_AllocNLock();
-        if (!pCPacket)
-            return false;
+        classPACKET pCPacket;
+        pCPacket.m_HEADER.m_wType = WSV_CLANMARK_REPLY;
+        pCPacket.m_HEADER.m_nSize = sizeof(wsv_CLANMARK_REPLY);
 
-        pCPacket->m_HEADER.m_wType = WSV_CLANMARK_REPLY;
-        pCPacket->m_HEADER.m_nSize = sizeof(wsv_CLANMARK_REPLY);
-
-        pCPacket->m_wsv_CLANMARK_REPLY.m_dwClanID = 0;
-        pCPacket->m_wsv_CLANMARK_REPLY.m_wMarkCRC16 = wResult;
+        pCPacket.m_wsv_CLANMARK_REPLY.m_dwClanID = 0;
+        pCPacket.m_wsv_CLANMARK_REPLY.m_wMarkCRC16 = wResult;
 
         pReqUSER->SendPacket(pCPacket);
-
-        Packet_ReleaseNUnlock(pCPacket);
         return false;
     }
 
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
+    classPACKET pCPacket;
 
     this->m_wClanMARK[0] = 0;
     this->m_wClanMARK[1] = wMarkCRC16;
@@ -821,12 +817,12 @@ CClan::SetClanMARK(BYTE* pMarkData, short nDataLen, WORD wMarkCRC16, CWS_Client*
     this->m_nClanMarkLEN = nDataLen;
     ::CopyMemory(this->m_pClanMARK, pMarkData, nDataLen);
 
-    pCPacket->m_HEADER.m_wType = WSV_CLANMARK_REPLY;
-    pCPacket->m_HEADER.m_nSize = sizeof(wsv_CLANMARK_REPLY);
+    pCPacket.m_HEADER.m_wType = WSV_CLANMARK_REPLY;
+    pCPacket.m_HEADER.m_nSize = sizeof(wsv_CLANMARK_REPLY);
 
-    pCPacket->m_wsv_CLANMARK_REPLY.m_dwClanID = this->m_dwClanID;
-    pCPacket->m_wsv_CLANMARK_REPLY.m_wMarkCRC16 = wMarkCRC16;
-    pCPacket->AppendData(pMarkData, nDataLen);
+    pCPacket.m_wsv_CLANMARK_REPLY.m_dwClanID = this->m_dwClanID;
+    pCPacket.m_wsv_CLANMARK_REPLY.m_wMarkCRC16 = wMarkCRC16;
+    pCPacket.AppendData(pMarkData, nDataLen);
 
     // 클랜의 모든 멤버에게...
     CDLList<CClanUSER>::tagNODE* pNODE;
@@ -852,35 +848,30 @@ CClan::SetClanMARK(BYTE* pMarkData, short nDataLen, WORD wMarkCRC16, CWS_Client*
     }
     this->Unlock();
 
-    Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool
 CClan::Send_wsv_CLANMARK_REG_TIME(CWS_Client* pMember) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
+    classPACKET pCPacket;
+    pCPacket.m_HEADER.m_wType = WSV_CLANMARK_REG_TIME;
+    pCPacket.m_HEADER.m_nSize = sizeof(wsv_CLANMARK_REG_TIME);
 
-    pCPacket->m_HEADER.m_wType = WSV_CLANMARK_REG_TIME;
-    pCPacket->m_HEADER.m_nSize = sizeof(wsv_CLANMARK_REG_TIME);
-
-    pCPacket->m_wsv_CLANMARK_REG_TIME.m_wYear = this->m_RegTIME.m_wYear;
-    pCPacket->m_wsv_CLANMARK_REG_TIME.m_btMon = this->m_RegTIME.m_btMon;
-    pCPacket->m_wsv_CLANMARK_REG_TIME.m_btDay = this->m_RegTIME.m_btDay;
-    pCPacket->m_wsv_CLANMARK_REG_TIME.m_btHour = this->m_RegTIME.m_btHour;
-    pCPacket->m_wsv_CLANMARK_REG_TIME.m_btMin = this->m_RegTIME.m_btMin;
-    pCPacket->m_wsv_CLANMARK_REG_TIME.m_btSec = this->m_RegTIME.m_btSec;
+    pCPacket.m_wsv_CLANMARK_REG_TIME.m_wYear = this->m_RegTIME.m_wYear;
+    pCPacket.m_wsv_CLANMARK_REG_TIME.m_btMon = this->m_RegTIME.m_btMon;
+    pCPacket.m_wsv_CLANMARK_REG_TIME.m_btDay = this->m_RegTIME.m_btDay;
+    pCPacket.m_wsv_CLANMARK_REG_TIME.m_btHour = this->m_RegTIME.m_btHour;
+    pCPacket.m_wsv_CLANMARK_REG_TIME.m_btMin = this->m_RegTIME.m_btMin;
+    pCPacket.m_wsv_CLANMARK_REG_TIME.m_btSec = this->m_RegTIME.m_btSec;
 
     pMember->SendPacket(pCPacket);
-    Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 CThreadGUILD::CThreadGUILD(UINT uiInitDataCNT, UINT uiIncDataCNT):
-    CSqlTHREAD(true), m_Pools("CGuildPOOL", uiInitDataCNT, uiIncDataCNT) {
+    CSqlTHREAD(true), m_Pools((char*)"CGuildPOOL", uiInitDataCNT, uiIncDataCNT) {
     m_pHashCLAN = new classHASH<CClan*>(1024 * 2);
 }
 CThreadGUILD::~CThreadGUILD() {
@@ -896,7 +887,7 @@ CThreadGUILD::Test_add(char* pGuildName, char* pGuildDesc) {
     ((classODBC*)this->m_pSQL)->SetParam_long(1, iResultSP, cbSize1);
 
     if (this->m_pSQL->QuerySQL(
-            "{?=call ws_ClanCREATE(\'%s\',\'%s\',%d,%d)}", pGuildName, pGuildDesc, 1, 2)) {
+            (char*)"{?=call ws_ClanCREATE(\'%s\',\'%s\',%d,%d)}", pGuildName, pGuildDesc, 1, 2)) {
         DWORD dwClanID = 0;
         while (this->m_pSQL->GetNextRECORD()) {
             // 기존 클랜 ID...
@@ -915,7 +906,7 @@ CThreadGUILD::Test_add(char* pGuildName, char* pGuildDesc) {
                 g_LOG.CS_ODS(0xffff, "Create clan success : dwCladID::%d\n", dwClanID);
                 break;
             case -1: // 중복된 이름
-                LogString(0xffff, "duplicated clan name : result: %d\n", iResultSP);
+                LogString(0xffff, (char*)"duplicated clan name : result: %d\n", iResultSP);
                 break;
             case -2: // insert 오류( 디비 오류 )
                 g_LOG.CS_ODS(0xffff, "insert sclan failed : result: %d\n", iResultSP);
@@ -935,7 +926,7 @@ CThreadGUILD::Test_del(char* pGuildName) {
     SDWORD cbSize1 = SQL_NTS;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanDELETE(\'%s\')}", pGuildName)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanDELETE(\'%s\')}", pGuildName)) {
         DWORD dwClanID = 0;
         while (this->m_pSQL->GetNextRECORD()) {
             // 성공...
@@ -1238,7 +1229,7 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
                     if (this->Query_DeleteCLAN(pClan->m_Name.Get())) {
                         g_pThreadLOG->When_ws_CLAN(pFindUSER->Get_NAME(),
                             pFindUSER->Get_IP(),
-                            "Disband",
+                            (char*)"Disband",
                             pClan,
                             NEWLOG_CLAN_DESTROYED);
                     } else {
@@ -1428,7 +1419,7 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
                         // 탈퇴 로그...
                         g_pThreadLOG->When_ws_CLAN(pFindUSER->Get_NAME(),
                             pFindUSER->Get_IP(),
-                            "?",
+                            (char*)"?",
                             pClan,
                             NEWLOG_CLAN_QUIT_MEMBER);
                     }
@@ -1474,7 +1465,7 @@ CThreadGUILD::Find_CLAN(DWORD dwClanID) {
 //-------------------------------------------------------------------------------------------------
 CClan*
 CThreadGUILD::Load_CLAN(DWORD dwClanID) {
-    if (this->m_pSQL->QuerySQL("{call ws_ClanSELECT(%d)}", dwClanID)) {
+    if (this->m_pSQL->QuerySQL((char*)"{call ws_ClanSELECT(%d)}", dwClanID)) {
         if (this->m_pSQL->GetNextRECORD()) {
             // this->m_pSQL->GetInteger(0); cladID
             char* pClanName = this->m_pSQL->GetStrPTR(1, false);
@@ -1519,7 +1510,7 @@ CThreadGUILD::Load_CLAN(DWORD dwClanID) {
             pClan->m_RegTIME.m_btSec = sTimeStamp.m_btSec;
 
             // 모든 클랜멤버 얻기...
-            if (this->m_pSQL->QuerySQL("{call ws_ClanCharALL(%d)}", dwClanID)) {
+            if (this->m_pSQL->QuerySQL((char*)"{call ws_ClanCharALL(%d)}", dwClanID)) {
                 int iClanPos;
                 CDLList<CClanUSER>::tagNODE* pNode;
                 char* pCharName;
@@ -1579,7 +1570,7 @@ CThreadGUILD::Query_CreateCLAN(int iSocketIDX, t_PACKET* pPacket) {
     SDWORD cbSize1 = SQL_NTS;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanINSERT(\'%s\',\'%s\',%d,%d)}",
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanINSERT(\'%s\',\'%s\',%d,%d)}",
             pGuildName,
             pGuildDesc,
             pPacket->m_cli_CLAN_CREATE.m_wMarkIDX[0],
@@ -1612,7 +1603,7 @@ CThreadGUILD::Query_CreateCLAN(int iSocketIDX, t_PACKET* pPacket) {
                 return pClan;
             }
             case -1: // 중복된 이름
-                LogString(0xffff, "duplicated clan name : result: %d\n", iResultSP);
+                LogString(0xffff, (char*)"duplicated clan name : result: %d\n", iResultSP);
                 break;
             case -2: // insert 오류( 디비 오류 )
                 g_LOG.CS_ODS(0xffff, "insert sclan failed : result: %d\n", iResultSP);
@@ -1632,7 +1623,7 @@ CThreadGUILD::Query_DeleteCLAN(char* szClanName) {
     SDWORD cbSize1 = SQL_NTS;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanDELETE(\'%s\')}", szClanName)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanDELETE(\'%s\')}", szClanName)) {
         DWORD dwClanID = 0;
         // while( this->m_pSQL->GetNextRECORD() ) {
         //	// 성공...
@@ -1676,7 +1667,7 @@ CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClan
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
     if (this->m_pSQL->QuerySQL(
-            "{?=call ws_ClanCharADD(\'%s\',%d,%d)}", szCharName, dwClanID, iClanPos)) {
+            (char*)"{?=call ws_ClanCharADD(\'%s\',%d,%d)}", szCharName, dwClanID, iClanPos)) {
         while (this->m_pSQL->GetMoreRESULT()) {
             ;
         }
@@ -1685,8 +1676,10 @@ CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClan
                 g_LOG.CS_ODS(0xffff, "Insert clan user : ClanID::%d / %s\n", dwClanID, szCharName);
                 return true;
             case -1: // 중복된 이름
-                LogString(
-                    0xffff, "duplicated clan user name : ClanID:%d / %s \n", dwClanID, szCharName);
+                LogString(0xffff,
+                    (char*)"duplicated clan user name : ClanID:%d / %s \n",
+                    dwClanID,
+                    szCharName);
                 break;
             case -2: // insert 오류( 디비 오류 )
                 g_LOG.CS_ODS(
@@ -1706,7 +1699,7 @@ CThreadGUILD::Query_DeleteClanMember(char* szCharName) {
     SDWORD cbSize1 = SQL_NTS;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanCharDEL(\'%s\')}", szCharName)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanCharDEL(\'%s\')}", szCharName)) {
         DWORD dwClanID = 0;
         while (this->m_pSQL->GetNextRECORD()) {
             dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
@@ -1720,8 +1713,10 @@ CThreadGUILD::Query_DeleteClanMember(char* szCharName) {
         }
         switch (iResultSP) {
             case 0: // 성공
-                LogString(
-                    0xffff, "Delete clan user success : dwCladID::%d / %s\n", dwClanID, szCharName);
+                LogString(0xffff,
+                    (char*)"Delete clan user success : dwCladID::%d / %s\n",
+                    dwClanID,
+                    szCharName);
                 return true;
             default: // 실패
                 g_LOG.CS_ODS(0xffff, "Delete clan user failed : %d / %s\n", dwClanID, szCharName);
@@ -1739,7 +1734,7 @@ CThreadGUILD::Query_AdjustClanMember(char* szCharName, int iAdjContr, int iAdjPo
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
     if (this->m_pSQL->QuerySQL(
-            "{?=call ws_ClanCharADJ(\'%s\',%d,%d)}", szCharName, iAdjContr, iAdjPos)) {
+            (char*)"{?=call ws_ClanCharADJ(\'%s\',%d,%d)}", szCharName, iAdjContr, iAdjPos)) {
         while (this->m_pSQL->GetMoreRESULT()) {
             ;
         }
@@ -1748,10 +1743,10 @@ CThreadGUILD::Query_AdjustClanMember(char* szCharName, int iAdjContr, int iAdjPo
                 g_LOG.CS_ODS(0xffff, "update clan user :  %s\n", szCharName);
                 return true;
             case -1: // 멤버 없다.
-                LogString(0xffff, "not clan user name :  %s \n", szCharName);
+                LogString(0xffff, (char*)"not clan user name :  %s \n", szCharName);
                 break;
             case -2: // 디비 오류
-                LogString(0xffff, "update clan user failed : result: %s\n", szCharName);
+                LogString(0xffff, (char*)"update clan user failed : result: %s\n", szCharName);
                 break;
             default:
                 assert("invalid ws_ClanAdjCHAR SP retrun value" && 0);
@@ -1769,7 +1764,7 @@ CThreadGUILD::Query_UpdateClanMOTD(DWORD dwClanID, char* szMessage) {
     SDWORD cbSize1 = SQL_NTS;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanMOTD(%d,\'%s\')}", dwClanID, szMessage)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanMOTD(%d,\'%s\')}", dwClanID, szMessage)) {
         while (this->m_pSQL->GetMoreRESULT()) {
             ;
         }
@@ -1799,7 +1794,7 @@ CThreadGUILD::Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage) {
     SDWORD cbSize1 = SQL_NTS;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanSLOGAN(%d,\'%s\')}", dwClanID, szMessage)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanSLOGAN(%d,\'%s\')}", dwClanID, szMessage)) {
         while (this->m_pSQL->GetMoreRESULT()) {
             ;
         }
@@ -1824,7 +1819,7 @@ CThreadGUILD::Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage) {
 
 bool
 CThreadGUILD::Query_LoginClanMember(char* szCharName, int iSenderSockIDX) {
-    if (this->m_pSQL->QuerySQL("{call ws_ClanCharGET(\'%s\')}", szCharName)) {
+    if (this->m_pSQL->QuerySQL((char*)"{call ws_ClanCharGET(\'%s\')}", szCharName)) {
         if (this->m_pSQL->GetNextRECORD()) {
             // 클랜 있다.
             DWORD dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
@@ -1853,7 +1848,7 @@ CThreadGUILD::Query_UpdateClanDATA(char* szField,
     int iAdjValue = pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanUPDATE(%d,\'%s\',%d)}",
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanUPDATE(%d,\'%s\',%d)}",
             pPacket->m_gsv_ADJ_CLAN_VAR.m_dwClanID,
             szField,
             pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue)) {
@@ -1923,7 +1918,7 @@ CThreadGUILD::Query_UpdateClanBINARY(DWORD dwClanID, BYTE* pDATA, unsigned int u
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
     this->m_pSQL->BindPARAM(2, (BYTE*)pDATA, uiSize);
 
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanBinUPDATE(%d,?)}", dwClanID)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanBinUPDATE(%d,?)}", dwClanID)) {
         while (this->m_pSQL->GetMoreRESULT()) {
             ;
         }
@@ -1957,7 +1952,7 @@ CThreadGUILD::Query_UpdateClanMARK(CClan* pClan, WORD wMarkCRC, BYTE* pDATA, uns
     this->m_pSQL->BindPARAM(2, (BYTE*)pDATA, uiSize);
 
     // 주의~~wMarkCRC로 될경우 디비에 smallint로 잡혀있어 32767 보다 클경우 디비 오류~~~
-    if (this->m_pSQL->QuerySQL("{?=call ws_ClanMarkUPDATE(%d,%d,%d,?)}",
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanMarkUPDATE(%d,%d,%d,?)}",
             pClan->m_dwClanID,
             (short)(wMarkCRC),
             uiSize)) {
@@ -1968,7 +1963,8 @@ CThreadGUILD::Query_UpdateClanMARK(CClan* pClan, WORD wMarkCRC, BYTE* pDATA, uns
             case 1: // 성공
                 g_LOG.CS_ODS(0xffff, "update clan mark : %d \n", pClan->m_dwClanID);
                 if (this->m_pSQL->QuerySQL(
-                        "select dateMarkREG from tblWS_CLAN where intID=%d", pClan->m_dwClanID)) {
+                        (char*)"select dateMarkREG from tblWS_CLAN where intID=%d",
+                        pClan->m_dwClanID)) {
                     if (this->m_pSQL->GetNextRECORD()) {
                         sqlTIMESTAMP sTimeStamp;
                         this->m_pSQL->GetTimestamp(0, &sTimeStamp);

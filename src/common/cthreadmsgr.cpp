@@ -12,7 +12,7 @@
 //-------------------------------------------------------------------------------------------------
 CThreadMSGR::CThreadMSGR(UINT uiInitDataCNT, UINT uiIncDataCNT):
     CSqlTHREAD(true), /* m_csListCMD( 4000 ) */
-    m_Pools("CMessengerPOOL", uiInitDataCNT, uiIncDataCNT), m_HashMSGR(1024 * 3) {
+    m_Pools((char*)"CMessengerPOOL", uiInitDataCNT, uiIncDataCNT), m_HashMSGR(1024 * 3) {
     m_pListBUFF = new BYTE[2048];
 }
 CThreadMSGR::~CThreadMSGR() {
@@ -51,7 +51,10 @@ CThreadMSGR::Check_FRIENDS() {
                     FR.m_dwDBID = pFrH->m_dwDBID;
                     FR.m_btSTATUS = pFrH->m_btSTATUS;
                     FR.m_Name.Set( pName );
-                    
+                    
+
+
+
                     // check name & dbid...
                     if ( !this->m_pSQL->QuerySQL( "SELECT txtNAME FROM tblGS_AVATAR WHERE
        intCharID=%d", FR.m_dwDBID ) ) { g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n",
@@ -165,7 +168,7 @@ CThreadMSGR::SearchMSGR(char* szCharName) {
 
     tagHASH<CMessenger*>* pHashNode = m_HashMSGR.Search(HashKEY);
     while (pHashNode) {
-        if (!strcmpi(szCharName, pHashNode->m_DATA->m_Name.Get())) {
+        if (!_strcmpi(szCharName, pHashNode->m_DATA->m_Name.Get())) {
             return pHashNode->m_DATA;
         }
         pHashNode = m_HashMSGR.SearchContinue(pHashNode, HashKEY);
@@ -191,7 +194,7 @@ CThreadMSGR::Run_MessengerPACKET(tagMSGR_CMD* pMsgCMD) {
                 pMsgCMD->m_pPacket->m_cli_MCMD_APPEND_REPLY.m_wUserIDX);
             short nOffset = sizeof(cli_MCMD_APPEND_REPLY);
             char* szName = Packet_GetStringPtr(pMsgCMD->m_pPacket, nOffset);
-            if (pRequestUSER && szName && !strcmpi(szName, pRequestUSER->Get_NAME())) {
+            if (pRequestUSER && szName && !_strcmpi(szName, pRequestUSER->Get_NAME())) {
                 CMessenger* pMSGR1 = this->SearchMSGR(pMsgCMD->m_Name.Get());
                 if (pMSGR1) {
                     if (pMSGR1->Get_FriendCNT() < MAX_FRIEND_COUNT) {
@@ -247,9 +250,9 @@ CThreadMSGR::Run_MessengerPACKET(tagMSGR_CMD* pMsgCMD) {
 //-------------------------------------------------------------------------------------------------
 bool
 CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
-    if (!this->m_pSQL->QuerySQL("{call ws_GetFRIEND(%d)}", pCMD->m_dwDBID)) {
+    if (!this->m_pSQL->QuerySQL((char*)"{call ws_GetFRIEND(%d)}", pCMD->m_dwDBID)) {
         //	if ( !this->m_pSQL->QuerySQL( "SELECT intFriendCNT, blobFRIENDS FROM tblWS_FRIEND WHERE
-        //intCharID=%d", pCMD->m_dwDBID ) ) {
+        // intCharID=%d", pCMD->m_dwDBID ) ) {
         g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
         return false;
     }
@@ -266,7 +269,8 @@ CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
     pMSGR->Init(pCMD->m_Name.Get(), pCMD->m_dwDBID, pCMD->m_iSocketIDX);
     if (!this->m_pSQL->GetNextRECORD()) {
         // insert !!!
-        if (this->m_pSQL->ExecSQL("INSERT tblWS_FRIEND ( intCharID ) VALUES(%d);", pCMD->m_dwDBID)
+        if (this->m_pSQL->ExecSQL(
+                (char*)"INSERT tblWS_FRIEND ( intCharID ) VALUES(%d);", pCMD->m_dwDBID)
             < 1) {
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: INSERT %s friend : %s \n",
@@ -300,7 +304,7 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
     if (pMSGR->MSGR_IsUPDATE()) {
         if (iFriendCNT > 0) {
             this->m_pSQL->BindPARAM(1, this->m_pListBUFF, iBuffLEN);
-            this->m_pSQL->MakeQuery("UPDATE tblWS_FRIEND SET blobFRIENDS=",
+            this->m_pSQL->MakeQuery((char*)"UPDATE tblWS_FRIEND SET blobFRIENDS=",
                 MQ_PARAM_BINDIDX,
                 1,
                 MQ_PARAM_ADDSTR,
@@ -313,7 +317,7 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
                 pMSGR->Get_DBID(),
                 MQ_PARAM_END);
         } else {
-            this->m_pSQL->MakeQuery("UPDATE tblWS_FRIEND SET blobFRIENDS=NULL",
+            this->m_pSQL->MakeQuery((char*)"UPDATE tblWS_FRIEND SET blobFRIENDS=NULL",
                 MQ_PARAM_ADDSTR,
                 ",intFriendCNT=",
                 MQ_PARAM_INT,
@@ -351,7 +355,10 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 bool
-CMessenger::SendPacket(int iClientSocketIDX, DWORD dwDBID, classPACKET* pCPacket) {
+CMessenger::SendPacket(int iClientSocketIDX, DWORD dwDBID, classPACKET* packet) {
+    // Temporary until all packets are refactored
+    classPACKET pCPacket = *packet;
+
     CWS_Client* pFindUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(iClientSocketIDX);
     if (pFindUSER && pFindUSER->m_dwDBID == dwDBID) {
         if (!pFindUSER->SendPacket(pCPacket)) {

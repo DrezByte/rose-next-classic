@@ -28,21 +28,21 @@ CChatROOM::ReqJoin(classUSER* pUSER) {
 #ifdef ENABLE_CHATROOM
     CDLList<classUSER*>::tagNODE* pNode;
 
-    classPACKET* pCPketADD = Packet_AllocNLock();
-    classPACKET* pCPketJOIN = Packet_AllocNLock();
+    classPACKET pCPketADD;
+    classPACKET pCPketJOIN;
 
-    pCPketADD->m_HEADER.m_wType = WSV_CHATROOM;
-    pCPketADD->m_HEADER.m_nSize = sizeof(wsv_CHAT_ROOM_USER);
-    pCPketADD->m_wsv_CHAT_ROOM_USER.m_btCMD = CHAT_REPLY_USER_ADD;
+    pCPketADD.m_HEADER.m_wType = WSV_CHATROOM;
+    pCPketADD.m_HEADER.m_nSize = sizeof(wsv_CHAT_ROOM_USER);
+    pCPketADD.m_wsv_CHAT_ROOM_USER.m_btCMD = CHAT_REPLY_USER_ADD;
 
-    pCPketADD->m_wsv_CHAT_ROOM_USER.m_wUserID = pUSER->m_iSocketIDX;
-    pCPketADD->AppendString(pUSER->Get_NAME());
+    pCPketADD.m_wsv_CHAT_ROOM_USER.m_wUserID = pUSER->m_iSocketIDX;
+    pCPketADD.AppendString(pUSER->Get_NAME());
 
-    pCPketJOIN->m_HEADER.m_wType = WSV_CHATROOM;
-    pCPketJOIN->m_HEADER.m_nSize = sizeof(wsv_CHAT_ROOM_USER);
-    pCPketJOIN->m_wsv_CHAT_ROOM_USER.m_btCMD = CHAT_REPLY_ROOM_JOINED;
-    pCPketJOIN->m_wsv_CHAT_ROOM_USER.m_wUserID = pUSER->m_iSocketIDX;
-    pCPketJOIN->AppendString(this->m_szTITLE.Get());
+    pCPketJOIN.m_HEADER.m_wType = WSV_CHATROOM;
+    pCPketJOIN.m_HEADER.m_nSize = sizeof(wsv_CHAT_ROOM_USER);
+    pCPketJOIN.m_wsv_CHAT_ROOM_USER.m_btCMD = CHAT_REPLY_ROOM_JOINED;
+    pCPketJOIN.m_wsv_CHAT_ROOM_USER.m_wUserID = pUSER->m_iSocketIDX;
+    pCPketJOIN.AppendString(this->m_szTITLE.Get());
 
     WORD wObjTAG;
     m_ListCS.Lock();
@@ -53,8 +53,8 @@ CChatROOM::ReqJoin(classUSER* pUSER) {
 
             wObjTAG = pNode->m_VALUE->m_iSocketIDX;
 
-            pCPketJOIN->AppendData(&wObjTAG, sizeof(WORD));
-            pCPketJOIN->AppendString(pNode->m_VALUE->Get_NAME());
+            pCPketJOIN.AppendData(&wObjTAG, sizeof(WORD));
+            pCPketJOIN.AppendString(pNode->m_VALUE->Get_NAME());
 
             pNode = pNode->GetNext();
         };
@@ -64,10 +64,8 @@ CChatROOM::ReqJoin(classUSER* pUSER) {
     m_ListCS.Unlock();
 
     pUSER->SendPacket(pCPketJOIN);
-
-    Packet_ReleaseNUnlock(pCPketJOIN);
-    Packet_ReleaseNUnlock(pCPketADD);
 #endif
+
     return true;
 }
 int
@@ -118,22 +116,19 @@ CChatROOM::ReqKick(classUSER* pUSER, t_HASHKEY HashUSER) {
 bool
 CChatROOM::Send_wsv_CHATROOM(BYTE btCMD, WORD wUserID, char* szSTR) {
 #ifdef ENABLE_CHATROOM
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
-
-    pCPacket->m_HEADER.m_wType = WSV_CHATROOM;
-    pCPacket->m_HEADER.m_nSize = sizeof(tag_CHAT_HEADER);
-    pCPacket->m_tag_CHAT_HEADER.m_btCMD = btCMD;
+    classPACKET pCPacket;
+    pCPacket.m_HEADER.m_wType = WSV_CHATROOM;
+    pCPacket.m_HEADER.m_nSize = sizeof(tag_CHAT_HEADER);
+    pCPacket.m_tag_CHAT_HEADER.m_btCMD = btCMD;
 
     if (wUserID) {
-        pCPacket->m_HEADER.m_nSize += sizeof(WORD);
-        WORD* pWPtr = (WORD*)(&pCPacket->m_pDATA[sizeof(tag_CHAT_HEADER)]);
+        pCPacket.m_HEADER.m_nSize += sizeof(WORD);
+        WORD* pWPtr = (WORD*)(&pCPacket.m_pDATA[sizeof(tag_CHAT_HEADER)]);
         *pWPtr = wUserID;
     }
 
     if (szSTR) {
-        pCPacket->AppendString(szSTR);
+        pCPacket.AppendString(szSTR);
     }
 
     CDLList<classUSER*>::tagNODE* pNode;
@@ -146,9 +141,8 @@ CChatROOM::Send_wsv_CHATROOM(BYTE btCMD, WORD wUserID, char* szSTR) {
         }
     }
     m_ListCS.Unlock();
-
-    Packet_ReleaseNUnlock(pCPacket);
 #endif
+
     return true;
 }
 
@@ -156,15 +150,12 @@ CChatROOM::Send_wsv_CHATROOM(BYTE btCMD, WORD wUserID, char* szSTR) {
 bool
 CChatROOM::Send_wsv_CHATROOM_MSG(WORD wObjectID, char* szMSG) {
 #ifdef ENABLE_CHATROOM
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
+    classPACKET pCPacket;
+    pCPacket.m_HEADER.m_wType = WSV_CHATROOM_MSG;
+    pCPacket.m_HEADER.m_nSize = sizeof(wsv_CHATROOM_MSG);
 
-    pCPacket->m_HEADER.m_wType = WSV_CHATROOM_MSG;
-    pCPacket->m_HEADER.m_nSize = sizeof(wsv_CHATROOM_MSG);
-
-    pCPacket->m_wsv_CHATROOM_MSG.m_wObjectID = wObjectID;
-    pCPacket->AppendString(szMSG);
+    pCPacket.m_wsv_CHATROOM_MSG.m_wObjectID = wObjectID;
+    pCPacket.AppendString(szMSG);
 
     CDLList<classUSER*>::tagNODE* pNode;
     this->m_ListCS.Lock();
@@ -175,14 +166,13 @@ CChatROOM::Send_wsv_CHATROOM_MSG(WORD wObjectID, char* szMSG) {
         pNode = pNode->GetNext();
     }
     this->m_ListCS.Unlock();
-    Packet_ReleaseNUnlock(pCPacket);
 #endif
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 CChatRoomLIST::CChatRoomLIST(WORD wMaxRoomCNT):
-    CIndexARRAY<CChatROOM*>("ChatRoom", wMaxRoomCNT), m_RoomsCS(4000) {
+    CIndexARRAY<CChatROOM*>((char*)"ChatRoom", wMaxRoomCNT), m_RoomsCS(4000) {
     m_pROOMs = new CChatROOM[wMaxRoomCNT];
 }
 CChatRoomLIST::~CChatRoomLIST() {
@@ -293,11 +283,11 @@ CChatRoomLIST::Recv_cli_CHATROOM(classUSER* pUSER, t_PACKET* pPacket) {
             int iCnt = 0, iR;
             tag_CHAT_ROOM sRoom;
 
-            classPACKET* pCPacket = Packet_AllocNLock();
+            classPACKET pCPacket;
 
-            pCPacket->m_HEADER.m_wType = WSV_CHATROOM;
-            pCPacket->m_HEADER.m_nSize = sizeof(wsv_CHAT_ROOM_LIST);
-            pCPacket->m_wsv_CHAT_ROOM_LIST.m_btCMD = CHAT_REPLY_ROOM_LIST_END;
+            pCPacket.m_HEADER.m_wType = WSV_CHATROOM;
+            pCPacket.m_HEADER.m_nSize = sizeof(wsv_CHAT_ROOM_LIST);
+            pCPacket.m_wsv_CHAT_ROOM_LIST.m_btCMD = CHAT_REPLY_ROOM_LIST_END;
 
             this->m_RoomsCS.Lock();
             for (iR = pPacket->m_cli_CHAT_ROOM_LIST.m_wFromRoomID; iR < this->m_uiBuffSize; iR++) {
@@ -313,20 +303,19 @@ CChatRoomLIST::Recv_cli_CHATROOM(classUSER* pUSER, t_PACKET* pPacket) {
                 sRoom.m_btRoomTYPE = pRoom->m_btRoomTYPE;
                 sRoom.m_cUserCNT = (char)pRoom->GetRoomUSERS();
                 sRoom.m_nRoomIDX = iR;
-                pCPacket->AppendData(&sRoom, sizeof(tag_CHAT_ROOM));
-                pCPacket->AppendString(pRoom->m_szTITLE.Get());
+                pCPacket.AppendData(&sRoom, sizeof(tag_CHAT_ROOM));
+                pCPacket.AppendString(pRoom->m_szTITLE.Get());
 
                 if (++iCnt >= MAX_ROOM_LIST_CNT) {
-                    pCPacket->m_wsv_CHAT_ROOM_LIST.m_btCMD = CHAT_REPLY_ROOM_LIST;
+                    pCPacket.m_wsv_CHAT_ROOM_LIST.m_btCMD = CHAT_REPLY_ROOM_LIST;
                     break;
                 }
             }
             this->m_RoomsCS.Unlock();
 
-            pCPacket->m_wsv_CHAT_ROOM_LIST.m_cRoomCNT = iCnt;
+            pCPacket.m_wsv_CHAT_ROOM_LIST.m_cRoomCNT = iCnt;
 
             pUSER->SendPacket(pCPacket);
-            Packet_ReleaseNUnlock(pCPacket);
 
             return true;
         }

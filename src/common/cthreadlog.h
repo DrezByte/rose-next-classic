@@ -322,8 +322,11 @@ public:
     CStrVAR m_PosSTR;
     char* GetLocationSTR(short nZoneNO, tPOINTF& PosCUR) {
         char* szZoneName = ZONE_NAME(nZoneNO);
-        m_PosSTR.Printf(
-            "%d:%s(%6.0f,%6.0f)", nZoneNO, szZoneName ? szZoneName : "null", PosCUR.x, PosCUR.y);
+        m_PosSTR.Printf((char*)"%d:%s(%6.0f,%6.0f)",
+            nZoneNO,
+            szZoneName ? szZoneName : "null",
+            PosCUR.x,
+            PosCUR.y);
         return m_PosSTR.Get();
     }
 
@@ -349,8 +352,8 @@ public:
         ::GetLocalTime(&m_locTime);
 
         // date & time format = "0000-00-00 00:00:00"
-        sprintf(m_szDateTime,
-            "%04d-%02d-%02d %02d:%02d:%02d",
+        sprintf_s(m_szDateTime,
+            (char*)"%04d-%02d-%02d %02d:%02d:%02d",
             m_locTime.wYear,
             m_locTime.wMonth,
             m_locTime.wDay,

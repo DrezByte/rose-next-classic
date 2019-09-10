@@ -42,9 +42,9 @@ CThreadLOG::When_SysERR(char* szFile, int iLine, char* szDesc) {
     m_csSQL.Lock();
     {
         // 시간, 케릭, 동작, 위치, IP
-        this->m_QuerySTR.Printf(
-            "INSERT tblGS_ERROR ( dateREG, txtIP, txtACCOUNT, txtCHAR, txtFILE, intLINE, txtDESC ) "
-            "VALUES( \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,\'%s\' );",
+        this->m_QuerySTR.Printf((char*)"INSERT tblGS_ERROR ( dateREG, txtIP, txtACCOUNT, txtCHAR, "
+                                       "txtFILE, intLINE, txtDESC ) "
+                                       "VALUES( \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,\'%s\' );",
             this->GetCurDateTimeSTR(),
             "SysERR", // pUSER->Get_IP(),
             "SysERR", // pUSER->Get_ACCOUNT(),
@@ -77,8 +77,9 @@ CThreadLOG::When_ERROR(classUSER* pUSER, char* szFile, int iLine, char* szDesc) 
         // 시간, 케릭, 동작, 위치, IP
         {
             this->m_QuerySTR.Printf(
-                "INSERT tblGS_ERROR ( dateREG, txtIP, txtACCOUNT, txtCHAR, txtFILE, intLINE, "
-                "txtDESC ) VALUES( \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,\'%s\' );",
+                (char*)"INSERT tblGS_ERROR ( dateREG, txtIP, txtACCOUNT, txtCHAR, txtFILE, "
+                       "intLINE, "
+                       "txtDESC ) VALUES( \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,\'%s\' );",
                 this->GetCurDateTimeSTR(),
                 pUSER->Get_IP(),
                 pUSER->Get_ACCOUNT(),
@@ -182,7 +183,7 @@ CThreadLOG::When_CharacterLOG(classUSER* pSourAVT, char* szCharNAME, BYTE btDelO
     {
         {
             this->m_QuerySTR.Printf(
-                SP_AddCharacterLog, pSourAVT->Get_ACCOUNT(), szCharNAME, btDelOrNew);
+                (char*)SP_AddCharacterLog, pSourAVT->Get_ACCOUNT(), szCharNAME, btDelOrNew);
         }
 
         this->Send_gsv_LOG_SQL();
@@ -244,7 +245,7 @@ CThreadLOG::When_ws_CLAN(char* szName,
     {
         {
 #ifdef __NEW_LOG
-            this->m_QuerySTR.Printf(SP_AddClanLog, // [AddClanLog]
+            this->m_QuerySTR.Printf((char*)SP_AddClanLog, // [AddClanLog]
                 szName, // @CharName nvarchar(32),
                 pClan->m_Name.Get(), // @ClanName nvarchar(20),
                 pClan->m_nClanLEVEL, // @ClanLevel smallint,

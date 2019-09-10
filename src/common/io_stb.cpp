@@ -75,7 +75,7 @@ STBDATA::Load2(char* szFileName, bool bHasTYPE, bool bMakeKEY) {
                 pStr = cFILE.GetString(nX, nY);
 #endif
                 if (pStr) {
-                    this->m_ppVALUE[nY][nX].SetTYPE(0 == strcmpi(pStr, "string"));
+                    this->m_ppVALUE[nY][nX].SetTYPE(0 == _strcmpi(pStr, "string"));
                 } else
                     this->m_ppVALUE[nY][nX].SetTYPE(false);
             }
@@ -187,7 +187,7 @@ STBDATA::Load(char* szFileName, bool bHasNameCol, bool bHasDescCol, bool bMakeKE
                 pStr = cFILE.GetString(0, nY);
                 if (NULL != pStr) {
                     this->m_ppNAME[nY] = new char[1 + strlen(pStr)];
-                    strcpy(this->m_ppNAME[nY], pStr);
+                    strcpy_s(this->m_ppNAME[nY], 1 + strlen(pStr), pStr);
                 } else
                     this->m_ppNAME[nY] = NULL;
 
@@ -216,7 +216,7 @@ STBDATA::Load(char* szFileName, bool bHasNameCol, bool bHasDescCol, bool bMakeKE
 #endif
                 if (NULL != pStr) {
                     this->m_ppDESC[nY] = new char[1 + strlen(pStr)];
-                    strcpy(this->m_ppDESC[nY], pStr);
+                    strcpy_s(this->m_ppDESC[nY], 1 + strlen(pStr), pStr);
                 } else
                     this->m_ppDESC[nY] = NULL;
             }
@@ -313,11 +313,7 @@ STBDATA::LoadWSTB(bool bCheckQuotationMark, char* szFileName, int iKeyColIDX, ..
                                     // ::MessageBox( NULL, CStr::Printf("[ %s: %s / %s ] dupicated
                                     // key ...", szFileName, cFILE.GetNAME(nY),
                                     // cFILE.GetNAME(nFindKEY) ), "ERROR", MB_OK );
-                                    LogString(0xffff,
-                                        "       >>>>>> Duplicated Key[ %d:%s ] in %s\n",
-                                        nY,
-                                        pStr,
-                                        szFileName);
+                                    LOG_WARN("Duplicate key [%d:%s] in %s", nY, pStr, szFileName);
                                     break;
                                 }
                             }
