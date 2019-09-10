@@ -10,7 +10,7 @@ SHO_LS* g_instance;
 BOOL WINAPI
 CtrlHandler(DWORD fdwCtrlType) {
     switch (fdwCtrlType) {
-            // Handle the CTRL-C signal.
+        // Handle the CTRL-C signal.
         case CTRL_C_EVENT:
         case CTRL_CLOSE_EVENT:
         case CTRL_BREAK_EVENT:
@@ -20,8 +20,7 @@ CtrlHandler(DWORD fdwCtrlType) {
             g_instance->CloseClientSOCKET();
             g_instance->Shutdown();
             g_instance->Destroy();
-            std::cout << "Press enter to quit..." << std::endl;
-            std::cin.get();
+            return true;
 
         default:
             return FALSE;

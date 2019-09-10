@@ -46,7 +46,6 @@
   <ItemGroup>
     <ClInclude Include="src\cw_client.h" />
     <ClInclude Include="src\cws_account.h" />
-    <ClInclude Include="src\cws_api.h" />
     <ClInclude Include="src\cws_party.h" />
     <ClInclude Include="src\cws_server.h" />
     <ClInclude Include="src\etc_math.h" />

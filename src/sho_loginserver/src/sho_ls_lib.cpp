@@ -50,12 +50,6 @@ classListBLOCK<tagBlockDATA>* g_pListServerIP = NULL;
 #define JOIN_HASH_TABLE_SIZE 4096
 #define WAIT_HASH_TABLE_SIZE 512
 
-//-------------------------------------------------------------------------------------------------
-void
-WriteLOG(char* szMSG) {
-    LOG_INFO(szMSG);
-}
-
 #define LS_TIMER_CHECK_WAIT_LIST 1
 #define LS_TICK_CHECK_WAIT_LIST 1000
 

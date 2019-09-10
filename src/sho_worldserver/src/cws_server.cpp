@@ -68,12 +68,7 @@ CWS_Server::Free() {
         }
     }
 
-    this->LockLI();
-    if (m_pSrvListITEM) {
-        SHO_WS::ExeAPI()->DelChannelITEM(m_pSrvListITEM);
-        m_pSrvListITEM = NULL;
-    }
-    this->UnlockLI();
+    LOG_INFO("Channel disconnected: (%s:%d)", m_ServerIP.Get(), m_wListenPORT);
 
     _ASSERT(0 == this->m_iSocketIDX);
     this->Clear_LIST();
@@ -88,19 +83,6 @@ CWS_Server::AddChannelCLIENT(DWORD dwGSClientIDX, CWS_Client* pClient) {
         m_nBeforePERCENT = m_nUserPERCENT;
         g_pSockLSV->Send_wls_CHANNEL_LIST();
     }
-
-    if (m_iCurUserCNT > m_iMaxUserCNT) {
-        m_iMaxUserCNT = m_iCurUserCNT;
-        this->LockLI();
-        if (m_pSrvListITEM)
-            SHO_WS::ExeAPI()->SetListItemINT(m_pSrvListITEM, SERVER_LISTCOL_MAXUSER, m_iCurUserCNT);
-        this->UnlockLI();
-    }
-
-    this->LockLI();
-    if (m_pSrvListITEM)
-        SHO_WS::ExeAPI()->SetListItemINT(m_pSrvListITEM, SERVER_LISTCOL_USERCNT, m_iCurUserCNT);
-    this->UnlockLI();
 
     pClient->Set_GSID(dwGSClientIDX);
     m_ppChannelUSER[dwGSClientIDX] = pClient;
@@ -119,10 +101,6 @@ CWS_Server::SubChannelCLIENT(CWS_Client* pClient) {
         }
 
         m_ppChannelUSER[pClient->Get_GSID()] = NULL;
-        this->LockLI();
-        if (m_pSrvListITEM)
-            SHO_WS::ExeAPI()->SetListItemINT(m_pSrvListITEM, SERVER_LISTCOL_USERCNT, m_iCurUserCNT);
-        this->UnlockLI();
         pClient->Set_GSID(0);
 
         if (pClient->GetClanID()) {
@@ -221,10 +199,7 @@ CWS_Server::Recv_zws_SERVER_INFO(t_PACKET* pPacket) {
 
     this->SendPacket(pCPacket);
 
-    this->LockLI();
-    this->m_pSrvListITEM = SHO_WS::ExeAPI()->AddChannelITEM(
-        this, m_btChannelNO, szServerName, m_ServerIP.Get(), m_wListenPORT);
-    this->UnlockLI();
+    LOG_INFO("Channel connected: %s (%s:%d)", szServerName, m_ServerIP.Get(), m_wListenPORT);
 
     return true;
 }
@@ -656,12 +631,6 @@ CWS_ListSERVER::Set_ChannelACTIVE(int iChannelNo, bool bActive, bool bToggle) {
         m_ppChannelSERVER[iChannelNo]->m_bActive = bActive;
 
     bMode = m_ppChannelSERVER[iChannelNo]->m_bActive;
-
-    m_ppChannelSERVER[iChannelNo]->LockLI();
-    void* pListItem = m_ppChannelSERVER[iChannelNo]->m_pSrvListITEM;
-    if (pListItem)
-        SHO_WS::ExeAPI()->SetListItemINT(pListItem, SERVER_LISTCOL_ACTIVE, bMode);
-    m_ppChannelSERVER[iChannelNo]->UnlockLI();
     this->UnlockLIST();
 
     // 로그인 서버에 채널리스트 전송.

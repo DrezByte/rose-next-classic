@@ -2,46 +2,9 @@
 
 #include <iostream>
 
-#include "cws_api.h"
 #include "lib_util.h"
 #include "rose/common/util.h"
 #include "sho_ws_lib.h"
-
-class ExeApi: public EXE_WS_API {
-public:
-    void __stdcall SetUserCNT(int iUserCNT) {
-        std::cout << "Setting user count: " << iUserCNT << std::endl;
-    }
-
-    void __stdcall WriteLOG(char* szString) { std::cout << szString; }
-
-    void __stdcall SetListItemINT(void* pListItem, int iSubStrIDX, int iValue) {
-        std::cout << "Setting list item int" << std::endl;
-    }
-
-    void __stdcall SetListItemSTR(void* pListItem, int iSubStrIDX, char* szStr) {
-        std::cout << "Setting list item str: " << szStr << std::endl;
-    }
-
-    void* __stdcall AddChannelITEM(void* pOwner,
-        short nChannelNO,
-        char* szChannelName,
-        char* szServerIP,
-        int iPortNO) {
-        std::cout << "Adding channel: " << szChannelName << "(#" << nChannelNO << ")" << std::endl;
-        return nullptr;
-    }
-
-    void __stdcall DelChannelITEM(void* pListItem) { std::cout << "Deleting channel" << std::endl; }
-
-    void* __stdcall AddUserITEM(void* pUser, char* szAccount, char* szCharName, char* szIP) {
-        std::cout << "Adding user, account: " << szAccount << ", char: " << szCharName
-                  << ", ip: " << szIP << std::endl;
-        return nullptr;
-    }
-
-    void __stdcall DelUserITEM(void* pListItem) { std::cout << "Deleting user" << std::endl; }
-};
 
 SHO_WS* g_instance;
 
@@ -70,8 +33,6 @@ main() {
     // Let login server load
     Sleep(2000);
 
-    auto exe_api = new ExeApi();
-
     HWND console_window = GetConsoleWindow();
     HINSTANCE console_handle = GetModuleHandle(nullptr);
     SetConsoleTitle("ROSE Next - World Server");
@@ -97,15 +58,16 @@ main() {
     std::string log_path(buffer);
     log_path.append("/log/worldserver.log");
 
-    Rose::Common::logger_init(log_path.c_str(), Rose::Common::LogLevel::Info);
+    Rose::Common::logger_init(log_path.c_str(), Rose::Common::LogLevel::Trace);
 
-    std::cout << "Initializing the server" << std::endl;
-    g_instance = SHO_WS::InitInstance(console_handle, data_dir, exe_api, ENGLISH);
+    // Start the server
+    LOG_INFO("Initializing the server");
+    g_instance = SHO_WS::InitInstance(console_handle, data_dir, ENGLISH);
 
-    std::cout << "Connecting to the database" << std::endl;
+    LOG_INFO("Connecting to the database");
     g_instance->ConnectDB(db_ip, db_name, db_user, db_password, db_user, db_password);
 
-    std::cout << "Starting the server" << std::endl;
+    LOG_INFO("Starting the server");
     g_instance->Start(console_window,
         loginserver_ip,
         loginserver_port,
@@ -116,15 +78,13 @@ main() {
         server_port,
         false);
 
-    std::cout << "Starting the client socket" << std::endl;
+    LOG_INFO("Starting the client socket");
     g_instance->StartCLI_SOCKET();
 
-    std::cout << "Activating the server" << std::endl;
+    LOG_INFO("Activating the server");
     g_instance->Active(true);
 
     SetConsoleCtrlHandler(CtrlHandler, true);
-
-    std::cout << "Starting main loop" << std::endl;
 
     while (true) {
         MSG msg;

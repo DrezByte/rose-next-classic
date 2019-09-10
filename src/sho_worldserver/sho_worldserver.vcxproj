@@ -52,7 +52,6 @@
     <ClInclude Include="..\common\io_pat.h" />
     <ClInclude Include="..\common\io_skill.h" />
     <ClInclude Include="src\cws_account.h" />
-    <ClInclude Include="src\cws_api.h" />
     <ClInclude Include="src\cws_client.h" />
     <ClInclude Include="src\cws_party.h" />
     <ClInclude Include="src\cws_server.h" />

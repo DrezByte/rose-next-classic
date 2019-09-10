@@ -96,11 +96,6 @@ CThreadGUILD* g_pThreadGUILD = NULL;
 
 #define MAX_CHAT_ROOMS 150
 
-void
-WriteLOG(char* szMSG) {
-    SHO_WS::ExeAPI()->WriteLOG(szMSG);
-}
-
 bool
 SHO_WS::ConnectToLOG() {
     //	return g_pSockLOG->Connect();
@@ -132,13 +127,11 @@ GetServerStartTIME() {
     return g_dwStartTIME;
 }
 
-SHO_WS::SHO_WS(EXE_WS_API* pExeAPI) {
+SHO_WS::SHO_WS() {
 
 #if (_WIN32_WINNT < 0x0500) || !defined(__SERVER)
     COMPILE_TIME_ASSERT(0);
 #endif
-    this->m_pExeAPI = pExeAPI;
-
     CSOCKET::Init();
     CStr::Init();
 }

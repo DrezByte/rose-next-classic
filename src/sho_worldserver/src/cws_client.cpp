@@ -804,10 +804,6 @@ CWS_ListCLIENT::Add_ACCOUNT(int iSocketIDX, t_PACKET* pRecvPket, char* szAccount
         m_pHashACCOUNT->Insert(pUSER->m_HashACCOUNT, pCAccount);
         m_csHashACCOUNT.Unlock();
 
-#ifdef __SHOW_USER_LISTVIEW
-        pCAccount->m_pListITEM =
-            SHO_WS::ExeAPI()->AddUserITEM(pCAccount, szAccount, "????", pUSER->Get_IP());
-#endif
     } else {
         char szPass[33];
         ::CopyMemory(szPass, pUSER->m_dwMD5Password, 32);
@@ -899,12 +895,7 @@ CWS_ListCLIENT::Del_ACCOUNT(char* szAccount, BYTE btDelLoginBIT, CWS_Server* pCl
 
                         g_pSockLSV->Send_zws_SUB_ACCOUNT(
                             pAccount->m_dwLSID, pAccount->Get_ACCOUNT()); // LS에 삭제 전송.
-#ifdef __SHOW_USER_LISTVIEW
-                        if (pAccount->m_pListITEM) {
-                            SHO_WS::ExeAPI()->DelUserITEM(pAccount->m_pListITEM);
-                            pAccount->m_pListITEM = NULL;
-                        }
-#endif
+
                         SAFE_DELETE(pAccount);
                         btRamainBIT = 0;
                         break;
@@ -989,10 +980,6 @@ CWS_ListCLIENT::Add_CHAR(CWS_Client* pCLIENT, char* szCharName) {
     m_pHashCHAR->Insert(pCLIENT->m_HashCHAR, pCLIENT);
     m_csHashCHAR.Unlock();
 
-#ifdef __SHOW_USER_LISTVIEW
-    SHO_WS::ExeAPI()->SetListItemSTR(pCLIENT->m_pAccount->m_pListITEM, 0, szCharName);
-#endif
-
     return true;
 }
 void
@@ -1015,10 +1002,6 @@ CWS_ListCLIENT::Del_CHAR(CWS_Client* pCLIENT) {
     m_csHashCHAR.Unlock();
 
     g_pThreadMSGR->Add_MessengerCMD(pCLIENT->Get_NAME(), MSGR_CMD_LOGOUT, NULL, 0);
-
-#ifdef __SHOW_USER_LISTVIEW
-    SHO_WS::ExeAPI()->SetListItemSTR(pCLIENT->m_pAccount->m_pListITEM, 0, "????");
-#endif
 }
 
 CWS_Client*
