@@ -288,7 +288,7 @@ WS_lsvSOCKET::Proc_SocketMSG(WPARAM wParam, LPARAM lParam) {
         case FD_CONNECT: {
             m_SockLSV.OnConnect(nErrorCode);
             if (!nErrorCode) {
-                g_LOG.CS_ODS(0xffff, "Connected to login server \n");
+                LOG_INFO("Connected to login server");
                 m_bTryCONN = false;
 
                 if (m_pReconnectTimer)

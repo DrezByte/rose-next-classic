@@ -325,6 +325,7 @@ SHO_WS::Start(HWND hMainWND,
         iLoginServerPort,
         WM_LSVSOCK_MSG,
         true);
+
     this->ConnectToLSV();
 
     m_pWorldTIMER =

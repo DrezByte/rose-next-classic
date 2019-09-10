@@ -158,27 +158,26 @@ public:
     }
 };
 
-//-------------------------------------------------------------------------------------------------
-
 inline classPACKET*
 Packet_AllocOnly() {
-    return CPoolPACKET::GetInstance()->AllocOnly();
+    return new classPACKET();
 }
 
 inline classPACKET*
 Packet_AllocNLock() {
-    return CPoolPACKET::GetInstance()->AllocNLock();
+    return new classPACKET();
 }
 
 inline void
 Packet_ReleaseNUnlock(classPACKET* pCPacket) {
-    CPoolPACKET::GetInstance()->ReleaseNUnlock(pCPacket);
+    delete pCPacket;
 }
 
 inline void
 Packet_DecRefCount(classPACKET* pCPacket) {
-    CPoolPACKET::GetInstance()->DecRefCount(pCPacket);
+    if (pCPacket <= 0) {
+        delete pCPacket;
+    }
 }
 
-//-------------------------------------------------------------------------------------------------
 #endif
