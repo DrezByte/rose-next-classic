@@ -10,7 +10,6 @@
 
 #include "CDataPOOL.h"
 
-#define __USE_PACKET_POOL
 #define __USE_RECV_IODATA_POOL
 #define __USE_SEND_IODATA_POOL
 
@@ -32,55 +31,6 @@ struct tagIO_DATA {
 typedef classDLLNODE<tagIO_DATA> IODATANODE;
 typedef classDLLNODE<tagIO_DATA>* LPIODATANODE;
 
-//-------------------------------------------------------------------------------------------------
-class CPoolPACKET
-#ifdef __USE_PACKET_POOL
-    :
-    private CDataPOOL<classPACKET>
-#endif
-{
-    DECLARE_INSTANCE2(CPoolPACKET)
-public:
-    static CPoolPACKET* Instance(UINT uiInitDataCNT, UINT uiIncDataCNT) {
-        if (!m_pCPoolPACKET) {
-            m_pCPoolPACKET = new CPoolPACKET(uiInitDataCNT, uiIncDataCNT);
-        }
-        return m_pCPoolPACKET;
-    }
-
-private:
-    CPoolPACKET(UINT uiInitDataCNT, UINT uiIncDataCNT);
-
-public:
-    LPCPACKET AllocOnly() { return new classPACKET(); }
-
-    void ReleaseOnly(LPCPACKET pCPacket) {
-        // 무조건 해제...
-        if (pCPacket->GetRefCnt() <= 0) {
-            this->Pool_Free(pCPacket);
-        }
-    }
-
-    LPCPACKET AllocNLock() {
-        LPCPACKET pCPacket = new classPACKET();
-        pCPacket->SetRefCnt(1);
-        return pCPacket;
-    }
-
-    void ReleaseNUnlock(LPCPACKET pCPacket) {
-        if (pCPacket->DecRefCnt() <= 0) {
-            this->Pool_Free(pCPacket);
-        }
-    }
-
-    void DecRefCount(LPCPACKET pCPacket) {
-        if (pCPacket->DecRefCnt() <= 0) {
-            this->Pool_Free(pCPacket);
-        }
-    }
-};
-
-//-------------------------------------------------------------------------------------------------
 class CPoolRECVIO
 #ifdef __USE_RECV_IODATA_POOL
     :

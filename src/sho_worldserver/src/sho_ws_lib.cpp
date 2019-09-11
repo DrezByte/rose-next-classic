@@ -87,9 +87,6 @@ CThreadGUILD* g_pThreadGUILD = NULL;
 #define DEF_SEND_IO_POOL_SIZE (DEF_CLIENT_POOL_SIZE + INC_CLIENT_POOL_SIZE)
 #define INC_SEND_IO_POOL_SIZE (INC_CLIENT_POOL_SIZE)
 
-#define DEF_PACKET_POOL_SIZE (DEF_RECV_IO_POOL_SIZE + DEF_SEND_IO_POOL_SIZE)
-#define INC_PACKET_POOL_SIZE (INC_CLIENT_POOL_SIZE)
-
 //-------------------------------------------------------------------------------------------------
 #define WM_LSVSOCK_MSG (WM_SOCKETWND_MSG + 0)
 #define WM_LOGSOCK_MSG (WM_SOCKETWND_MSG + 1)
@@ -159,7 +156,6 @@ SHO_WS::SystemINIT(HINSTANCE hInstance, char* szBaseDataDIR, int iLangType) {
     g_pUserLIST = new CWS_ListCLIENT(DEF_CLIENT_POOL_SIZE, INC_CLIENT_POOL_SIZE);
     g_pListSERVER = new CWS_ListSERVER(DEF_SERVER_POOL_SIZE, INC_SERVER_POOL_SIZE);
 
-    CPoolPACKET::Instance(DEF_PACKET_POOL_SIZE, INC_PACKET_POOL_SIZE);
     CPoolRECVIO::Instance(DEF_RECV_IO_POOL_SIZE, INC_RECV_IO_POOL_SIZE);
     CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
 
@@ -194,7 +190,6 @@ SHO_WS::~SHO_WS() {
 
     CPoolRECVIO::Destroy();
     CPoolSENDIO::Destroy();
-    CPoolPACKET::Destroy();
 
     //	SAFE_DELETE( g_pSockLOG );
     SAFE_DELETE(g_pSockLSV);

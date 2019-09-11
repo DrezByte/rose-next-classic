@@ -37,11 +37,9 @@
 
 #define INC_RECV_IO_POOL_SIZE 2048
 #define INC_SEND_IO_POOL_SIZE 8192
-#define INC_PACKET_POOL_SIZE 8192
 
 #define DEF_RECV_IO_POOL_SIZE (DEF_GAME_USER_POOL_SIZE + DEF_GAME_USER_POOL_SIZE / 2)
 #define DEF_SEND_IO_POOL_SIZE 32768
-#define DEF_PACKET_POOL_SIZE 49152 // 32768+16834
 
 //-------------------------------------------------------------------------------------------------
 STBDATA g_TblHAIR;
@@ -259,7 +257,6 @@ CLIB_GameSRV::~CLIB_GameSRV() {
 
     CPoolRECVIO::Destroy();
     CPoolSENDIO::Destroy();
-    CPoolPACKET::Destroy();
 
     CStr::Free();
 
@@ -289,7 +286,6 @@ CLIB_GameSRV::SystemINIT(HINSTANCE hInstance, char* szBaseDataDIR, int iLangType
     m_BaseDataDIR.Alloc((WORD)(strlen(szBaseDataDIR) + 3));
     m_BaseDataDIR.Printf("%s\\", szBaseDataDIR);
 
-    CPoolPACKET::Instance(DEF_PACKET_POOL_SIZE, INC_PACKET_POOL_SIZE);
     CPoolRECVIO::Instance(DEF_RECV_IO_POOL_SIZE, INC_RECV_IO_POOL_SIZE);
     CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
 
