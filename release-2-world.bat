@@ -1,0 +1,1 @@
+.\bin\release\sho_worldserver.exe

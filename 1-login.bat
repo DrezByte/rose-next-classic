@@ -1,1 +1,1 @@
-.\bin\debug\sho_ls_exe.exe
+.\bin\debug\sho_loginserver.exe
