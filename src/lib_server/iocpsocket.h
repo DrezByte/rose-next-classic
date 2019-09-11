@@ -1,6 +1,8 @@
 #ifndef iocpSOCKETH
 #define iocpSOCKETH
 
+#include <queue>
+
 #include "CDLList.h"
 #include "DLLIST.h"
 #include "classHASH.h"
@@ -25,8 +27,9 @@ protected:
     classDLLIST<tagIO_DATA> m_SendList; // Client에게 보낼 데이타 리스트.
     bool m_bWritable; // WriteFile에 보낼수 있냐 ?
 
-    classDLLIST<tagIO_DATA> m_RecvList; // Client에서 받은 데이타 리스트.
     DWORD m_dwCheckTIME; // 마지막 보내기 시도한 시간
+
+    std::queue<tagIO_DATA*> recv_list;
 
 public:
     void CloseSocket(void);
@@ -70,19 +73,15 @@ public:
     virtual bool Recv_Done(tagIO_DATA* pRecvDATA);
     virtual bool HandlePACKET(t_PACKETHEADER* pPacket) = 0;
 
-    classDLLNODE<tagIO_DATA>* Alloc_RecvIODATA(void) {
-        classDLLNODE<tagIO_DATA>* pRecvDATA = CPoolRECVIO::GetInstance()->Pool_Alloc();
-        if (pRecvDATA) {
-            CPoolRECVIO::GetInstance()->InitData(pRecvDATA);
-            pRecvDATA->DATA.packet = classPACKET();
-        }
-
-        return pRecvDATA;
+    tagIO_DATA* Alloc_RecvIODATA(void) {
+        tagIO_DATA* data = new tagIO_DATA();
+        data->bytes = 0;
+        data->mode = IOMode::Read;
+        data->packet = classPACKET();
+        return data;
     }
 
-    static void Free_RecvIODATA(tagIO_DATA* pRecvDATA) {
-        CPoolRECVIO::GetInstance()->Pool_Free(pRecvDATA->node);
-    }
+    static void Free_RecvIODATA(tagIO_DATA* recv_data) { delete recv_data; };
 
     classDLLNODE<tagIO_DATA>* Alloc_SendIODATA(const classPACKET& pCPacket) {
         classDLLNODE<tagIO_DATA>* pSendDATA;
@@ -91,7 +90,7 @@ public:
             CPoolSENDIO::GetInstance()->InitData(pSendDATA);
             pSendDATA->DATA.packet = pCPacket;
 
-            _ASSERT(pSendDATA->DATA.mode == IOMode::Read);
+            _ASSERT(pSendDATA->DATA.mode == IOMode::Write);
             _ASSERT(pSendDATA->DATA.bytes == 0);
         }
         return pSendDATA;

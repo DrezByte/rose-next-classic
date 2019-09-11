@@ -48,12 +48,9 @@ iocpSOCKET::Clear_LIST(void) {
 
     m_csRecvQ.Lock();
     {
-        pNode = m_RecvList.GetHeadNode();
-        while (pNode) {
-            m_RecvList.DeleteNode(pNode);
-            this->Free_RecvIODATA(&pNode->DATA);
-
-            pNode = m_RecvList.GetHeadNode();
+        for (size_t i = 0; i < recv_list.size(); ++i) {
+            this->Free_RecvIODATA(recv_list.front());
+            recv_list.pop();
         }
     }
     m_csRecvQ.Unlock();
@@ -94,16 +91,16 @@ iocpSOCKET::Recv_Continue(tagIO_DATA* recv_data) {
 // 새로 받기.
 ePacketRECV
 iocpSOCKET::Recv_Start(void) {
-    classDLLNODE<tagIO_DATA>* pRecvNODE = this->Alloc_RecvIODATA();
+    tagIO_DATA* recv_data = this->Alloc_RecvIODATA();
 
-    if (NULL == pRecvNODE) {
+    if (NULL == recv_data) {
         return eRESULT_PACKET_DISCONNECT; // false;
     }
 
-    _ASSERT(pRecvNODE->DATA.mode == IOMode::Read);
-    _ASSERT(pRecvNODE->DATA.bytes == 0);
+    _ASSERT(recv_data->mode == IOMode::Read);
+    _ASSERT(recv_data->bytes == 0);
 
-    return this->Recv_Continue(&pRecvNODE->DATA);
+    return this->Recv_Continue(recv_data);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -184,22 +181,19 @@ iocpSOCKET::Recv_Complete(tagIO_DATA* recv_data) {
     }
 
     // 모자란 부분을 다시 읽어들일 데이타 생성.
-    classDLLNODE<tagIO_DATA>* pNewNODE;
-    pNewNODE = this->Alloc_RecvIODATA();
-    if (pNewNODE) {
-        pNewNODE->DATA.bytes = nRemainBytes;
-        ::CopyMemory(pNewNODE->DATA.packet.bytes, pHEADER, nRemainBytes);
+    tagIO_DATA* new_recv = this->Alloc_RecvIODATA();
+    if (new_recv) {
+        new_recv->bytes = nRemainBytes;
+        ::CopyMemory(new_recv->packet.bytes, pHEADER, nRemainBytes);
 
-        // 앞부분의 완성 패킷등록.
         recv_data->bytes -= nRemainBytes;
 
         this->UnlockSOCKET();
         if (!this->Recv_Done(recv_data)) {
-            // 2003. 11. 04 밑에 함수 추가... 빼먹어서 메모리 흘렸었음..
-            this->Free_RecvIODATA(&pNewNODE->DATA);
+            this->Free_RecvIODATA(new_recv);
             return eRESULT_PACKET_DISCONNECT; // false;
         }
-        return this->Recv_Continue(&pNewNODE->DATA); // 이어 받기.
+        return this->Recv_Continue(new_recv); // 이어 받기.
     }
 
     eResult = eRESULT_PACKET_DISCONNECT; // false;

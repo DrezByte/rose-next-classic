@@ -35,10 +35,7 @@
 #define DEF_GAME_PARTY_POOL_SIZE 4096
 #define INC_GAME_PARTY_POOL_SIZE 1024
 
-#define INC_RECV_IO_POOL_SIZE 2048
 #define INC_SEND_IO_POOL_SIZE 8192
-
-#define DEF_RECV_IO_POOL_SIZE (DEF_GAME_USER_POOL_SIZE + DEF_GAME_USER_POOL_SIZE / 2)
 #define DEF_SEND_IO_POOL_SIZE 32768
 
 //-------------------------------------------------------------------------------------------------
@@ -255,7 +252,6 @@ CLIB_GameSRV::~CLIB_GameSRV() {
     Free_BasicDATA();
     g_pCharDATA->Destroy();
 
-    CPoolRECVIO::Destroy();
     CPoolSENDIO::Destroy();
 
     CStr::Free();
@@ -286,7 +282,6 @@ CLIB_GameSRV::SystemINIT(HINSTANCE hInstance, char* szBaseDataDIR, int iLangType
     m_BaseDataDIR.Alloc((WORD)(strlen(szBaseDataDIR) + 3));
     m_BaseDataDIR.Printf("%s\\", szBaseDataDIR);
 
-    CPoolRECVIO::Instance(DEF_RECV_IO_POOL_SIZE, INC_RECV_IO_POOL_SIZE);
     CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
 
     g_pCharDATA = CCharDatLIST::Instance();

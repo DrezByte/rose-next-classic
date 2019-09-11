@@ -10,69 +10,32 @@
 
 #include "CDataPOOL.h"
 
-#define __USE_RECV_IODATA_POOL
-#define __USE_SEND_IODATA_POOL
-
 enum class IOMode {
     Read,
     Write,
 };
 
 struct tagIO_DATA {
+    /// Overlapped data from the IO socket
     OVERLAPPED overlapped;
-    IOMode mode;
-    uint32_t bytes;
-    classPACKET packet;
-    classDLLNODE<tagIO_DATA>* node;
 
-    // Required since the union has a member with non-trivial
-    // consructor/destructor (classPacket). DON'T DELETE.
-    /*
-    tagIO_DATA(){};
-    ~tagIO_DATA(){};
-    */
+    /// The current operation for this data (read/write)
+    IOMode mode;
+
+    /// Bytes read from/sent to the socket
+    uint32_t bytes;
+
+    /// Socket data as a packet
+    classPACKET packet;
+
+    // TODO: Remove these node references
+    classDLLNODE<tagIO_DATA>* node;
 };
 
 typedef classDLLNODE<tagIO_DATA> IODATANODE;
 typedef classDLLNODE<tagIO_DATA>* LPIODATANODE;
 
-class CPoolRECVIO
-#ifdef __USE_RECV_IODATA_POOL
-    :
-    public CDataPOOL<IODATANODE>
-#endif
-{
-    DECLARE_INSTANCE2(CPoolRECVIO)
-public:
-    static CPoolRECVIO* Instance(UINT uiInitDataCNT, UINT uiIncDataCNT) {
-        if (!m_pCPoolRECVIO) {
-            m_pCPoolRECVIO = new CPoolRECVIO(uiInitDataCNT, uiIncDataCNT);
-        }
-        return m_pCPoolRECVIO;
-    }
-
-private:
-    CPoolRECVIO(UINT uiInitDataCNT, UINT uiIncDataCNT);
-
-public:
-    inline void InitData(LPIODATANODE pData) {
-        ::ZeroMemory(&pData->DATA.overlapped, sizeof(OVERLAPPED));
-        // 2003. 11. 12 반드시 0으로 초기화 !!!, 빼먹어서 Recv_Start에서 기존의 쓰레기 패킷 뒤에
-        // 추가로 받아졌다.
-        pData->DATA.bytes = 0;
-
-        pData->DATA.node = pData;
-        pData->DATA.mode = IOMode::Read;
-    }
-};
-
-//-------------------------------------------------------------------------------------------------
-class CPoolSENDIO
-#ifdef __USE_SEND_IODATA_POOL
-    :
-    public CDataPOOL<IODATANODE>
-#endif
-{
+class CPoolSENDIO: public CDataPOOL<IODATANODE> {
     DECLARE_INSTANCE2(CPoolSENDIO)
 public:
     static CPoolSENDIO* Instance(UINT uiInitDataCNT, UINT uiIncDataCNT) {

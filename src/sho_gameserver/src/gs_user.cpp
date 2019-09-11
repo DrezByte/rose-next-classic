@@ -8565,14 +8565,14 @@ classUSER::Send_gsv_CART_RIDE(BYTE btType, WORD wSourObjIdx, WORD wDestObjIdx, b
  */
 bool
 classUSER::Recv_Done(tagIO_DATA* pRecvDATA) {
-    // 바로 처리할것과 큐에 넣어서 치리할것을 구분해야 한다...
-    // 바로 처리할것은 iocpSOCKET::Recv_Done( .. )를 호출...
+    // If we are not in a map handle this packet immediately
     if (!this->GetZONE()) {
         return iocpSOCKET::Recv_Done(pRecvDATA);
     }
 
+    // Otherwise, queue it to be processed on each tick
     m_csRecvQ.Lock();
-    { m_RecvList.AppendNode(pRecvDATA->node); }
+    { this->recv_list.push(pRecvDATA); }
     m_csRecvQ.Unlock();
 
     return true;
@@ -8584,10 +8584,6 @@ classUSER::Recv_Done(tagIO_DATA* pRecvDATA) {
  */
 int
 classUSER::ProcLogOUT() {
-    classDLLNODE<tagIO_DATA>* pRecvNODE;
-    t_PACKETHEADER* pPacket;
-    short nTotalPacketLEN;
-
     // 접속 종료 요구했다.
     if (this->GetZONE()->GetTimeGetTIME() >= m_dwTimeToLogOUT) {
         switch (this->m_btWishLogOutMODE) {
@@ -8621,10 +8617,11 @@ classUSER::ProcLogOUT() {
     // 취소 패킷이 왔는가 ????
     m_csRecvQ.Lock();
     {
-        pRecvNODE = m_RecvList.GetHeadNode();
+        while (!recv_list.empty()) {
+            tagIO_DATA* io_data = recv_list.front();
 
-        while (pRecvNODE) {
-            pPacket = (t_PACKETHEADER*)pRecvNODE->DATA.packet.bytes;
+            short nTotalPacketLEN;
+            t_PACKETHEADER* pPacket = (t_PACKETHEADER*)io_data->packet.bytes;
             do {
                 nTotalPacketLEN = pPacket->m_nSize;
                 if (!nTotalPacketLEN) {
@@ -8639,20 +8636,18 @@ classUSER::ProcLogOUT() {
                     this->m_btWishLogOutMODE = 0;
                     this->m_dwTimeToLogOUT = 0;
 
-                    m_RecvList.DeleteNode(pRecvNODE);
-                    this->Free_RecvIODATA(&pRecvNODE->DATA);
+                    this->Free_RecvIODATA(io_data);
                     m_csRecvQ.Unlock();
                     return 1;
                 }
 
-                pRecvNODE->DATA.bytes -= nTotalPacketLEN;
+                io_data->bytes -= nTotalPacketLEN;
                 pPacket = (t_PACKETHEADER*)(pPacket->m_pDATA + nTotalPacketLEN);
-            } while (pRecvNODE->DATA.bytes);
+            } while (io_data->bytes);
 
-            m_RecvList.DeleteNode(pRecvNODE);
-            this->Free_RecvIODATA(&pRecvNODE->DATA);
-            pRecvNODE = m_RecvList.GetHeadNode();
-        } // while( pRecvNODE )
+            recv_list.pop();
+            this->Free_RecvIODATA(io_data);
+        }
     }
     m_csRecvQ.Unlock();
 
@@ -8696,21 +8691,16 @@ classUSER::Proc(void) {
 
     this->HandleWorldPACKET();
 
-    classDLLNODE<tagIO_DATA>* pRecvNODE;
-    t_PACKETHEADER* pPacket;
-    short nTotalPacketLEN;
-
     m_csRecvQ.Lock();
     {
-        pRecvNODE = m_RecvList.GetHeadNode();
+        while (!recv_list.empty()) {
+            tagIO_DATA* io_data = recv_list.front();
+            short nTotalPacketLEN;
 
-        while (pRecvNODE) {
-            pPacket = (t_PACKETHEADER*)pRecvNODE->DATA.packet.bytes;
+            t_PACKETHEADER* pPacket = (t_PACKETHEADER*)io_data->packet.bytes;
             do {
                 nTotalPacketLEN = pPacket->m_nSize;
                 if (!nTotalPacketLEN) {
-                    // 패킷이 변조되어 왔다.
-                    // 헤킹인가 ???
                     m_csRecvQ.Unlock();
                     IS_HACKING(this, "classUSER::Proc( Decode_Recv ... )");
                     return 0;
@@ -8718,17 +8708,17 @@ classUSER::Proc(void) {
 
                 switch (this->Proc_ZonePACKET((t_PACKET*)pPacket)) {
                     case RET_SKIP_PROC: {
-                        pRecvNODE->DATA.bytes -= nTotalPacketLEN;
+                        io_data->bytes -= nTotalPacketLEN;
 
-                        if (0 == pRecvNODE->DATA.bytes) {
+                        if (0 == io_data->bytes) {
                             // 다처리된 패킷...
-                            m_RecvList.DeleteNode(pRecvNODE);
-                            this->Free_RecvIODATA(&pRecvNODE->DATA);
+                            recv_list.pop();
+                            this->Free_RecvIODATA(io_data);
                         } else {
                             pPacket = (t_PACKETHEADER*)(pPacket->m_pDATA + nTotalPacketLEN);
                             // 처리하고 남은 부분 다음에 처리 할수 있도록...
-                            for (WORD wI = 0; wI < pRecvNODE->DATA.bytes; wI++) {
-                                pRecvNODE->DATA.packet.bytes[wI] = pPacket->m_pDATA[wI];
+                            for (WORD wI = 0; wI < io_data->bytes; wI++) {
+                                io_data->packet.bytes[wI] = pPacket->m_pDATA[wI];
                             }
                         }
                         m_csRecvQ.Unlock();
@@ -8741,14 +8731,13 @@ classUSER::Proc(void) {
                     }
                 } // switch ( this->Proc_ZonePACKET( (t_PACKET*)pPacket ) )
 
-                pRecvNODE->DATA.bytes -= nTotalPacketLEN;
+                io_data->bytes -= nTotalPacketLEN;
                 pPacket = (t_PACKETHEADER*)(pPacket->m_pDATA + nTotalPacketLEN);
-            } while (pRecvNODE->DATA.bytes);
+            } while (io_data->bytes);
 
-            m_RecvList.DeleteNode(pRecvNODE);
-            this->Free_RecvIODATA(&pRecvNODE->DATA);
-            pRecvNODE = m_RecvList.GetHeadNode();
-        } // while( pRecvNODE )
+            recv_list.pop();
+            this->Free_RecvIODATA(io_data);
+        }
     }
 
     m_csRecvQ.Unlock();

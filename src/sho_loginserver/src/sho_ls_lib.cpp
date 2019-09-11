@@ -38,9 +38,6 @@ classListBLOCK<tagBlockDATA>* g_pListServerIP = NULL;
 #define DEF_SERVER_POOL_SIZE 256
 #define INC_SERVER_POOL_SIZE 128
 
-#define DEF_RECV_IO_POOL_SIZE (DEF_CLIENT_POOL_SIZE + INC_CLIENT_POOL_SIZE)
-#define INC_RECV_IO_POOL_SIZE (INC_CLIENT_POOL_SIZE)
-
 #define DEF_SEND_IO_POOL_SIZE (DEF_CLIENT_POOL_SIZE + INC_CLIENT_POOL_SIZE)
 #define INC_SEND_IO_POOL_SIZE (INC_CLIENT_POOL_SIZE)
 
@@ -106,7 +103,6 @@ void
 SHO_LS::SystemINIT(HINSTANCE hInstance) {
     ::Sleep(500);
 
-    CPoolRECVIO::Instance(DEF_RECV_IO_POOL_SIZE, INC_RECV_IO_POOL_SIZE);
     CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
 
     g_pListCLIENT = new CLS_ListCLIENT(DEF_CLIENT_POOL_SIZE, INC_CLIENT_POOL_SIZE);
@@ -172,8 +168,7 @@ SHO_LS::~SHO_LS() {
     SAFE_DELETE(g_pSockGUM);
     if (CSocketWND::GetInstance())
         CSocketWND::GetInstance()->Destroy();
-
-    CPoolRECVIO::Destroy();
+    ;
     CPoolSENDIO::Destroy();
 }
 
