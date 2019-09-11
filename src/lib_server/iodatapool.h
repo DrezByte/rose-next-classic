@@ -13,21 +13,26 @@
 #define __USE_RECV_IODATA_POOL
 #define __USE_SEND_IODATA_POOL
 
-typedef enum {
-    ioREAD,
-    ioWRITE
-    //  ClientIoWrite,
-    //  ClientQoS
-} IO_MODE,
-    IO_OPERATION;
+enum class IOMode {
+    Read,
+    Write,
+};
 
 struct tagIO_DATA {
-    OVERLAPPED m_Overlapped;
-    IO_MODE m_IOmode;
-    DWORD m_dwIOBytes;
-    classPACKET m_pCPacket;
-    classDLLNODE<tagIO_DATA>* m_pNODE;
+    OVERLAPPED overlapped;
+    IOMode mode;
+    uint32_t bytes;
+    classPACKET packet;
+    classDLLNODE<tagIO_DATA>* node;
+
+    // Required since the union has a member with non-trivial
+    // consructor/destructor (classPacket). DON'T DELETE.
+    /*
+    tagIO_DATA(){};
+    ~tagIO_DATA(){};
+    */
 };
+
 typedef classDLLNODE<tagIO_DATA> IODATANODE;
 typedef classDLLNODE<tagIO_DATA>* LPIODATANODE;
 
@@ -45,28 +50,19 @@ public:
         }
         return m_pCPoolRECVIO;
     }
-#ifndef __USE_RECV_IODATA_POOL
-    LPIODATANODE Pool_Alloc() { return new classDLLNODE<tagIO_DATA>(); }
-
-    void Pool_Free(LPIODATANODE pDelNODE) {
-        _ASSERT(pDelNODE->DATA.m_pCPacket);
-        _ASSERT(pDelNODE == pDelNODE->DATA.m_pNODE);
-        SAFE_DELETE(pDelNODE);
-    }
-#endif
 
 private:
     CPoolRECVIO(UINT uiInitDataCNT, UINT uiIncDataCNT);
 
 public:
     inline void InitData(LPIODATANODE pData) {
-        ::ZeroMemory(&pData->DATA.m_Overlapped, sizeof(OVERLAPPED));
+        ::ZeroMemory(&pData->DATA.overlapped, sizeof(OVERLAPPED));
         // 2003. 11. 12 반드시 0으로 초기화 !!!, 빼먹어서 Recv_Start에서 기존의 쓰레기 패킷 뒤에
         // 추가로 받아졌다.
-        pData->DATA.m_dwIOBytes = 0;
+        pData->DATA.bytes = 0;
 
-        pData->DATA.m_pNODE = pData;
-        pData->DATA.m_IOmode = ioREAD;
+        pData->DATA.node = pData;
+        pData->DATA.mode = IOMode::Read;
     }
 };
 
@@ -86,25 +82,16 @@ public:
         return m_pCPoolSENDIO;
     }
 
-#ifndef __USE_SEND_IODATA_POOL
-    LPIODATANODE Pool_Alloc() { return new classDLLNODE<tagIO_DATA>; }
-
-    void Pool_Free(LPIODATANODE pData) {
-        _ASSERT(pData == pData->DATA.m_pNODE);
-        SAFE_DELETE(pData);
-    }
-#endif
-
 private:
     CPoolSENDIO(UINT uiInitDataCNT, UINT uiIncDataCNT);
 
 public:
     inline void InitData(LPIODATANODE pData) {
-        ::ZeroMemory(&pData->DATA.m_Overlapped, sizeof(OVERLAPPED));
-        pData->DATA.m_dwIOBytes = 0;
+        ::ZeroMemory(&pData->DATA.overlapped, sizeof(OVERLAPPED));
+        pData->DATA.bytes = 0;
 
-        pData->DATA.m_pNODE = pData;
-        pData->DATA.m_IOmode = ioWRITE;
+        pData->DATA.node = pData;
+        pData->DATA.mode = IOMode::Write;
     }
 };
 

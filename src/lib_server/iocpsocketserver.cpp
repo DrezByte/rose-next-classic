@@ -335,18 +335,14 @@ IOCPSocketSERVER::Del_SOCKET(int iSocketIDX) {
 // 소켓 종료..
 void
 IOCPSocketSERVER::On_FALSE(LPOVERLAPPED lpOverlapped, DWORD dwCompletionKey) {
-    tagIO_DATA* pIOData = (tagIO_DATA*)lpOverlapped;
+    tagIO_DATA* io_data = (tagIO_DATA*)lpOverlapped;
 
-    switch (pIOData->m_IOmode) {
-        case ioREAD:
-            // ioWRITE 일경우에는 pUSER->m_SendList에 노드가 이미 등록되어 있어 SubUser()에서
-            // 풀림으로 ioREAD일 때만...
-            iocpSOCKET::Free_RecvIODATA(pIOData);
+    switch (io_data->mode) {
+        case IOMode::Read:
+            iocpSOCKET::Free_RecvIODATA(io_data);
             break;
-        case ioWRITE:
+        case IOMode::Write:
             break;
-        default:
-            _ASSERT(0);
     }
 
     this->Del_SOCKET(dwCompletionKey);
@@ -355,15 +351,14 @@ IOCPSocketSERVER::On_FALSE(LPOVERLAPPED lpOverlapped, DWORD dwCompletionKey) {
 //-------------------------------------------------------------------------------------------------
 void
 IOCPSocketSERVER::On_TRUE(LPOVERLAPPED lpOverlapped, DWORD dwCompletionKey, DWORD dwBytesIO) {
-    iocpSOCKET* pSOCKET;
     tagIO_DATA* pIOData = (tagIO_DATA*)lpOverlapped;
 
-    pSOCKET = this->GetSOCKET(dwCompletionKey);
+    iocpSOCKET* pSOCKET = this->GetSOCKET(dwCompletionKey);
     if (pSOCKET) {
         // ** pUSER의 소켓이 종료된 상태에서도 이곳으로 온다 ㅡㅡ;
-        pIOData->m_dwIOBytes += dwBytesIO;
-        switch (pIOData->m_IOmode) {
-            case ioREAD:
+        pIOData->bytes += dwBytesIO;
+        switch (pIOData->mode) {
+            case IOMode::Read:
                 switch (pSOCKET->Recv_Complete(pIOData)) {
                     case eRESULT_PACKET_BLOCK:
                         // 30초 블럭...
@@ -375,22 +370,13 @@ IOCPSocketSERVER::On_TRUE(LPOVERLAPPED lpOverlapped, DWORD dwCompletionKey, DWOR
                         this->Del_SOCKET(dwCompletionKey);
                         break;
                 }
-                // if ( !pSOCKET->Recv_Complete ( pIOData ) ) {
-                //	// 짤러라 !!!
-                //	this->Del_SOCKET( dwCompletionKey );
-                //}
                 break;
-            case ioWRITE: // 보내기 완료 !!!
+            case IOMode::Write: // 보내기 완료 !!!
                 if (!pSOCKET->Send_Complete(pIOData)) {
                     // 짤러라 !!!
                     this->Del_SOCKET(dwCompletionKey);
                 }
                 break;
-            default:
-                _ASSERT(0);
         }
     }
 }
-
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------

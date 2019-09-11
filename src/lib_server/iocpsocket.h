@@ -74,14 +74,14 @@ public:
         classDLLNODE<tagIO_DATA>* pRecvDATA = CPoolRECVIO::GetInstance()->Pool_Alloc();
         if (pRecvDATA) {
             CPoolRECVIO::GetInstance()->InitData(pRecvDATA);
-            pRecvDATA->DATA.m_pCPacket = classPACKET();
+            pRecvDATA->DATA.packet = classPACKET();
         }
 
         return pRecvDATA;
     }
 
     static void Free_RecvIODATA(tagIO_DATA* pRecvDATA) {
-        CPoolRECVIO::GetInstance()->Pool_Free(pRecvDATA->m_pNODE);
+        CPoolRECVIO::GetInstance()->Pool_Free(pRecvDATA->node);
     }
 
     classDLLNODE<tagIO_DATA>* Alloc_SendIODATA(const classPACKET& pCPacket) {
@@ -89,16 +89,16 @@ public:
         pSendDATA = CPoolSENDIO::GetInstance()->Pool_Alloc();
         if (NULL != pSendDATA) {
             CPoolSENDIO::GetInstance()->InitData(pSendDATA);
-            pSendDATA->DATA.m_pCPacket = pCPacket;
+            pSendDATA->DATA.packet = pCPacket;
 
-            _ASSERT(pSendDATA->DATA.m_IOmode == ioWRITE);
-            _ASSERT(pSendDATA->DATA.m_dwIOBytes == 0);
+            _ASSERT(pSendDATA->DATA.mode == IOMode::Read);
+            _ASSERT(pSendDATA->DATA.bytes == 0);
         }
         return pSendDATA;
     }
 
     static void Free_SendIODATA(tagIO_DATA* pSendDATA) {
-        CPoolSENDIO::GetInstance()->Pool_Free(pSendDATA->m_pNODE);
+        CPoolSENDIO::GetInstance()->Pool_Free(pSendDATA->node);
     }
 };
 

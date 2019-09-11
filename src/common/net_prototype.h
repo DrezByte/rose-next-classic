@@ -2566,8 +2566,9 @@ struct t_PACKET {
             uint16_t size;
             uint16_t type;
             uint16_t reserved;
-            uint8_t data[MAX_PACKET_SIZE];
+            uint8_t data[MAX_PACKET_SIZE - 6];
         };
+        uint8_t bytes[MAX_PACKET_SIZE];
 
         t_PACKETHEADER m_HEADER;
         BYTE m_pDATA[MAX_PACKET_SIZE];
