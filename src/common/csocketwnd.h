@@ -7,7 +7,9 @@
 
 typedef	bool (*fpSockMsgPROC) (WPARAM wParam, LPARAM lParam);
 
+class CClientSOCKET;
 class CSocketEVENT;
+
 class CSocketWND 
 {
 private:
