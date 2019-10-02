@@ -15,27 +15,28 @@
 
 #define	STATIC_STR_LEN		512
 char  CUtil::m_szStr[ STATIC_STR_LEN+1 ];
+char* CUtil::m_next_token;
 
 //-------------------------------------------------------------------------------------------------
 char *CUtil::GetTokenFirst(char *pStr, char *pDelimiters)
 {
 	char *pToken;
-	pToken = strtok( pStr, pDelimiters );
+	pToken = strtok_s( pStr, pDelimiters, &m_next_token);
 	
 	if ( pToken ) {
 		switch( pToken[ 0 ] ) {
 			case '\'' :
 			{
-				strcpy(m_szStr, &pToken[ 1 ]);
-				pToken = strtok( NULL, "\'");
-				strcat(m_szStr, pToken);
+				strcpy_s(m_szStr, STATIC_STR_LEN, &pToken[ 1 ]);
+				pToken = strtok_s( NULL, "\'", &m_next_token);
+				strcat_s(m_szStr, STATIC_STR_LEN, pToken);
 				return m_szStr;
 			}
 			case '\"' :
 			{
-				strcpy(m_szStr, &pToken[ 1 ]);
-				pToken = strtok( NULL, "\"");
-				strcat(m_szStr, pToken);
+				strcpy_s(m_szStr, STATIC_STR_LEN, &pToken[ 1 ]);
+				pToken = strtok_s( NULL, "\"", &m_next_token);
+				strcat_s(m_szStr, STATIC_STR_LEN, pToken);
 				return m_szStr;
 			}
 		}
@@ -47,15 +48,15 @@ char *CUtil::GetTokenFirst(char *pStr, char *pDelimiters)
 char *CUtil::GetTokenNext (char *pDelimiters)
 {	
 	char *pToken;
-	pToken = strtok( NULL, pDelimiters );
+	pToken = strtok_s( NULL, pDelimiters, &m_next_token);
 
 	if ( pToken ) {
 		switch( pToken[ 0 ] ) {
 			case '\'' :
 			{
-				strcpy(m_szStr, &pToken[ 1 ]);
-				pToken = strtok( NULL, "\'");
-				strcat(m_szStr, pToken);
+				strcpy_s(m_szStr, STATIC_STR_LEN, &pToken[ 1 ]);
+				pToken = strtok_s( NULL, "\'", &m_next_token);
+				strcat_s(m_szStr, STATIC_STR_LEN, pToken);
 				OutputDebugString ( "   TokenNEXT[");
 				OutputDebugString ( m_szStr );
 				OutputDebugString ( "]\n");
@@ -63,9 +64,9 @@ char *CUtil::GetTokenNext (char *pDelimiters)
 			}
 			case '\"' :
 			{
-				strcpy(m_szStr, &pToken[ 1 ]);
-				pToken = strtok( NULL, "\"");
-				strcat(m_szStr, pToken);
+				strcpy_s(m_szStr, STATIC_STR_LEN, &pToken[1]);
+				pToken = strtok_s( NULL, "\"", &m_next_token);
+				strcat_s(m_szStr, STATIC_STR_LEN, pToken);
 				OutputDebugString ( "   TokenNEXT[");
 				OutputDebugString ( m_szStr );
 				OutputDebugString ( "]\n");
@@ -218,10 +219,11 @@ bool CUtil::Get_IPAddressFromHostName (const char *szHostName, char *szBuffer, s
 		char *pAddr;
 
 		pAddr = inet_ntoa(*(struct in_addr*)*pHE->h_addr_list);
-		if ( strlen( pAddr ) > (WORD)nBufferSize )
-			strcpy (szBuffer, pAddr);
-		else
-			strncpy (szBuffer, pAddr, nBufferSize-1);
+		if (strlen(pAddr) > (WORD)nBufferSize) {
+			strcpy_s(szBuffer, nBufferSize, pAddr);
+		} else {
+			strncpy_s(szBuffer, nBufferSize, pAddr, nBufferSize - 1);
+		}
 
 /*
 		if ( pHE->h_addrtype == AF_INET )  { 
@@ -254,7 +256,7 @@ int CUtil::ExtractFilePath (char *pFullFilePath, char *pOutResult, WORD wOutBuff
 {
 	short nI, nLen;
 
-	nLen = strlen( pFullFilePath )-1;
+	nLen = static_cast<short>(strlen( pFullFilePath ))-1;
 	for (nI=nLen; nI>=0 && pFullFilePath[ nI ] != '\\'; nI--) ;
 
 	if ( nI >= 0 && nI < nLen ) {
@@ -263,7 +265,7 @@ int CUtil::ExtractFilePath (char *pFullFilePath, char *pOutResult, WORD wOutBuff
 			// strcpy (pResult, &pFullPath[ nI+1 ] );
 		}
 		if ( pOutResult ) {
-			strncpy (pOutResult, pFullFilePath, nI >= wOutBuffLEN ? wOutBuffLEN-1 : nI );
+			strncpy_s (pOutResult, wOutBuffLEN -1, pFullFilePath, nI >= wOutBuffLEN ? wOutBuffLEN-1 : nI );
 		}
 
 		return nI;
@@ -275,7 +277,7 @@ int CUtil::ExtractFileName (char *pResult, char *pFullPath)
 {
 	short nI, nLen;
 
-	nLen = strlen( pFullPath )-1;
+	nLen = static_cast<short>(strlen( pFullPath ))-1;
 	for (nI=nLen; nI>=0 && pFullPath[ nI ] != '\\'; nI--) ;
 
 	if ( nI >= 0 && nI < nLen ) {
@@ -284,7 +286,7 @@ int CUtil::ExtractFileName (char *pResult, char *pFullPath)
 			// strcpy (pResult, &pFullPath[ nI+1 ] );
 		}
 		if ( pResult )
-			strcpy (pResult, &pFullPath[ nI ]);
+			strcpy_s(pResult, nLen, &pFullPath[ nI ]);
 
 		return nI;
 	}

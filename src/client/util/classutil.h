@@ -24,6 +24,7 @@
 class CUtil {
 private :
 	static char  m_szStr[ CUTIL_MAX_STRLEN+1 ];
+	static char* m_next_token;
 public  :
 	static bool	 Check_PersonalNumber  (char *szNumber);
 	static bool  Check_BussinessNumber (char *szNumber);

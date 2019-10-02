@@ -29,8 +29,6 @@ public:
         char* szDBServerIP,
         int iServerListenPort,
         DWORD dwLoginRight,
-        char* szGumsIP,
-        int iGumsPORT,
         bool bShowOnlyWS);
     void Shutdown();
 

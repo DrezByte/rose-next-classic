@@ -1,7 +1,6 @@
 
 #include "stdAFX.h"
 
-#include "CAS_GUMS.h"
 #include "CLS_Account.h"
 #include "CLS_Client.h"
 #include "CLS_Server.h"
@@ -367,22 +366,15 @@ __SKIP_AUTH__:
         }
 
 // 한국 과금 서버 GUMS에 검증 요청....
-#define SHO_LS_GAME_ID 1
-        if (AS_gumSOCKET::GetInstance()
-            && AS_gumSOCKET::GetInstance()->Send_PreLogin(
-                SHO_LS_GAME_ID, szAccount, pClient->Get_IP(), NULL, pSqlPACKET->m_iTAG)) {
-            // 이후는 GUMS에서 응답 받고 처리...
-        } else {
 #define PLAY_FLAG_JAPAN_DEFAULT \
     (PLAY_FLAG_KOREA_DEFAULT | PLAY_FLAG_EXTRA_STOCK | PLAY_FLAG_EXTRA_CHAR)
 #define PLAY_FLAG_PHILIPPEN_DEFAULT (PLAY_FLAG_KOREA_DEFAULT);
 
-            DWORD dwPayFlags = PLAY_FLAG_JAPAN_DEFAULT;
+        DWORD dwPayFlags = PLAY_FLAG_JAPAN_DEFAULT;
 
-            pClient->Send_lsv_LOGIN_REPLY(RESULT_LOGIN_REPLY_OK, dwPayFlags);
-            pClient->m_nProcSTEP = CLIENT_STEP_LOGEDIN;
-            pClient->m_dwPayFLAG = dwPayFlags;
-        }
+        pClient->Send_lsv_LOGIN_REPLY(RESULT_LOGIN_REPLY_OK, dwPayFlags);
+        pClient->m_nProcSTEP = CLIENT_STEP_LOGEDIN;
+        pClient->m_dwPayFLAG = dwPayFlags;
     }
 
     return true;

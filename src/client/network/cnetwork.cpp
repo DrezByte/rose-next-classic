@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../System/CGame.h"
-#include "../util/CSocketWND.h"
+#include "CSocketWND.h"
 #include "../gameproc/LiveCheck.h"
 
 #define PACKET_SEED 0x6648495

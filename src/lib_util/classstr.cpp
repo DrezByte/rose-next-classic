@@ -59,6 +59,7 @@ char  **CStr::m_ppStr;	// [	CSTRING_BUFFER_CNT ][ CSTRING_BUFFER_LEN ];
 short	CStr::m_nStrBuffLEN = CSTRING_BUFFER_LEN;
 short	CStr::m_nStrBuffCNT = CSTRING_BUFFER_CNT;
 short	CStr::m_nStrIdx;
+char* CStr::m_next_token;
 
 //-------------------------------------------------------------------------------------------------
 void CStr::Init (short nStrBufferCNT, short nStrBufferLEN)
@@ -128,16 +129,17 @@ int CStr::ParamCount (char *pStr)
 		m_pStaticStr = new char [ m_wStaticStrLen ];
 	}
 
-	strncpy (m_pStaticStr, pStr, strlen(pStr) );
+	strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr) );
 	m_pStaticStr[ nStrLen ] = 0;
 
-	pToken = strtok( m_pStaticStr, pDelimiters );
+	char* next_token;
+	pToken = strtok_s( m_pStaticStr, pDelimiters, &next_token);
 	while( pToken )
 	{
 		iCount ++;
 
 		// Get next token: 
-		pToken = strtok( NULL, pDelimiters );
+		pToken = strtok_s( NULL, pDelimiters, &next_token);
 	}
 
 	return iCount;
@@ -152,7 +154,7 @@ void CStr::DebugString (char *fmt, ...)
 
     va_list argptr;
     va_start(argptr, fmt);
-    vsprintf(pStr,fmt,argptr);
+    vsprintf_s(pStr,m_nStrBuffLEN, fmt,argptr);
     va_end(argptr);
 
 	::OutputDebugString( pStr );
@@ -167,7 +169,7 @@ char *CStr::Printf (char *fmt, ...)
 
     va_list argptr;
     va_start(argptr, fmt);
-    vsprintf(pStr,fmt,argptr);
+    vsprintf_s(pStr,m_nStrBuffLEN, fmt,argptr);
     va_end(argptr);
 
 	return pStr;
@@ -187,10 +189,11 @@ char *CStr::ParamStr(char *pStr, int iIndex)
 		m_pStaticStr = new char [ m_wStaticStrLen ];
 	}
 
-	strncpy (m_pStaticStr, pStr, strlen(pStr) );
+	strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr) );
 	m_pStaticStr[ nStrLen ] = 0;
 
-	pToken = strtok( m_pStaticStr, pDelimiters );
+	char* next_char;
+	pToken = strtok_s( m_pStaticStr, pDelimiters, &next_char );
 	while( pToken )
 	{
 		if ( iCount == iIndex )
@@ -198,7 +201,7 @@ char *CStr::ParamStr(char *pStr, int iIndex)
 		iCount ++;
 
 		// Get next token: 
-		pToken = strtok( NULL, pDelimiters );
+		pToken = strtok_s( NULL, pDelimiters, &next_char );
 	}
 
 	return NULL;
@@ -215,16 +218,16 @@ char *CStr::GetTokenFirst (char *pStr, char *pDelimiters)
 		m_pStaticStr = new char [ m_wStaticStrLen ];
 	}
 
-	strncpy (m_pStaticStr, pStr, strlen(pStr) );
+	strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr) );
 	m_pStaticStr[ nStrLen ] = 0;
 
-	return strtok( m_pStaticStr, pDelimiters );
+	return strtok_s( m_pStaticStr, pDelimiters, &m_next_token);
 }
 
 //-------------------------------------------------------------------------------------------------
 char *CStr::GetTokenNext (char *pDelimiters)
 {
-	return strtok( NULL, pDelimiters );
+	return strtok_s( NULL, pDelimiters, &m_next_token);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -264,10 +267,9 @@ char *CStr::ReadString (FILE *fp, bool bIgnoreWhiteSpace)
 bool CStr::SaveString (char *szFileName, char *szString)
 {
 	FILE *fp;
-
-	fp = fopen (szFileName, "wt");
-	if ( !fp )
+	if (0 == fopen_s(&fp, szFileName, "wt")) {
 		return false;
+	}
 
 	fputs (szString, fp);
 
@@ -323,11 +325,11 @@ void CStrVAR::Set (char *szStrIn)
 	this->Del ();
 
 	if ( szStrIn ) {
-		m_wStrLen = strlen( szStrIn );
+		m_wStrLen = static_cast<WORD>(strlen( szStrIn ));
 		if ( m_wStrLen > 0 ) {
 			m_pStr = new char[ m_wStrLen+1 ];
 			_ASSERT( m_pStr );
-			strncpy(m_pStr, szStrIn, m_wStrLen);
+			strncpy_s(m_pStr, m_wStrLen + 1, szStrIn, m_wStrLen);
 			m_pStr[ m_wStrLen ] = 0;
 			return;
 		}
@@ -344,7 +346,7 @@ char *CStrVAR::Printf (char *fmt, ...)
 
     va_list argptr;
     va_start(argptr, fmt);
-    vsprintf(m_pStr,fmt,argptr);
+    vsprintf_s(m_pStr, m_wStrLen, fmt,argptr);
     va_end(argptr);
 
 	return m_pStr;
@@ -363,17 +365,17 @@ char *CStrVAR::GetTokenFirst (char *pStr, char *pDelimiters)
 		m_pStaticStr = new char [ m_wStaticStrLen ];
 	}
 
-	strncpy (m_pStaticStr, pStr, strlen(pStr) );
+	strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr) );
 	m_pStaticStr[ nStrLen ] = 0;
 
-	return strtok( m_pStaticStr, pDelimiters );
+	return strtok_s( m_pStaticStr, pDelimiters, &m_next_token);
 }
 
 
 //-------------------------------------------------------------------------------------------------
 char *CStrVAR::GetTokenNext (char *pDelimiters)
 {
-	return strtok( NULL, pDelimiters );
+	return strtok_s( NULL, pDelimiters, &m_next_token);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -419,9 +421,7 @@ char *CStrVAR::ReadString (FILE *fp, bool bIgnoreWhiteSpace)
 bool CStrVAR::SaveString (char *szFileName, char *szString)
 {
 	FILE *fp;
-
-	fp = fopen (szFileName, "wt");
-	if ( !fp )
+	if ( 0 == fopen_s(&fp, szFileName, "wt"))
 		return false;
 
 	fputs (szString, fp);

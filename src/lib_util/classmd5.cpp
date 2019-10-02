@@ -583,20 +583,20 @@ char *CMD5Checksum::Final()
 		// CString Str;
 		if (lpszMD5[i] == 0) {
 			// Str = CString("00");
-			sprintf (szStr, "00");
+			sprintf_s (szStr, sizeof(szStr), "00");
 		} else 
 		if (lpszMD5[i] <= 15) 	{
 			// Str.Format("0%x", lpszMD5[i]);
-			sprintf (szStr, "0%x", lpszMD5[i]);
+			sprintf_s(szStr, sizeof(szStr), "0%x", lpszMD5[i]);
 		} else {
 			// Str.Format("%x",  lpszMD5[i]);
-			sprintf (szStr, "%x",  lpszMD5[i]);
+			sprintf_s(szStr, sizeof(szStr), "%x",  lpszMD5[i]);
 		}
 
 		_ASSERT( strlen(szStr) == 2 );
 
 		// strMD5 += Str;
-		strcat (m_szStrMD5, szStr);
+		strcat_s(m_szStrMD5, sizeof(m_szStrMD5), szStr);
 	}
 
 	_ASSERT( strlen(m_szStrMD5) == 32 );

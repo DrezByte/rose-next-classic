@@ -407,7 +407,7 @@ public :
 	int	  GetCur_FAME ()			{	return	this->m_BasicINFO.m_cFame;			}	// 명성
 	int	  GetCur_JOB ()				{	return	this->m_BasicINFO.m_nClass;			}	// 직업
 
-	int	  GetCur_EXP ()				{	return	this->m_GrowAbility.m_lEXP;			}
+	int64_t	  GetCur_EXP ()				{	return	this->m_GrowAbility.m_lEXP;			}
 	int	  GetCur_BonusPOINT ()		{	return	this->m_GrowAbility.m_nBonusPoint;	}
 	int	  GetCur_SkillPOINT ()		{	return	this->m_GrowAbility.m_nSkillPoint;	}
 	BYTE  GetCur_HeadSIZE()			{	return	this->m_GrowAbility.m_btHeadSIZE;	}
@@ -668,7 +668,7 @@ public :
 		if ( this->GetCur_LEVEL() >= 10 ) 
 		{
 			// 10렙 이상이면 페널티 적용..
-			int iNeedEXP  = CCal::Get_NeedRawEXP( m_GrowAbility.m_nLevel );
+			int iNeedEXP  = static_cast<int32_t>(CCal::Get_NeedRawEXP( m_GrowAbility.m_nLevel ));
 			int iPenalEXP = (int) ( iNeedEXP * btAddPercent / 100.f );
 			m_iAppliedPenaltyEXP = iPenalEXP;
 
@@ -677,13 +677,13 @@ public :
 				m_GrowAbility.m_lEXP -= iPenalEXP;
 			} else 
 			{
-				iPenalEXP -= m_GrowAbility.m_lEXP;
+				iPenalEXP -= static_cast<int32_t>(m_GrowAbility.m_lEXP);
 				m_GrowAbility.m_lPenalEXP += iPenalEXP;
 				m_GrowAbility.m_lEXP = 0;
 
 				if ( m_GrowAbility.m_lPenalEXP > DIV02(iNeedEXP) ) 
 				{
-					m_iAppliedPenaltyEXP -= ( DIV02(iNeedEXP) - m_GrowAbility.m_lPenalEXP );
+					m_iAppliedPenaltyEXP -= ( DIV02(iNeedEXP) - static_cast<int32_t>(m_GrowAbility.m_lPenalEXP));
 					m_GrowAbility.m_lPenalEXP = DIV02(iNeedEXP);
 				}
 			}

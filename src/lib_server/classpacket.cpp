@@ -16,7 +16,7 @@ classPACKET::GetStringPtr(short* pOffset) {
     }
 
     pStr = (char*)&m_pDATA[*pOffset];
-    *pOffset += (strlen(pStr) + 1);
+    *pOffset += (static_cast<short>(strlen(pStr)) + 1);
 
     return pStr;
 }
@@ -39,7 +39,7 @@ bool
 classPACKET::AppendString(char* pStr) {
     short nLen, nSize;
 
-    nLen = (pStr) ? strlen(pStr) + 1 : 1;
+    nLen = (pStr) ? static_cast<short>(strlen(pStr)) + 1 : 1;
     nSize = this->m_HEADER.m_nSize;
 
     if (nSize + nLen >= MAX_PACKET_SIZE) {

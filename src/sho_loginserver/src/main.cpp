@@ -52,7 +52,7 @@ main() {
     g_instance = SHO_LS::InitInstance(console_handle);
 
     LOG_INFO("Starting the server socket");
-    g_instance->StartServerSOCKET(console_window, db_ip, server_port, 0, nullptr, 0, false);
+    g_instance->StartServerSOCKET(console_window, db_ip, server_port, 0, false);
 
     LOG_INFO("Initializing the client socket");
     g_instance->StartClientSOCKET(client_port, 0, server_password);

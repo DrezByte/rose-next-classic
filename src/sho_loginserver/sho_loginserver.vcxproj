@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\cas_gums.cpp" />
     <ClCompile Include="src\cls_account.cpp" />
     <ClCompile Include="src\cls_client.cpp" />
     <ClCompile Include="src\cls_server.cpp" />
@@ -28,12 +27,11 @@
     <ClCompile Include="src\sho_ls_lib.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\cas_gums.h" />
     <ClInclude Include="src\cls_account.h" />
     <ClInclude Include="src\cls_client.h" />
     <ClInclude Include="src\cls_server.h" />
     <ClInclude Include="src\cls_sqlthread.h" />
-    <ClInclude Include="src\sho_lis_lib.h" />
+    <ClInclude Include="src\sho_ls_lib.h" />
     <ClInclude Include="src\stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

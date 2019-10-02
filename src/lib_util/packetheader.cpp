@@ -34,7 +34,7 @@ char *Packet_GetStringPtr (t_PACKET *pPacket, short &nOffset)
 
     char *pStr;
     pStr    = (char*) ((t_PACKETHEADER*)pPacket)->m_pDATA + nOffset;
-    nOffset += ( strlen( pStr ) + 1 );
+    nOffset += ( static_cast<short>(strlen( pStr )) + 1 );
 
     return pStr;
 }
@@ -61,7 +61,7 @@ bool Packet_AppendString (t_PACKET *pPacket, char *pStr)
 {
     short nLen, nSize;
 
-    nLen  = ( pStr ) ? strlen(pStr) + 1 : 1;
+    nLen  = ( pStr ) ? static_cast<short>(strlen(pStr)) + 1 : 1;
     nSize = ((t_PACKETHEADER*)pPacket)->m_nSize;
 
     if ( nSize+nLen >= MAX_PACKET_SIZE ) {

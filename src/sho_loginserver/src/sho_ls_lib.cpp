@@ -3,16 +3,14 @@
 
 #include "SHO_LS_LIB.h"
 
-#include "CAS_Gums.h"
 #include "CLS_Account.h"
 #include "CLS_Client.h"
 #include "CLS_Server.h"
 #include "CLS_SqlTHREAD.h"
 #include "blockLIST.h"
+#include "csocketwnd.h"
 
 #define PACKET_SEED 0x6648495
-
-AS_gumSOCKET* g_pSockGUM = NULL;
 
 SHO_LS* SHO_LS::m_pInstance = NULL;
 
@@ -165,7 +163,6 @@ SHO_LS::~SHO_LS() {
     SAFE_DELETE(g_pListCLIENT);
     SAFE_DELETE(g_pListSERVER);
 
-    SAFE_DELETE(g_pSockGUM);
     if (CSocketWND::GetInstance())
         CSocketWND::GetInstance()->Destroy();
     ;
@@ -201,8 +198,6 @@ SHO_LS::StartServerSOCKET(HWND hMainWND,
     char* szDBServerIP,
     int iServerListenPort,
     DWORD dwLoginRight,
-    char* szGumsIP,
-    int iGumsPORT,
     bool bShowOnlyWS) {
     if (m_iServerListenPortNO)
         return false;
@@ -237,18 +232,6 @@ SHO_LS::StartServerSOCKET(HWND hMainWND,
         g_pThreadSQL->Resume();
         g_pThreadSQL->m_bCheckLogIN = true; // CheckBoxLogIN->Checked;
         g_pThreadSQL->m_dwCheckRIGHT = dwLoginRight; // StrToInt( EditLogInLevel->Text );
-    }
-
-    if (szGumsIP && CSocketWND::GetInstance()) {
-        // Å×½ºÆ®¿ë n-cash ¼­¹ö :: 211.232.109.160
-        g_pSockGUM = new AS_gumSOCKET;
-        CSocketWND::GetInstance()->AddSocket(&g_pSockGUM->m_SockGUM, WM_GUMSOCK_MSG);
-
-        g_pSockGUM->Init(CSocketWND::GetInstance()->GetWindowHandle(),
-            szGumsIP, // "192.168.20.204",	// "211.232.109.160",
-            iGumsPORT, // 20000,
-            WM_GUMSOCK_MSG);
-        g_pSockGUM->Connect();
     }
 
     g_dwStartTIME = classTIME::GetCurrentAbsSecond();

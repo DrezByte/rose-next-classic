@@ -24,6 +24,7 @@ private :
 	static short	m_nStrBuffLEN;
 	static short	m_nStrBuffCNT;
 	static short	m_nStrIdx;
+	static char* m_next_token;
 
 public  :
 	static void  Init (short nStrBufferCNT=CSTRING_BUFFER_CNT, short nStrBufferLEN=CSTRING_BUFFER_LEN);
@@ -83,6 +84,7 @@ private :
 	WORD	m_wStaticStrLen;
 	char   *m_pStr;
 	WORD	m_wStrLen;
+	char* m_next_token;
 
 public  :
 	CStrVAR(WORD wStrLen=0, WORD wStaticStrLen=0);

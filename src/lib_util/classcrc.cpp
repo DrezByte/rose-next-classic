@@ -134,10 +134,11 @@ DWORD classCRC::FileCRC32 (char *szFileName)
 #endif
 
 	FILE *fp;
-	fp = fopen( szFileName, "rb");
-	if ( NULL == fp )
+	errno_t err= fopen_s(&fp, szFileName, "rb");
+	if (err == 0) {
 		return 0;
-	
+	}
+
 	const int iMaxReadSize = 1024 * 1024;
 	int iReadSize;
 

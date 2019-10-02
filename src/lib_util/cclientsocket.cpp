@@ -53,8 +53,6 @@ unsigned __stdcall ClientSOCKET_SendTHREAD( void* lpParameter )
 
 		if ( pClientSocket->m_bWritable && pClientSocket->m_SendPacketQ.GetNodeCount() > 0 ) {
 			if ( !pClientSocket->Packet_Send () ) {
-				// 소켓 오류 발생...
-				#pragma message ( "!!!!!! >>>> 소켓 오류 발생시 대처...." )
 			}
 		} 
 #ifdef	_DEBUG

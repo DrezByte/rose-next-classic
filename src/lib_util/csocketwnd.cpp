@@ -7,7 +7,7 @@
 #include "classTHREAD.h"
 #include "rose/common/log.h"
 #include "../client/util/CClientSOCKET.h"
-#include "../client/util/CSocketWND.h"
+#include "CSocketWND.h"
 
 CSocketWND *CSocketWND::m_pInstance = NULL;
 

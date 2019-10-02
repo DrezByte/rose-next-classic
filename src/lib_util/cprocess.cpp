@@ -32,7 +32,7 @@ DWORD CProcess::FindThread (DWORD dwProcessID)
             if ( dwProcessID == sEntry32.th32OwnerProcessID ) {
             ///*
 			char szTmp[ 256 ];
-			sprintf( szTmp, ">>> %x == %x : %x ]]] \n", dwProcessID, sEntry32.th32OwnerProcessID, sEntry32.th32ThreadID );
+			sprintf_s( szTmp, 256, ">>> %x == %x : %x ]]] \n", dwProcessID, sEntry32.th32OwnerProcessID, sEntry32.th32ThreadID );
 			OutputDebugString ( szTmp );
             //*/
                 dwTID = sEntry32.th32ThreadID;
@@ -90,7 +90,7 @@ DWORD CProcess::FindProcess ( char *szExeName )
 
     if ( ::Process32First( hSnapshot, &sEntry32 ) ) {
         do {
-            if ( 0 == strcmpi(szExeName, sEntry32.szExeFile) ) {
+            if ( 0 == _strcmpi(szExeName, sEntry32.szExeFile) ) {
                 dwPID = sEntry32.th32ProcessID;
                 break;
             }

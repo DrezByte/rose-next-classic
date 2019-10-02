@@ -105,8 +105,7 @@ bool classSTB::Open(char *szFileName, long lFilePtr)
         long    lValue;
     } u;
 
-    m_fp = fopen (szFileName, "rb");
-	if ( m_fp == NULL ) {
+	if ( 0 == fopen_s(&m_fp, szFileName, "rb")) {
 		::MessageBox (NULL, "File open error...", szFileName, MB_OK);
 		return false;
 	}
