@@ -267,7 +267,7 @@ char *CStr::ReadString (FILE *fp, bool bIgnoreWhiteSpace)
 bool CStr::SaveString (char *szFileName, char *szString)
 {
 	FILE *fp;
-	if (0 == fopen_s(&fp, szFileName, "wt")) {
+	if (0 != fopen_s(&fp, szFileName, "wt")) {
 		return false;
 	}
 
@@ -421,7 +421,7 @@ char *CStrVAR::ReadString (FILE *fp, bool bIgnoreWhiteSpace)
 bool CStrVAR::SaveString (char *szFileName, char *szString)
 {
 	FILE *fp;
-	if ( 0 == fopen_s(&fp, szFileName, "wt"))
+	if ( 0 != fopen_s(&fp, szFileName, "wt"))
 		return false;
 
 	fputs (szString, fp);

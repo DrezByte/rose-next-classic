@@ -134,8 +134,7 @@ DWORD classCRC::FileCRC32 (char *szFileName)
 #endif
 
 	FILE *fp;
-	errno_t err= fopen_s(&fp, szFileName, "rb");
-	if (err == 0) {
+	if (0 != fopen_s(&fp, szFileName, "rb")) {
 		return 0;
 	}
 

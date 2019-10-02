@@ -128,8 +128,7 @@ WS_ZoneLIST::LoadZONE(char* szBaseDIR, short nZoneNO) {
     char* szZoneFILE;
 
     szZoneFILE = CStr::Printf((char*)"%s%s", szBaseDIR, ZONE_FILE(nZoneNO));
-    fopen_s(&fp, szZoneFILE, "rb");
-    if (!fp) {
+    if (0 != fopen_s(&fp, szZoneFILE, "rb")) {
         g_LOG.CS_ODS(0xffff,
             "zone file open error:: [ %s / %s ] = %s \n",
             szBaseDIR,
