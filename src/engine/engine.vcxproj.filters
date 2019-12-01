@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
     </Filter>
+    <Filter Include="Lua Files">
+      <UniqueIdentifier>{eb920591-81b9-4aca-817c-71f1938ee341}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\zz_algebra.h">
@@ -389,14 +392,17 @@
     <None Include="bitmap1.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="include\zz_build_count.lua">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="include\zz_script_lua.inc">
       <Filter>Header Files</Filter>
     </None>
     <None Include="include\zz_version_info.inc">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="include\zz_build_count.lua">
+      <Filter>Lua Files</Filter>
+    </None>
+    <None Include="include\zz_script_lua.lua">
+      <Filter>Lua Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
