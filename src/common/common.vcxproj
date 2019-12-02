@@ -15,9 +15,11 @@
     <ClInclude Include="..\common-lib\include\rose\common\util_interface.h" />
     <ClInclude Include="include\rose\common\log.h" />
     <ClInclude Include="include\rose\common\rosenext_config.h" />
+    <ClInclude Include="include\rose\common\status_effect\goddess_effect.h" />
     <ClInclude Include="include\rose\common\util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\goddess_effect.cpp" />
     <ClCompile Include="src\log.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -2,6 +2,8 @@
 #define	STATUS_EFFECTS_H
 #pragma once
 
+#include "rose/common/status_effect/goddess_effect.h"
+
 #define	FLAG_CHEAT_INVINCIBLE 0x80000000
 #define	IDX_ING_STB_DEC_LIFE_TIME 43
 
@@ -72,6 +74,21 @@ struct StatusEffect {
 	int target_id;
 };
 
+// TODO: Use this struct
+/// A special effect that applies a fixed buff to several stats
+/// and spawns a fairy behind the player
+struct FairyEffect {
+	short attack_speed;
+	short move_speed;
+	short crit;
+	short max_hp;
+	short max_mp;
+	short hp_recovery;
+	short mp_recovery;
+	short magic_res;
+	short attack_damage;
+};
+
 struct PotionEffect {
 	DWORD m_dwTotTIME;
 	DWORD m_dwAccTIME;
@@ -101,6 +118,7 @@ public:
 	};
 
 	DWORD m_dwSubStatusFLAG;
+	Rose::Common::StatusEffect::GoddessEffect goddess_effect;
 
 public :
 	short Inc_MAX_HP() {

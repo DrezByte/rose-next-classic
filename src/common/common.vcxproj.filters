@@ -4,6 +4,9 @@
     <Filter Include="config">
       <UniqueIdentifier>{f2e9e794-1985-4e6c-a054-4f4e3e82506e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="status_effect">
+      <UniqueIdentifier>{d2430ef2-61c7-48be-a771-93ae4eb79021}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rose\common\rosenext_config.h">
@@ -13,8 +16,14 @@
     <ClInclude Include="..\common-lib\include\rose\common\log_interface.h" />
     <ClInclude Include="..\common-lib\include\rose\common\util_interface.h" />
     <ClInclude Include="include\rose\common\util.h" />
+    <ClInclude Include="include\rose\common\status_effect\goddess_effect.h">
+      <Filter>status_effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
+    <ClCompile Include="src\goddess_effect.cpp">
+      <Filter>status_effect</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

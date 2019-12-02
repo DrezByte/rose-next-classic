@@ -1,11 +1,10 @@
 
 #include "stdAFX.h"
-#include "IO_STB.h"
+
 #include "status_effects.h"
+#include "IO_STB.h"
 
-// const BYTE StatusEffects::m_btSwitchBitMask[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80	};
 
-//-------------------------------------------------------------------------------------------------
 bool StatusEffects::IsTauntSTATUS( int iAttackObjIDX, CZoneTHREAD *pCurZone )
 {
 	if ( this->IsSET( c_dwIngFLAG[ ING_TAUNT ] ) ) {

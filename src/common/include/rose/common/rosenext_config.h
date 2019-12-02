@@ -8,7 +8,7 @@ namespace Config {
 	const char* const NAME = "ROSE Next";
 
 	const uint8_t MAX_LEVEL = 130;
-	const uint16_t MAX_STAT = 250;
+	const uint16_t MAX_STAT = 300;
 }
 }
 
