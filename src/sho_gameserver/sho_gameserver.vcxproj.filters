@@ -28,9 +28,6 @@
     <ClInclude Include="src\cgameobj.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cingstatus.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\cobjavt.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -181,6 +178,9 @@
     <ClInclude Include="..\common\net_prototype.h">
       <Filter>Common Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\status_effects.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cchardata.cpp">
@@ -193,9 +193,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\cheatcmd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cingstatus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\cobjavt.cpp">
@@ -334,5 +331,8 @@
       <Filter>Source Files\srv_common</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\status_effects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

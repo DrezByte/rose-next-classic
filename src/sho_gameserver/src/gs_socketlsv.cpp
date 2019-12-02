@@ -436,7 +436,7 @@ bool GS_lsvSOCKET::Send_gsv_WARP_USER( classUSER *pUSER )
 //		pCPacket->m_gsv_WARP_USER.m_PosWARP = pUSER->m_PosCUR;
         if ( pUSER->m_IngSTATUS.GetFLAGs() ) {
             ::CopyMemory( pCPacket->m_gsv_WARP_USER.m_IngSTATUS, &pUSER->m_IngSTATUS,
-sizeof(CIngSTATUS) ); pCPacket->m_HEADER.m_nSize += ( sizeof(CIngSTATUS)-sizeof(DWORD) ); } else
+sizeof(StatusEffects) ); pCPacket->m_HEADER.m_nSize += ( sizeof(StatusEffects)-sizeof(DWORD) ); } else
             pCPacket->m_gsv_WARP_USER.m_dwIngStatusFLAG = 0;
 
         m_SockLSV.Packet_Register2SendQ( pCPacket );

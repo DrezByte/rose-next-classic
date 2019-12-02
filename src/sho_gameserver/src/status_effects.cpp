@@ -1,12 +1,12 @@
 
 #include "stdAFX.h"
 #include "IO_STB.h"
-#include "CIngSTATUS.h"
+#include "status_effects.h"
 
-// const BYTE CIngSTATUS::m_btSwitchBitMask[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80	};
+// const BYTE StatusEffects::m_btSwitchBitMask[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80	};
 
 //-------------------------------------------------------------------------------------------------
-bool CIngSTATUS::IsTauntSTATUS( int iAttackObjIDX, CZoneTHREAD *pCurZone )
+bool StatusEffects::IsTauntSTATUS( int iAttackObjIDX, CZoneTHREAD *pCurZone )
 {
 	if ( this->IsSET( c_dwIngFLAG[ ING_TAUNT ] ) ) {
 		CObjCHAR *pDestCHAR = g_pObjMGR->Get_CharOBJ( this->m_iTargetOBJ[ ING_TAUNT ], true );
@@ -28,7 +28,7 @@ bool CIngSTATUS::IsTauntSTATUS( int iAttackObjIDX, CZoneTHREAD *pCurZone )
 }
 
 //-------------------------------------------------------------------------------------------------
-bool CIngSTATUS::IsEnableApplayITEM( short nIngStbIDX )
+bool StatusEffects::IsEnableApplayITEM( short nIngStbIDX )
 {
 	short nTypeIDX = STATE_TYPE(nIngStbIDX);
 
@@ -47,7 +47,7 @@ bool CIngSTATUS::IsEnableApplayITEM( short nIngStbIDX )
 
 	return true;
 }
-bool CIngSTATUS::IsEnableApplay( short nIngStbIDX, short nAdjValue )
+bool StatusEffects::IsEnableApplay( short nIngStbIDX, short nAdjValue )
 {
 	short nTypeIDX = STATE_TYPE(nIngStbIDX);
 
@@ -67,7 +67,7 @@ bool CIngSTATUS::IsEnableApplay( short nIngStbIDX, short nAdjValue )
 }
 
 //-------------------------------------------------------------------------------------------------
-DWORD CIngSTATUS::UpdateIngSTATUS( CObjCHAR *pCharOBJ, short nIngStbIDX, short nTick, short nAdjVALUE, short nSkillIDX, int iTargetObjIDX )
+DWORD StatusEffects::UpdateIngSTATUS( CObjCHAR *pCharOBJ, short nIngStbIDX, short nTick, short nAdjVALUE, short nSkillIDX, int iTargetObjIDX )
 {
 	// 반드시 적용 가능여부 판단한후 호출되어야 한다 !!!
 	short nTypeIDX = STATE_TYPE(nIngStbIDX);
@@ -153,7 +153,7 @@ DWORD CIngSTATUS::UpdateIngSTATUS( CObjCHAR *pCharOBJ, short nIngStbIDX, short n
 	return ( c_dwIngFLAG[ nTypeIDX ] & ( FLAG_ING_FAINTING | FLAG_ING_SLEEP ) );
 }
 
-void CIngSTATUS::UpdateIngPOTION( short nIngStbIDX, short nTotValue, short nAdjPerSEC )
+void StatusEffects::UpdateIngPOTION( short nIngStbIDX, short nTotValue, short nAdjPerSEC )
 {
 	// 반드시 적용 가능여부 판단한후 호출되어야 한다 !!!
 	short nTypeIDX = STATE_TYPE(nIngStbIDX);
@@ -174,7 +174,7 @@ void CIngSTATUS::UpdateIngPOTION( short nIngStbIDX, short nTotValue, short nAdjP
 	m_POTION[ nTypeIDX ].m_nAccVALUE = 0;
 }
 
-short CIngSTATUS::Proc_IngPOTION(tagIngPOTION *pPOTION, DWORD dwPassTIME)
+short StatusEffects::Proc_IngPOTION(PotionEffect *pPOTION, DWORD dwPassTIME)
 {
 	pPOTION->m_dwAccTIME += dwPassTIME;
 
@@ -197,14 +197,14 @@ short CIngSTATUS::Proc_IngPOTION(tagIngPOTION *pPOTION, DWORD dwPassTIME)
 
 //-------------------------------------------------------------------------------------------------
 #define	ONE_SECOND	1000
-DWORD CIngSTATUS::Proc (CObjCHAR *pCharOBJ, DWORD dwPassTIME)
+DWORD StatusEffects::Proc (CObjCHAR *pCharOBJ, DWORD dwPassTIME)
 {
 	DWORD dwChangedFLAG = 0;
 
 	// 물약 처리... 매 프레임별...
 	if ( this->IsSET( FLAG_ING_HP | FLAG_ING_MP ) ) {
 		short nAdj;
-		tagIngPOTION *pPOTION;
+		PotionEffect *pPOTION;
 		BYTE btIngEND = 0;
 		if ( this->IsSET( FLAG_ING_HP ) ) {
 			pPOTION = &m_POTION[ ING_INC_HP ];

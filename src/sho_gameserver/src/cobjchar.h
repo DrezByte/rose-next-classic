@@ -10,10 +10,11 @@
 #include "IO_STB.h"
 #include "IO_AI.h"
 #include "IO_PAT.h"
+
 #include "CInventory.h"
 #include "CUserDATA.h"
 #include "CObjAI.h"
-#include "CIngSTATUS.h"
+#include "status_effects.h"
 //-------------------------------------------------------------------------------------------------
 
 // #define	__CS_TARGET_LIST
@@ -109,7 +110,7 @@ public :
     int         m_iMP;
 	int			m_iTeamNO;
 	short		m_nPosZ;
-	CIngSTATUS	m_IngSTATUS;
+	StatusEffects m_IngSTATUS;
 
 	// >>>> virtual function ----------------------------------------------------------------------
 	virtual void	CloseNETWORK ()												{	/* nop */			}

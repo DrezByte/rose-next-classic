@@ -308,8 +308,8 @@ short classUSER::Cheat_add ( char *pArg1, char *pArg2, char *pArg3, char *szCode
 	if ( B_Cheater() ) {
 		if ( NULL == pArg2 ) {
 			if ( !strcmpi(pArg1, "arua") ) {
-				this->Del_Goddess ();
-				//this->Add_Goddess ();
+				//this->Del_Goddess ();
+				this->Add_Goddess ();
 				return CHEAT_PROCED;
 			}
 		} else {

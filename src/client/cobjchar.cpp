@@ -6158,7 +6158,7 @@ void CGoddessMgr::Release_List(GODDESSSTR* pGDS)
 //허용국가 체크 
 BOOL CGoddessMgr::Permission_Country(void)
 {
-	return FALSE;
+	return TRUE;
 }
 
 

@@ -18,7 +18,7 @@
     <ClInclude Include="src\cchardata.h" />
     <ClInclude Include="src\cchatroom.h" />
     <ClInclude Include="src\cgameobj.h" />
-    <ClInclude Include="src\cingstatus.h" />
+    <ClInclude Include="src\status_effects.h" />
     <ClInclude Include="src\cobjavt.h" />
     <ClInclude Include="src\cobjchar.h" />
     <ClInclude Include="src\cobjevent.h" />
@@ -74,7 +74,7 @@
     <ClCompile Include="src\cchatroom.cpp" />
     <ClCompile Include="src\cgameobj.cpp" />
     <ClCompile Include="src\cheatcmd.cpp" />
-    <ClCompile Include="src\cingstatus.cpp" />
+    <ClCompile Include="src\status_effects.cpp" />
     <ClCompile Include="src\cobjavt.cpp" />
     <ClCompile Include="src\cobjchar.cpp" />
     <ClCompile Include="src\cobjevent.cpp" />
