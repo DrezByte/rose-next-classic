@@ -64,6 +64,8 @@
 #include "classSTB.h"
 #include "classSTR.h"
 
+#include "rose/common/log.h"
+
 //-------------------------------------------------------------------------------------------------
 classSTB::classSTB()
 {	
@@ -106,7 +108,8 @@ bool classSTB::Open(char *szFileName, long lFilePtr)
     } u;
 
 	if ( 0 != fopen_s(&m_fp, szFileName, "rb")) {
-		::MessageBox (NULL, "File open error...", szFileName, MB_OK);
+		LOG_ERROR("Failed to open file %s", szFileName);
+		//::MessageBox (NULL, "File open error...", szFileName, MB_OK);
 		return false;
 	}
 

@@ -2,8 +2,11 @@
 #include "stdAFX.h"
 
 #include "status_effects.h"
+
+#include "rose/common/status_effect/status_effect_data.h"
 #include "IO_STB.h"
 
+using namespace Rose::Common;
 
 bool StatusEffects::IsTauntSTATUS( int iAttackObjIDX, CZoneTHREAD *pCurZone )
 {
@@ -331,9 +334,152 @@ DWORD StatusEffects::Proc (CObjCHAR *pCharOBJ, DWORD dwPassTIME)
 		}
 	}
 
+	// TODO: RAM: This doesn't need to be updated per tick. Update conditions:
+	//	- Update on level up
+	//	- Update on create
+	if (this->is_enabled(StatusEffectType::Goddess)) {
+		this->goddess_effect.update(pCharOBJ->Get_LEVEL());
+	}
+
 	return dwChangedFLAG;
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+short StatusEffects::Adj_RUN_SPEED() {
+	short val = m_nAdjVALUE[ING_INC_MOV_SPD] - m_nAdjVALUE[ING_DEC_MOV_SPD] + m_nAruaRunSPD;
+
+	// Goddess buff doesn't stack with other buffs
+	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseMoveSpeed)) {
+		val += goddess_effect.move_speed;
+	}
+
+	return val;
+}
+
+short StatusEffects::Adj_ATK_SPEED() {
+	short val = m_nAdjVALUE[ING_INC_ATK_SPD] - m_nAdjVALUE[ING_DEC_ATK_SPD];
+
+	// Goddess buff doesn't stack with other buffs
+	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseAttackSpeed)) {
+		val += goddess_effect.attack_speed;
+	}
+
+	return val;
+}
+
+short StatusEffects::Adj_APOWER() {
+	short val = m_nAdjVALUE[ING_INC_APOWER] - m_nAdjVALUE[ING_DEC_APOWER] + m_nAruaATK;
+
+	// Goddess buff doesn't stack with other buffs
+	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseAttackPower)) {
+		val += goddess_effect.attack_damage;
+	}
+
+	return val;
+}
+
+short StatusEffects::Adj_DPOWER() {
+	return m_nAdjVALUE[ING_INC_DPOWER] - m_nAdjVALUE[ING_DEC_DPOWER] + m_nAruaRES;
+}
+
+short StatusEffects::Adj_RES() {
+	return m_nAdjVALUE[ING_INC_RES] - m_nAdjVALUE[ING_DEC_RES];
+}
+
+short StatusEffects::Adj_HIT() {
+	short val = m_nAdjVALUE[ING_INC_HIT] - m_nAdjVALUE[ING_DEC_HIT];
+
+	// Goddess buff doesn't stack with other buffs
+	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseHit)) {
+		val += goddess_effect.hit;
+	}
+
+	return val;
+}
+
+short StatusEffects::Adj_CRITICAL() {
+	short val = m_nAdjVALUE[ING_INC_CRITICAL] - m_nAdjVALUE[ING_DEC_CRITICAL] + m_nAruaCRITICAL;
+
+	// Goddess buff doesn't stack with other buffs
+	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseCrit)) {
+		val += goddess_effect.crit;
+	}
+
+	return val;
+}
+
+short StatusEffects::Adj_AVOID() {
+	return m_nAdjVALUE[ING_INC_AVOID] - m_nAdjVALUE[ING_DEC_AVOID];
+}
+
+void StatusEffects::enable_status(StatusEffectType type) {
+	StatusEffectFlag flag = set2sef(type);
+	is_sub_type(type) ? set_sub_flag(flag) : set_flag(flag);
+}
+
+void StatusEffects::disable_status(StatusEffectType type) {
+	StatusEffectFlag flag = set2sef(type);
+	is_sub_type(type) ? unset_sub_flag(flag) : unset_flag(flag);
+}
+
+bool StatusEffects::is_enabled(StatusEffectType type) {
+	StatusEffectFlag flag = set2sef(type);
+	if (is_sub_type(type)) {
+		return is_sub_flag_set(flag);
+	}
+
+	return is_flag_set(flag);
+}
+
+void StatusEffects::set_flag(StatusEffectFlag flag) {
+	m_dwIngStatusFLAG |= static_cast<uint32_t>(flag);
+}
+
+void StatusEffects::unset_flag(StatusEffectFlag flag) {
+	m_dwIngStatusFLAG &= ~static_cast<uint32_t>(flag);
+}
+
+bool StatusEffects::is_flag_set(StatusEffectFlag flag) {
+	return (m_dwIngStatusFLAG & static_cast<uint32_t>(flag));
+}
+
+void StatusEffects::set_sub_flag(StatusEffectFlag flag) {
+	m_dwSubStatusFLAG |= static_cast<uint32_t>(flag);
+}
+
+void StatusEffects::unset_sub_flag(StatusEffectFlag flag) {
+	m_dwSubStatusFLAG &= ~static_cast<uint32_t>(flag);
+}
+
+bool StatusEffects::is_sub_flag_set(StatusEffectFlag flag) {
+	return (m_dwSubStatusFLAG & static_cast<uint32_t>(flag));
+}
+
+bool StatusEffects::is_sub_flag(StatusEffectFlag flag) {
+	switch(flag) {
+		case StatusEffectFlag::Hide:
+		case StatusEffectFlag::StoreMode:
+		case StatusEffectFlag::IntroChat:
+		case StatusEffectFlag::Goddess:
+		case StatusEffectFlag::AruaFairy:
+		case StatusEffectFlag::Invincible:
+			return true;
+		default:
+			return false;
+	}
+	return false;
+}
+
+bool StatusEffects::is_sub_type(Rose::Common::StatusEffectType type) {
+	switch (type) {
+		case StatusEffectType::Hide:
+		case StatusEffectType::StoreMode:
+		case StatusEffectType::IntroChat:
+		case StatusEffectType::Goddess:
+		case StatusEffectType::AruaFairy:
+		case StatusEffectType::Invincible:
+			return true;
+		default:
+			return false;
+	}
+	return false;
+}

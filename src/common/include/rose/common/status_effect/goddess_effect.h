@@ -4,7 +4,6 @@
 
 namespace Rose {
 namespace Common {
-namespace StatusEffect {
 
 /// A special base effect applied to all users
 class GoddessEffect {
@@ -21,7 +20,6 @@ public:
 	void update(int level);
 };
 
-} // StatusEffect
 } // Common
 } // Rose
 

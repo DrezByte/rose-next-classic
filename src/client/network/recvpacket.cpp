@@ -638,7 +638,6 @@ void CRecvPACKET::Recv_gsv_JOIN_ZONE ()
 	///박 지호: 여신소환 상태인 유저는 소환중인 이펙트를 설정한다. 
 	//------------------------------------------------------------------------------------
 	goddessMgr.SetProcess(goddessMgr.IsAvataState(),m_pRecvPacket->m_gsv_JOIN_ZONE.m_wServerObjectIndex,TRUE);
-
 }
 
 
@@ -1147,7 +1146,6 @@ void CRecvPACKET::Recv_tag_ADJ_STATUS ( short& nPacketOffset, tag_ADD_CHAR* ptag
 		 AddMsgToChatWND( STR_UNKNOWN_STATE_FLAG, g_dwRED ,CChatDLG::CHAT_TYPE_SYSTEM);
 		 }*/
 	}
-
 
 	if ( ptagAddChar->m_dwStatusFALG & ( FLAG_ING_MAX_HP | FLAG_ING_INC_MOV_SPEED | FLAG_ING_DEC_MOV_SPEED | FLAG_ING_INC_ATK_SPEED | FLAG_ING_DEC_ATK_SPEED ) ) 
 	{

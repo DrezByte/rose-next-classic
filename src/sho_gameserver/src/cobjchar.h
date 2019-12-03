@@ -248,7 +248,8 @@ public :
     int		Get_AVOID ()			{	int iR = GetOri_AVOID()+m_IngSTATUS.Adj_AVOID();		return (iR>10) ? iR : 10;	}	// È¸ÇÇ·Â
 	int		Get_CRITICAL()			{	int iR = GetOri_CRITICAL()+m_IngSTATUS.Adj_CRITICAL();	return (iR>10) ? iR : 10;	}
 
-	int		Get_MaxHP()				{	return ( GetOri_MaxHP() + m_IngSTATUS.Inc_MAX_HP() );	}
+	//int		Get_MaxHP()				{	return ( GetOri_MaxHP() + m_IngSTATUS.Inc_MAX_HP() );	}
+	int Get_MaxHP() { return (GetOri_MaxHP() + m_IngSTATUS.Inc_MAX_HP()); }
 	int		Get_MaxMP()				{	return ( GetOri_MaxMP() + m_IngSTATUS.Inc_MAX_MP() );	}
 
 	int		GetCurrentFrame ()							{	return	m_iCurMotionFRAME;	}

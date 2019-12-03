@@ -16,6 +16,9 @@
     <ClInclude Include="include\rose\common\log.h" />
     <ClInclude Include="include\rose\common\rosenext_config.h" />
     <ClInclude Include="include\rose\common\status_effect\goddess_effect.h" />
+    <ClInclude Include="include\rose\common\status_effect\status_effect.h" />
+    <ClInclude Include="include\rose\common\status_effect\status_effect_data.h" />
+    <ClInclude Include="include\rose\common\status_effect\status_effect_flag.h" />
     <ClInclude Include="include\rose\common\util.h" />
   </ItemGroup>
   <ItemGroup>

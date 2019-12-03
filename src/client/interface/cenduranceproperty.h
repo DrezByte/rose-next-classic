@@ -6,6 +6,8 @@
 #include <algorithm>
 #include "../Common/IO_STB.h"
 
+#include "rose/common/status_effect/goddess_effect.h"
+
 class CObjCHAR;
 class CEffect;
 
@@ -13,6 +15,7 @@ enum ENDURANCE_ENTITY_TYPE
 {
 	ENDURANCE_TYPE_SKILL = 0,
 	ENDURANCE_TYPE_USEITEM,
+	ENDURANCE_TYPE_GODDESS,
 };
 
 
@@ -33,24 +36,22 @@ class CEndurancePack
 {
 private:
 	/// 현재 설정된 상태 플래그..
-	DWORD									m_dwStateFlag;
+	DWORD m_dwStateFlag;
 	/// 현재 변경 추가되어야할 값들을 보관..( key 는 상태값 다. )
-	int										m_CurrentStateValue[ ING_MAX_STATUS ];
+	int	m_CurrentStateValue[ ING_MAX_STATUS ];
 
-	DWORD									m_dwUpdateCheckTime;
-	DWORD									m_dwElapsedUpdateTime;
+	DWORD m_dwUpdateCheckTime;
+	DWORD m_dwElapsedUpdateTime;
 
 
 	/// 상태변경 타입만큼 유지한다.
-	CEnduranceProperty*						m_EntityList[ ING_MAX_STATUS ];	
-	CObjCHAR*								m_pObjCHAR;
-
-
+	CEnduranceProperty*	m_EntityList[ ING_MAX_STATUS ];	
+	CObjCHAR* m_pObjCHAR;
 
 public:
 	/// 상태 플래그값으로 상태타입을 찾아내는 테이블
-	static std::map< int , int >			m_StateFlagTable;	
-	static std::map< int , int >			m_StateSTBIDXTable;	
+	static std::map< int , int > m_StateFlagTable;	
+	static std::map< int , int > m_StateSTBIDXTable;	
 
 	void									MakeStateFlagTable();
 	void									MakeStateSTBIDXTable();
@@ -77,8 +78,13 @@ public:
 
 
 	/// add new endurance entity.
-	bool					AddEntity( int iEntityIDX, int iStateNO, int iEnduranceTime, int iEntityType );
-    void					ClearEntityPack();
+	bool AddEntity( int iEntityIDX, int iStateNO, int iEnduranceTime, int iEntityType );
+
+	bool add_goddess_entity();
+	void remove_goddess_entity();
+	Rose::Common::GoddessEffect* get_goddess_effect();
+
+    void ClearEntityPack();
 
 	void					Update();
 	bool					Proc( CEnduranceProperty* pEntity );
@@ -239,6 +245,42 @@ public:
 	bool			Proc( CObjCHAR* pObjCHAR );
 };
 
+class CEnduranceGoddess : public CEnduranceProperty {
+public:
+	Rose::Common::GoddessEffect goddess_effect;
 
+public:
+	CEnduranceGoddess(CObjCHAR* target){ 
+		m_iEnduranceEndityType = ENDURANCE_TYPE_GODDESS;
 
+		m_pObjCHAR = target;
+		m_iStatusSTBNO = 61;
+		m_bExpired = false;
+	};
+
+	~CEnduranceGoddess() {};
+
+	virtual bool CreateEnduranceEntity (CObjCHAR* pObjCHAR, int iEntityIdx, int iStatusSTBNO, int iEnduranceTime) override {
+		return false;
+	}
+
+	virtual bool CreateEffect(CObjCHAR* pObjCHAR, int iEffectIDX) override {
+		return false;
+	}
+
+	virtual void DeleteEffect() override {};
+
+	virtual bool IsExpired() override { 
+		return false; 
+	};
+
+	virtual int GetIconNO() override { 
+		return STATE_SYMBOL(m_iStatusSTBNO);
+	};
+
+	bool Proc(CObjCHAR* target) override { 
+		return true; 
+	};
+
+};
 #endif // _CENDURANCEPROPERTY_	

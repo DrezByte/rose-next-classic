@@ -2,68 +2,14 @@
 #define	STATUS_EFFECTS_H
 #pragma once
 
+#include "rose/common/status_effect/status_effect.h"
+#include "rose/common/status_effect/status_effect_flag.h"
 #include "rose/common/status_effect/goddess_effect.h"
 
 #define	FLAG_CHEAT_INVINCIBLE 0x80000000
 #define	IDX_ING_STB_DEC_LIFE_TIME 43
 
 class CObjCHAR;
-
-// TODO: Complete and use this enum
-enum StatusEffectFlag {};
-
-// TODO: Use this enum
-enum class StatusEffectType: unsigned int {
-	Null,
-
-	// HP/MP status effects
-	HPMPStart,
-	IncreaseHP = HPMPStart,
-	IncreaseMP,
-	Poisoned,
-	IncreaseMaxHP,
-	IncreaseMaxMP,
-	HPMPEnd = IncreaseMaxMP,
-
-	// General status effects
-	GeneralStart,
-	IncreaseMoveSpeed = GeneralStart,
-	DecreaseMoveSpeed,
-	IncreaseAttackSpeed,
-	DecreaseAttackSpeed,
-	IncreaseAttackPower,
-	DecreaseAttackPower,
-	IncreaseDefense,
-	DecreaseDefense,
-	IncreaseMagicRes,
-	DecreaseMagicRes,
-	IncreaseHit,
-	DecreaseHit,
-	IncreaseCrit,
-	DecreaseCrit,
-	IncreaseDodge,
-	DecreaseDodge,
-	Dumb,
-	Sleep,
-	Faint,
-	Disguise,
-	Invisible,
-	ShieldDamage,
-	AdditionalDamage,
-	GeneralEnd = AdditionalDamage,
-
-	DecreaseLifetime, // TODO: What does this do?
-
-	ClearGood,
-	ClearBad,
-	ClearAll,
-	ClearInvisible,
-
-	Taunt,
-	Revive,
-
-	Max
-};
 
 // TODO: Use this class
 struct StatusEffect {
@@ -118,9 +64,10 @@ public:
 	};
 
 	DWORD m_dwSubStatusFLAG;
-	Rose::Common::StatusEffect::GoddessEffect goddess_effect;
+	Rose::Common::GoddessEffect goddess_effect;
 
 public :
+
 	short Inc_MAX_HP() {
 		return m_nAdjVALUE[ ING_INC_MAX_HP ] + m_nAruaMaxHP;
 	}
@@ -145,37 +92,15 @@ public :
 		return m_nAdjVALUE[ ING_DEC_ATK_SPD ];
 	}
 
-	short Adj_RUN_SPEED() {	
-		return m_nAdjVALUE[ ING_INC_MOV_SPD ] - m_nAdjVALUE[ ING_DEC_MOV_SPD ] + m_nAruaRunSPD;
-	}
-
-	short Adj_ATK_SPEED() {
-		return m_nAdjVALUE[ ING_INC_ATK_SPD ] - m_nAdjVALUE[ ING_DEC_ATK_SPD ];
-	}
-
-	short Adj_APOWER() {
-		return m_nAdjVALUE[ ING_INC_APOWER ] - m_nAdjVALUE[ ING_DEC_APOWER ] + m_nAruaATK;
-	}
-
-	short Adj_DPOWER() {
-		return m_nAdjVALUE[ ING_INC_DPOWER ] - m_nAdjVALUE[ ING_DEC_DPOWER ] + m_nAruaRES;
-	}
-
-	short Adj_RES() {
-		return m_nAdjVALUE[ ING_INC_RES ] - m_nAdjVALUE[ ING_DEC_RES ];
-	}
-
-	short Adj_HIT() {
-		return m_nAdjVALUE[ ING_INC_HIT ] - m_nAdjVALUE[ ING_DEC_HIT ];
-	}
-
-	short Adj_CRITICAL() {
-		return m_nAdjVALUE[ ING_INC_CRITICAL] - m_nAdjVALUE[ ING_DEC_CRITICAL	] + m_nAruaCRITICAL;
-	}
-
-	short Adj_AVOID() {
-		return m_nAdjVALUE[ ING_INC_AVOID	] - m_nAdjVALUE[ ING_DEC_AVOID ];
-	}
+	// Adjusted values that combine effects
+	short Adj_RUN_SPEED();
+	short Adj_ATK_SPEED();
+	short Adj_APOWER();
+	short Adj_DPOWER();
+	short Adj_RES();
+	short Adj_HIT();
+	short Adj_CRITICAL();
+	short Adj_AVOID();
 
 	void SetSubFLAG( DWORD dwFLAG ) {
 		m_dwSubStatusFLAG |= dwFLAG;
@@ -287,6 +212,24 @@ public :
 	void UpdateIngPOTION( short nIngStbIDX, short nTotValue, short nAdjPerSEC );
 
 	DWORD Proc (CObjCHAR *pCharOBJ, DWORD dwPassTIME);
+
+	// New methods
+	void enable_status(Rose::Common::StatusEffectType type);
+	void disable_status(Rose::Common::StatusEffectType type);
+	bool is_enabled(Rose::Common::StatusEffectType type);
+
+	void set_flag(Rose::Common::StatusEffectFlag flag);
+	void unset_flag(Rose::Common::StatusEffectFlag flag);
+	bool is_flag_set(Rose::Common::StatusEffectFlag flag);
+	
+	// These should eventually be deprecated in favor of a 64-bit flag type
+	void set_sub_flag(Rose::Common::StatusEffectFlag flag);
+	void unset_sub_flag(Rose::Common::StatusEffectFlag flag);
+	bool is_sub_flag_set(Rose::Common::StatusEffectFlag flag);
+
+	bool is_sub_type(Rose::Common::StatusEffectType type);
+	bool is_sub_flag(Rose::Common::StatusEffectFlag flag);
+	// --
 
 private:
 	short Proc_IngPOTION(PotionEffect* pPOTION, DWORD dwPassTIME);

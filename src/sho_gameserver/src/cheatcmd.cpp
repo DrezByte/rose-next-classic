@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#include "rose/common/status_effect/status_effect.h"
+
 #include "LIB_gsMAIN.h"
 #include "GS_USER.h"
 #include "ZoneLIST.h"
@@ -7,6 +10,7 @@
 #include "GS_SocketLSV.h"
 
 using namespace Rose;
+using namespace Rose::Common;
 
 char *l_szAbility[] = {
 	"STR",
@@ -305,7 +309,25 @@ short classUSER::Cheat_npc ( CStrVAR *pStrVAR, CObjNPC *pNPC, int iNpcIDX, char 
 
 short classUSER::Cheat_add ( char *pArg1, char *pArg2, char *pArg3, char *szCode )
 {
-	if ( B_Cheater() ) {
+	if ( B_Cheater() ) 
+	{
+		// /add goddess <target>
+		if (!strcmpi(pArg1, "goddess")) {
+			classUSER* target = this;
+			if (pArg2) {
+				target = g_pUserLIST->Find_CHAR(pArg2);
+				if (!target || this->GetZONE() != target->GetZONE()) {
+					return CHEAT_INVALID;
+				}
+			}
+
+			target->m_IngSTATUS.enable_status(StatusEffectType::Goddess);
+			target->UpdateAbility();
+
+			Send_gsv_CHARSTATE_CHANGE(target->m_IngSTATUS.m_dwSubStatusFLAG);
+			return CHEAT_PROCED;
+		}
+
 		if ( NULL == pArg2 ) {
 			if ( !strcmpi(pArg1, "arua") ) {
 				//this->Del_Goddess ();
@@ -322,8 +344,9 @@ short classUSER::Cheat_add ( char *pArg1, char *pArg2, char *pArg3, char *szCode
 					g_pSockLSV->Send_gsv_CHEAT_REQ( this, this->m_dwWSID, 0, szCode );
 					return CHEAT_PROCED;
 				}
-			} else
+			} else {
 				pUSER = this;
+			}
 
 			if ( NULL == pUSER->GetZONE() ) {
 				return 0;
@@ -395,6 +418,24 @@ short classUSER::Cheat_add ( char *pArg1, char *pArg2, char *pArg3, char *szCode
 
 short classUSER::Cheat_del ( CStrVAR *pStrVAR, char *pArg1, char *pArg2, char *pArg3 )
 {
+	// /del goddess <target>
+	if (!strcmpi(pArg1, "goddess")) {
+		classUSER* target = this;
+		if (pArg2) {
+			target = g_pUserLIST->Find_CHAR(pArg2);
+
+			if (!target || this->GetZONE() != target->GetZONE()) {
+				return CHEAT_INVALID;
+			}
+		}
+
+		target->m_IngSTATUS.disable_status(StatusEffectType::Goddess);
+		target->UpdateAbility();
+
+		Send_gsv_CHARSTATE_CHANGE(target->m_IngSTATUS.m_dwSubStatusFLAG);
+		return CHEAT_PROCED;
+	}
+
 	if ( !strcmpi(pArg1, "arua" ) ) {
 		this->Del_Goddess ();
 		return CHEAT_PROCED;
@@ -404,10 +445,12 @@ short classUSER::Cheat_del ( CStrVAR *pStrVAR, char *pArg1, char *pArg2, char *p
 		classUSER *pUSER=NULL;
 		if ( pArg3 ) {
 			pUSER = g_pUserLIST->Find_CHAR( pArg3 );
-			if ( NULL == pUSER || this->GetZONE() != pUSER->GetZONE() )
+			if (NULL == pUSER || this->GetZONE() != pUSER->GetZONE()) {
 				return CHEAT_INVALID;
-		} else
+			}
+		} else {
 			pUSER = this;
+		}
 
 		if ( !strcmpi(pArg1, "HP") ) {
 			pUSER->Set_HP( 1 );
@@ -968,6 +1011,3 @@ short classUSER::Cheat_speed ( char * pArg1 )
 
 	return CHEAT_PROCED;
 }
-
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------

@@ -32,6 +32,9 @@
 #include "../common/CInventory.h"
 #include "system/System_Func.h"
 
+#include "rose/common/status_effect/status_effect_flag.h"
+
+using namespace Rose::Common;
 
 extern CCamera * g_pCamera;
 
@@ -4345,6 +4348,11 @@ short CObjCHAR::Get_nAttackSPEED ()
 	int iR = GetOri_ATKSPEED() + m_EndurancePack.GetStateValue( ING_INC_ATK_SPD )
 								- m_EndurancePack.GetStateValue( ING_DEC_ATK_SPD );
 
+	auto goddess_effect = m_EndurancePack.get_goddess_effect();
+	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_ATK_SPD)) {
+		iR += goddess_effect->attack_speed;
+	}
+
 	return ( iR > 30 ) ? ( iR ) : 30;
 }
 //-----------------------------------------------------------------------------
@@ -4354,6 +4362,11 @@ float CObjCHAR::Get_fAttackSPEED ()
 {	
 	int iR = GetOri_ATKSPEED() + m_EndurancePack.GetStateValue( ING_INC_ATK_SPD )
 								- m_EndurancePack.GetStateValue( ING_DEC_ATK_SPD );
+
+	auto goddess_effect = m_EndurancePack.get_goddess_effect();
+	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_ATK_SPD)) {
+		iR += goddess_effect->attack_speed;
+	}
 
 	return ( iR > 30 ) ? ( iR/100.f ) : 0.3f;
 }
@@ -4377,6 +4390,11 @@ float CObjCHAR::Get_DefaultSPEED ()
 									- m_EndurancePack.GetStateValue( ING_DEC_MOV_SPD ) );
 
 	nR += m_AruaAddMoveSpeed;
+
+	auto goddess_effect = m_EndurancePack.get_goddess_effect();
+	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_MOV_SPD)) {
+		nR += goddess_effect->move_speed;
+	}
 
 	return ( nR > 200.0f ) ? nR : 200.0f;
 }
@@ -6040,6 +6058,16 @@ void CObjAVT::ChangeSpecialState( DWORD dwSubFLAG )
 	else if( !(m_dwSubFLAG & FLAG_SUB_HIDE) )
 	{
 		::setVisibilityRecursive( this->GetZMODEL(), 1.0f ); 
+	}
+
+	if (m_dwSubFLAG & static_cast<uint32_t>(StatusEffectFlag::Goddess)) {
+		m_EndurancePack.add_goddess_entity();
+	} else {
+		m_EndurancePack.remove_goddess_entity();
+	}
+
+	if( this->IsA(OBJ_USER)) {
+		static_cast<CObjUSER*>(this)->UpdateAbility();
 	}
 }
 

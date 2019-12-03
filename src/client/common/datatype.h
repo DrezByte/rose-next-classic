@@ -761,6 +761,7 @@ enum eING_TYPE {
 
 	ING_TAUNT,							// 유지 : 타운트
 	ING_REVIVE,							// 유지 : 부활
+	ING_GODDESS,
 
 	ING_MAX_STATUS
 } ;

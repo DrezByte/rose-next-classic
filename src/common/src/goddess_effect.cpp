@@ -2,7 +2,7 @@
 
 #include "rose/common/status_effect/goddess_effect.h"
 
-using namespace Rose::Common::StatusEffect;
+using namespace Rose::Common;
 
 const short GODDESS_MOVE_VALS[10] = { 100, 110, 120, 130, 140, 150, 160, 170, 180, 200 };
 const short GODDESS_ATTACK_VALS[10] = { 25, 30, 35, 40, 45, 50, 55, 60, 65, 70 };
@@ -33,7 +33,7 @@ void GoddessEffect::update(int level) {
 	// min_int -> max_int). This formula was created by calculating the line
 	// that intersects (1, 15) and (130, 300) aka. (min_level, min_int) and
 	// (max_level, max_int)
-	float factor = (2.21f * level) + 12.79f;
+	float factor = ((2.21f * level) + 12.79f) / 100.0f;
 
 	// Converts our factor to the range (1,2) where factor 15 is 1 and
 	// factor 300 is 2. I.E. min level = 1, max level = 2

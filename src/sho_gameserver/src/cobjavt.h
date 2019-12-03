@@ -408,6 +408,7 @@ public :
 			m_nPatAniCOL = PAT_RELATIVE_MOTION_POS( m_RideITEM[ RIDE_PART_ARMS ].m_nItemNo );	// 무기에서 모션 열 번호
 		}
 
+		this->m_IngSTATUS.goddess_effect.update(this->Get_LEVEL());
 		Cal_BattleAbility();
 		Update_SPEED();	
 	}

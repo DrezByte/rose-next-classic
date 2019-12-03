@@ -17,6 +17,9 @@
 //¹ÚÁöÈ£
 #include "./GameProc/UseItemDelay.h"
 
+#include "rose/common/status_effect/goddess_effect.h"
+
+using namespace Rose::Common;
 
 CObjUSER* CObjUSER::m_pInstance=NULL;
 
@@ -678,8 +681,16 @@ void	CObjUSER::Set_ITEM(short nListRealNO, tagITEM& sITEM)
 	UpdateInventory();
 }
 
-void	CObjUSER::UpdateAbility()
+void CObjUSER::UpdateAbility()
 {  
+	GoddessEffect* goddess_effect = this->m_EndurancePack.get_goddess_effect();
+	if (goddess_effect) {
+		goddess_effect->update(GetCur_LEVEL());
+	}
+
+	// TODO: RAM:
+
+	// Do something with 6 property values?
 
 	Cal_BattleAbility(); 
 	Calc_AruaAddAbility();
@@ -967,17 +978,41 @@ int	CObjUSER::GetCur_MaxMP ()
 //------------------------------------------------------------------------------------
 int CObjUSER::GetCur_CRITICAL()		
 { 
-	return GetDef_CRITICAL() + m_EndurancePack.GetStateValue( ING_INC_CRITICAL ) - m_EndurancePack.GetStateValue( ING_DEC_CRITICAL ) + m_AruaAddCritical;
+	int crit = GetDef_CRITICAL() + m_EndurancePack.GetStateValue( ING_INC_CRITICAL ) - m_EndurancePack.GetStateValue( ING_DEC_CRITICAL ) + m_AruaAddCritical;
+
+	auto goddess_effect = m_EndurancePack.get_goddess_effect();
+	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_CRITICAL)) {
+		crit += goddess_effect->crit;
+	}
+
+	return crit;
 }
 
 int CObjUSER::GetCur_ATK()
 { 
-	return GetDef_ATK() + m_EndurancePack.GetStateValue( ING_INC_APOWER ) - m_EndurancePack.GetStateValue( ING_DEC_APOWER ) + m_AruaAddAttackPower;		
+	int attack = GetDef_ATK() + m_EndurancePack.GetStateValue( ING_INC_APOWER ) - m_EndurancePack.GetStateValue( ING_DEC_APOWER ) + m_AruaAddAttackPower;
+	
+	auto goddess_effect = m_EndurancePack.get_goddess_effect();
+	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_APOWER)) {
+		attack += goddess_effect->attack_damage;
+	}
+	return attack;
 }
 
 int CObjUSER::GetCur_DEF()
 { 
 	return GetDef_DEF() + m_EndurancePack.GetStateValue( ING_INC_DPOWER ) - m_EndurancePack.GetStateValue( ING_DEC_DPOWER ) + m_AruaAddDefence;		
+}
+
+int CObjUSER::GetCur_HIT()
+{
+	int hit = GetDef_HIT() + m_EndurancePack.GetStateValue(ING_INC_HIT) - m_EndurancePack.GetStateValue(ING_DEC_HIT);
+
+	auto goddess_effect = m_EndurancePack.get_goddess_effect();
+	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_HIT)) {
+		hit += goddess_effect->hit;
+	}
+	return hit;
 }
 
 //------------------------------------------------------------------------------------

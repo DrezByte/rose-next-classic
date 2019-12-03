@@ -269,6 +269,42 @@ bool CEndurancePack::AddEntity( int iEntityIDX, int iStatusSTBNO, int iEndurance
 	return true;
 }
 
+bool CEndurancePack::add_goddess_entity() {
+	if (m_pObjCHAR == NULL || m_pObjCHAR->Get_HP() <= 0) {
+		return false;
+	}
+
+	CEnduranceGoddess* entity = new CEnduranceGoddess(m_pObjCHAR);
+	if (entity == NULL) {
+		return false;
+	}
+
+	if (m_EntityList[ING_GODDESS]) {
+		delete m_EntityList[ING_GODDESS];
+		m_EntityList[ING_GODDESS] = nullptr;
+	} else {
+		if (m_pObjCHAR->IsA(OBJ_USER)) {
+			g_itMGR.AppendChatMsg(STATE_SETTING_STRING(entity->GetStateSTBNO()), IT_MGR::CHAT_TYPE_SYSTEM);
+		}
+	}
+
+	m_EntityList[ING_GODDESS] = entity;
+
+	return true;
+}
+
+void CEndurancePack::remove_goddess_entity() {
+	DeleteEntityByStateType(ING_GODDESS);
+}
+
+Rose::Common::GoddessEffect* CEndurancePack::get_goddess_effect() {
+	auto entity = static_cast<CEnduranceGoddess*>(GetEntityByStateType(ING_GODDESS));
+	if (entity) {
+		return &entity->goddess_effect;
+	}
+	return nullptr;
+}
+
 void CEndurancePack::ClearEntityPack()
 {
 	std::for_each( m_EntityList, m_EntityList + ING_MAX_STATUS, DeleteEntity );	
@@ -440,9 +476,9 @@ void CEndurancePack::Draw()
 				int iEnduranceTime = pEntity->GetEnduranceTime() * 1000;
 				int iRemainedTime = abs( iEnduranceTime - iElapsedTime );
 				int iVisibility = 255;
-				if( iRemainedTime < 10000 || ( iElapsedTime > ( iEnduranceTime ) ) )
-					iVisibility = ( ( iRemainedTime / 200 ) & 1 )? 255 : 0;
-				///------------------------------------------------------------------------------
+				if (iRemainedTime < 10000 || (iElapsedTime > (iEnduranceTime)) && i != ING_GODDESS ) {
+					iVisibility = ((iRemainedTime / 200) & 1) ? 255 : 0;
+				}
 
 				pDrawObj->Draw( rcIcon.left, rcIcon.top, IMAGE_RES_STATE_ICON, iIconNO, D3DCOLOR_RGBA( 255,255,255,iVisibility ) );
 
@@ -476,7 +512,27 @@ void CEndurancePack::Draw()
 
 					Tooltip.Clear();
 					Tooltip.AddString( STATE_NAME(pEntity->GetStateSTBNO()) );
-					Tooltip.AddString( cTimeRemaining );
+					if (i == ING_GODDESS) {
+						auto ent = static_cast<CEnduranceGoddess*>(pEntity);
+						Tooltip.AddString("");
+						if (!GetEntity(ING_INC_MOV_SPD) && ent->goddess_effect.move_speed > 0) {
+							Tooltip.AddString(CStr::Printf("Move Speed: +%i", ent->goddess_effect.move_speed));
+						}
+						if (!GetEntity(ING_INC_APOWER) && ent->goddess_effect.attack_damage > 0) {
+							Tooltip.AddString(CStr::Printf("Attack Damage: +%i", ent->goddess_effect.attack_damage));
+						}
+						if (!GetEntity(ING_INC_HIT) && ent->goddess_effect.hit > 0) {
+							Tooltip.AddString(CStr::Printf("Hit Rate: +%i", ent->goddess_effect.hit));
+						}
+						if (!GetEntity(ING_INC_ATK_SPD) && ent->goddess_effect.attack_speed > 0) {
+							Tooltip.AddString(CStr::Printf("Attack Speed: +%i", ent->goddess_effect.attack_speed));
+						}
+						if (!GetEntity(ING_INC_CRITICAL) && ent->goddess_effect.crit > 0) {
+							Tooltip.AddString(CStr::Printf("Crit: +%i", ent->goddess_effect.crit));
+						}
+					} else {
+						Tooltip.AddString(cTimeRemaining);
+					}
 					ptDrawTooltip.x = rcIcon.left;
 					ptDrawTooltip.y = rcIcon.top - Tooltip.GetHeight();
 					Tooltip.SetPosition( ptDrawTooltip );

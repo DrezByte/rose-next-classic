@@ -19,6 +19,15 @@
     <ClInclude Include="include\rose\common\status_effect\goddess_effect.h">
       <Filter>status_effect</Filter>
     </ClInclude>
+    <ClInclude Include="include\rose\common\status_effect\status_effect.h">
+      <Filter>status_effect</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rose\common\status_effect\status_effect_flag.h">
+      <Filter>status_effect</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rose\common\status_effect\status_effect_data.h">
+      <Filter>status_effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />

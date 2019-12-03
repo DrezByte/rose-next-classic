@@ -14,7 +14,6 @@
 #include <list>
 #include <algorithm>
 
-
 extern CSoundLIST *g_pSoundLIST;
 
 struct SummonMobInfo
@@ -41,18 +40,9 @@ private:
 
 	static CObjUSER	*m_pInstance;
 
-
 public :
 	static CObjUSER* Instance ();
 	void Destroy ();
-
-
-
-
-
-
-
-
 
 public:
 
@@ -183,7 +173,8 @@ public:
 	/*override*/ int				GetCur_ATK();
 	/*override*/ int				GetCur_DEF();
 	/*override*/ int				GetCur_RES()			{ return GetDef_RES() + m_EndurancePack.GetStateValue( ING_INC_RES ) - m_EndurancePack.GetStateValue( ING_DEC_RES );		}
-	/*override*/ int				GetCur_HIT()			{ return GetDef_HIT() + m_EndurancePack.GetStateValue( ING_INC_HIT ) - m_EndurancePack.GetStateValue( ING_DEC_HIT );		}
+	/*override*/ int GetCur_HIT();
+
 	/*override*/ int				GetCur_AVOID()			{ return GetDef_AVOID() + m_EndurancePack.GetStateValue( ING_INC_AVOID ) - m_EndurancePack.GetStateValue( ING_DEC_AVOID );		}
 	/*override*/ int				GetCur_CRITICAL();
 
