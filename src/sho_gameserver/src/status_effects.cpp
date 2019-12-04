@@ -348,8 +348,8 @@ short StatusEffects::Adj_RUN_SPEED() {
 	short val = m_nAdjVALUE[ING_INC_MOV_SPD] - m_nAdjVALUE[ING_DEC_MOV_SPD] + m_nAruaRunSPD;
 
 	// Goddess buff doesn't stack with other buffs
-	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseMoveSpeed)) {
-		val += goddess_effect.move_speed;
+	if (is_enabled(StatusEffectType::Goddess)) {
+		val += max(0, goddess_effect.move_speed - m_nAdjVALUE[ING_INC_MOV_SPD]);
 	}
 
 	return val;
@@ -359,8 +359,8 @@ short StatusEffects::Adj_ATK_SPEED() {
 	short val = m_nAdjVALUE[ING_INC_ATK_SPD] - m_nAdjVALUE[ING_DEC_ATK_SPD];
 
 	// Goddess buff doesn't stack with other buffs
-	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseAttackSpeed)) {
-		val += goddess_effect.attack_speed;
+	if (is_enabled(StatusEffectType::Goddess)) {
+		val += max(0, goddess_effect.attack_speed - m_nAdjVALUE[ING_INC_ATK_SPD]);
 	}
 
 	return val;
@@ -370,8 +370,8 @@ short StatusEffects::Adj_APOWER() {
 	short val = m_nAdjVALUE[ING_INC_APOWER] - m_nAdjVALUE[ING_DEC_APOWER] + m_nAruaATK;
 
 	// Goddess buff doesn't stack with other buffs
-	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseAttackPower)) {
-		val += goddess_effect.attack_damage;
+	if (is_enabled(StatusEffectType::Goddess)) {
+		val += max(0, goddess_effect.attack_damage - m_nAdjVALUE[ING_INC_APOWER]);
 	}
 
 	return val;
@@ -389,8 +389,8 @@ short StatusEffects::Adj_HIT() {
 	short val = m_nAdjVALUE[ING_INC_HIT] - m_nAdjVALUE[ING_DEC_HIT];
 
 	// Goddess buff doesn't stack with other buffs
-	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseHit)) {
-		val += goddess_effect.hit;
+	if (is_enabled(StatusEffectType::Goddess)) {
+		val += max(0, goddess_effect.hit - m_nAdjVALUE[ING_INC_HIT]);
 	}
 
 	return val;
@@ -400,8 +400,8 @@ short StatusEffects::Adj_CRITICAL() {
 	short val = m_nAdjVALUE[ING_INC_CRITICAL] - m_nAdjVALUE[ING_DEC_CRITICAL] + m_nAruaCRITICAL;
 
 	// Goddess buff doesn't stack with other buffs
-	if (is_enabled(StatusEffectType::Goddess) && !is_enabled(StatusEffectType::IncreaseCrit)) {
-		val += goddess_effect.crit;
+	if (is_enabled(StatusEffectType::Goddess)) {
+		val += max(0, goddess_effect.crit - m_nAdjVALUE[ING_INC_CRITICAL]);
 	}
 
 	return val;

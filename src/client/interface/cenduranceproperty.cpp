@@ -514,21 +514,28 @@ void CEndurancePack::Draw()
 					Tooltip.AddString( STATE_NAME(pEntity->GetStateSTBNO()) );
 					if (i == ING_GODDESS) {
 						auto ent = static_cast<CEnduranceGoddess*>(pEntity);
+						int goddess_move = max(0, ent->goddess_effect.move_speed - GetStateValue(ING_INC_MOV_SPD));
+						int goddess_attack = max(0, ent->goddess_effect.attack_damage - GetStateValue(ING_INC_APOWER));
+						int goddess_hit = max(0, ent->goddess_effect.attack_damage - GetStateValue(ING_INC_HIT));
+						int goddess_aspd = max(0, ent->goddess_effect.attack_damage - GetStateValue(ING_INC_ATK_SPD));
+						int goddess_crit = max(0, ent->goddess_effect.attack_damage - GetStateValue(ING_INC_CRITICAL));
+
 						Tooltip.AddString("");
-						if (!GetEntity(ING_INC_MOV_SPD) && ent->goddess_effect.move_speed > 0) {
-							Tooltip.AddString(CStr::Printf("Move Speed: +%i", ent->goddess_effect.move_speed));
+
+						if (goddess_move > 0) {
+							Tooltip.AddString(CStr::Printf("Move Speed: +%i", goddess_move));
 						}
-						if (!GetEntity(ING_INC_APOWER) && ent->goddess_effect.attack_damage > 0) {
-							Tooltip.AddString(CStr::Printf("Attack Damage: +%i", ent->goddess_effect.attack_damage));
+						if (goddess_attack > 0) {
+							Tooltip.AddString(CStr::Printf("Attack Damage: +%i", goddess_attack));
 						}
-						if (!GetEntity(ING_INC_HIT) && ent->goddess_effect.hit > 0) {
-							Tooltip.AddString(CStr::Printf("Hit Rate: +%i", ent->goddess_effect.hit));
+						if (goddess_hit > 0) {
+							Tooltip.AddString(CStr::Printf("Hit Rate: +%i", goddess_hit));
 						}
-						if (!GetEntity(ING_INC_ATK_SPD) && ent->goddess_effect.attack_speed > 0) {
-							Tooltip.AddString(CStr::Printf("Attack Speed: +%i", ent->goddess_effect.attack_speed));
+						if (goddess_aspd > 0) {
+							Tooltip.AddString(CStr::Printf("Attack Speed: +%i", goddess_aspd));
 						}
-						if (!GetEntity(ING_INC_CRITICAL) && ent->goddess_effect.crit > 0) {
-							Tooltip.AddString(CStr::Printf("Crit: +%i", ent->goddess_effect.crit));
+						if (goddess_crit > 0) {
+							Tooltip.AddString(CStr::Printf("Crit: +%i", goddess_crit));
 						}
 					} else {
 						Tooltip.AddString(cTimeRemaining);

@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include <iomanip>
+#include <sstream>
+
 #include "rose/common/status_effect/status_effect.h"
 
 #include "LIB_gsMAIN.h"
@@ -524,13 +527,38 @@ short classUSER::Cheat_get ( CStrVAR *pStrVAR, char *pArg1, char *pArg2, char *s
 				BYTE  btGndATT  = ( pUSER->GetZONE() ) ? pUSER->GetZONE()->IsMovablePOS((int)(pUSER->m_PosCUR.x), (int)(pUSER->m_PosCUR.y)) : 0;
 
 				if ( pUSER->IsUSER() ) {
-					pStrVAR->Printf ("HP:%d/%d, MP:%d/%d, LEV:%d, EXP:%d/%d, JOB:%d, SPD(M:%d,A:%d), ANI(M:%1.1f,A:%d), Hit:%d, Crt:%d, AP:%d, DP:%d, AVD:%d, ATTR:%d, bCST:%d, SKL:%d, FLG:%x, Summon:%d/%d, BP:%d, SP:%d, UP:%d, STMNA:%d \\:%I64d, Team:%d, Clan(%d,L:%d,P:%d,S:%d), Recover(%d,%d)",
+					std::ostringstream output;
+					output <<
+						"HP: " << pUSER->Get_HP() << "/" << pUSER->Get_MaxHP() << ", " <<
+						"MP:" << pUSER->Get_MP() << "/" << pUSER->Get_MaxMP() << "," <<
+						"LEV: " << pUSER->Get_LEVEL() << ", " <<
+						"EXP: " << pUSER->Get_EXP() << "/" << ((classUSER*)pUSER)->Get_NeedEXP(pUSER->Get_LEVEL()) << ", " <<
+						"JOB: " << pUSER->Get_JOB() << ", "
+						"ANI:(M: " << std::fixed << std::setprecision(2) << m_fRunAniSPEED << ",A:" << m_nAtkAniSPEED << "), " <<
+						"Atk: " << pUSER->Get_ATK() << ", " <<
+						"Def: " << pUSER->Get_DEF() << ", " <<
+						"Res: " << pUSER->Get_RES() << ", " <<
+						"Hit: " << pUSER->Get_HIT() << ", " << // TODO: RAM: This doesn't match stats window.
+						"Crit: " << pUSER->Get_CRITICAL() << ", " <<
+						"Dodge: " << pUSER->Get_AVOID() << ", " <<
+						"Aspd: " << pUSER->Get_nAttackSPEED() << ", " << // TODO: RAM:: This doesn't match stats window.
+						"Mspd: " << (int)pUSER->Get_MoveSPEED();
+						
+					this->Send_gsv_WHISPER(pUSER->Get_NAME(), (char*)output.str().c_str());
+					return CHEAT_NOLOG;
+
+
+					/*
+					pStrVAR->Printf ("HP:%d/%d, MP:%d/%d, LEV:%d, EXP:%d/%d, JOB:%d, SPD(M:%d,A:%d), nANI(M:%1.1f,A:%d), Hit:%d, Crt:%d, Atk:%d, Def:%d, AVD:%d, Res: %d, ATTR:%d, bCST:%d, SKL:%d, FLG:%x, Summon:%d/%d, BP:%d, SP:%d, UP:%d, STMNA:%d \\:%I64d, Team:%d, Clan(%d,L:%d,P:%d,S:%d), Recover(%d,%d)",
 							pUSER->Get_HP(), pUSER->Get_MaxHP(), 
 							pUSER->Get_MP(), pUSER->Get_MaxMP(),
-							pUSER->Get_LEVEL(), pUSER->Get_EXP(), ( (classUSER*)pUSER )->Get_NeedEXP( pUSER->Get_LEVEL() ), pUSER->Get_JOB(), 
+							pUSER->Get_LEVEL(), 
+							pUSER->Get_EXP(), ((classUSER*)pUSER )->Get_NeedEXP(pUSER->Get_LEVEL()), 
+							pUSER->Get_JOB(), 
 							nMovSpeed, nAtkSpeed, 
-							m_fRunAniSPEED,m_nAtkAniSPEED,
-							pUSER->Get_HIT(), pUSER->Get_CRITICAL(), pUSER->Get_ATK(), pUSER->Get_DEF(), pUSER->Get_AVOID(),
+							m_fRunAniSPEED, m_nAtkAniSPEED,
+							pUSER->Get_HIT(), pUSER->Get_CRITICAL(), pUSER->Get_ATK(), 
+							pUSER->Get_DEF(), pUSER->Get_AVOID(), pUSER->Get_RES(),
 							btGndATT, pUSER->m_bCastingSTART, 
 							pUSER->Get_ActiveSKILL(), pUSER->m_IngSTATUS.GetFLAGs(), 
 							(classUSER*)pUSER->Get_SummonCNT(), (classUSER*)pUSER->Max_SummonCNT(), 
@@ -541,10 +569,16 @@ short classUSER::Cheat_get ( CStrVAR *pStrVAR, char *pArg1, char *pArg2, char *s
 							((classUSER*)pUSER)->Get_MONEY(), pUSER->Get_TeamNO(), ((classUSER*)pUSER)->GetClanID(), ((classUSER*)pUSER)->GetClanLEVEL(), ((classUSER*)pUSER)->GetClanSCORE(), ((classUSER*)pUSER)->GetClanPOS(),
 							((classUSER*)pUSER)->GetAdd_RecoverHP(), ((classUSER*)pUSER)->GetAdd_RecoverMP()
 							);
+							*/
 				} else {
-					pStrVAR->Printf ("HP:%d/%d, MP:%d/%d, LEV:%d, EXP:%d, JOB:%d, SPD(M:%d,A:%d), Hit:%d, Crt:%d, AP:%d, DP:%d, AVD:%d, ATTR:%d, bCST:%d, SKL:%d, FLG:%x",
-							pUSER->Get_HP(), pUSER->Get_MaxHP(), pUSER->Get_MP(), pUSER->Get_MaxMP(),
-							pUSER->Get_LEVEL(), pUSER->Get_EXP(), pUSER->Get_JOB(), 
+					pStrVAR->Printf ("HP:%d/%d \nMP:%d/%d \nLEV:%d (EXP:%d), JOB:%d, SPD(M:%d,A:%d), Hit:%d, Crt:%d, AP:%d, DP:%d, AVD:%d, ATTR:%d, bCST:%d, SKL:%d, FLG:%x",
+							pUSER->Get_HP(), 
+							pUSER->Get_MaxHP(),
+							pUSER->Get_MP(),
+							pUSER->Get_MaxMP(),
+							pUSER->Get_LEVEL(),
+							pUSER->Get_EXP(),
+							pUSER->Get_JOB(), 
 							nMovSpeed, nAtkSpeed, pUSER->Get_HIT(), pUSER->Get_CRITICAL(), pUSER->Get_ATK(), pUSER->Get_DEF(), pUSER->Get_AVOID(),
 							btGndATT, pUSER->m_bCastingSTART, pUSER->Get_ActiveSKILL(), pUSER->m_IngSTATUS.GetFLAGs() );
 				}
@@ -599,7 +633,6 @@ short classUSER::Cheat_get ( CStrVAR *pStrVAR, char *pArg1, char *pArg2, char *s
 		this->Send_gsv_WHISPER( "<WORLD>::", pStrVAR->Get() );
 		return CHEAT_NOLOG;
 	}
-
 	return CHEAT_INVALID;
 }
 

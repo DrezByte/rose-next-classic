@@ -688,10 +688,6 @@ void CObjUSER::UpdateAbility()
 		goddess_effect->update(GetCur_LEVEL());
 	}
 
-	// TODO: RAM:
-
-	// Do something with 6 property values?
-
 	Cal_BattleAbility(); 
 	Calc_AruaAddAbility();
 	
@@ -980,9 +976,10 @@ int CObjUSER::GetCur_CRITICAL()
 { 
 	int crit = GetDef_CRITICAL() + m_EndurancePack.GetStateValue( ING_INC_CRITICAL ) - m_EndurancePack.GetStateValue( ING_DEC_CRITICAL ) + m_AruaAddCritical;
 
+	// Goddess effect doesn't stack with other buffs
 	auto goddess_effect = m_EndurancePack.get_goddess_effect();
-	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_CRITICAL)) {
-		crit += goddess_effect->crit;
+	if (goddess_effect) {
+		crit += max(0, goddess_effect->crit - m_EndurancePack.GetStateValue(ING_INC_CRITICAL));
 	}
 
 	return crit;
@@ -992,10 +989,12 @@ int CObjUSER::GetCur_ATK()
 { 
 	int attack = GetDef_ATK() + m_EndurancePack.GetStateValue( ING_INC_APOWER ) - m_EndurancePack.GetStateValue( ING_DEC_APOWER ) + m_AruaAddAttackPower;
 	
+	// Goddess effect doesn't stack with other buffs
 	auto goddess_effect = m_EndurancePack.get_goddess_effect();
-	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_APOWER)) {
-		attack += goddess_effect->attack_damage;
+	if (goddess_effect) {
+		attack += max(0, goddess_effect->attack_damage - m_EndurancePack.GetStateValue(ING_INC_APOWER));
 	}
+
 	return attack;
 }
 
@@ -1008,9 +1007,10 @@ int CObjUSER::GetCur_HIT()
 {
 	int hit = GetDef_HIT() + m_EndurancePack.GetStateValue(ING_INC_HIT) - m_EndurancePack.GetStateValue(ING_DEC_HIT);
 
+	// Goddess effect doesn't stack with other buffs
 	auto goddess_effect = m_EndurancePack.get_goddess_effect();
-	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_HIT)) {
-		hit += goddess_effect->hit;
+	if (goddess_effect) {
+		hit += max(0, goddess_effect->hit - m_EndurancePack.GetStateValue(ING_INC_HIT));
 	}
 	return hit;
 }

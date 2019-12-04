@@ -4348,9 +4348,10 @@ short CObjCHAR::Get_nAttackSPEED ()
 	int iR = GetOri_ATKSPEED() + m_EndurancePack.GetStateValue( ING_INC_ATK_SPD )
 								- m_EndurancePack.GetStateValue( ING_DEC_ATK_SPD );
 
+	// Goddess effect doesn't stack with other buffs
 	auto goddess_effect = m_EndurancePack.get_goddess_effect();
-	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_ATK_SPD)) {
-		iR += goddess_effect->attack_speed;
+	if (goddess_effect) {
+		iR += max(0, goddess_effect->attack_speed - m_EndurancePack.GetStateValue(ING_INC_ATK_SPD));
 	}
 
 	return ( iR > 30 ) ? ( iR ) : 30;
@@ -4363,9 +4364,10 @@ float CObjCHAR::Get_fAttackSPEED ()
 	int iR = GetOri_ATKSPEED() + m_EndurancePack.GetStateValue( ING_INC_ATK_SPD )
 								- m_EndurancePack.GetStateValue( ING_DEC_ATK_SPD );
 
+	// Goddess effect doesn't stack with other buffs
 	auto goddess_effect = m_EndurancePack.get_goddess_effect();
-	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_ATK_SPD)) {
-		iR += goddess_effect->attack_speed;
+	if (goddess_effect) {
+		iR += max(0, goddess_effect->attack_speed - m_EndurancePack.GetStateValue(ING_INC_ATK_SPD));
 	}
 
 	return ( iR > 30 ) ? ( iR/100.f ) : 0.3f;
@@ -4391,9 +4393,10 @@ float CObjCHAR::Get_DefaultSPEED ()
 
 	nR += m_AruaAddMoveSpeed;
 
+	// Goddess effect doesn't stack with other buffs
 	auto goddess_effect = m_EndurancePack.get_goddess_effect();
-	if (goddess_effect && !m_EndurancePack.GetEntity(ING_INC_MOV_SPD)) {
-		nR += goddess_effect->move_speed;
+	if (goddess_effect) {
+		nR += max(0, goddess_effect->move_speed - m_EndurancePack.GetStateValue(ING_INC_MOV_SPD));
 	}
 
 	return ( nR > 200.0f ) ? nR : 200.0f;
