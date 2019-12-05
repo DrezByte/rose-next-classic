@@ -39,85 +39,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 }
 #endif
 
-/******************************************************************
- * 현재 Dectect되어 있는 정보를 리턴한다
- */
-TRIGGERINFO_API const char * TI_GetSysInfo (void)
-{
-	return (const char *)g_Info.c_str ();
-}
-
-TRIGGERINFO_API const char * TI_GetSysInfoForWeb (void)
-{
-	return (const char *)g_InfoForWeb.c_str ();
-}
-
-/******************************************************************
- * 시스템 정보를 Dectect한다
- */
-TRIGGERINFO_API const char * TI_GatherSysInfo (void)
-{
-	CSysInfo SI;
-
-	g_Info = SI.GetAllInfo ();
-
-	FILE * fp = fopen (SYSINFO_FILE, "wb");
-	if(fp)
-	{
-		short nLength = (short)g_Info.size ();
-		fwrite (&nLength, sizeof (short), 1, fp);
-		fwrite ((const void *)g_Info.c_str (), sizeof (char), (size_t)nLength, fp);
-		fclose (fp); fp = NULL;
-
-		
-	}
-
-	g_InfoForWeb = SI.MakeWebString();
-	if( g_InfoForWeb.size() > 0 )
-	{
-
-		FILE * fpWeb = fopen( SYSINFO_FILE_WEB , "wb" );
-		if( fpWeb )
-		{
-			short nLength = (short)g_InfoForWeb.size ();
-			fwrite (&nLength, sizeof (short), 1, fpWeb);
-			const char * sss = g_InfoForWeb.c_str();
-			fwrite ((const void *)g_InfoForWeb.c_str (), sizeof (char), (size_t)nLength, fpWeb);
-			fclose ( fpWeb ); fpWeb = NULL;
-		}
-
-	}
-
-	return (const char *)g_Info.c_str ();;
-}
-
-/******************************************************************
- * Dectect되어 있는 정보를 저장하고 있는 파일에서 정보를 읽어온다
- */
-TRIGGERINFO_API const char * TI_ReadSysInfoFile (void)
-{
-	FILE * fp = fopen (SYSINFO_FILE, "rb");
-	if(fp)
-	{
-		short nLength = (short)g_Info.size ();
-		fread (&nLength, sizeof (short), 1, fp);
-		char * Buff = new char[ nLength + 1 ];
-		fread ((void *)Buff, sizeof (char), nLength, fp);
-		Buff[ nLength ] = '\0';
-		fclose (fp);
-
-		g_Info = Buff;
-
-		delete [] Buff;
-
-		return g_Info.c_str ();
-	}
-
-	return NULL;
-}
-
-
-
 bool SaveSysResolution (const char * FileName, AdapterInformation * pInfo)
 {
 	/********************************************************************
@@ -217,26 +138,6 @@ AdapterInformation * ReadSysResolution (const char * FileName)
 	return NULL;
 }
 
-
-TRIGGERINFO_API AdapterInformation * TI_GatherAdptInfo (void)
-{
-	IDirect3D9 * pID3D = Direct3DCreate9 (D3D_SDK_VERSION);
-	if(pID3D)
-	{
-		g_pAdInfo = new CAdapterInfo (pID3D);
-	 	AdapterInformation * pInfo = g_pAdInfo->GetAllInformation ();
-
-		SaveSysResolution (ADPTINFO_FILE, pInfo);
-		pID3D->Release ();
-		pID3D = NULL;
-
-		return pInfo;
-	}
-
-	return NULL;
-}
-
-
 TRIGGERINFO_API void TI_ReleaseAdptInfo (void)
 {
 	delete g_pAdInfo;
@@ -247,32 +148,3 @@ TRIGGERINFO_API AdapterInformation * TI_ReadAdptInfoFile (void)
 {
 	return ReadSysResolution (ADPTINFO_FILE);
 }
-
-TRIGGERINFO_API AdapterInformation * TI_GetAdptInfo (void)
-{
-	if(g_pAdInfo)
-		return g_pAdInfo->GetData ();
-
-	return NULL;
-}
-
-TRIGGERINFO_API bool TI_DXInfo(void)
-{
-	CSysInfo SI;
-	
-	return SI.GetDXInfo(); 
-}
-
-
-
-TRIGGERINFO_API bool TI_SendHttpPostData (const char * szServerIP, const char * szPage, const char * pData)
-{
-	return CHttp::SendPostData (szServerIP, szPage, pData);
-}
-
-TRIGGERINFO_API bool TI_SendHttpQueryData (const char * szURL)
-{
-	return CHttp::SendQueryData (szURL);
-}
-
-

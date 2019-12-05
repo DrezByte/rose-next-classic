@@ -171,19 +171,12 @@ int APIENTRY WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	///이전 옵션에서 조정된 해상도의 인덱스를 가져와서 g_TblResolution을 참조하여
 	///해상도를 조정한다.
 	//-------------------------------------------------------------------------------	
-#pragma message("저장된 해상도를 테스트해서 현재 실행가능한지 판단하고 안되면 메세지 박스 띄우고 TriggerDetect를 실행시킨다")
 	t_OptionResolution Resolution = g_ClientStorage.GetResolution();
 	/// 범위값 체크 
 	UINT iFullScreen = g_ClientStorage.GetVideoFullScreen();
 
 	g_pCApp->SetFullscreenMode( iFullScreen );
 	g_pCApp->CreateWND ("classCLIENT", CStr::Printf("%s", Config::NAME), Resolution.iWidth, Resolution.iHeight,Resolution.iDepth, hInstance);
-
-#ifndef _DEBUG
-	// 시스템 정보를 모음
-	TI_ReadSysInfoFile ();
-#endif
-
 
 	g_pObjMGR = CObjectMANAGER::Instance ();
 	g_pCApp->ResetExitGame();
