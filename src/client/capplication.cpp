@@ -640,7 +640,37 @@ void CApplication::SetFullscreenMode (bool bFullScreenMode)
 	m_bFullScreenMode = bFullScreenMode;
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+std::set<ApplicationVideoMode>
+CApplication::get_video_modes() {
+	std::set<ApplicationVideoMode> modes;
+
+	// TODO: RAM: Do windows checks bebe
+	int mode_idx = 0;
+
+	for (;;) {
+		DEVMODE dm;
+		ZeroMemory(&dm, sizeof(dm));
+
+		if (!EnumDisplaySettings(NULL, mode_idx, &dm)) {
+			return modes;
+		}
+
+		mode_idx += 1;
+
+		if (dm.dmBitsPerPel < 32 || dm.dmPelsWidth < 800) {
+			continue;
+		}
+
+		ApplicationVideoMode mode;
+		mode.depth = dm.dmBitsPerPel;
+		mode.width = dm.dmPelsWidth;
+		mode.height = dm.dmPelsHeight;
+		mode.refresh_rate = dm.dmDisplayFrequency;
+
+		if (modes.find(mode) == modes.end()) {
+			modes.insert(mode);
+		}
+	}
+
+	return modes;
+}

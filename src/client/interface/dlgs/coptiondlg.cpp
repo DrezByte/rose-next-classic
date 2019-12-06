@@ -42,24 +42,19 @@ COptionDlg::~COptionDlg(void)
 bool COptionDlg::Create( const char* szIDD )
 {
 	char*	pszName;
-	if( CTDialog::Create( szIDD ) == false )
+	if (CTDialog::Create(szIDD) == false) {
 		return false;
-
-	m_pAdptInfo = TI_ReadAdptInfoFile ();
-	int	iAdptIDX = 0;
-
-	SystemResolution *pResolution = m_pAdptInfo->pAdapter[ iAdptIDX ].pResolution;
-	int iResCNT = m_pAdptInfo->pAdapter[ iAdptIDX ].nResolution;
-
-	SupportedScreen Screen;
-
-	for( int i = 0; i < iResCNT; ++i )
-	{
-		AddSupportedScreen( pResolution[ i ].pixel_width,
-					pResolution[ i ].pixel_height,
-					pResolution[ i ].pixel_color,
-					pResolution[ i ].frequency );
 	}
+
+	for (auto& video_mode : g_pCApp->get_video_modes()) {
+		AddSupportedScreen (
+			video_mode.width,
+			video_mode.height,
+			video_mode.depth,
+			video_mode.refresh_rate
+		);
+	}
+
 	for( int i = 0; i < 17; )
 	{
 		AddSupportedAntiAlising(i);

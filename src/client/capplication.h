@@ -4,11 +4,56 @@
 
 #ifndef	__CAPPLICATION_H
 #define	__CAPPLICATION_H
+
+#include <set>
+
 #include "util\CRangeTBL.h"
 #include "sound\IO_Sound.h"
-//-------------------------------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------------------------------
+class ApplicationVideoMode {
+public:
+	int depth;
+	int width;
+	int height;
+	int refresh_rate;
+
+	bool operator <(const ApplicationVideoMode& other) const {
+		if (depth < other.depth) {
+			return true;
+		}
+
+		if (other.depth < depth) {
+			return false;
+		}
+
+		if (width < other.width) {
+			return true;
+		}
+
+		if (other.width < width) {
+			return false;
+		}
+
+		if (height < other.height) {
+			return true;
+		}
+
+		if (other.height < height) {
+			return false;
+		}
+
+		if (refresh_rate < other.refresh_rate) {
+			return true;
+		}
+
+		if (other.refresh_rate < refresh_rate) {
+			return false;
+		}
+
+		return false;
+	}
+};
+
 ///
 /// Application Class
 ///
@@ -76,6 +121,8 @@ public  :
 	void	ResizeWindowByClientSize( int& iClientWidth, int& iClientHeight,int iDepth, bool update_engine );
 	
 	void	SetFullscreenMode (bool bFullScreenMode);
+
+	std::set<ApplicationVideoMode> get_video_modes();
 } ;
 
 //-------------------------------------------------------------------------------------------------
