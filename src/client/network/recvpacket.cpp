@@ -62,8 +62,6 @@
 #include "../Tutorial/TutorialEventManager.h"
 #include "../GameProc/UseItemDelay.h"
 
-#include "triggerinfo/triggerinfo.h"
-
 using namespace Rose;
 
 void SetServerVAR( tagVAR_GLOBAL *pVAR )

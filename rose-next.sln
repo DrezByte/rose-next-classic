@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "triggerinfo", "src\triggerinfo\triggerinfo.vcxproj", "{DE7958CD-934E-4AF9-8A22-CCE329B364FB}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tgamectrl", "src\tgamectrl\tgamectrl.vcxproj", "{25FC645B-A461-4FDD-848A-4F7C5522313A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "src\engine\engine.vcxproj", "{423F6727-70C6-4D7A-97BA-97C72FBC169B}"
@@ -20,7 +18,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "src\client\client
 		{B4DDE42E-8878-441E-87AE-62B2F0E5A9CF} = {B4DDE42E-8878-441E-87AE-62B2F0E5A9CF}
 		{25FC645B-A461-4FDD-848A-4F7C5522313A} = {25FC645B-A461-4FDD-848A-4F7C5522313A}
 		{3D8FB37B-21F3-4DEF-9B78-6FE270C73494} = {3D8FB37B-21F3-4DEF-9B78-6FE270C73494}
-		{DE7958CD-934E-4AF9-8A22-CCE329B364FB} = {DE7958CD-934E-4AF9-8A22-CCE329B364FB}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_util", "src\lib_util\lib_util.vcxproj", "{B4DDE42E-8878-441E-87AE-62B2F0E5A9CF}"
@@ -58,12 +55,6 @@ Global
 		release|x86 = release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DE7958CD-934E-4AF9-8A22-CCE329B364FB}.debug|x64.ActiveCfg = debug|Win32
-		{DE7958CD-934E-4AF9-8A22-CCE329B364FB}.debug|x86.ActiveCfg = debug|Win32
-		{DE7958CD-934E-4AF9-8A22-CCE329B364FB}.debug|x86.Build.0 = debug|Win32
-		{DE7958CD-934E-4AF9-8A22-CCE329B364FB}.release|x64.ActiveCfg = release|Win32
-		{DE7958CD-934E-4AF9-8A22-CCE329B364FB}.release|x86.ActiveCfg = release|Win32
-		{DE7958CD-934E-4AF9-8A22-CCE329B364FB}.release|x86.Build.0 = release|Win32
 		{25FC645B-A461-4FDD-848A-4F7C5522313A}.debug|x64.ActiveCfg = debug|Win32
 		{25FC645B-A461-4FDD-848A-4F7C5522313A}.debug|x86.ActiveCfg = debug|Win32
 		{25FC645B-A461-4FDD-848A-4F7C5522313A}.debug|x86.Build.0 = debug|Win32

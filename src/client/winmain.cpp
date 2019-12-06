@@ -5,11 +5,9 @@
 #include "Game.h"
 #include "Network/CNetwork.h"
 #include "Util/VFSManager.h"
-#include "Util/SystemInfo.h"
 #include "CClientStorage.h"
 #include "System/CGame.h"
 #include "Interface/ExternalUI/CLogin.h"
-#include "triggerinfo/triggerinfo.h"
 
 #include "Util/CheckHack.h"
 
@@ -116,13 +114,10 @@ int APIENTRY WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 		return FALSE;
 #endif
 
-	g_SystemInfo.CollectingSystemInfo();
-	int iWindowVersion = g_SystemInfo.GetWindowsVersion();
-
 	//-------------------------------------------------------------------------------
 	/// Init Trigger VFS
 	//-------------------------------------------------------------------------------
-	VHANDLE hVFS = OpenVFS( "data.idx", (iWindowVersion == WINDOWS_98)?"r":"mr" );	
+	VHANDLE hVFS = OpenVFS( "data.idx", "mr" );
 	(CVFSManager::GetSingleton()).SetVFS( hVFS );
 	(CVFSManager::GetSingleton()).InitVFS( VFS_TRIGGER_VFS );	
 

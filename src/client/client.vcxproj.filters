@@ -200,9 +200,6 @@
     <ClCompile Include="Util\ResourceCache.cpp">
       <Filter>Source Files\Util</Filter>
     </ClCompile>
-    <ClCompile Include="Util\SystemInfo.cpp">
-      <Filter>Source Files\Util</Filter>
-    </ClCompile>
     <ClCompile Include="Util\SystemUtil.cpp">
       <Filter>Source Files\Util</Filter>
     </ClCompile>
@@ -1304,9 +1301,6 @@
       <Filter>Source Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\SLLIST.h">
-      <Filter>Source Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\SystemInfo.h">
       <Filter>Source Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\SystemUtil.h">

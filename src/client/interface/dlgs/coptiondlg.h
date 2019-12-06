@@ -31,7 +31,6 @@ struct SupportedAntiAlising
 	}
 };
 
-struct AdapterInformation;
 class CTComboBox;
 
 
@@ -169,7 +168,6 @@ protected:
 	t_OptionCommunity				m_CommunityOption;
 	t_OptionKeyboard				m_KeyboardOption;
 
-	AdapterInformation*				m_pAdptInfo;				/// 비디오 드라이버 정보
 	std::vector<SupportedScreen>	m_SupportedScreens;			/// 클라이언트 하드웨어가 지원하는 해상도들 
 	std::vector< SupportedAntiAlising >				m_SupportedAntiAlising;		/// AntiAlising
 };

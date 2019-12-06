@@ -98,7 +98,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>common.lib;lib_util.lib;tgamectrl.lib;triggerinfo.lib;triggervfs.lib;znzin.lib;d3d9.lib;d3dx9.lib;dsound.lib;dxguid.lib;dxerr9.lib;expat.lib;lualib4.lib;ogg.lib;vorbisfile.lib;zlib.lib;legacy_stdio_definitions.lib;odbc32.lib;odbccp32.lib;urlmon.lib;unicows.lib;winmm.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;lib_util.lib;tgamectrl.lib;triggervfs.lib;znzin.lib;d3d9.lib;d3dx9.lib;dsound.lib;dxguid.lib;dxerr9.lib;expat.lib;lualib4.lib;ogg.lib;vorbisfile.lib;zlib.lib;legacy_stdio_definitions.lib;odbc32.lib;odbccp32.lib;urlmon.lib;unicows.lib;winmm.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);$(SolutionDir)bin\$(Configuration)\thirdparty;$(SolutionDir)thirdparty\directx9\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -146,7 +146,7 @@
       <Culture>0x0412</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>common.lib;lib_util.lib;tgamectrl.lib;triggerinfo.lib;triggervfs.lib;znzin.lib;d3d9.lib;d3dx9.lib;dsound.lib;dxguid.lib;dxerr9.lib;expat.lib;lualib4.lib;ogg.lib;vorbisfile.lib;zlib.lib;legacy_stdio_definitions.lib;odbc32.lib;odbccp32.lib;urlmon.lib;unicows.lib;winmm.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;lib_util.lib;tgamectrl.lib;triggervfs.lib;znzin.lib;d3d9.lib;d3dx9.lib;dsound.lib;dxguid.lib;dxerr9.lib;expat.lib;lualib4.lib;ogg.lib;vorbisfile.lib;zlib.lib;legacy_stdio_definitions.lib;odbc32.lib;odbccp32.lib;urlmon.lib;unicows.lib;winmm.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);$(SolutionDir)bin\$(Configuration)\thirdparty;$(SolutionDir)thirdparty\directx9\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -211,7 +211,6 @@
     <ClCompile Include="Util\Localizing.cpp" />
     <ClCompile Include="Util\ResourceCache.cpp" />
     <ClCompile Include="util\string_util.cpp" />
-    <ClCompile Include="Util\SystemInfo.cpp" />
     <ClCompile Include="Util\SystemUtil.cpp" />
     <ClCompile Include="Util\VFSManager.cpp" />
     <ClCompile Include="Util\WndMsgQ.cpp" />
@@ -588,7 +587,6 @@
     <ClInclude Include="Util\RTTI.h" />
     <ClInclude Include="Util\SLLIST.h" />
     <ClInclude Include="util\string_util.h" />
-    <ClInclude Include="Util\SystemInfo.h" />
     <ClInclude Include="Util\SystemUtil.h" />
     <ClInclude Include="Util\VFSManager.h" />
     <ClInclude Include="Util\WndMsgQ.h" />

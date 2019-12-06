@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include ".\coptiondlg.h"
-#include "tgamectrl/tcombobox.h"
-#include "tgamectrl/tscrollbar.h"
+
+#include "coptiondlg.h"
+
 #include "../../Game.h"
 #include "../../System/CGame.h"
 #include "../../CApplication.h"
@@ -21,22 +21,15 @@
 #include "tgamectrl/tcontrolmgr.h"
 #include "tgamectrl/teditbox.h"
 
-#include "triggerinfo/triggerinfo.h"
 
 COptionDlg::COptionDlg(void)
 {
 	ZeroMemory(&m_VideoOption, sizeof( t_OptionVideo ));
 	m_iTab = IID_TABVIDEO;
-	m_pAdptInfo = NULL;
 }
 
 COptionDlg::~COptionDlg(void)
 {
-	if(m_pAdptInfo)
-	{
-		TI_ReleaseAdptInfo();
-		m_pAdptInfo = NULL;
-	}
 }
 
 bool COptionDlg::Create( const char* szIDD )
