@@ -2,7 +2,6 @@
 
 #include "CThreadGUILD.h"
 #include "CWS_Client.h"
-#include "CWS_Party.h"
 #include "CWS_Server.h"
 #include "SHO_WS_LIB.h"
 #include "WS_SocketLSV.h"

@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="src\cws_account.cpp" />
     <ClCompile Include="src\cws_client.cpp" />
-    <ClCompile Include="src\cws_party.cpp" />
     <ClCompile Include="src\cws_server.cpp" />
     <ClCompile Include="src\etc_math.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -44,14 +43,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\cw_client.h" />
     <ClInclude Include="src\cws_account.h" />
-    <ClInclude Include="src\cws_party.h" />
     <ClInclude Include="src\cws_server.h" />
     <ClInclude Include="src\etc_math.h" />
-    <ClInclude Include="src\object.h" />
     <ClInclude Include="src\stdafx.h" />
-    <ClInclude Include="src\who_ws_lib.h" />
     <ClInclude Include="src\ws_socketlsv.h" />
     <ClInclude Include="src\ws_threadsql.h" />
     <ClInclude Include="src\ws_zonelist.h" />
@@ -83,6 +78,7 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\cws_client.h" />
+    <ClInclude Include="src\sho_ws_lib.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">

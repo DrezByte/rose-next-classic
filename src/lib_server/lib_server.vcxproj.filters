@@ -29,9 +29,6 @@
     <ClCompile Include="IP_Addr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ipLIST.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CAcceptTHREAD.cpp">
       <Filter>Source Files\IOCP</Filter>
     </ClCompile>
@@ -65,9 +62,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="IP_Addr.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ipLIST.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="CAcceptTHREAD.h">

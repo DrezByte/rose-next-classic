@@ -2,7 +2,6 @@
 
 #include "CThreadLOG.h"
 #include "CWS_Client.h"
-#include "CWS_Party.h"
 #include "CWS_Server.h"
 #include "IO_PAT.h"
 #include "IO_STB.h"
