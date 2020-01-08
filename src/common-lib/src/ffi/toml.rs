@@ -85,7 +85,6 @@ pub unsafe extern "C" fn toml_get_str(
     let res = if let Some(v) = val {
         let mut ffi_str = Box::from_raw(_out);
         ffi_str.set_string(&v);
-        dbg!(&ffi_str);
         std::mem::forget(ffi_str);
         true
     } else {

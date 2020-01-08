@@ -381,7 +381,7 @@ CWS_Client::Recv_cli_CLAN_COMMAND(t_PACKET* pPacket) {
 //-------------------------------------------------------------------------------------------------
 short
 CWS_Client::GuildCMD(char* szCMD) {
-    char *pArg1, *pArg2, *pArg3;
+    char *pArg1, *pArg2;
     char* pDelimiters = (char*)" ";
 
     CStrVAR tmpStr;
@@ -567,6 +567,8 @@ CWS_Client::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
 //-------------------------------------------------------------------------------------------------
 bool
 CWS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
+	LOG_TRACE("Client %d sent packet: 0x%04X", Get_WSID(), pPacket->m_wType);
+
     /*
         패킷 디코딩...
         패킷 일련번호, 사이즈, CRC, CheckSUM등으로 적합패킷인지 판단.
@@ -1083,7 +1085,6 @@ CWS_ListCLIENT::Check_SocketALIVE() {
 
     DWORD dwCurTIME = ::timeGetTime();
     tagHASH<CWS_Account*>* pAccNODE;
-    tag_WLS_ACCOUNT sInfo;
 
     m_csHashACCOUNT.Lock();
     for (int iL = 0; iL < m_pHashACCOUNT->GetTableCount(); iL++) {

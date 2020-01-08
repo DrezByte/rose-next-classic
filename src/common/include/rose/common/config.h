@@ -81,7 +81,7 @@ namespace Rose {
 			GameServerConfig() :
 				language(ENGLISH),
 				ip("127.0.0.1"),
-				port(29100),
+				port(29200),
 				server_name("Channel 1"),
 				data_dir(get_exe_dir().append("data/")),
 				log_level(Rose::Common::LogLevel::Info),

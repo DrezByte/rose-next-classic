@@ -66,7 +66,7 @@ main() {
 		(char*)config.loginserver.ip.c_str(),
         config.loginserver.server_port,
 		(char*)config.worldserver.ip.c_str(), // Log Server IP
-		config.worldserver.server_port, // Log server port
+		config.worldserver.port, // Log server port
 		(char*)config.worldserver.world_name.c_str(),
 		config.worldserver.server_port,
 		config.worldserver.port,
