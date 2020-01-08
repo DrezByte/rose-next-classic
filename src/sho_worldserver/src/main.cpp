@@ -3,8 +3,10 @@
 #include <iostream>
 
 #include "lib_util.h"
-#include "rose/common/util.h"
 #include "sho_ws_lib.h"
+
+#include "rose/common/config.h"
+#include "rose/common/util.h"
 
 SHO_WS* g_instance;
 
@@ -30,52 +32,44 @@ CtrlHandler(DWORD fdwCtrlType) {
 
 int
 main() {
-    // Let login server load
-    Sleep(2000);
-
     HWND console_window = GetConsoleWindow();
     HINSTANCE console_handle = GetModuleHandle(nullptr);
     SetConsoleTitle("ROSE Next - World Server");
 
-    const int ENGLISH = 1;
-    int language = ENGLISH;
-    char* data_dir = (char*)"C:\\dev\\rose-next\\server\\data";
-    char* db_ip = (char*)"127.0.0.1";
-    char* db_name = (char*)"SHO";
-    char* db_user = (char*)"seven";
-    char* db_password = (char*)"tpqmsgkcm";
-    char* world_name = (char*)"1Rose Next";
-    char* server_ip = (char*)"127.0.0.1";
-    int server_port = 29100;
-    char* loginserver_ip = server_ip;
-    int loginserver_port = 19000;
-    int map_port = 19001;
+	// Load Config
+	Rose::Common::ServerConfig config;
+	bool config_loaded = config.load(get_exe_dir().append("server.toml"), "ROSE");
 
-    // Initialize the logger
-    char buffer[256] = {0};
-    Rose::Common::get_bin_dir(buffer, 256);
+	// Initialize the logger
+	Rose::Common::logger_init(config.worldserver.log_path.c_str(), config.worldserver.log_level);
 
-    std::string log_path(buffer);
-    log_path.append("/log/worldserver.log");
-
-    Rose::Common::logger_init(log_path.c_str(), Rose::Common::LogLevel::Trace);
+	if (!config_loaded) {
+		LOG_WARN("Could not load config file, using default settings");
+	}
 
     // Start the server
     LOG_INFO("Initializing the server");
-    g_instance = SHO_WS::InitInstance(console_handle, data_dir, ENGLISH);
+    g_instance = SHO_WS::InitInstance(console_handle, (char*)config.worldserver.data_dir.c_str(), config.worldserver.language);
 
     LOG_INFO("Connecting to the database");
-    g_instance->ConnectDB(db_ip, db_name, db_user, db_password, db_user, db_password);
+    g_instance->ConnectDB(
+		(char*)config.database.ip.c_str(),
+		(char*)config.database.name.c_str(),
+		(char*)config.database.username.c_str(),
+		(char*)config.database.password.c_str(),
+		(char*)config.database.username.c_str(), // Log DB User
+		(char*)config.database.password.c_str() // Log DB Password
+	);
 
     LOG_INFO("Starting the server");
     g_instance->Start(console_window,
-        loginserver_ip,
-        loginserver_port,
-        server_ip,
-        server_port,
-        world_name,
-        map_port,
-        server_port,
+		(char*)config.loginserver.ip.c_str(),
+        config.loginserver.server_port,
+		(char*)config.worldserver.ip.c_str(), // Log Server IP
+		config.worldserver.server_port, // Log server port
+		(char*)config.worldserver.world_name.c_str(),
+		config.worldserver.server_port,
+		config.worldserver.port,
         false);
 
     LOG_INFO("Starting the client socket");

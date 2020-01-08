@@ -22,7 +22,7 @@
 #include "classTIME.h"
 #include "ioDataPOOL.h"
 
-#include "rose/common/util.h"
+#include "rose/common/common_interface.h"
 
 #define TEST_ZONE_NO 100
 #define DB_INI_STRING 30

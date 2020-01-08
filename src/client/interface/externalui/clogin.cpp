@@ -430,7 +430,7 @@ void CLogin::Draw()
 	::setTransformSprite( mat );
 
 	// TODO: Dynamically set the version
-	drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL_OUTLINE ], true, 0, 0, g_dwWHITE, CStr::Printf("%s", Config::NAME));
+	drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL_OUTLINE ], true, 0, 0, g_dwWHITE, CStr::Printf("%s", GameConfig::NAME));
 }
 
 bool CLogin::ConnectLoginServer()

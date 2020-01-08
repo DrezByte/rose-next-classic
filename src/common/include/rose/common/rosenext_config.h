@@ -4,7 +4,7 @@
 
 
 namespace Rose {
-namespace Config {
+namespace GameConfig {
 	const char* const NAME = "ROSE Next";
 
 	const uint8_t MAX_LEVEL = 130;

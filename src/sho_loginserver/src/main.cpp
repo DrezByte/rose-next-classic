@@ -2,8 +2,10 @@
 
 #undef __T_PACKET
 
-#include "rose/common/util.h"
 #include "sho_ls_lib.h"
+
+#include "rose/common/config.h"
+#include "rose/common/util.h"
 
 SHO_LS* g_instance;
 
@@ -33,29 +35,26 @@ main() {
     HINSTANCE console_handle = GetModuleHandle(nullptr);
     SetConsoleTitle("ROSE Next - Login Server");
 
-    char* db_ip = (char*)"127.0.0.1";
-    int server_port = 19000;
-    int client_port = 29000;
-    byte* server_password = (byte*)"rose-next";
+	// Load config
+	Rose::Common::ServerConfig config;
+	bool config_loaded = config.load(get_exe_dir().append("server.toml"), "ROSE");
 
     // Initialize the logger
-    char buffer[256] = {0};
-    Rose::Common::get_bin_dir(buffer, 256);
+    Rose::Common::logger_init(config.loginserver.log_path.c_str(), config.loginserver.log_level);
 
-    std::string log_path(buffer);
-    log_path.append("/log/loginserver.log");
-
-    Rose::Common::logger_init(log_path.c_str(), Rose::Common::LogLevel::Info);
+	if (!config_loaded) {
+		LOG_WARN("Could not load config file, using default settings");
+	}
 
     // Start server
     LOG_INFO("Initializing the server");
     g_instance = SHO_LS::InitInstance(console_handle);
 
     LOG_INFO("Starting the server socket");
-    g_instance->StartServerSOCKET(console_window, db_ip, server_port, 0, false);
+    g_instance->StartServerSOCKET(console_window, (char*)config.database.ip.c_str(), config.loginserver.server_port, 0, false);
 
     LOG_INFO("Initializing the client socket");
-    g_instance->StartClientSOCKET(client_port, 0, server_password);
+    g_instance->StartClientSOCKET(config.loginserver.port, 0, (byte*)config.loginserver.password.c_str());
 
     SetConsoleCtrlHandler(CtrlHandler, true);
 

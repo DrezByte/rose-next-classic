@@ -8,6 +8,7 @@ use crate::logger::CoreLogger;
 
 #[repr(C)]
 #[derive(PartialEq)]
+#[allow(unused)]
 pub enum LogLevel {
     Trace,
     Debug,

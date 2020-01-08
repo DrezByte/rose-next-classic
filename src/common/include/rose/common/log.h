@@ -2,7 +2,7 @@
 #define CLOG_H
 #pragma once
 
-#include "rose/common/log_interface.h"
+#include "rose/common/common_interface.h"
 #include <mutex>
 
 #define LOG_TRACE(msg, ...) g_LOG.trace(__FILE__, __LINE__, msg, ##__VA_ARGS__);

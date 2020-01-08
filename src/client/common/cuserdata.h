@@ -537,7 +537,7 @@ public :
 
 	virtual void  SetCur_JOB (short nValue)	{	this->m_BasicINFO.m_nClass=nValue;			}
 
-	void  SetCur_LEVEL(WORD wValue)			{	this->m_GrowAbility.m_nLevel = ( wValue>Rose::Config::MAX_LEVEL) ? Rose::Config::MAX_LEVEL : wValue;	}
+	void  SetCur_LEVEL(WORD wValue)			{	this->m_GrowAbility.m_nLevel = ( wValue>Rose::GameConfig::MAX_LEVEL) ? Rose::GameConfig::MAX_LEVEL : wValue;	}
 	void  SetCur_EXP (__int64 lValue)			{	this->m_GrowAbility.m_lEXP=lValue;			}
 	void  SetCur_BonusPOINT(short nValue)	{	this->m_GrowAbility.m_nBonusPoint=nValue;	}
 	void  SetCur_SkillPOINT(short nValue)	{	this->m_GrowAbility.m_nSkillPoint=nValue;	}

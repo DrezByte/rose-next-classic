@@ -9,6 +9,7 @@
 #include "lib_util.h"
 #include "LIB_gsMAIN.h"
 
+#include "rose/common/config.h"
 #include "rose/common/util.h"
 
 CLIB_GameSRV* g_instance;
@@ -36,62 +37,59 @@ BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
 }
 
 int main() {
-	// Let login server load
-	Sleep(2000);
-
 	HWND console_window = GetConsoleWindow();
 	HINSTANCE console_handle = GetModuleHandle(nullptr);
 	SetConsoleTitle("ROSE Next - Game Server");
 
-	const int ENGLISH = 1;
-	int language = ENGLISH;
-	char* data_dir = (char*)"C:\\dev\\rose-next\\server\\data";
-	char* db_ip = (char*)"127.0.0.1";
-	char* db_name = (char*)"SHO";
-	char* db_user = (char*)"seven";
-	char* db_password = (char*)"tpqmsgkcm";
-	char* server_name = (char*)"Channel 1";
-	char* server_ip = (char*)"127.0.0.1";
-	int server_port = 29200;
-	char* loginserver_ip = server_ip;
-	int loginserver_port = 19005; // Not the actual port, actually connecting crashes the game server
-	char* charserver_ip = server_ip;
-	int charserver_port = 19001;
+	// Load Config
+	Rose::Common::ServerConfig config;
+	bool config_loaded = config.load(get_exe_dir().append("server.toml"), "ROSE");
 
 	// Initialize the logger
-	char buffer[256] = { 0 };
-	Rose::Common::get_bin_dir(buffer, 256);
+	Rose::Common::logger_init(config.gameserver.log_path.c_str(), config.gameserver.log_level);
 
-	std::string log_path(buffer);
-	log_path.append("/log/gameserver.log");
-
-	Rose::Common::logger_init(log_path.c_str(), Rose::Common::LogLevel::Info);
+	if (!config_loaded) {
+		LOG_WARN("Could not load config file, using default settings");
+	}
 
 	// Initialize and start the server
 	LOG_INFO("Initializing the server");
-	g_instance = CLIB_GameSRV::InitInstance(console_handle, data_dir, ENGLISH);
+	g_instance = CLIB_GameSRV::InitInstance(console_handle, (char*)config.gameserver.data_dir.c_str(), config.gameserver.language);
 
 	LOG_INFO("Connecting to other servers");
 	g_instance->ConnectSERVER(
-		db_ip,
-		db_name,
-		db_user,
-		db_password,
-		db_user,
-		db_password,
-		db_user,
-		db_password,
-		charserver_ip,
-		charserver_port,
-		loginserver_ip,
-		loginserver_port
+		(char*)config.database.ip.c_str(),
+		(char*)config.database.name.c_str(),
+		(char*)config.database.username.c_str(),
+		(char*)config.database.password.c_str(),
+		(char*)config.database.username.c_str(),
+		(char*)config.database.password.c_str(),
+		(char*)config.database.username.c_str(),
+		(char*)config.database.password.c_str(),
+		(char*)config.worldserver.ip.c_str(),
+		config.worldserver.server_port,
+		(char*)config.loginserver.ip.c_str(),
+		//config.loginserver.server_port,
+		19005 // Dummy value because actually connecting to that socket crashes the game server
 	);
 
 	LOG_INFO("Initializing all maps");
 	g_instance->InitLocalZone(true);
 
 	LOG_INFO("Starting the server");
-	g_instance->Start(console_window, server_name, server_ip, server_port, 1, 0, 0);
+	int channel_no = 1;
+	int low_age = 0;
+	int high_age = 0;
+
+	g_instance->Start(
+		console_window,
+		(char*)config.gameserver.server_name.c_str(),
+		(char*)config.gameserver.ip.c_str(),
+		config.gameserver.port,
+		channel_no,
+		low_age,
+		high_age
+	);
 
 	LOG_INFO("Setting user limit");
 	g_instance->Set_UserLIMIT(0);

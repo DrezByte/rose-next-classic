@@ -801,8 +801,8 @@ short classUSER::Cheat_set ( classUSER *pUSER, char *pArg1, char *pArg2, char *p
 
 				if ( iValue < 10 )
 					iValue = 10;
-				if ( iValue > Config::MAX_STAT )
-					iValue = Config::MAX_STAT;
+				if ( iValue > GameConfig::MAX_STAT )
+					iValue = GameConfig::MAX_STAT;
 
 				pUSER->m_BasicAbility.m_nBasicA[ nI ] = iValue;
 				pUSER->Update_SPEED();

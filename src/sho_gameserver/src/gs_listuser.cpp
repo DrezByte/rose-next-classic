@@ -23,10 +23,10 @@ CUserLIST::CUserLIST(UINT uiInitDataCNT, UINT uiIncDataCNT):
 
     char szTmp[MAX_PATH];
     t_HASHKEY HashKey;
-    m_HashLevelUpTRIGGER = new t_HASHKEY[Config::MAX_LEVEL];
-    ::ZeroMemory(m_HashLevelUpTRIGGER, sizeof(t_HASHKEY) * Config::MAX_LEVEL);
+    m_HashLevelUpTRIGGER = new t_HASHKEY[GameConfig::MAX_LEVEL];
+    ::ZeroMemory(m_HashLevelUpTRIGGER, sizeof(t_HASHKEY) * GameConfig::MAX_LEVEL);
 
-    for (int iL = 1; iL < Config::MAX_LEVEL; iL++) {
+    for (int iL = 1; iL < GameConfig::MAX_LEVEL; iL++) {
         sprintf(szTmp, "levelup_%d", iL);
         HashKey = ::StrToHashKey(szTmp);
         if (g_QuestList.GetQuest(HashKey))

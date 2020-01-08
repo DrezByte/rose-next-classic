@@ -13,9 +13,6 @@
       <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="include\rose\common\log.h" />
-    <ClInclude Include="..\common-lib\include\rose\common\log_interface.h" />
-    <ClInclude Include="..\common-lib\include\rose\common\util_interface.h" />
-    <ClInclude Include="include\rose\common\util.h" />
     <ClInclude Include="include\rose\common\status_effect\goddess_effect.h">
       <Filter>status_effect</Filter>
     </ClInclude>
@@ -28,6 +25,9 @@
     <ClInclude Include="include\rose\common\status_effect\status_effect_data.h">
       <Filter>status_effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\common-lib\include\rose\common\common_interface.h" />
+    <ClInclude Include="include\rose\common\util.h" />
+    <ClInclude Include="include\rose\common\config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
