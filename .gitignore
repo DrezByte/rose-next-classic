@@ -4,7 +4,8 @@
 
 # Game/Server data
 game/error.txt
-server/data/
+game/sevenhearts.ini
+server/
 
 # Visual studio
 *.vs/
@@ -14,3 +15,5 @@ server/data/
 
 # Generated files
 *.inc
+src/common-lib/include/rose/common/common_interface.h
+src/engine/include/zz_build_count

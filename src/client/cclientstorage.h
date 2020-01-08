@@ -68,7 +68,7 @@ const	int		MAX_GAMMA_COUNT			= 5;
 const	int		MAX_PERFORMANCE_COUNT	= 5;
 const	int		g_iDefaultCamera		= 1;
 const	int		g_iDefaultPerfromance	= 3;
-const	int		g_iDefaultFullScreen	= 1;
+const	int		g_iDefaultFullScreen	= 0;
 const	int		g_iDefaultAntiAlising	= 1;	// <AntiAlising />
 const	int		c_iDefaultControlType	= 1;
 
