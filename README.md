@@ -3,7 +3,7 @@
 ## Setup
 ### Requirements
 - Rust 1.38+
-- Visual studio 2017 Community or better
+- Visual studio 2019 Community or better
 - SQL Server Express 2014+
 - SQL Server Management Studio
 
@@ -23,9 +23,6 @@ rustup show
 Once all the Rust dependendencies are built then all the thirdparty C++ dependencies must be built.
 This can be done by compiling the `thirdparty.sln` solution. Finally we can compile the remaining
 projects by compiling the `rose-next.sln` solution.
-
-The `servers.sln` is provided as a convenience to allow running and debugging the servers will
-compiling and rebuilding the client projects using another solution.
 
 #### Rust
 - Change into the src directory `cd src/`
