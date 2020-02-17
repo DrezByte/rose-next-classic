@@ -387,22 +387,16 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\zz_script_lua.inc">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="bitmap1.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="include\zz_script_lua.inc">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="include\zz_version_info.inc">
       <Filter>Header Files</Filter>
-    </None>
-    <None Include="include\zz_build_count.lua">
-      <Filter>Lua Files</Filter>
-    </None>
-    <None Include="include\zz_script_lua.lua">
-      <Filter>Lua Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -723,5 +717,9 @@
     <ResourceCompile Include="dialog.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="include\zz_build_count.lua" />
+    <CustomBuild Include="include\zz_script_lua.lua" />
   </ItemGroup>
 </Project>

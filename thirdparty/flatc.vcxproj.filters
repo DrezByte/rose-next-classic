@@ -122,9 +122,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="flatbuffers-1.10.0\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Header Files">
       <UniqueIdentifier>{D7E4D4C7-F06D-3155-A22E-5DC4986B4726}</UniqueIdentifier>
     </Filter>
