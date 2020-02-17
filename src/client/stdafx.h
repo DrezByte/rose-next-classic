@@ -22,9 +22,11 @@
 #include <crtdbg.h>
 
 // C++ STL
+#include <array>
 #include <string>
 #include <algorithm>
 #include <map>
+#include <unordered_map>
 
 // DirectX
 #include <d3d9.h>
