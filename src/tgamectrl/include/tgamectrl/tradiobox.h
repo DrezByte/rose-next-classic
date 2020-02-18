@@ -27,6 +27,8 @@ public:
 	unsigned int		GetPressedButtonID(){ return m_iPressedButton; }
 	bool				SetPressedButton( unsigned int iID );
 
+	std::vector<CWinCtrl*> GetChildren() override;
+
 protected:
 	RADIOBUTTON_MAP		m_Children;
 	unsigned int		m_iPressedButton;				/// 현재 선택된 라디오 버튼 ID

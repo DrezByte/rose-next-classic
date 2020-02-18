@@ -273,3 +273,14 @@ void CZListBox::InsertItem( int iIndex, CWinCtrl* pCtrl )
 	swap( m_Items, tempContainer );	
 
 }
+
+std::vector<CWinCtrl*> CZListBox::GetChildren()
+{
+	std::vector<CWinCtrl*> children;
+	for (CWinCtrl* child : m_Items) {
+		if (child) {
+			children.push_back(child);
+		}
+	}
+	return children;
+}

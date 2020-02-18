@@ -1,6 +1,8 @@
 #ifndef _CJContainer_
 #define _CJContainer_
 
+#include<vector>
+
 #include "tobject.h"
 
 class CWinCtrl;
@@ -32,6 +34,9 @@ public:
 	void		Remove( unsigned index );
 	void		RemoveAll();
 	void		SetChildEnable( unsigned iID, bool bEnable );
+
+	std::vector<CWinCtrl*> GetChildren();
+
 protected:
 	void		MoveCtrl2ListEnd( int iID );
 protected:

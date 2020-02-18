@@ -34,6 +34,8 @@ public:
 	void		SetCloseButton( CTButton* pButton );
 	void		SetIconButton( CTButton* pButton );
 
+	std::vector<CWinCtrl*> GetChildren() override;
+
 	enum{
 		IID_IMAGE_ICON	= 2,
 		IID_IMAGE_BG	= 3,

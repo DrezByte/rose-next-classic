@@ -187,3 +187,26 @@ void CTCaption::SetIconButton( CTButton* pButton )
 	m_pIconButton = pButton;
 	m_pIconButton->SetControlID( IID_BTN_CLOSE );
 }
+
+std::vector<CWinCtrl*> CTCaption::GetChildren()
+{
+	std::vector<CWinCtrl*> children;
+
+	if (m_pImage) {
+		children.push_back(m_pImage);
+	}
+
+	if (m_pIcon) {
+		children.push_back(m_pIcon);
+	}
+
+	if (m_pCloseButton) {
+		children.push_back(m_pCloseButton);
+	}
+
+	if (m_pIconButton) {
+		children.push_back(m_pIconButton);
+	}
+
+	return children;
+}

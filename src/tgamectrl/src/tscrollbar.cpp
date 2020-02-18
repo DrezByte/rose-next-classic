@@ -374,3 +374,21 @@ void CTScrollBar::MoveHome()
 {
 	SetValue( 0 );
 }
+
+std::vector<CWinCtrl*> CTScrollBar::GetChildren()
+{
+	std::vector<CWinCtrl*> children;
+	if (m_pPrevButton) {
+		children.push_back(m_pPrevButton);
+	}
+
+	if (m_pNextButton) {
+		children.push_back(m_pNextButton);
+	}
+
+	if (m_pScrollBox) {
+		children.push_back(m_pScrollBox);
+	}
+
+	return children;
+}

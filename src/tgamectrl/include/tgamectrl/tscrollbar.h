@@ -53,6 +53,8 @@ public:
 	/// IScrollModel과 ScrollBox(Thumb)을 조정( Prev,Next버튼,wheel 처리시 )
 	void			SetValue(int iValue);
 
+	std::vector<CWinCtrl*> GetChildren() override;
+
 protected:
 	CTButton*		m_pPrevButton;				// "다음" 버튼						
 	CTButton*		m_pNextButton;				// "이전" 버튼

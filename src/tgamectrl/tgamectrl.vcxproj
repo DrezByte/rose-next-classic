@@ -235,7 +235,8 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir)include\$(ProjectName);$(SolutionDir)thirdparty\directx9\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TGAMECTRL_STATIC;_DEBUG;</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>
+      </MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -273,6 +274,7 @@
       <WarningLevel>Level3</WarningLevel>
       <debugInformationFormat>
       </debugInformationFormat>
+      <MinimalRebuild />
     </ClCompile>
     <Link>
       <AdditionalDependencies>Winmm.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>

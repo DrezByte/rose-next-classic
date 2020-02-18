@@ -278,3 +278,29 @@ void CTabbedPane::Hide()
 		iter->m_pContainer->Hide();
 	}
 }
+
+std::vector<CWinCtrl*> CTabbedPane::GetChildren()
+{
+	std::vector<CWinCtrl*> children;
+
+	if (m_pRadioBox) {
+		children.push_back(m_pRadioBox);
+	}
+
+	if (m_pMinimizeButton) {
+		children.push_back(m_pMinimizeButton);
+	}
+
+	for (S_TabbedPane& tab : m_Tabs) {
+		if (tab.m_pRadioButton) {
+			children.push_back(tab.m_pRadioButton);
+		}
+
+		if (tab.m_pContainer) {
+			std::vector<CWinCtrl*> container_children = tab.m_pContainer->GetChildren();
+			children.insert(children.end(), container_children.begin(), container_children.end());
+		}
+	}
+
+	return children;
+}

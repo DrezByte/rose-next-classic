@@ -23,6 +23,7 @@ public:
 	virtual void Update( POINT ptMouse );
 	virtual unsigned Process( unsigned uiMsg, WPARAM wParam, LPARAM lParam );
 	virtual void MoveWindow( POINT pt );
+	std::vector<CWinCtrl*> GetChildren() override;
 
 	/// IScrollModel
 	virtual int GetValue();

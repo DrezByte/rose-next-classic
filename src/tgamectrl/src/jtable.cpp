@@ -194,6 +194,11 @@ void CJTable::MoveWindow( POINT pt )
 		(*iter)->MoveWindow( m_sPosition );
 }
 
+std::vector<CWinCtrl*> CJTable::GetChildren()
+{
+	return m_Items;
+}
+
 CWinCtrl* CJTable::GetItem( int iIndex )
 {
 	if( iIndex < 0 || iIndex >= (int)m_Items.size() )

@@ -193,3 +193,12 @@ void CTScrollBox::SetBlinkImage( CTImage* pImage )
 {
 	m_pBlinkImage = pImage;
 }
+
+std::vector<CWinCtrl*> CTScrollBox::GetChildren()
+{
+	if (m_pBlinkImage) {
+		return { m_pBlinkImage };
+	}
+
+	return {};
+}

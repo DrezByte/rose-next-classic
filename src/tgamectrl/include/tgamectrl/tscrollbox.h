@@ -32,8 +32,8 @@ public:
 	void		SetBlink();
 	void		SetUnblink();
 	void		SetBlinkImage( CTImage* pImage );
-protected:
 
+	std::vector<CWinCtrl*> GetChildren() override;
 
 protected:
 //	BYTE			m_bBlink

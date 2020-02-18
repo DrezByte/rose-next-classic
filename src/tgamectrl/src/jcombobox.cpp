@@ -326,3 +326,28 @@ void CJComboBox::SelectItem( unsigned iSubscript )
 	if( m_pListBox )
 		m_pListBox->SelectItem( iSubscript );
 }
+
+std::vector<CWinCtrl*> CJComboBox::GetChildren()
+{
+	std::vector<CWinCtrl*> children;
+	if (m_pDropButton) {
+		children.push_back(m_pDropButton);
+	}
+
+	if (m_pDropBoxTopImage) {
+		children.push_back(m_pDropBoxTopImage);
+	}
+
+	if (m_pDropBoxMiddleImage) {
+		children.push_back(m_pDropBoxMiddleImage);
+	}
+
+	if (m_pDropBoxBottomImage) {
+		children.push_back(m_pDropBoxBottomImage);
+	}
+
+	if (m_pListBox) {
+		children.push_back(m_pListBox);
+	}
+	return children;
+}

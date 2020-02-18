@@ -52,6 +52,9 @@ public:
 
 	
 	void		ClearItem();///DropBox에 있는 모든 Item들을 지운다.
+
+	std::vector<CWinCtrl*> GetChildren() override;
+
 protected:
 	void		ToggleShowDropBox();
 	void		DrawSelectedItem();

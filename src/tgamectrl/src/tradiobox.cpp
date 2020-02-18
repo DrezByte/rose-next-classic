@@ -80,3 +80,12 @@ void CTRadioBox::EventChangeSelect( unsigned int iID )
 
 	}
 }
+
+std::vector<CWinCtrl*> CTRadioBox::GetChildren() {
+	std::vector<CWinCtrl*> children;
+	for (auto& kv : m_Children) {
+		CTRadioButton* child_radiobutton = kv.second;
+		children.push_back(child_radiobutton);
+	}
+	return children;
+}

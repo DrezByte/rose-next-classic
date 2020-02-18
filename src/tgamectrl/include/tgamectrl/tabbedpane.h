@@ -48,6 +48,7 @@ public:
 	void	 SetMinimize( bool bMinimize );									/// 최소/최대화
 	void	 SetMinimizeButton( CTButton* pButton );						/// 최소화 버튼 Set
 
+	std::vector<CWinCtrl*> GetChildren() override;
 
 protected:
 	std::list< S_TabbedPane >	m_Tabs;										/// child를 보관할 Container

@@ -6,6 +6,7 @@
 #include "itdraw.h"
 #include "ActionListenerList.h"
 #include <string>
+#include <vector>
 
 #define STATUS_VISION			0x0001
 #define STATUS_FOCUS			0x0002
@@ -141,7 +142,9 @@ public:
 	unsigned int	GetControlID( ){ return m_iControlID; };
 
 	/// 상태변경 함수 
-	void			SetCtrlStatus(DWORD	dwStatus)	{ m_dwStatus = dwStatus; }
+	void SetCtrlStatus(DWORD dwStatus) { m_dwStatus = dwStatus; };
+	DWORD GetCtrlStatus() { return m_dwStatus; };
+
 	virtual	void	Show()							{ m_dwStatus |=STATUS_VISION;  }
 	virtual	void	Hide()							{ m_dwStatus &= ~STATUS_VISION; }	
 	virtual void	SetFocus(bool bFocus)
@@ -212,6 +215,8 @@ public:
 
 	void			SetSizeFit( bool bFit );
 	bool			GetSizeFit();
+
+	virtual std::vector<CWinCtrl*> GetChildren() { return {}; };
 
 protected:
 	void	DrawHeader();

@@ -323,6 +323,14 @@ bool CTDialog::Remove( int iID )
 	return false;
 }
 
+void CTDialog::Clear()
+{
+	for (CWinCtrl* child : m_listChild) {
+		delete child;
+	}
+	m_listChild.clear();
+}
+
 CWinCtrl* CTDialog::Find( int iID )
 {
 	WINCTRL_LIST_ITOR iter;
@@ -557,6 +565,12 @@ void CTDialog::SetImage( CTImage* pImage )
 {
 	m_pImage = pImage;
 }
+
+CTImage* CTDialog::GetImage()
+{
+	return m_pImage;
+}
+
 ///Children 중에 첫번째 EditBox에 Focus를 준다.
 void CTDialog::ProcessLButtonDown()
 {
@@ -583,4 +597,28 @@ void CTDialog::RefreshDlg()
 
 void CTDialog::SetInterfacePos_After()
 {
+}
+
+std::vector<CWinCtrl*> CTDialog::GetChildren()
+{
+	std::vector<CWinCtrl*> children;
+	for (CWinCtrl* child : m_listChild) {
+		if (child) {
+			children.push_back(child);
+		}
+	}
+
+	if (m_pCaption) {
+		children.push_back(m_pCaption);
+	}
+
+	if (m_pImage) {
+		children.push_back(m_pImage);
+	}
+
+	if (m_pStatusBar) {
+		children.push_back(m_pStatusBar);
+	}
+
+	return children;
 }

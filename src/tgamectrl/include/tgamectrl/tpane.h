@@ -27,6 +27,7 @@ public:
 	CWinCtrl*	FindChild( unsigned iID );
 	CWinCtrl*	Find( const char * szName );
 
+	std::vector<CWinCtrl*> GetChildren() override;
 protected:
 	CJContainer		m_Children;
 };

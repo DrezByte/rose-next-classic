@@ -110,6 +110,7 @@ void CJContainer::SetChildEnable( unsigned iID, bool bEnable )
 	if( pCtrl )
 		pCtrl->SetEnable( bEnable );
 }
+
 void CJContainer::Add( CWinCtrl* pCtrl )
 {
 	_ASSERT( pCtrl );
@@ -142,4 +143,15 @@ void CJContainer::RemoveAll()
 		iter = m_Children.erase( iter );
 		delete pCtrl;
 	}
+}
+
+std::vector<CWinCtrl*> CJContainer::GetChildren()
+{
+	std::vector<CWinCtrl*> children;
+	for (CWinCtrl* child : m_Children) {
+		if (child) {
+			children.push_back(child);
+		}
+	}
+	return children;
 }

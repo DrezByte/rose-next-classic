@@ -69,3 +69,8 @@ CWinCtrl* CTPane::Find( const char * szName )
 	return m_Children.Find( szName );
 }
 
+std::vector<CWinCtrl*> CTPane::GetChildren()
+{
+	return m_Children.GetChildren();
+}
+

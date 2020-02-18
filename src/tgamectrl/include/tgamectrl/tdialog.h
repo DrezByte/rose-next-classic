@@ -3,6 +3,7 @@
 
 #include "winctrl.h"
 #include <string>
+#include <vector>
 #include "TCommandQ.h"
 
 class CTCaption;
@@ -41,11 +42,16 @@ public:
 	/// 다이얼로그의 사용가능을 체크하기위한 virtual method : Client에서 재정의하여 사용 - 	if( return value == 1 ) Valid 
 	virtual int		IsInValidShow(){ return 0; }
 
-	///WinCtrl 추가/삭제/찾기 Method
-	void		Add( CWinCtrl* pChild );
-	bool		Remove( int iID );
+	/// Add a child
+	void Add( CWinCtrl* pChild );
+	/// Remove a child by index
+	bool Remove( int iID );
+	/// Clear all children
+	void Clear();
+
 	CWinCtrl*	Find( int iID );
 	CWinCtrl*	Find( const char * strName );
+	std::vector<CWinCtrl*> GetChildren() override;
 
 	/// 사용안하고 있다.
 	void		SetStatusBar( CTStatusBar* pStatusBar );				
@@ -55,7 +61,6 @@ public:
 	long		GetChildCount();
 	CTCaption*	GetCaption(){ return m_pCaption; }
 	void		ChangeCaptionRect( RECT rc );
-
 
 	///특정 child만을 Show/Hide/Enable
 	bool		ShowChild( unsigned int iID );
@@ -120,7 +125,7 @@ public:
 
 	void		SetExtent( int i );
 	void		SetImage( CTImage* pImage );
-
+	CTImage* GetImage();
 
 protected:
 	void		MoveCtrl2ListEnd( int iID );											/// 해당 ID의 child를 리스트의 맨뒤로 이동

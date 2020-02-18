@@ -37,6 +37,8 @@ public:
 	void					SetFont( int iFont );
 	int						GetFont();
 
+	std::vector<CWinCtrl*> GetChildren() override;
+
 	enum eTextAlign{
 		LEFT,
 		CENTER,

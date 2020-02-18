@@ -46,6 +46,8 @@ public:
 	virtual RECT GetWindowRect();
 	//*---------------------------------------------------//
 
+	std::vector<CWinCtrl*> GetChildren() override;
+
 protected:
 
 	int							m_iValue;

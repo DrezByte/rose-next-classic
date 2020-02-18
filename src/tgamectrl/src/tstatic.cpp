@@ -83,3 +83,12 @@ int CTStatic::GetFont()
 {
 	return m_iFont;
 }
+
+std::vector<CWinCtrl*> CTStatic::GetChildren()
+{
+	if (m_pImage) {
+		return { m_pImage };
+	}
+
+	return {};
+}

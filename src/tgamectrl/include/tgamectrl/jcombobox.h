@@ -52,6 +52,8 @@ public:
 	void			DrawDropBoxImage();											/// 3부분으로 나누어진 Images를 그린다.
 	void			ClearItem();												/// DropBox에 있는 모든 Item들을 지운다.
 
+	std::vector<CWinCtrl*> GetChildren() override;
+
 protected:
 	void		ToggleShowDropBox();											/// 드랍박스를 Show/Hide한다
 	void		DrawSelectedItem();												/// 선택된 아이템을 드랍박스 위에 그린다.
