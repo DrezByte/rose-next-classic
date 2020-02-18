@@ -284,6 +284,25 @@ short CSkillSlot::GetSkillDelayTime( short nIndex, short nTabIndex )
 	return m_SkillSlot[ nTabIndex*( MAX_LEARNED_SKILL_CNT/4 ) + nIndex ]->GetSkillDelayTime();
 }
 
+void CSkillSlot::UpdateObservers()
+{
+	for (int i = 0; i < MAX_LEARNED_SKILL_CNT; i++)
+	{
+		if (m_SkillSlot[i] != NULL)
+		{
+			m_Event.SetID(CTEventSkill::EID_DEL_SKILL);
+			m_Event.SetIndex(i);
+			SetChanged();
+			NotifyObservers(&m_Event);
+
+			m_Event.SetID(CTEventSkill::EID_ADD_SKILL);
+			m_Event.SetIndex(i);
+			SetChanged();
+			NotifyObservers(&m_Event);
+		}
+	}
+}
+
 
 //----------------------------------------------------------------------------------------------------
 /// @param

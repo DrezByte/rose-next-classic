@@ -1148,6 +1148,9 @@
     <ClCompile Include="util\string_util.cpp">
       <Filter>Source Files\Util</Filter>
     </ClCompile>
+    <ClCompile Include="Interface\DLGs\console_dialog.cpp">
+      <Filter>Source Files\Interface\DLGs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCamera.h">
@@ -2247,6 +2250,9 @@
     </ClInclude>
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h">
       <Filter>Source Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\DLGs\console_dialog.h">
+      <Filter>Source Files\Interface\DLGs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

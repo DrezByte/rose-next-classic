@@ -281,6 +281,10 @@ bool CITStateNormal::ProcessHotKeyAutoEnter( unsigned uiMsg, WPARAM wParam, LPAR
 			case 0x4f: //'o'
 				g_itMGR.OpenDialog( DLG_TYPE_OPTION );
 				return true;
+			// case VK_OEM_3: // '~'
+			case 0x5A: // 'z'
+				g_itMGR.OpenDialog(DLG_TYPE_CONSOLE);
+				return true;
 			default:
 				break;
 			}

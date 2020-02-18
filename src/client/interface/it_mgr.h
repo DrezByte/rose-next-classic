@@ -141,7 +141,6 @@ public:
 	void FreeDLG();
 	void DrawDLGs(POINT ptMouse);
 
-
 	CChatDLG*			GetChatDLG();
 	CDialogDlg*			GetQueryDLG();
 	CQuickBAR*			GetQuickBAR();
@@ -269,6 +268,9 @@ public:
 	CTDrawImpl*					GetDrawImplPtr();
 
 	void		RefreshDlg();															//  해상도 변경에 따른 위치 재조정.
+
+	// Reloads all the dialogs from their XML files
+	void reload_dialogs();
 
 private:
 	void		ProcCommand();															/// Command Queue에 저장되어 있는 TCommand를 실행한다.

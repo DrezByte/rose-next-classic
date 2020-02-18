@@ -62,6 +62,7 @@ DLG_TYPE_DELIVERYSTORE,	///
 DLG_TYPE_INPUTNAME,		/// 캐릭터 이름을 입력받는 창
 DLG_TYPE_BANKWINDOW,	
 DLG_TYPE_QUICKBAR_EXT,
+DLG_TYPE_CONSOLE,
 DLG_TYPE_MAX
 };
 // *----------------------------------------------------------------* //

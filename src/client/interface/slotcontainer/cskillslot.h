@@ -49,6 +49,8 @@ public:
 	short	GetSkillDelayTime( short nSlotIndex );
 	short	GetSkillDelayTime( short nIndex, short nTabIndex );
 
+	// Re-notify all observers
+	void UpdateObservers();
 	//----------------------------------------------------------------------------------------------------
 	/// method for UI interface
 	//----------------------------------------------------------------------------------------------------

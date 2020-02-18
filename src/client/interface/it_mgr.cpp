@@ -79,6 +79,7 @@
 #include "Dlgs/QuickToolBAR.h"
 #include "Dlgs/TargetObjectDLG.h"
 
+#include "dlgs/console_dialog.h"
 
 #include "cursor/CCursor.h"
 
@@ -105,6 +106,7 @@
 #include "tgamectrl/teditbox.h"
 #include "tgamectrl/tlistbox.h"
 #include "tgamectrl/tscrollbar.h"
+#include "tgamectrl/timage.h"
 #include "tgamectrl/winctrl.h"
 
 #include "../GameCommon/ReloadProcess.h"
@@ -182,6 +184,7 @@ static const std::array<char*, DLG_TYPE_MAX> DIALOG_FILENAME = {
     "dlginputname", // DLG_TYPE_INPUTNAME
     "DlgBankWindow", // DLG_TYPE_BANKWINDOW
     "DlgQuickBar", // DLG_TYPE_QUICKBAR_EXT
+    "", // DLG_TYPE_CONSOLE
 };
 
 IT_MGR::IT_MGR() {
@@ -234,6 +237,7 @@ IT_MGR::Init() {
     m_listSavedDialog.push_back(DLG_TYPE_SKILL);
     m_listSavedDialog.push_back(DLG_TYPE_OPTION);
     m_listSavedDialog.push_back(DLG_TYPE_HELP);
+    m_listSavedDialog.push_back(DLG_TYPE_CONSOLE);
 
     //// add Observers to Observables
 
@@ -594,6 +598,16 @@ IT_MGR::InitDLG() {
     CChatDLG* pChatDLG = new CChatDLG;
     pChatDLG->Create(DIALOG_FILENAME[DLG_TYPE_CHAT]);
     AppendDlg(DLG_TYPE_CHAT, pChatDLG, pChatDLG->GetControlID());
+
+    // TODO: RAM: Move this to an XML file?
+	int console_width = static_cast<int>(g_pCApp->GetWIDTH() * 0.75f);
+    int console_height = static_cast<int>(g_pCApp->GetHEIGHT() * 0.50f);
+    int console_x = (g_pCApp->GetWIDTH() - console_width) / 2;
+    int console_y = (g_pCApp->GetHEIGHT() - console_height) / 2;
+
+    ConsoleDialog* console_dialog = new ConsoleDialog();
+    console_dialog->Create(console_x, console_y, console_width, console_height);
+    AppendDlg(DLG_TYPE_CONSOLE, console_dialog, console_dialog->GetControlID());
 
     MoveDlg2ListEnd(pChatDLG);
 
@@ -1773,4 +1787,44 @@ IT_MGR::GetReloadProcess() {
 CTDrawImpl*
 IT_MGR::GetDrawImplPtr() {
     return &g_DrawImpl;
+}
+
+void
+IT_MGR::reload_dialogs() {
+    for (CTDialog* dialog: m_Dlgs) {
+		int dialog_type = dialog->GetDialogType();
+		if (dialog_type >= DLG_TYPE_MAX) {
+			continue;
+		}
+
+		const char* filename = DIALOG_FILENAME[dialog_type];
+		if (strcmp(filename, "") == 0) {
+			continue;
+		}
+
+		int status = dialog->GetCtrlStatus();
+		POINT offset = dialog->GetOffset();
+		POINT position = dialog->GetPosition();
+		bool visible = dialog->IsVision();
+
+		dialog->Clear();
+		dialog->Create(filename);
+
+		dialog->SetCtrlStatus(status);
+		dialog->SetOffset(offset);
+		dialog->MoveWindow(position);
+		dialog->RefreshDlg();
+
+		if (dialog->IsDefaultVisible() || visible) {
+			dialog->Show();
+		}
+
+		if (dialog_type == DLG_TYPE_SKILL) {
+			g_pAVATAR->GetSkillSlot()->UpdateObservers();
+		}
+
+		POINT mouse_pos;
+		CGame::GetInstance().Get_MousePos(mouse_pos);
+		dialog->Update(mouse_pos);
+    }
 }
