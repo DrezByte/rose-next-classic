@@ -238,106 +238,31 @@ bool CApplication::ParseArgument (char *pStr)
 	char *pToken;
 	char *pDelimiters = " ,\t\n";
 
-	bool bPassLuncher = false;
-#ifdef _DEBUG
-	bPassLuncher = true;
-#endif
-
-
-	g_GameDATA.m_nServerID = 0;
-	g_GameDATA.m_nSightRange = 13;
-
-	g_GameDATA.m_bDirectLogin = false;
-	g_GameDATA.m_bCheckDupRUN = true;
-
 	pToken = CStr::GetTokenFirst (pStr, pDelimiters);
 	while ( pToken ) 
 	{
-		if ( !strcmp( pToken, "@TRIGGER_SOFT@" ) ) 
-		{
-			bPassLuncher = true;
-		}
-
-		if ( !strcmp( pToken, "_WINDOW_MODE_") )
-			m_bFullScreenMode = false;
-		if ( !strcmp( pToken, "_800" ) ) {
-			m_nScrWidth = 800;
-			m_nScrHeight = 600;
-		}
-
-		if ( !strcmp( pToken, "_1024" ) ) {
-			m_nScrWidth = 1024;
-			m_nScrHeight = 768;
-		}
-
-		if ( !strcmp( pToken, "_1280" ) ) {
-			m_nScrWidth = 1280;
-			m_nScrHeight = 1024;
-		}
-
-		if ( !strcmp( pToken, "_1280P" ) ) {
-			m_nScrWidth = 1280;
-			m_nScrHeight = 720;
-		}
-
-		if ( !strcmpi( pToken, "_sight" ) ) {
-			pToken = CStr::GetTokenNext (pDelimiters);
-			if ( pToken ) {
-				g_GameDATA.m_nSightRange = atoi( pToken );
-			}
-		}
-		if ( !strcmpi( pToken, "_noui" ) ) { // 인터페이스 감추기. - zho
-			g_GameDATA.m_bNoUI = true;
-		}
-		
-		if ( !strcmpi( pToken, "_server" ) ) {
-			// Get server ip...
+		if (!strcmpi(pToken, "--server")) {
 			pToken = CStr::GetTokenNext (pDelimiters);
 			if ( pToken ) {
 				g_GameDATA.m_ServerIP.Set( pToken );
 			}
 		}
 
-		if ( !strcmpi( pToken, "_port" ) ) {
+		if (!strcmpi(pToken, "--port")) {
 			pToken = CStr::GetTokenNext (pDelimiters);
 			if ( pToken ) {
 				g_GameDATA.m_wServerPORT = atoi( pToken );
 			}
 		}
 
-		if( !strcmpi( pToken, "_serverID" ) ) {
-			pToken = CStr::GetTokenNext (pDelimiters);
-			if ( pToken ) {
-				g_GameDATA.m_nServerID = atoi( pToken );
-			}
-		}
-
-		if( !strcmpi( pToken, "_direct" ) ) 
-		{			
-			g_GameDATA.m_bDirectLogin = true;			
-		}
-
-		if( !strcmpi( pToken,"_test" ) )
-			g_GameDATA.m_bForOpenTestServer = true;
-
-		if( !strcmpi( pToken, "_dup" ) )
-			g_GameDATA.m_bCheckDupRUN = false;
-
-		/// 이하 일본 NHN JAPAN을 위한 Argument Setting( 2005/5/18 )
-		if( !strcmpi( pToken,"_RCODE_JP_HG" ) )
-			g_GameDATA.m_is_NHN_JAPAN = true;
-
-
-		if ( !strcmpi( pToken, "_userid" ) ) 
-		{
+		if (!strcmpi(pToken, "--username")) {
 			pToken = CStr::GetTokenNext (pDelimiters);
 			if ( pToken ) {
 				g_GameDATA.m_Account.Set( pToken );
 			}
 		}
 
-		if ( !strcmpi( pToken, "_pw" ) ) 
-		{
+		if (!strcmpi(pToken, "--password")) {
 			pToken = CStr::GetTokenNext (pDelimiters);
 			if ( pToken )
 			{
@@ -345,30 +270,9 @@ bool CApplication::ParseArgument (char *pStr)
 				CopyMemory( g_GameDATA.m_PasswordMD5, pToken, strlen( pToken ) );
 			}
 		}
-		//----------------------------------------------------------/
-
-//#ifdef	_DEBUG
-//		if ( !strcmpi( pToken, "_id" ) ) {
-//			pToken = CStr::GetTokenNext (pDelimiters);
-//			if ( pToken ) {
-//				g_GameDATA.m_Account.Set( pToken );
-//			}
-//		}
-//
-//		if ( !strcmpi( pToken, "_pw" ) ) {
-//			pToken = CStr::GetTokenNext (pDelimiters);
-//			if ( pToken ) {
-//				g_GameDATA.m_Password.Set( pToken );
-//			}
-//		}
-//
-//#endif
 
 		pToken = CStr::GetTokenNext (pDelimiters);
 	}
-
-	if( !bPassLuncher )
-		return false;
 
 	return true;
 }

@@ -80,7 +80,6 @@ public:
 
   bool m_bDisplayDebugInfo;
   float m_fTestVal;
-  bool m_bDirectLogin;
   bool m_bForOpenTestServer;
 
   int m_iTemp;
@@ -105,7 +104,6 @@ public:
   int m_iWorldStaminaVal;
   int AdjustAvatarStamina(int iGetExp);
 
-  short m_nServerID;
   CStrVAR m_ServerIP;
   WORD m_wServerPORT;
   CStrVAR m_Account;
