@@ -927,6 +927,7 @@ extern const float	g_fMaxDistance;
 //-------------------------------------------------------------------------------------------------
 #endif
 
+#ifndef __SERVER
 const ZZ_COLOR zz_color_red = D3DCOLOR_ARGB(255, 255, 0, 0);
 const ZZ_COLOR zz_color_green = D3DCOLOR_ARGB(255, 0, 255, 0);
 const ZZ_COLOR zz_color_blue = D3DCOLOR_ARGB(255, 0, 0, 255);
@@ -936,3 +937,4 @@ const ZZ_COLOR zz_color_yellow = D3DCOLOR_ARGB(255, 255, 255, 0);
 const ZZ_COLOR zz_color_gray = D3DCOLOR_ARGB(255, 150, 150, 150);
 const ZZ_COLOR zz_color_violet = D3DCOLOR_ARGB(255, 255, 0, 255);
 const ZZ_COLOR zz_color_Oorange = D3DCOLOR_ARGB(255, 255, 128, 0);
+#endif
