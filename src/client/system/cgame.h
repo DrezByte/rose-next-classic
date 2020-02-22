@@ -141,17 +141,6 @@ public:
 	void    SetRayOrig( const D3DXVECTOR3& RayOrig ){ m_RayOrig = RayOrig; }
 	void    SetRayDir( const D3DXVECTOR3& RayDir ){ m_RayDir = RayDir; } 
 
-	bool	IJL_BMP2JPEG (const char *szBMPFile, char *szJPGFile);
-	void	ScreenCAPTURE ();
-	void    ScreenCAPTURE (SYSTEMTIME SystemTime);
-	//CInfo&	GetMouseInfo(){ return m_MouseInfo; }
-
-
-
-
-
-
-
 	/*void	SetUserCursor( int iCursorType , CInfo* MouseInfo = NULL );
 	void	SetDisableUserCursor();*/
 

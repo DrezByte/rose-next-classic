@@ -6536,15 +6536,7 @@ void CRecvPACKET::Recv_gsv_CART_RIDE()
 
 void  CRecvPACKET::Recv_gsv_SCREEN_SHOT_TIME()
 {
-	SYSTEMTIME SysTime;
-	SysTime.wYear = m_pRecvPacket->m_gsv_SCREEN_SHOT_TIME.wYear;
-	SysTime.wMonth = m_pRecvPacket->m_gsv_SCREEN_SHOT_TIME.btMonth;
-	SysTime.wDay = m_pRecvPacket->m_gsv_SCREEN_SHOT_TIME.btDay;
-	SysTime.wHour = m_pRecvPacket->m_gsv_SCREEN_SHOT_TIME.btHour;
-	SysTime.wMinute = m_pRecvPacket->m_gsv_SCREEN_SHOT_TIME.btMin;
-
-	CGame::GetInstance().ScreenCAPTURE(SysTime);
-
+	// TODO: Remove
 }
 
 void CRecvPACKET::Recv_gsv_UPDATE_NAME()
