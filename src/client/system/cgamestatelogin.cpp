@@ -146,7 +146,7 @@ int CGameStateLogin::Enter( int iPrevStateID )
 	{
 		CTDialog* pDlg =  g_EUILobby.GetEUI( EUI_LOGIN );
 		CLogin* pLoginDlg = ( CLogin*)pDlg;
-		pLoginDlg->SetID( g_GameDATA.m_Account.Get() );
+		pLoginDlg->SetID( (char*)g_GameDATA.username.c_str() );
 		///Decoding후 넣는다.
 		//pLoginDlg->SetPassword( g_GameDATA.m_Password.Get() );
 		pLoginDlg->ConnectLoginServer();

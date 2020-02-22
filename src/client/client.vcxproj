@@ -190,6 +190,7 @@
     <ClCompile Include="Interface\DLGs\console_dialog.cpp" />
     <ClCompile Include="JCommandState.cpp" />
     <ClCompile Include="SqliteDB.cpp" />
+    <ClCompile Include="system\CGameStateAutoConnect.cpp" />
     <ClCompile Include="Util\ADSStream.cpp" />
     <ClCompile Include="Util\CCheat.cpp" />
     <ClCompile Include="Util\CD3DUtil.cpp" />
@@ -545,6 +546,7 @@
     <ClInclude Include="Interface\DLGs\console_dialog.h" />
     <ClInclude Include="JCommandState.h" />
     <ClInclude Include="SqliteDB.h" />
+    <ClInclude Include="system\CGameStateAutoConnect.h" />
     <ClInclude Include="Util\ADSStream.h" />
     <ClInclude Include="Util\CBITArray.h" />
     <ClInclude Include="Util\CCheat.h" />

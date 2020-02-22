@@ -114,7 +114,7 @@ void CSendPACKET::Send_cli_LOGIN_REQ (char *szAccount, char *szPassword ,bool bE
 
 		::CopyMemory( m_pMD5Buff, g_GameDATA.m_PasswordMD5, 32);
 		::CopyMemory( m_pSendPacket->m_cli_LOGIN_REQ.m_MD5Password, g_GameDATA.m_PasswordMD5, 32);
-		Packet_AppendString (m_pSendPacket, g_GameDATA.m_Account.Get() );
+		Packet_AppendString (m_pSendPacket, (char*)g_GameDATA.username.c_str());
 	}
 
 #if defined(_TAIWAN) || defined(_PHILIPPIN)

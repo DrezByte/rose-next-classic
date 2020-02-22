@@ -244,30 +244,49 @@ bool CApplication::ParseArgument (char *pStr)
 		if (!strcmpi(pToken, "--server")) {
 			pToken = CStr::GetTokenNext (pDelimiters);
 			if ( pToken ) {
-				g_GameDATA.m_ServerIP.Set( pToken );
+				g_GameDATA.server_ip = pToken;
 			}
 		}
 
 		if (!strcmpi(pToken, "--port")) {
 			pToken = CStr::GetTokenNext (pDelimiters);
 			if ( pToken ) {
-				g_GameDATA.m_wServerPORT = atoi( pToken );
+				g_GameDATA.server_port = atoi( pToken );
 			}
 		}
 
 		if (!strcmpi(pToken, "--username")) {
 			pToken = CStr::GetTokenNext (pDelimiters);
 			if ( pToken ) {
-				g_GameDATA.m_Account.Set( pToken );
+				g_GameDATA.username = pToken;
 			}
 		}
 
 		if (!strcmpi(pToken, "--password")) {
 			pToken = CStr::GetTokenNext (pDelimiters);
-			if ( pToken )
-			{
-				//GetMD5 ( g_GameDATA.m_PasswordMD5, (unsigned char*)pToken, strlen(pToken) );
-				CopyMemory( g_GameDATA.m_PasswordMD5, pToken, strlen( pToken ) );
+			if ( pToken ) {
+				g_GameDATA.password = pToken;
+			}
+		}
+
+		if (!strcmpi(pToken, "--auto-connect-server")) {
+			pToken = CStr::GetTokenNext(pDelimiters);
+			if (pToken) {
+				g_GameDATA.auto_connect_server_id = atoi(pToken);
+			}
+		}
+
+		if (!strcmpi(pToken, "--auto-connect-channel")) {
+			pToken = CStr::GetTokenNext(pDelimiters);
+			if (pToken) {
+				g_GameDATA.auto_connect_channel_id = atoi(pToken);
+			}
+		}
+
+		if (!strcmpi(pToken, "--auto-connect-character")) {
+			pToken = CStr::GetTokenNext(pDelimiters);
+			if (pToken) {
+				g_GameDATA.auto_connect_character_idx = atoi(pToken);
 			}
 		}
 

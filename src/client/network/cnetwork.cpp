@@ -61,14 +61,14 @@ void CNetwork::Destroy ()
 }
 
 //-------------------------------------------------------------------------------------------------
-bool CNetwork::ConnectToServer (char *szServerIP, WORD wTcpPORT, short nProcLEVEL)
+bool CNetwork::ConnectToServer (std::string& ip, WORD wTcpPORT, short nProcLEVEL)
 {
 	// World 소켓...
 	if( m_nProcLEVEL == nProcLEVEL )
 		return true;
 
 	m_nProcLEVEL = nProcLEVEL;
-	return m_WorldSOCKET.Connect( CSocketWND::GetInstance()->GetWindowHandle(), szServerIP, wTcpPORT, WM_WORLD_SOCKET_NOTIFY );
+	return m_WorldSOCKET.Connect( CSocketWND::GetInstance()->GetWindowHandle(), (char*)ip.c_str(), wTcpPORT, WM_WORLD_SOCKET_NOTIFY );
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -130,7 +130,8 @@ void CNetwork::Proc_WorldPacket ()
 					{
 						if ( NS_DIS_FORM_LSV  == m_nProcLEVEL ) {
 							// 게임 서버에 재접속 한다...
-							this->ConnectToServer( m_WSV_IP.Get(), m_wWSV_PORT, NS_CON_TO_WSV );
+							std::string world_server_ip(m_WSV_IP.Get());
+							this->ConnectToServer( world_server_ip, m_wWSV_PORT, NS_CON_TO_WSV );
 							continue;
 						}
 						CGame::GetInstance().ProcWndMsg( WM_USER_WORLDSERVER_DISCONNECTED,0,0 );

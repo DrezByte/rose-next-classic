@@ -57,7 +57,7 @@ public  :
 	static CNetwork *Instance (HINSTANCE hInstance);
 	void Destroy ();
 
-	bool ConnectToServer (char *szServerIP, WORD wTcpPORT, short nProcLEVEL=0);
+	bool ConnectToServer (std::string& ip, WORD wTcpPORT, short nProcLEVEL=0);
 	void DisconnectFromServer (short nProcLEVEL=0);
 	// ¹Ú ÁöÈ£ 
 	void Send_AuthMsg (void);

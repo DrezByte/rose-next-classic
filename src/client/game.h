@@ -43,6 +43,20 @@ public:
   ~CGAMEDATA();
 
 public:
+    string server_ip;
+    uint16_t server_port;
+
+    string username;
+    string password;
+
+    uint8_t auto_connect_server_id;
+    uint8_t auto_connect_channel_id;
+    uint8_t auto_connect_character_idx;
+
+public:
+    // Returns true if there is enough information to auto-connect the user
+    bool auto_connect();
+
   bool m_bWireMode;
   bool m_bDrawBoundingVolume;
 
@@ -104,9 +118,6 @@ public:
   int m_iWorldStaminaVal;
   int AdjustAvatarStamina(int iGetExp);
 
-  CStrVAR m_ServerIP;
-  WORD m_wServerPORT;
-  CStrVAR m_Account;
   CStrVAR m_Password;
   unsigned char m_PasswordMD5[32];
 

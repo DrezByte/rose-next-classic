@@ -110,7 +110,12 @@ DestroyWaitDlg()
 
 //-------------------------------------------------------------------------------------------------
 
-CGAMEDATA::CGAMEDATA()
+CGAMEDATA::CGAMEDATA():
+    server_ip(TCP_LSV_IP),
+    server_port(TCP_LSV_PORT),
+    auto_connect_server_id(0),
+    auto_connect_channel_id(0),
+    auto_connect_character_idx(0)
 {
   m_bWireMode = false;
   m_bDrawBoundingVolume = false;
@@ -155,6 +160,14 @@ CGAMEDATA::CGAMEDATA()
 }
 
 CGAMEDATA::~CGAMEDATA() {}
+
+bool
+CGAMEDATA::auto_connect() {
+    return !this->password.empty()
+        && this->auto_connect_server_id > 0
+        && this->auto_connect_character_idx > 0
+        && this->auto_connect_server_id > 0;
+}
 
 DWORD
 CGAMEDATA::GetTime()

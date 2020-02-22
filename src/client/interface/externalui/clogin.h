@@ -9,7 +9,7 @@ const int				MAX_ID_LENGTH = 		20;
 const int				MAX_PASSWORD_LENGTH =	17;	
 
 #define	TCP_LSV_PORT	29000
-#define TCP_LSV_IP		"211.234.107.200"
+#define TCP_LSV_IP		"127.0.0.1"
 
 ///
 /// Login Manager class

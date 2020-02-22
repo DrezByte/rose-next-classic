@@ -1151,6 +1151,9 @@
     <ClCompile Include="Interface\DLGs\console_dialog.cpp">
       <Filter>Source Files\Interface\DLGs</Filter>
     </ClCompile>
+    <ClCompile Include="system\CGameStateAutoConnect.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCamera.h">
@@ -2253,6 +2256,9 @@
     </ClInclude>
     <ClInclude Include="Interface\DLGs\console_dialog.h">
       <Filter>Source Files\Interface\DLGs</Filter>
+    </ClInclude>
+    <ClInclude Include="system\CGameStateAutoConnect.h">
+      <Filter>Source Files\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

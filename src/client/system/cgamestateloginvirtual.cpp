@@ -67,7 +67,7 @@ void CGameStateLoginVirtual::ServerDisconnected()
 }
 void CGameStateLoginVirtual::WorldServerDisconnected()
 {
-	if ( !g_pNet->ConnectToServer( g_GameDATA.m_ServerIP.Get(), g_GameDATA.m_wServerPORT, NS_CON_TO_LSV ) )
+	if ( !g_pNet->ConnectToServer( g_GameDATA.server_ip, g_GameDATA.server_port, NS_CON_TO_LSV ) )
 	{
 		CTCmdExit Command;
 		Command.Exec( NULL );
@@ -85,12 +85,12 @@ void CGameStateLoginVirtual::AcceptedConnectLoginSvr()
 
 	if( japan_partner_string.empty() )
 	{
-		g_pNet->Send_cli_LOGIN_REQ( g_GameDATA.m_Account.Get(), g_GameDATA.m_Password.Get() , !g_GameDATA.m_is_NHN_JAPAN );
+		g_pNet->Send_cli_LOGIN_REQ((char*)g_GameDATA.username.c_str(), g_GameDATA.m_Password.Get() , !g_GameDATA.m_is_NHN_JAPAN );
 	}
 	else
 	{
 		std::string temp_id;
-		temp_id = g_GameDATA.m_Account.Get();
+		temp_id = (char*)g_GameDATA.username.c_str();
 		temp_id.append( japan_partner_string.c_str() );
 		g_pNet->Send_cli_LOGIN_REQ( (char*)temp_id.c_str(), g_GameDATA.m_Password.Get(), !g_GameDATA.m_is_NHN_JAPAN );
 	}

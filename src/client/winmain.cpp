@@ -142,12 +142,7 @@ int APIENTRY WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 		return 0;
 	}	
 
-	//-------------------------------------------------------------------------------
-	/// IP/Port Setting
-	//-------------------------------------------------------------------------------
-	g_GameDATA.m_wServerPORT = TCP_LSV_PORT;
-	g_GameDATA.m_ServerIP.Set( TCP_LSV_IP );
-
+	// Parse args
 	if ( !g_pCApp->ParseArgument( lpCmdLine ) )
 		return 0;
 

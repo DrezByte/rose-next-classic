@@ -125,7 +125,7 @@ void CBankDlg::Draw()
 	D3DXMatrixTranslation( &mat, (float)m_sPosition.x, (float)m_sPosition.y,0.0f);
 	::setTransformSprite( mat );
 
-	::drawFontf( g_GameDATA.m_hFONT[ FONT_NORMAL_BOLD ], true, 35, 5, g_dwBLACK, F_STR_BANK_TITLE,g_GameDATA.m_Account.Get() );
+	::drawFontf( g_GameDATA.m_hFONT[ FONT_NORMAL_BOLD ], true, 35, 5, g_dwBLACK, F_STR_BANK_TITLE, (char*)g_GameDATA.username.c_str() );
 
 
 	const int money_buffer_size = 64;

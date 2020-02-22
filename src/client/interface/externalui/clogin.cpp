@@ -223,7 +223,7 @@ bool CLogin::SetID( const char* strID )
 		return false;
 	strcpy( m_strID, strID );
 
-	g_GameDATA.m_Account.Set( m_strID );
+	g_GameDATA.username = m_strID;
 
 	return true;
 }
@@ -487,10 +487,8 @@ bool CLogin::ConnectLoginServer()
 
 	CTCommand* pCmd = new CTCmdExit;
 	g_EUILobby.ShowMsgBox(STR_WAIT_CONNECT_LOGIN_SERVER,CTMsgBox::BT_CANCEL ,true ,EUI_LOGIN ,NULL, pCmd );
-	// 서버 포트 임의 설정 가능하도록 수정...
-	// if ( !g_pNet->ConnectToServer( g_GameDATA.m_ServerIP.Get(), TCP_LSV_PORT, NS_CON_TO_LSV ) )
-	if ( !g_pNet->ConnectToServer( g_GameDATA.m_ServerIP.Get(), g_GameDATA.m_wServerPORT, NS_CON_TO_LSV ) )
-	{
+
+	if ( !g_pNet->ConnectToServer( g_GameDATA.server_ip, g_GameDATA.server_port, NS_CON_TO_LSV ) ) {
 		g_EUILobby.ShowMsgBox( STR_LOGIN_FAIL,CTMsgBox::BT_OK ,true ,EUI_LOGIN , pCmd, NULL );
 		return false;
 	}

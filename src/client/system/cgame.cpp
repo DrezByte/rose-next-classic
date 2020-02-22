@@ -1,5 +1,7 @@
 #include "stdafx.h"
+
 #include ".\cgame.h"
+
 #include "CGameState.h"
 #include "CGameStateNull.h"
 #include "CGameStateTitle.h"
@@ -17,6 +19,8 @@
 #include "CGameStateLoginVirtual.h"
 #include "GameStateMovePlanet.h"
 #include "CGameStateReLogin.h"
+#include "CGameStateAutoConnect.h"
+
 #include "SqliteDB.h"
 
 #include "../Network/CNetwork.h"
@@ -190,7 +194,8 @@ CGameState* CGame::MakeState( int iState )
 	case GS_RELOGIN:
 		pState = new CGameStateReLogin( GS_RELOGIN );
 		break;
-
+	case GS_AUTOCONNECT:
+		pState = new CGameStateAutoConnect(GS_AUTOCONNECT);
 	default:
 		break;
 	}

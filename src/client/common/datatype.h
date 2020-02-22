@@ -169,6 +169,7 @@
 
 #ifndef	__DATATYPE_H
 #define	__DATATYPE_H
+#pragma once
 //-------------------------------------------------------------------------------------------------
 
 #include "util/cvector.h"
@@ -925,3 +926,13 @@ extern const float	g_fMaxDistance;
 #define PAT_DEFAULT_HP			1000		// PAT HP의 기본 값
 //-------------------------------------------------------------------------------------------------
 #endif
+
+const ZZ_COLOR zz_color_red = D3DCOLOR_ARGB(255, 255, 0, 0);
+const ZZ_COLOR zz_color_green = D3DCOLOR_ARGB(255, 0, 255, 0);
+const ZZ_COLOR zz_color_blue = D3DCOLOR_ARGB(255, 0, 0, 255);
+const ZZ_COLOR zz_color_black = D3DCOLOR_ARGB(255, 0, 0, 0);
+const ZZ_COLOR zz_color_white = D3DCOLOR_ARGB(255, 255, 255, 255);
+const ZZ_COLOR zz_color_yellow = D3DCOLOR_ARGB(255, 255, 255, 0);
+const ZZ_COLOR zz_color_gray = D3DCOLOR_ARGB(255, 150, 150, 150);
+const ZZ_COLOR zz_color_violet = D3DCOLOR_ARGB(255, 255, 0, 255);
+const ZZ_COLOR zz_color_Oorange = D3DCOLOR_ARGB(255, 255, 128, 0);

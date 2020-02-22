@@ -38,7 +38,6 @@ class CGameState;
 class CInfo;
 
 
-
 /**
 * 클라이언트의 메인 클래스
 *	- 각 상태( 로그인, 서버선택 등등)에 따라 상태 패턴으로 구분되어 있다.
@@ -94,6 +93,7 @@ public:
 		GS_EXITMAIN,
 		GS_MOVEPLANET,		///행성간이동
 		GS_RELOGIN,
+		GS_AUTOCONNECT,
 		GS_MAX
 	};
 
