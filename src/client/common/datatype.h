@@ -928,13 +928,17 @@ extern const float	g_fMaxDistance;
 #endif
 
 #ifndef __SERVER
-const ZZ_COLOR zz_color_red = D3DCOLOR_ARGB(255, 255, 0, 0);
-const ZZ_COLOR zz_color_green = D3DCOLOR_ARGB(255, 0, 255, 0);
-const ZZ_COLOR zz_color_blue = D3DCOLOR_ARGB(255, 0, 0, 255);
-const ZZ_COLOR zz_color_black = D3DCOLOR_ARGB(255, 0, 0, 0);
-const ZZ_COLOR zz_color_white = D3DCOLOR_ARGB(255, 255, 255, 255);
-const ZZ_COLOR zz_color_yellow = D3DCOLOR_ARGB(255, 255, 255, 0);
-const ZZ_COLOR zz_color_gray = D3DCOLOR_ARGB(255, 150, 150, 150);
-const ZZ_COLOR zz_color_violet = D3DCOLOR_ARGB(255, 255, 0, 255);
-const ZZ_COLOR zz_color_Oorange = D3DCOLOR_ARGB(255, 255, 128, 0);
+constexpr ZZ_COLOR zz_color_argb(int a, int r, int g, int b) {
+	return (((a) & 0xff) << 24) | (((r) & 0xff) << 16) | (((g) & 0xff) << 8) | ((b) & 0xff);
+}
+
+const ZZ_COLOR zz_color_red = zz_color_argb(255, 255, 0, 0);
+const ZZ_COLOR zz_color_green = zz_color_argb(255, 0, 255, 0);
+const ZZ_COLOR zz_color_blue = zz_color_argb(255, 0, 0, 255);
+const ZZ_COLOR zz_color_black = zz_color_argb(255, 0, 0, 0);
+const ZZ_COLOR zz_color_white = zz_color_argb(255, 255, 255, 255);
+const ZZ_COLOR zz_color_yellow = zz_color_argb(255, 255, 255, 0);
+const ZZ_COLOR zz_color_gray = zz_color_argb(255, 150, 150, 150);
+const ZZ_COLOR zz_color_violet = zz_color_argb(255, 255, 0, 255);
+const ZZ_COLOR zz_color_Oorange = zz_color_argb(255, 255, 128, 0);
 #endif
