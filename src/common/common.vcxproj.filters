@@ -7,6 +7,12 @@
     <Filter Include="status_effect">
       <UniqueIdentifier>{d2430ef2-61c7-48be-a771-93ae4eb79021}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{94835381-bb5f-4583-96e6-78ae0ec4ba02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="network\packets">
+      <UniqueIdentifier>{82dd461f-2b9b-43de-837b-97bc482aee82}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rose\common\rosenext_config.h">
@@ -28,11 +34,25 @@
     <ClInclude Include="..\common-lib\include\rose\common\common_interface.h" />
     <ClInclude Include="include\rose\common\util.h" />
     <ClInclude Include="include\rose\common\config.h" />
+    <ClInclude Include="include\rose\network\packet.h">
+      <Filter>network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\goddess_effect.cpp">
       <Filter>status_effect</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\common-lib\include\rose\network\packets\login_rep.fbs">
+      <Filter>network\packets</Filter>
+    </None>
+    <None Include="..\common-lib\include\rose\network\packets\login_req.fbs">
+      <Filter>network\packets</Filter>
+    </None>
+    <None Include="..\common-lib\include\rose\network\packets\packet.fbs">
+      <Filter>network\packets</Filter>
+    </None>
   </ItemGroup>
 </Project>

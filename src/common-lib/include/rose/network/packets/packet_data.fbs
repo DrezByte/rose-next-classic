@@ -1,0 +1,15 @@
+include "login_rep.fbs";
+include "login_req.fbs";
+
+namespace Rose.Network.Packets;
+
+union PacketType {
+	LoginRequest,
+	LoginReply
+}
+
+table PacketData {
+	data: PacketType;
+}
+
+root_type PacketData;

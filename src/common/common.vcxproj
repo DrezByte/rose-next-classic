@@ -20,10 +20,22 @@
     <ClInclude Include="include\rose\common\status_effect\status_effect_data.h" />
     <ClInclude Include="include\rose\common\status_effect\status_effect_flag.h" />
     <ClInclude Include="include\rose\common\util.h" />
+    <ClInclude Include="include\rose\network\packet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\goddess_effect.cpp" />
     <ClCompile Include="src\log.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Flatbuffer Include="..\common-lib\include\rose\network\packets\login_rep.fbs">
+      <FileType>Document</FileType>
+    </Flatbuffer>
+    <Flatbuffer Include="..\common-lib\include\rose\network\packets\login_req.fbs">
+      <FileType>Document</FileType>
+    </Flatbuffer>
+    <Flatbuffer Include="..\common-lib\include\rose\network\packets\packet_data.fbs">
+      <FileType>Document</FileType>
+    </Flatbuffer>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{862A7536-0465-45D1-89DF-576AB2D865D6}</ProjectGuid>
@@ -50,10 +62,12 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\rose-next.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+    <Import Project="..\rose-next.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -149,5 +163,6 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="flatbuffers.targets" />
   </ImportGroup>
 </Project>
