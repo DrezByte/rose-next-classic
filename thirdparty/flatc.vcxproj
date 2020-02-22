@@ -53,7 +53,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.10.0\include;$(ProjectDir)flatbuffers-1.10.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.11.0\include;$(ProjectDir)flatbuffers-1.11.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -73,10 +73,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.10.0\include;$(ProjectDir)flatbuffers-1.10.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.11.0\include;$(ProjectDir)flatbuffers-1.11.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.10.0\include;$(ProjectDir)flatbuffers-1.10.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.11.0\include;$(ProjectDir)flatbuffers-1.11.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -99,7 +99,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.10.0\include;$(ProjectDir)flatbuffers-1.10.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.11.0\include;$(ProjectDir)flatbuffers-1.11.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4512;4316</DisableSpecificWarnings>
@@ -119,10 +119,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.10.0\include;$(ProjectDir)flatbuffers-1.10.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.11.0\include;$(ProjectDir)flatbuffers-1.11.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.10.0\include;$(ProjectDir)flatbuffers-1.10.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)flatbuffers-1.11.0\include;$(ProjectDir)flatbuffers-1.11.0\grpc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -144,45 +144,45 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\code_generators.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\base.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\flatbuffers.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\hash.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\idl.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\util.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\reflection.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\reflection_generated.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\stl_emulation.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\flexbuffers.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\registry.h" />
-    <ClInclude Include="flatbuffers-1.10.0\include\flatbuffers\minireflect.h" />
-    <ClCompile Include="flatbuffers-1.10.0\src\code_generators.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_parser.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_text.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\reflection.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\util.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_cpp.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_dart.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_general.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_go.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_js.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_php.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_python.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_lobster.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_lua.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_rust.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_fbs.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_grpc.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\idl_gen_json_schema.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\flatc.cpp" />
-    <ClCompile Include="flatbuffers-1.10.0\src\flatc_main.cpp" />
-    <ClInclude Include="flatbuffers-1.10.0\grpc\src\compiler\schema_interface.h" />
-    <ClInclude Include="flatbuffers-1.10.0\grpc\src\compiler\cpp_generator.h" />
-    <ClCompile Include="flatbuffers-1.10.0\grpc\src\compiler\cpp_generator.cc" />
-    <ClInclude Include="flatbuffers-1.10.0\grpc\src\compiler\go_generator.h" />
-    <ClCompile Include="flatbuffers-1.10.0\grpc\src\compiler\go_generator.cc" />
-    <ClInclude Include="flatbuffers-1.10.0\grpc\src\compiler\java_generator.h" />
-    <ClCompile Include="flatbuffers-1.10.0\grpc\src\compiler\java_generator.cc" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\code_generators.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\base.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\flatbuffers.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\hash.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\idl.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\util.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\reflection.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\reflection_generated.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\stl_emulation.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\flexbuffers.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\registry.h" />
+    <ClInclude Include="flatbuffers-1.11.0\include\flatbuffers\minireflect.h" />
+    <ClCompile Include="flatbuffers-1.11.0\src\code_generators.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_parser.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_text.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\reflection.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\util.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_cpp.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_dart.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_general.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_go.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_js_ts.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_php.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_python.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_lobster.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_lua.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_rust.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_fbs.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_grpc.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\idl_gen_json_schema.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\flatc.cpp" />
+    <ClCompile Include="flatbuffers-1.11.0\src\flatc_main.cpp" />
+    <ClInclude Include="flatbuffers-1.11.0\grpc\src\compiler\schema_interface.h" />
+    <ClInclude Include="flatbuffers-1.11.0\grpc\src\compiler\cpp_generator.h" />
+    <ClCompile Include="flatbuffers-1.11.0\grpc\src\compiler\cpp_generator.cc" />
+    <ClInclude Include="flatbuffers-1.11.0\grpc\src\compiler\go_generator.h" />
+    <ClCompile Include="flatbuffers-1.11.0\grpc\src\compiler\go_generator.cc" />
+    <ClInclude Include="flatbuffers-1.11.0\grpc\src\compiler\java_generator.h" />
+    <ClCompile Include="flatbuffers-1.11.0\grpc\src\compiler\java_generator.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
