@@ -342,8 +342,6 @@ bool CDefaultUserInput::ClickObject( int iTarget, D3DXVECTOR3& PickPos, WPARAM w
 
 bool CDefaultUserInput::RButtonDown( int iTarget, D3DXVECTOR3& PickPos, WPARAM wParam )
 {
-	ClearMouseState();	
-
 	return false;
 }
 
@@ -770,8 +768,6 @@ bool CSevenHeartUserInput::ClickObject( int iTarget, D3DXVECTOR3& PickPos, WPARA
 
 bool CSevenHeartUserInput::RButtonDown( int iTarget, D3DXVECTOR3& PickPos, WPARAM wParam )
 {
-	ClearMouseState();	
-
 	return false;
 }
 
