@@ -20,8 +20,6 @@ public:
 	virtual int Enter( int iPrevStateID ) = 0;
 	virtual int Leave( int iNextStateID ) = 0;
 	
-	///CGame의 Msg Queue에 넣기 전에 즉시 처리해야할 Msg를 처리하는 Method
-	///각 State는 Method를 Overriding하여 처리해야할 Message를 처리한다
 	virtual int ProcWndMsgInstant( unsigned uiMsg, WPARAM wParam, LPARAM lParam );
 
 	virtual void ServerDisconnected();
@@ -32,6 +30,14 @@ public:
 
 	virtual int ProcMouseInput( UINT uiMsg, WPARAM wParam, LPARAM lParam ) = 0;
 	virtual int ProcKeyboardInput( UINT uiMsg, WPARAM wParam, LPARAM lParam ) = 0;
+
+	// Handlers
+	virtual void on_loginserver_connected() {};
+	virtual void on_login_succeeded() {};
+	virtual void on_login_failed(int code) {};
+	virtual void on_charserver_connected() {};
+	virtual void on_charserver_connect_failed() {};
+
 
 protected:
 	int	m_iStateID;

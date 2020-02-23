@@ -85,14 +85,14 @@ void CGameStateLoginVirtual::AcceptedConnectLoginSvr()
 
 	if( japan_partner_string.empty() )
 	{
-		g_pNet->Send_cli_LOGIN_REQ((char*)g_GameDATA.username.c_str(), g_GameDATA.m_Password.Get() , !g_GameDATA.m_is_NHN_JAPAN );
+		g_pNet->Send_cli_LOGIN_REQ(g_GameDATA.username, g_GameDATA.password);
 	}
 	else
 	{
 		std::string temp_id;
 		temp_id = (char*)g_GameDATA.username.c_str();
 		temp_id.append( japan_partner_string.c_str() );
-		g_pNet->Send_cli_LOGIN_REQ( (char*)temp_id.c_str(), g_GameDATA.m_Password.Get(), !g_GameDATA.m_is_NHN_JAPAN );
+		g_pNet->Send_cli_LOGIN_REQ(temp_id, g_GameDATA.password);
 	}
 }
 

@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+
 #include "CNetwork.h"
 #include "Game.h"
 #include "CCamera.h"
@@ -9,7 +10,9 @@
 #include "../CJustModelAVT.h"
 #include "../SqliteDB.h"
 
-#include "../System/CGame.h"
+#include "system/cgame.h"
+#include "system/cgamestate.h"
+
 #include "../GameData/ServerList.h"
 #include "../GameData/CClan.h"
 #include "../GameData/CBank.h"
@@ -234,13 +237,23 @@ void CRecvPACKET::Recv_gsv_ANNOUNCE_CHAT ()
 //-------------------------------------------------------------------------------------------------
 bool CRecvPACKET::Recv_lsv_LOGIN_REPLY ()
 {
-	CLogin* pLogin = (CLogin*)g_EUILobby.GetEUI( EUI_LOGIN );
+	const BYTE btResult = m_pRecvPacket->m_srv_LOGIN_REPLY.m_btResult & ~0x80;
+	const DWORD dwRight = m_pRecvPacket->m_srv_LOGIN_REPLY.m_wRight;
 
-	if( pLogin == NULL )
+	CGame::GetInstance().SetRight(dwRight);
+	CGame::GetInstance().SetPayType(m_pRecvPacket->m_srv_LOGIN_REPLY.m_wPayType);
+
+	const bool autoconnect = CGame::GetInstance().active_state->GetStateID() == CGame::GS_AUTOCONNECT;
+	if (autoconnect) {
+		return btResult == RESULT_LOGIN_REPLY_OK;
+	}
+
+	CLogin* pLogin = (CLogin*)g_EUILobby.GetEUI( EUI_LOGIN );
+	if (pLogin == NULL) {
 		return false;
+	}
 
 	g_EUILobby.HideMsgBox();
-
 
 	CServerList& ServerList = CServerList::GetInstance();
 	///채널 보이기, 숨기기 구분
@@ -249,8 +262,7 @@ bool CRecvPACKET::Recv_lsv_LOGIN_REPLY ()
 	else
 		ServerList.ShowChannel();
 
-	///채널 보이기, 숨기기 정보를 뺀상태에서 
-	BYTE btResult = m_pRecvPacket->m_srv_LOGIN_REPLY.m_btResult & ~0x80;
+	
 
 	if( RESULT_LOGIN_REPLY_OK != btResult 
 		&& RESULT_LOGIN_REPLY_TAIWAN_OK != btResult
@@ -331,10 +343,6 @@ bool CRecvPACKET::Recv_lsv_LOGIN_REPLY ()
 
 	DWORD dwServerID = 0;
 	short nServerID=0;
-	DWORD dwRight = m_pRecvPacket->m_srv_LOGIN_REPLY.m_wRight ;
-	CGame::GetInstance().SetRight( dwRight );
-	CGame::GetInstance().SetPayType( m_pRecvPacket->m_srv_LOGIN_REPLY.m_wPayType );
-
 	std::map< BYTE, pair< DWORD, std::string> > TempServerList;
 
 
@@ -449,19 +457,17 @@ int CRecvPACKET::Recv_lsv_SELECT_SERVER ()
 	LogString (LOG_DEBUG_, "Recv_lsv_SELECT_SERVER:: Result: %d ", m_pRecvPacket->m_lsv_SELECT_SERVER.m_btResult);
 
 	CSelectServer* pSelectServer = (CSelectServer*)g_EUILobby.GetEUI( EUI_SELECT_SERVER );
-
-	if( pSelectServer == NULL )
-		return 0;
-
-	pSelectServer->RecvSelectServer( m_pRecvPacket );
+	if (pSelectServer) {
+		pSelectServer->RecvSelectServer(m_pRecvPacket);
+	}
 
 	if ( m_pRecvPacket->m_lsv_SELECT_SERVER.m_btResult != RESULT_SELECT_SERVER_OK	) {
 		return 0;
 	}
 
 	short nOffset = sizeof( lsv_SELECT_SERVER );
-	char *szServerIP;
-	WORD *pServerPort;
+	char *szServerIP = "";
+	WORD *pServerPort = 0;
 
 	szServerIP = Packet_GetStringPtr( m_pRecvPacket, nOffset);
 	pServerPort= (WORD*)Packet_GetDataPtr  ( m_pRecvPacket, nOffset, sizeof(WORD) );
@@ -511,8 +517,11 @@ void CRecvPACKET::Recv_gsv_INIT_DATA ()
 //-------------------------------------------------------------------------------------------------
 void CRecvPACKET::Recv_wsv_CHAR_LIST ()
 {
-	CSelectAvata* pSelectAvata = (CSelectAvata*)g_EUILobby.GetEUI( EUI_SELECT_AVATA );
+	if (CGame::GetInstance().GetCurrStateID() == CGame::GS_AUTOCONNECT) {
+		return;
+	}
 
+	CSelectAvata* pSelectAvata = (CSelectAvata*)g_EUILobby.GetEUI( EUI_SELECT_AVATA );
 	pSelectAvata->RecvAvataList( m_pRecvPacket );
 
 	g_EUILobby.CloseWaitAvataListDlg();	
@@ -753,18 +762,20 @@ void CRecvPACKET::Recv_gsv_QUEST_DATA()
 		&m_pRecvPacket->m_gsv_QUEST_DATA,
 		sizeof( m_pRecvPacket->m_gsv_QUEST_DATA ) );
 
-	g_EUILobby.CloseAvataListDlg();	
-
 	CGame::GetInstance().CreateSelectedAvata();
-
 
 	gsv_TELEPORT_REPLY data;
 	data.m_nZoneNO = refGame.m_SelectedAvataInfo.m_nZoneNO;
 	data.m_PosWARP.x = refGame.m_SelectedAvataInfo.m_PosSTART.x;
 	data.m_PosWARP.y = refGame.m_SelectedAvataInfo.m_PosSTART.y;
+	refGame.SetLoadingData(data);
 
+	if (refGame.GetCurrStateID() == CGame::GS_AUTOCONNECT) {
+		refGame.ChangeState(CGame::GS_PREPAREMAIN);
+		return;
+	}
 
-	refGame.SetLoadingData(  data );
+	g_EUILobby.CloseAvataListDlg();
 	refGame.ChangeState( CGame::GS_MOVEMAIN );
 }
 

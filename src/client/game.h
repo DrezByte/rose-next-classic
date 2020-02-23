@@ -43,15 +43,15 @@ public:
   ~CGAMEDATA();
 
 public:
-    string server_ip;
+    std::string server_ip;
     uint16_t server_port;
 
-    string username;
-    string password;
+    std::string username;
+    std::string password;
 
     uint8_t auto_connect_server_id;
     uint8_t auto_connect_channel_id;
-    uint8_t auto_connect_character_idx;
+    std::string auto_connect_character_name;
 
 public:
     // Returns true if there is enough information to auto-connect the user

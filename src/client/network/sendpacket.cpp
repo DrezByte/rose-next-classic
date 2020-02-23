@@ -89,38 +89,24 @@ void CSendPACKET::Send_cli_HEADER (WORD wType, bool bSendToWorld )
 }
 
 //-------------------------------------------------------------------------------------------------
-void CSendPACKET::Send_cli_LOGIN_REQ (char *szAccount, char *szPassword ,bool bEncode )
+void CSendPACKET::Send_cli_LOGIN_REQ (const std::string& username, const std::string& password )
 {
-	if ( !szAccount || !szAccount[0] ) 
+	if (username.empty()) {
 		return;
-
-	int iStrLen=strlen(szAccount);
-	for (int iC=0; iC<iStrLen; iC++) {
-		if ( szAccount[iC] == '\'' )	// 계정에 ' 문자는 들어가면 안됨...
-			return;
 	}
 
+	for (const char& c : username) {
+		if (c == '\'' || c == '\"') {
+			return;
+		}
+	}
 	m_pSendPacket->m_HEADER.m_wType = CLI_LOGIN_REQ;
 	m_pSendPacket->m_HEADER.m_nSize = sizeof( cli_LOGIN_REQ );
 
-	if( bEncode )
-	{
-		GetMD5 (m_pMD5Buff, (unsigned char*)szPassword, strlen( szPassword ) );
-		::CopyMemory( m_pSendPacket->m_cli_LOGIN_REQ.m_MD5Password, m_pMD5Buff, 32);
-		Packet_AppendString (m_pSendPacket, szAccount);
-	}
-	else
-	{
+	GetMD5 (m_pMD5Buff, (unsigned char*)password.c_str(), password.size());
+	::CopyMemory( m_pSendPacket->m_cli_LOGIN_REQ.m_MD5Password, m_pMD5Buff, 32);
+	Packet_AppendString (m_pSendPacket, (char*)username.c_str());
 
-		::CopyMemory( m_pMD5Buff, g_GameDATA.m_PasswordMD5, 32);
-		::CopyMemory( m_pSendPacket->m_cli_LOGIN_REQ.m_MD5Password, g_GameDATA.m_PasswordMD5, 32);
-		Packet_AppendString (m_pSendPacket, (char*)g_GameDATA.username.c_str());
-	}
-
-#if defined(_TAIWAN) || defined(_PHILIPPIN)
-	short codepage = 950;
-	Packet_AppendData( m_pSendPacket, &codepage, sizeof( codepage ) );
-#endif
 
 	this->Send_PACKET( m_pSendPacket, true );
 }

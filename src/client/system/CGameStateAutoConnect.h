@@ -6,6 +6,7 @@ enum class AutoConnectError {
 	None,
 	ServerError,
 	LoginError,
+	CharSelectError,
 };
 
 /// Game state that handles automatic login, server/channel and avatar select
@@ -23,14 +24,11 @@ public:
 	// --
 
 	// Handlers
-	/*
-	void OnLoginServerConnected();
-	void OnLoginSucceeded(const std::vector<ServerList::ServerInfo>& serverList);
-	void OnLoginFailed(int errorCode);
-
-	void OnCharacterServerConnected();
-	void OnCharacterServerConnectFailed();
-	*/
+	void on_loginserver_connected() override;
+	void on_login_succeeded() override;
+	void on_login_failed(int code) override;
+	void on_charserver_connected() override;
+	void on_charserver_connect_failed() override;
 
 private:
 	std::vector<std::string> messages;

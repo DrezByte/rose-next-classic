@@ -45,7 +45,6 @@ public:
 		IID_BTN_SELFTARGET = 10,			/// 클릭시 자신선택 - NOIMAGE 
 		IID_BTN_MENU,						/// 메뉴창을 여는 버튼
 		IID_BTN_DIALOG2ICON,				/// 모든 Dialog Icon화 버튼, Icon화 불가능한 Dialog는 당근 동작 안한다.(TGameCtrl에서 처리할것, 멤버로 icon화 가능한지 Setting할것 )
-		IID_BTN_SCREENSHOT					/// 스크린샷 찍는 버튼
 	};
 	
 

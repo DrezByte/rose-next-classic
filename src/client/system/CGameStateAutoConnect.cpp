@@ -1,9 +1,27 @@
 #include "stdafx.h"
 
+#include <sstream>
+
 #include "cgame.h"
 #include "CGameStateAutoConnect.h"
 
 #include "Network/cnetwork.h"
+
+
+std::array<const char*, 12> login_error_message = {
+	"", // No error
+	"General failure",
+	"Account not found",
+	"Invalid password",
+	"Already logged in",
+	"Refused account",
+	"Need charge",
+	"Not enough permission",
+	"Too many users",
+	"No real name",
+	"Invalid version",
+	"Out of IP",
+};
 
 CGameStateAutoConnect::CGameStateAutoConnect(int state) :
 	last_error(AutoConnectError::None)
@@ -66,86 +84,95 @@ int
 CGameStateAutoConnect::ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (this->last_error) {
-		case AutoConnectError::LoginError:
-			CGame::GetInstance().ChangeState(CGame::GS_LOGIN);
-			break;
 		case AutoConnectError::ServerError:
 			g_pCApp->SetExitGame();
+			break;
+		default:
+			CGame::GetInstance().ChangeState(CGame::GS_LOGIN);
 			break;
 		};
 
 	return 0;
 }
 
-/*
 void
-CGameStateAutoConnect::OnLoginServerConnected()
+CGameStateAutoConnect::on_loginserver_connected()
 {
-	_messages.push_back("Connected to login server.");
-	g_pNet->Send_cli_LOGIN_REQ(g_GameDATA.userAccount.c_str(), g_GameDATA.userPassword.c_str(), true);
+	this->messages.push_back("Connected to login server.");
+	g_pNet->Send_cli_LOGIN_REQ(g_GameDATA.username, g_GameDATA.password);
 }
 
 void
-CGameStateAutoConnect::OnLoginSucceeded(const std::vector<ServerList::ServerInfo>& serverList)
+CGameStateAutoConnect::on_login_succeeded()
 {
-	int serverId = 1;
-	int channelId = 1;
+	int server_id = 1;
+	int channel_id = 1;
 
-	if (g_GameDATA.autoConnectServerId > 1) {
-		serverId = g_GameDATA.autoConnectServerId;
+	if (g_GameDATA.auto_connect_server_id > 1) {
+		server_id = g_GameDATA.auto_connect_server_id;
 	}
 
-	if (g_GameDATA.autoConnectChannelId > 1) {
-		channelId = g_GameDATA.autoConnectChannelId;
+	if (g_GameDATA.auto_connect_channel_id > 1) {
+		channel_id = g_GameDATA.auto_connect_channel_id;
 	}
 
 	std::stringstream message("");
-	message << "Login succeeded. Connecting: Server #" << serverId << "; Channel #" << channelId << ".";
-	_messages.push_back(message.str());
+	message << "Login succeeded. Connecting: Server #" << server_id << "; Channel #" << channel_id << ".";
+	this->messages.push_back(message.str());
 
-	g_pNet->Send_cli_SELECT_SERVER(serverId, channelId);
-
+	g_pNet->Send_cli_SELECT_SERVER(server_id, channel_id);
 	return;
 }
 
 void
-CGameStateAutoConnect::OnLoginFailed(int errorCode)
+CGameStateAutoConnect::on_login_failed(int code)
 {
-	if (errorCode == RESULT_LOGIN_REPLY_ALREADY_LOGGEDIN) {
-		_messages.push_back("Account already logged in. Attempting to reconnect.");
+	if (code == RESULT_LOGIN_REPLY_ALREADY_LOGGEDIN) {
+		this->messages.push_back("Account already logged in. Attempting to reconnect.");
 
-		if (!g_pNet->ConnectToServer(g_GameDATA.serverIp.c_str(), g_GameDATA.serverPort, NS_CON_TO_LSV)) {
-			_lastError = AutoConnectError::ServerError;
+		if (!g_pNet->ConnectToServer(g_GameDATA.server_ip, g_GameDATA.server_port, NS_CON_TO_LSV)) {
+			this->last_error = AutoConnectError::ServerError;
 			return;
 		}
 
-		g_pNet->Send_cli_LOGIN_REQ(g_GameDATA.userAccount.c_str(), g_GameDATA.userPassword.c_str(), true);
+		g_pNet->Send_cli_LOGIN_REQ(g_GameDATA.username, g_GameDATA.password);
 		return;
 	}
 
+	std::string message = "Failed to login: ";
+	if (code > 0 && code < login_error_message.size()) {
+		message += std::string(login_error_message.at(code)) + ".";
+	} else {
+		message += "Unkown error #" + std::to_string(code) + ".";
+	}
+
+	this->messages.push_back(message);
+	this->last_error = AutoConnectError::LoginError;
+	return;
 }
 
 void
-CGameStateAutoConnect::OnCharacterServerConnected()
+CGameStateAutoConnect::on_charserver_connected()
 {
-	int characterIndex = 0;
-
-	if (g_GameDATA.autoConnectCharacterIndex > 0) {
-		characterIndex = g_GameDATA.autoConnectCharacterIndex;
+	if (g_GameDATA.auto_connect_character_name.empty()) {
+		this->messages.push_back("No character name provided");
+		this->last_error = AutoConnectError::CharSelectError;
+		return;
 	}
 
 	std::stringstream message("");
-	message << "Server/Channel select succeeded. Selecting character #" << characterIndex + 1 << ".";
-	_messages.push_back(message.str());
+	message << "Server/Channel select succeeded. Selecting character: " << g_GameDATA.auto_connect_character_name << ".";
+	this->messages.push_back(message.str());
 
 	CGame::GetInstance().Load_BasicDATA2();
-	g_pNet->Send_cli_SELECT_CHAR(characterIndex);
+	g_pNet->Send_cli_SELECT_CHAR(0, (char*)g_GameDATA.auto_connect_character_name.c_str());
+	return;
 }
 
 void
-CGameStateAutoConnect::OnCharacterServerConnectFailed()
+CGameStateAutoConnect::on_charserver_connect_failed()
 {
-	_messages.push_back("Failed to connect to server/channel.");
-	CGame::GetInstance().ChangeState(CGame::GS_LOGIN);
+	this->messages.push_back("Failed to connect to server/channel.");
+	this->last_error = AutoConnectError::CharSelectError;
+	return;
 }
-*/

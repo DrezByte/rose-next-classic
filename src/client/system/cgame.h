@@ -58,8 +58,12 @@ class CGame
 	friend class CGameStateWarp;
 	friend class CGameStateExitMain;
 	friend class CGameStateSelectSvr;
+	friend class CGameStateAutoConnect;
 private: 
 	CGame(void);
+
+public:
+	CGameState* active_state;
 
 public:
 	~CGame(void);
@@ -72,7 +76,6 @@ public:
 	void	ClearWndMsgQ(){ m_WndMsgQ.Clear(); }
 
 	int		GetCurrStateID();
-
 	void	ChangeScreenMode();
 
 	enum eGAME_STATE{
@@ -243,7 +246,6 @@ private:
 
 
 private:
-	CGameState*		m_pCurrState;
 	CGameState*		m_GameStates[ GS_MAX ];
 
 	CAppMsgQ		m_WndMsgQ;

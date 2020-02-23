@@ -264,7 +264,7 @@ void CLogin::SendLoginReq( )
 				temp_id.append( pItem->GetValue() );
 				CGame::GetInstance().SetJapanPartnerString( pItem->GetValue() );
 
-				g_pNet->Send_cli_LOGIN_REQ( (char*)(temp_id.c_str()), m_strPassword ,!g_GameDATA.m_is_NHN_JAPAN );
+				g_pNet->Send_cli_LOGIN_REQ(temp_id, m_strPassword);
 
 				g_ClientStorage.SetJapanRoute( pCombo->GetSelectedItemIndex() );
 				g_ClientStorage.SaveJapanRoute();
@@ -273,7 +273,7 @@ void CLogin::SendLoginReq( )
 	}
 	else
 	{
-		g_pNet->Send_cli_LOGIN_REQ( m_strID, m_strPassword ,!g_GameDATA.m_is_NHN_JAPAN );
+		g_pNet->Send_cli_LOGIN_REQ( m_strID, m_strPassword);
 	}
 }
 void CLogin::Hide()

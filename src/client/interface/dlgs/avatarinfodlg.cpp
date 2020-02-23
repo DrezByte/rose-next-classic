@@ -306,11 +306,6 @@ unsigned CAvatarInfoDlg::Process(UINT uiMsg,WPARAM wParam,LPARAM lParam)
 #endif					
 					break;
 				case IID_BTN_DIALOG2ICON:
-					
-					break;
-				case IID_BTN_SCREENSHOT:
-					//CGame::GetInstance().ScreenCAPTURE();
-					g_pNet->Send_cli_SCREEN_SHOT_TIME();
 					break;
 				default:
 					break;

@@ -104,7 +104,7 @@ CGame::CGame(void)
 	for( int i = GS_TITLE; i < GS_MAX; ++i )
 		m_GameStates[ i ]			= NULL;
 
-	m_pCurrState = m_GameStates[ GS_NULL ];
+	this->active_state = m_GameStates[ GS_NULL ];
 
 //	m_iCurrentCursorType = 4;
 	m_iCheckFrame		 = 0;
@@ -205,11 +205,11 @@ void CGame::ChangeState( int newState )
 	if( m_GameStates[ newState ] == NULL )
 		m_GameStates[ newState ] = MakeState( newState );
 
-	m_pCurrState->Leave( newState );
-	int oldState = m_pCurrState->GetStateID();
+	this->active_state->Leave( newState );
+	int oldState = this->active_state->GetStateID();
 	
-	m_pCurrState = m_GameStates[ newState ];
-	m_pCurrState->Enter( oldState );
+	this->active_state = m_GameStates[ newState ];
+	this->active_state->Enter( oldState );
 }
 
 void CGame::GameLoop()
@@ -229,7 +229,7 @@ void CGame::GameLoop()
 		g_pNet->Proc ();
 		ProcInput();
 		
-		m_pCurrState->Update( bLostFocus );
+		this->active_state->Update( bLostFocus );
 
 		m_MouseTargetEffect.Proc();
 
@@ -890,7 +890,7 @@ bool CGame::AddWndMsgQ( UINT uiMsg, WPARAM wParam, LPARAM lParam )
 		//setCursorPosition ( m_hDxCursor[m_iCurrentCursorType], ptWindow.x, ptWindow.y );
 
 	}
-	m_pCurrState->ProcWndMsgInstant( uiMsg, wParam, lParam );
+	this->active_state->ProcWndMsgInstant( uiMsg, wParam, lParam );
 	return m_WndMsgQ.AddMsgToQ( uiMsg, wParam, lParam );
 }
 
@@ -1153,23 +1153,23 @@ void CGame::ProcWndMsg( UINT uiMsg, WPARAM wParam, LPARAM lParam )
 	switch( uiMsg )
 	{
 	case WM_CLOSE:
-		if( m_pCurrState->GetStateID() == GS_MAIN )
+		if( this->active_state->GetStateID() == GS_MAIN )
 			g_itMGR.OpenDialog( DLG_TYPE_SYSTEM );
 		else
 			g_pCApp->SetExitGame();
 		break;
 	case WM_USER_CLOSE_MSGBOX:
-		if( m_pCurrState->GetStateID() == GS_LOGIN || m_pCurrState->GetStateID() == GS_SELECTAVATAR )
+		if( this->active_state->GetStateID() == GS_LOGIN || this->active_state->GetStateID() == GS_SELECTAVATAR )
 			g_EUILobby.HideMsgBox();
 
 		break;
 	case WM_USER_SERVER_DISCONNECTED:
 		if( !g_pCApp->IsExitGame() )
-			m_pCurrState->ServerDisconnected();
+			this->active_state->ServerDisconnected();
 		break;
 	case WM_USER_WORLDSERVER_DISCONNECTED:
 		if( !g_pCApp->IsExitGame() )
-			m_pCurrState->WorldServerDisconnected();
+			this->active_state->WorldServerDisconnected();
 		break;
 	default:
 		break;
@@ -1177,7 +1177,7 @@ void CGame::ProcWndMsg( UINT uiMsg, WPARAM wParam, LPARAM lParam )
 }
 int CGame::GetCurrStateID()
 {
-	return m_pCurrState->GetStateID();
+	return this->active_state->GetStateID();
 }
 
 /// 스크린 캡쳐시에 BMP 파일을 지울것이냐 말것이냐..
@@ -1188,7 +1188,7 @@ void CGame::ProcInput()
 	tagWNDMSG Msg;
 	while( CGame::GetInstance().m_WndMsgQ.GetMouseMsgFromQ( Msg ) )
 	{
-		if( !m_pCurrState->ProcMouseInput( Msg.uiMsg, Msg.wParam, Msg.lParam ) )
+		if( !this->active_state->ProcMouseInput( Msg.uiMsg, Msg.wParam, Msg.lParam ) )
 		{
 
 		}
@@ -1210,7 +1210,7 @@ void CGame::ProcInput()
 			break;
 		}
 
-		m_pCurrState->ProcKeyboardInput( Msg.uiMsg, Msg.wParam, Msg.lParam );
+		this->active_state->ProcKeyboardInput( Msg.uiMsg, Msg.wParam, Msg.lParam );
 		
 		switch( Msg.uiMsg )
 		{
@@ -1361,12 +1361,12 @@ void	CGame::SetAppraisalCost( __int64 i64Cost )
 
 void	CGame::AcceptedConnectLoginSvr()
 {
-	m_pCurrState->AcceptedConnectLoginSvr();
+	this->active_state->AcceptedConnectLoginSvr();
 }
 
 void CGame::UpdateCurrentState()
 {
-	m_pCurrState->Update( g_pCApp->GetMessage () );
+	this->active_state->Update( g_pCApp->GetMessage () );
 }
 
 

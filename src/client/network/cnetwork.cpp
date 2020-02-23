@@ -9,6 +9,8 @@
 #include "CSocketWND.h"
 #include "../gameproc/LiveCheck.h"
 
+#include "system/cgamestate.h"
+
 #define PACKET_SEED 0x6648495
 
 CNetwork *g_pNet;
@@ -107,6 +109,7 @@ void CNetwork::Proc_WorldPacket ()
 					case NETWORK_STATUS_ACCEPTED    :
 					{
 						CGame::GetInstance().AcceptedConnectLoginSvr();
+						CGame::GetInstance().active_state->on_loginserver_connected();
 						continue;
 					}
 					case NETWORK_STATUS_CONNECT:
@@ -161,22 +164,30 @@ void CNetwork::Proc_WorldPacket ()
 			{
 				DWORD dwRet = Recv_srv_JOIN_SERVER_REPLY ();
 				if ( dwRet ) {
+					CLiveCheck::GetSingleton().ResetTime();
 					this->Send_cli_CHAR_LIST ();
+					CGame::GetInstance().active_state->on_charserver_connected();
 				} else {
 					// TODO:: error
 					this->DisconnectFromServer ();
+					CGame::GetInstance().active_state->on_charserver_connect_failed();
 					return;
 				}
 				break;
 			}
 
-			case LSV_LOGIN_REPLY :
-				if ( !Recv_lsv_LOGIN_REPLY () ) 
-				{
-					this->DisconnectFromServer ();
+			case LSV_LOGIN_REPLY:
+			{
+				const bool login_succeeded = Recv_lsv_LOGIN_REPLY();
+				if (login_succeeded) {
+					CGame::GetInstance().active_state->on_login_succeeded();
+				} else {
+					this->DisconnectFromServer();
+					CGame::GetInstance().active_state->on_login_failed(m_pRecvPacket->m_srv_LOGIN_REPLY.m_btResult & ~0x80);
 					return;
 				}
 				break;
+			}
 			case LSV_SELECT_SERVER :
 				{
 					DWORD dwRet = Recv_lsv_SELECT_SERVER ();
@@ -733,19 +744,6 @@ void CNetwork::Proc ()
 				}
 
 				LogString (LOG_NORMAL,"존 서버와의 접속에 실패했습니다.\n");
-				break;
-			}
-
-			case SRV_JOIN_SERVER_REPLY :	// 존 서버에 접속했다.
-			{
-				DWORD dwRet = Recv_srv_JOIN_SERVER_REPLY ();
-				if ( dwRet ) {
-					CLiveCheck::GetSingleton().ResetTime();
-				} else {
-					// TODO:: error
-					this->DisconnectFromServer ();
-					return;
-				}
 				break;
 			}
 

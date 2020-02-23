@@ -286,7 +286,7 @@ bool CApplication::ParseArgument (char *pStr)
 		if (!strcmpi(pToken, "--auto-connect-character")) {
 			pToken = CStr::GetTokenNext(pDelimiters);
 			if (pToken) {
-				g_GameDATA.auto_connect_character_idx = atoi(pToken);
+				g_GameDATA.auto_connect_character_name = pToken;
 			}
 		}
 
