@@ -77,10 +77,10 @@
     <ClInclude Include="resource1.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TriggerVFS.h">
+    <ClInclude Include="src\VFS_Manager.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="src\VFS_Manager.h">
+    <ClInclude Include="include\triggervfs\TriggerVFS.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>

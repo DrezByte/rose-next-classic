@@ -121,6 +121,7 @@ xcopy $(OutDir)$(ProjectName).lib $(IROSE_ROOT)\lib\$(Platform)\$(Configuration)
     <ClCompile Include="src\VFS_Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\triggervfs\TriggerVFS.h" />
     <ClInclude Include="src\ErrorEtc.h" />
     <ClInclude Include="src\libFile.h" />
     <ClInclude Include="src\stdafx.h" />
@@ -131,7 +132,6 @@ xcopy $(OutDir)$(ProjectName).lib $(IROSE_ROOT)\lib\$(Platform)\$(Configuration)
     <ClInclude Include="src\libCrc.h" />
     <ClInclude Include="src\libString.h" />
     <ClInclude Include="resource1.h" />
-    <ClInclude Include="include\TriggerVFS.h" />
     <ClInclude Include="src\VFS_Manager.h" />
   </ItemGroup>
   <ItemGroup>
