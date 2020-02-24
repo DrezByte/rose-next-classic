@@ -18,9 +18,9 @@ CGameStateTitle::CGameStateTitle(int iID) :
 
 CGameStateTitle::~CGameStateTitle(void)
 {
-	// NOTE: Crashes the application if it is terminated while data_thread
+	// NOTE: Crashes the application (std::terminate) if it is force closed while data_thread
 	// is still running. Root cause is calling destructor of joinable std::thread.
-	// The real issue is that we cannot safely join/detach the thread here because 
+	// The real issue is that we cannot safely join/detach the thread here because
 	// it will corrupt memory anyway. By the time this destructor is called several
 	// objects have been deallocated which load_data depends on. The fix to this
 	// problem is to improve the memory safety of those objects (e.g. smart pointers, etc.)

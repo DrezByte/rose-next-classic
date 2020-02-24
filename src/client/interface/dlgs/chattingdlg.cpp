@@ -1,5 +1,6 @@
 
 #include "StdAfx.h"
+
 #include "ChattingDLG.h"
 #include "CTargetMenu.h"
 #include "ExchangeDlg.h"
@@ -20,7 +21,6 @@
 
 using namespace Rose;
 
-int CChatDLG::m_iCaptureCount = 0;
 
 CChatDLG::CChatDLG()
 {
@@ -295,8 +295,6 @@ bool CChatDLG::On_LButtonUP( unsigned iProcID )
 {
 	switch( iProcID )
 	{
-	case IID_BTN_CAPTURE:
-		break;
 	case IID_BTN_FILTER:
 		g_itMGR.OpenDialog( DLG_TYPE_CHATFILTER );
 		break;

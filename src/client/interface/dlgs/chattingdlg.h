@@ -70,9 +70,6 @@ public:
 		IID_BTN_CLAN	= 55,
 		IID_BTN_ALLIED  = 56,
 
-
-		IID_BTN_CAPTURE = 60,
-
 		IDD_LISTBOX_TOP = 75,
 		IDD_SCROLLBAR_TOP = 76,
 		IDD_BTN_SCROLLDOWN = 100,
@@ -180,7 +177,6 @@ protected:
 	int						m_iSelectedTab;						/// 현재 탭 구분
 
 	short					m_nChatLineCNT;						/// 채팅 라인수 
-	static					int m_iCaptureCount;	
 
 	vector< ChatFilter >	m_Filters;				
 
