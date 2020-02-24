@@ -105,11 +105,11 @@
       <UniqueIdentifier>{1cc8f2dc-8fd6-4200-9875-c2e4d210043b}</UniqueIdentifier>
       <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
-    <Filter Include="Lua BIN">
-      <UniqueIdentifier>{0b6bcfe6-1025-4be9-be90-3d9989574b0a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include">
       <UniqueIdentifier>{f53659f2-4760-490a-9b3a-2facac96fd1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{a7ddc471-031f-4a62-ae0e-ec58676b339e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2256,9 +2256,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GlobalScr.lua">
-      <Filter>Source Files\LUA</Filter>
-    </None>
     <None Include="Res\Attack.cur">
       <Filter>Resource Files</Filter>
     </None>
@@ -2310,12 +2307,6 @@
     <None Include="Res\Wheel.cur">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="lua.exe">
-      <Filter>Lua BIN</Filter>
-    </None>
-    <None Include="luac.exe">
-      <Filter>Lua BIN</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -2323,14 +2314,8 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="export_GM.lua">
-      <Filter>Source Files\LUA</Filter>
-    </CustomBuild>
-    <CustomBuild Include="export_QF.lua">
-      <Filter>Source Files\LUA</Filter>
-    </CustomBuild>
-    <CustomBuild Include="System\export_System.lua">
-      <Filter>Source Files\LUA</Filter>
+    <CustomBuild Include="scripts\gen_script_interface.lua">
+      <Filter>Scripts</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

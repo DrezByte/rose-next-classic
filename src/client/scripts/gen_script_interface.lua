@@ -1,18 +1,15 @@
---- ·ç¾Æ¿ë ÀÎÅÍÆäÀÌ½º ¸ðµâ ÀÚµ¿ »ý¼ºÇÏ´Â ½ºÅ©¸³Æ®
---- ÀÔ·ÂÆÄÀÏ : zz_interface.h
---- Ãâ·ÂÆÄÀÏ : zz_api_define.inc zz_api_register.inc
----
---- ss checkout $/znzin11/engine/include/zz_api_define.inc $/znzin11/engine/include/zz_api_register.inc -yzho,XXXX -i-y
----
---- $Header: /Client/export_GM.lua 2     03-08-29 5:22p Icarus $
-
---- ÆÄÀÏÀ» ÀÐ¾î interfaces Å×ÀÌºí¿¡ Á¤º¸ ÀúÀå
-function read_interfaces ( hin, hout )
+--- A script to generate the client's lua script interfaces
+--- args:
+---     prefix - The prefix used for the functions in the input header file (e.g GF_SCRIPt, QF_SRIPT or SYSTEM_SCRIPT)
+---     in_file - Input file to generate lua interfaces for. Most be formatted appropriately (see below for details)
+---     out_def_file - Output file to generate the definitions
+---     out_reg_file - Output file to register the interfaces
+function read_interfaces ( prefix, hin, hout )
     i = 1
     word = read( hin, "*w" )
 
     while ( word ) do
-        if (word ~= "GF_SCRIPT") then
+        if (word ~= prefix) then
             word = read( hin, "*l" ) -- skip current line
         else
             local return_type
@@ -52,32 +49,39 @@ function read_interfaces ( hin, hout )
     end -- end of while
 end
 
-IN_FILENAME   = "Game_FUNC.h"
-OUT_FILENAME1 = "Game_FUNC_DEF.inc"
-OUT_FILENAME2 = "Game_FUNC_REG.inc"
+PREFIX = arg[1]
+IN_FILENAME = arg[2]
+OUT_FILENAME1 = arg[3]
+OUT_FILENAME2 = arg[4]
+
+-- Hacky way to create intermediate directories
+remove(OUT_FILENAME1)
+remove(OUT_FILENAME2)
+execute("mkdir " .. OUT_FILENAME1)
+execute("rmdir " .. OUT_FILENAME1)
 
 hin   = readfrom ( IN_FILENAME   ) -- input file handle
 hout1 = writeto  ( OUT_FILENAME1 ) -- output file handle
-hout2 = writeto  ( OUT_FILENAME2 ) -- output file handle
+hout2 = writeto ( OUT_FILENAME2 ) -- output file handle
 
-interfaces = {} -- ÀÎÅÍÆäÀÌ½º Á¤º¸ Å×ÀÌºí
+interfaces = {} -- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½
 
---- ÀÎÅÍÆäÀÌ½º Á¤º¸ ÀÐ¾îµéÀÌ±â
-read_interfaces ( hin, hout )
+--- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½ï¿½ï¿½Ì±ï¿½
+read_interfaces ( PREFIX, hin, hout )
 
-names = {} --- Á¤·Ä¿ë ÀÌ¸§ Å×ÀÌºí
+names = {} --- ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½Ìºï¿½
 i = 1
-index = next(interfaces, nil) -- ÀÌ¸§À¸·Î ÂüÁ¶ÇÏ´Â Å×ÀÌºíÀÌ¹Ç·Î, interfaces[i] ¸¦ »ç¿ëÇÒ ¼ö ¾ø´Ù.
+index = next(interfaces, nil) -- ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½Ì¹Ç·ï¿½, interfaces[i] ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 while (index) do
     names[i] = index
     index = next(interfaces, index)
     i = i + 1
 end
 
---- ÀÌ¸§¼øÀ¸·Î Á¤·ÄÇÏ±â
+--- ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 sort( names )
 
---- ¸ÅÅ©·Î ÂüÁ¶ Å×ÀÌºíµé
+--- ï¿½ï¿½Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½
 map_return_types = {
     void    = "RETURNS_NONE",
     int     = "RETURNS_INT",
@@ -93,18 +97,17 @@ map_param_types = {
     ZSTRING = "ZL_STRING"
 }
 
---- °æ°í ¸Þ¼¼Áö
+--- ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
 message_autogen =
 "//==========================================================================//\n"..
-"// ÀÌ ÆÄÀÏÀº export_interface.lua ½ºÅ©¸³Æ®¿¡ ÀÇÇØ ÀÚµ¿»ý¼ºµÈ ÄÚµåÀÔ´Ï´Ù.\n"..
-"// Á÷Á¢ ¼öÁ¤ÇÏÁö ¸¶½Ê½Ã¿À.\n"..
-"// "..date().."\n"..
+"// This file was automatically generated. Do not modify!\n"..
+"// Generated: "..date().."\n"..
 "//==========================================================================//\n\n\n"
 
 write( hout1, message_autogen )
 write( hout2, message_autogen )
 
---- ½ºÅ©¸³Æ® ÀÎÅÍÆäÀÌ½º Á¤ÀÇ¿ë ÆÄÀÏ »ý¼ºÇÏ±â
+--- ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½ï¿½Ç¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 for i = 1, getn(names) do
     definition = format( "ZL_FUNC_BEGIN( %s, ", names[i] )
     -- export return_type
@@ -124,13 +127,13 @@ for i = 1, getn(names) do
     write( hout1, definition )
 end
 
---- ½ºÅ©¸³Æ® ÀÎÅÍÆäÀÌ½º µî·Ï¿ë ÆÄÀÏ »ý¼ºÇÏ±â
+--- ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 for i = 1, getn(names) do
     register = format( "ZL_REGISTER( %-30s )\n", names[i] )
     write( hout2, register )
 end
 
---- ÆÄÀÏÀÇ ³¡ Ç¥½Ã
+--- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ç¥ï¿½ï¿½
 message_end_of_file = "// end of file\n"
 
 write( hout1, message_end_of_file )

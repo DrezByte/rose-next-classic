@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include ".\systemprocscript.h"
 
-#include "System_Func.h"
-#include "System_FUNC_DEF.inc"
+#include "system/system_func.h"
+#include "system/system_func_def.inc"
 
 #include "../interface/interfacetype.h"
 #include "../interface/dlgs/cmenudlg.h"
@@ -119,7 +119,7 @@ int CSystemProcScript::DoScript( const char* strScriptName )
 ///
 void CSystemProcScript::PrepareSystemFunction( lua_State *L )
 {	
-	#include "System_FUNC_REG.inc"	
+	#include "system/system_func_reg.inc"
 }
 
 ///

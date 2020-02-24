@@ -76,7 +76,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)interface;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\engine\include;$(SolutionDir)src\lib_util;$(SolutionDir)src\triggervfs\include;$(SolutionDir)src\tgamectrl\include;$(SolutionDir)src\triggerinfo\include;$(SolutionDir)thirdparty\expat-2.0.1\amiga\include\libraries;$(SolutionDir)thirdparty\libogg-1.1.3\include;$(SolutionDir)thirdparty\libvorbis-1.2.0\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-4.0.1\include;$(SolutionDir)thirdparty\zlib-1.2.3\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)interface;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\engine\include;$(SolutionDir)src\lib_util;$(SolutionDir)src\triggervfs\include;$(SolutionDir)src\tgamectrl\include;$(SolutionDir)src\triggerinfo\include;$(SolutionDir)thirdparty\expat-2.0.1\amiga\include\libraries;$(SolutionDir)thirdparty\libogg-1.1.3\include;$(SolutionDir)thirdparty\libvorbis-1.2.0\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-4.0.1\include;$(SolutionDir)thirdparty\zlib-1.2.3\;$(GeneratedDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;TGAMECTRL_STATIC;TRIGGERINFO_STATIC;XML_STATIC;_debug;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
@@ -129,7 +129,7 @@
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)interface;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\engine\include;$(SolutionDir)src\lib_util;$(SolutionDir)src\triggervfs\include;$(SolutionDir)src\tgamectrl\include;$(SolutionDir)src\triggerinfo\include;$(SolutionDir)thirdparty\expat-2.0.1\amiga\include\libraries;$(SolutionDir)thirdparty\libogg-1.1.3\include;$(SolutionDir)thirdparty\libvorbis-1.2.0\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-4.0.1\include;$(SolutionDir)thirdparty\zlib-1.2.3\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)interface;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\engine\include;$(SolutionDir)src\lib_util;$(SolutionDir)src\triggervfs\include;$(SolutionDir)src\tgamectrl\include;$(SolutionDir)src\triggerinfo\include;$(SolutionDir)thirdparty\expat-2.0.1\amiga\include\libraries;$(SolutionDir)thirdparty\libogg-1.1.3\include;$(SolutionDir)thirdparty\libvorbis-1.2.0\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-4.0.1\include;$(SolutionDir)thirdparty\zlib-1.2.3\;$(GeneratedDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;TGAMECTRL_STATIC;TRIGGERINFO_STATIC;XML_STATIC;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -907,36 +907,6 @@
     <ClInclude Include="..\Engine\include\zz_interface.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="System\export_System.lua">
-      <Message Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Export Game Function Interface %(FullPath)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">.\lua %(FullPath)
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">$(ProjectDir)system\System_FUNC_DEF.inc;$(ProjectDir)system\System_FUNC_REG.inc;%(Outputs)</Outputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Export Game Function Interface %(FullPath)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='release|Win32'">.\lua %(FullPath)
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='release|Win32'">$(ProjectDir)system\System_FUNC_DEF.inc;$(ProjectDir)system\System_FUNC_REG.inc;%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="export_GM.lua">
-      <Message Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Export Game Function Interface %(FullPath)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">.\lua %(FullPath)
-</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">.\Game_FUNC.h;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)Game_FUNC.h2;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='release|Win32'">lua %(Filename)%(Extension)
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)%(Filename);%(Outputs)</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="export_QF.lua">
-      <Message Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Export Quest Function Interface %(FullPath)</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">.\lua %(FullPath)
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(RootDir)%(Directory)Event\Quest_FUNC.h2;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='release|Win32'">lua %(Filename)%(Extension)
-</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(RootDir)%(Directory)%(Filename);%(Outputs)</Outputs>
-    </CustomBuild>
-    <None Include="GlobalScr.lua" />
     <None Include="Res\Attack.cur" />
     <None Include="Client.ico" />
     <None Include="Res\cursor1.cur" />
@@ -951,11 +921,24 @@
     <None Include="Res\Npc.cur" />
     <None Include="Res\repair.cur" />
     <None Include="Res\Right.cur" />
+    <CustomBuild Include="scripts\gen_script_interface.lua">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='release|Win32'">$(OutDir)thirdparty\lua4.exe -f %(FullPath) GF_SCRIPT $(ProjectDir)game_func.h $(GeneratedDir)game_func_def.inc $(GeneratedDir)\game_func_reg.inc
+$(OutDir)thirdparty\lua4.exe -f %(FullPath) QF_SCRIPT $(ProjectDir)event\quest_func.h $(GeneratedDir)event\quest_func_def.inc $(GeneratedDir)event\quest_func_reg.inc
+$(OutDir)thirdparty\lua4.exe -f %(FullPath) SYSTEM_SCRIPT $(ProjectDir)system\system_func.h $(GeneratedDir)system\system_func_def.inc $(GeneratedDir)system\system_func_reg.inc</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Generating lua script interfaces...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">$(OutDir)thirdparty\lua4.exe -f %(FullPath) GF_SCRIPT $(ProjectDir)game_func.h $(GeneratedDir)game_func_def.inc $(GeneratedDir)\game_func_reg.inc
+$(OutDir)thirdparty\lua4.exe -f %(FullPath) QF_SCRIPT $(ProjectDir)event\quest_func.h $(GeneratedDir)event\quest_func_def.inc $(GeneratedDir)event\quest_func_reg.inc
+$(OutDir)thirdparty\lua4.exe -f %(FullPath) SYSTEM_SCRIPT $(ProjectDir)system\system_func.h $(GeneratedDir)system\system_func_def.inc $(GeneratedDir)system\system_func_reg.inc</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Generating lua script interfaces...</Message>
+      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='release|Win32'">ClInclude</OutputItemType>
+      <OutputItemType Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">ClInclude</OutputItemType>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='release|Win32'">$(GeneratedDir)game_func_def.inc;$(GeneratedDir)game_func_reg.inc;$(GeneratedDir)event\quest_func_def.inc;$(GeneratedDir)event\quest_func_reg.inc;$(GeneratedDir)system\system_func_def.inc;$(GeneratedDir)system\system_func_reg.inc;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">$(GeneratedDir)game_func_def.inc;$(GeneratedDir)game_func_reg.inc;$(GeneratedDir)event\quest_func_def.inc;$(GeneratedDir)event\quest_func_reg.inc;$(GeneratedDir)system\system_func_def.inc;$(GeneratedDir)system\system_func_reg.inc;%(Outputs)</Outputs>
+    </CustomBuild>
     <None Include="small.ico" />
     <None Include="Res\User.cur" />
     <None Include="Res\Wheel.cur" />
-    <None Include="lua.exe" />
-    <None Include="luac.exe" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc" />
