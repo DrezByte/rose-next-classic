@@ -1,21 +1,19 @@
 #include "stdafx.h"
+
 #include "cgamestatetitle.h"
-#include <process.h>
+
 #include "CGame.h"
-#include "../CCamera.h"
+#include "CCamera.h"
 #include "System_FUNC.h"
 #include "SystemProcScript.h"
-#include "../interface/IO_ImageRes.h"
+#include "interface/IO_ImageRes.h"
 
-static bool tDone = false;
-int CGameStateTitle::m_iBackGroundZone  = 1;
-
-CGameStateTitle::CGameStateTitle( int iID )
+CGameStateTitle::CGameStateTitle(int iID) :
+	data_loaded(false),
+	title_texture(NULL),
+	background_zone_id(0)
 {
 	m_iStateID  = iID;
-
-	m_iBackGroundZone = 1;
-	m_hTitleTexture	  = NULL;
 }
 
 CGameStateTitle::~CGameStateTitle(void)
@@ -25,58 +23,8 @@ CGameStateTitle::~CGameStateTitle(void)
 
 int	CGameStateTitle::Update( bool bLostFocus )
 {	
-#ifdef __THREADED_LOADING
-	///*
-	//Draw();	
-	DWORD ret = WaitForSingleObject( m_hThread, 100 );
-
-	switch( ret )
-	{
-	case WAIT_OBJECT_0:
-		if(tDone)
-			CGame::GetInstance().ChangeState( CGame::GS_LOGIN );
-		break;
-	case WAIT_TIMEOUT:
-		break;
-	case WAIT_FAILED:
-		g_pCApp->SetExitGame();
-		break;
-	default:
-		break;
-	}
-	//*/
-#endif
-	return 0;
-}
-int CGameStateTitle::Enter( int iPrevStateID )
-{ 
-	CGame::GetInstance().Load_DataNotUseThread();
-
-
-	///
-	/// 배경으로 사용할 존 번호를 얻어온다.
-	///
-	m_iBackGroundZone = SC_GetBGZoneNO();
-	m_hTitleTexture = loadTexture("logo.png", "logo.png", 1, 0);
-
-#ifdef __THREADED_LOADING
-	Draw();
-
-	m_hThread = (HANDLE)_beginthreadex( NULL, 0, &ThreadFunc, NULL, CREATE_SUSPENDED, NULL );
-	SetThreadPriority( m_hThread,THREAD_PRIORITY_HIGHEST  );
-
-	if( m_hThread )
-	{
-		tDone = false;
-		ResumeThread( m_hThread );
-	}
-	else///Thread 생성 실패시 메인쓰레드에서 로딩하고 State를 바꾸어 준다.
-#endif
-	{
-#ifndef __THREADED_LOADING
-		Draw();
-#endif
-		ThreadFunc(NULL);
+	if (this->data_loaded) {
+		this->data_thread.join();
 
 		if (g_GameDATA.auto_connect()) {
 			CGame::GetInstance().ChangeState(CGame::GS_AUTOCONNECT);
@@ -84,87 +32,90 @@ int CGameStateTitle::Enter( int iPrevStateID )
 			CGame::GetInstance().ChangeState(CGame::GS_LOGIN);
 		}
 	}
-	
+
+	return 0;
+}
+int CGameStateTitle::Enter( int iPrevStateID )
+{ 
+	CGame::GetInstance().Load_DataNotUseThread();
+
+	this->background_zone_id = SC_GetBGZoneNO();
+	this->title_texture = loadTexture("logo.png", "logo.png", 1, 0);
+
+	Draw();
+
+	this->data_thread = std::thread(&CGameStateTitle::load_data, this);
+
 	return 0; 
 }
 
 int CGameStateTitle::Leave( int iNextStateID )
 { 
-	if( m_hTitleTexture )
+	if( this->title_texture )
 	{
-		unloadTexture( m_hTitleTexture );
-		m_hTitleTexture = NULL;
+		unloadTexture( this->title_texture );
+		this->title_texture = NULL;
 	}
 	return 0; 
 }
 
-unsigned __stdcall CGameStateTitle::ThreadFunc( void* pArguments )
+void CGameStateTitle::load_data()
 {
 	setDelayedLoad(0);
 	CImageResManager::GetSingletonPtr()->LoadImageResources();
 
 	g_itMGR.Init();
 
-
 	CGame::GetInstance().Load_BasicDATA();
 
-
 //	g_pTerrain->SetLoadingMode( true );
-	g_pTerrain->LoadZONE( CGameStateTitle::m_iBackGroundZone , false );
+	g_pTerrain->LoadZONE(this->background_zone_id, false);
 
-	///
-	/// 카메라 모션은 32_32 기준으로 만들어졌다.. 모션적용을 위해서 보정한다.
-	///
-	D3DVECTOR PosENZIN;
-	PosENZIN.x = 520000.0f;
-	PosENZIN.y = 520000.0f;
-	PosENZIN.z = 0.0f;
+	D3DVECTOR position;
+	position.x = 520000.0f;
+	position.y = 520000.0f;
+	position.z = 0.0f;
 
-	g_pCamera->Set_Position ( PosENZIN );
-	::setDelayedLoad( 2 );	
-	::setDelayedLoad( 0 );	
-	return 0;
+	g_pCamera->Set_Position(position);
+	::setDelayedLoad(2);
+	::setDelayedLoad(0);
+
+	this->data_loaded = true;
+	return;
 }
 
 void CGameStateTitle::Draw()
 {
-	::setClearColor( 1, 1, 1 );
-	if( g_pCApp->IsActive() )
-	{
-		if ( !::beginScene() ) //  디바이스가 손실된 상태라면 0을 리턴하므로, 모든 렌더링 스킵
-		{
+	::setClearColor(1, 1, 1);
+
+	if(g_pCApp->IsActive()) {
+		if (!::beginScene()) {
 			return;
 		}
 		
 		::clearScreen();
 
-		::beginSprite( D3DXSPRITE_ALPHABLEND );	
+		::beginSprite(D3DXSPRITE_ALPHABLEND);
 
-		D3DXMATRIX mat, matScale, matTrans;	
-		int iWidth, iHeight;
+		int width, height;
 
+		::getTextureSize( this->title_texture, width, height );
 
-		::getTextureSize( m_hTitleTexture, iWidth, iHeight );
-		D3DXVECTOR3 vCenter( (float)(iWidth/2), (float)(iHeight/2), 0);
+		const D3DXVECTOR3 center(width / 2.0f, height / 2.0f, 0);
+		const float scale_width  = g_pCApp->GetWIDTH() / 1024.0f;
+		const float scale_height = g_pCApp->GetHEIGHT() / 768.0f;
 
-		float fScaleWidth  = (float)(g_pCApp->GetWIDTH() / 1024.);
-		float fScaleHeight = (float)(g_pCApp->GetHEIGHT() / 768.);
-
-		D3DXMatrixScaling( &matScale, fScaleWidth, fScaleHeight, 0.0f );
-		D3DXMatrixTranslation( &matTrans, (float)(g_pCApp->GetWIDTH()/2), (float)(g_pCApp->GetHEIGHT()/2), 0 );
-		D3DXMatrixMultiply( &mat, &matScale, &matTrans );
+		D3DXMATRIX mat, mat_scale, mat_trans;
+		D3DXMatrixScaling( &mat_scale, scale_width, scale_height, 0.0f );
+		D3DXMatrixTranslation( &mat_trans,g_pCApp->GetWIDTH()/2.0f, g_pCApp->GetHEIGHT()/2.0f, 0 );
+		D3DXMatrixMultiply( &mat, &mat_scale, &mat_trans );
 		
 		::setTransformSprite( mat );
-		::drawSprite( m_hTitleTexture, 
-						NULL,
-						&vCenter,
-						NULL,								
-						D3DCOLOR_RGBA( 255, 255, 255, 255 ) );
-		
+		::drawSprite(this->title_texture, nullptr, &center, nullptr, zz_color_white);
 		
 		::endSprite();
-
 		::endScene();
+
 		::swapBuffers();
 	}
 }

@@ -1,5 +1,5 @@
-#ifndef _CGAMESTATETITLE_
-#define _CGAMESTATETITLE_
+#pragma once
+
 #include "cgamestate.h"
 
 /**
@@ -10,31 +10,40 @@
 */
 class CGameStateTitle :	public CGameState
 {
-	HANDLE		m_hThread;
+public:
+
+
 public:
 	CGameStateTitle(int iID);
 	~CGameStateTitle(void);
-
-	virtual int Update( bool bLostFocus );
-	virtual int Enter( int iPrevStateID );
-	virtual int Leave( int iNextStateID );
-
-	virtual void ServerDisconnected(){}
-
-	virtual int ProcMouseInput( UINT uiMsg, WPARAM wParam, LPARAM lParam ){return 0;}
-	virtual int ProcKeyboardInput( UINT uiMsg, WPARAM wParam, LPARAM lParam ){ return 0;}
-
 	
+	CGameStateTitle() = delete;
+	CGameStateTitle(CGameStateTitle&) = delete;
+	CGameStateTitle(CGameStateTitle&&) = delete;
+	CGameStateTitle& CGameStateTitle::operator= (const CGameStateTitle&) = delete;
+	CGameStateTitle& CGameStateTitle::operator= (CGameStateTitle&&) = delete;
+
+	// -- CGameState
+	int Update( bool bLostFocus ) override;
+	int Enter( int iPrevStateID ) override;
+	int Leave( int iNextStateID ) override;
+	int ProcMouseInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) override { return 0; }
+	int ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) override { return 0; }
+	// --
+
+	// Handlers
+	void ServerDisconnected(){}
+
 protected:
-	static unsigned __stdcall ThreadFunc( void* pArguments );
 	void Draw();
 
-	///
-	/// system 배경에 사용될 존번호
-	///
-	static int	m_iBackGroundZone;
-	HNODE		m_hTitleTexture;
+private:
+	std::atomic<bool> data_loaded;
+	std::thread data_thread;
+
+	HNODE title_texture;
+	int background_zone_id;
+
+private:
+	void load_data();
 };
-
-
-#endif

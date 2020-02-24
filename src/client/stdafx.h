@@ -27,6 +27,8 @@
 #include <algorithm>
 #include <map>
 #include <unordered_map>
+#include <thread>
+#include <atomic>
 
 // DirectX
 #include <d3d9.h>
