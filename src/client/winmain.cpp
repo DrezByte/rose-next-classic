@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#define AROSE
 
 #include "CApplication.h"
 #include "Game.h"
@@ -16,6 +15,32 @@
 #include <crtdbg.h>
 
 using namespace Rose;
+
+class DuplicateAppLock {
+public:
+	HANDLE global_mutex;
+	bool is_duplicate;
+
+	DuplicateAppLock() :
+		global_mutex(nullptr),
+		is_duplicate(false)
+	{
+		this->global_mutex = ::CreateMutex(nullptr, FALSE, "Global\\rose-next");
+		this->is_duplicate = ::GetLastError() == ERROR_ALREADY_EXISTS;
+	}
+
+	~DuplicateAppLock() {
+		if (this->global_mutex) {
+			::ReleaseMutex(this->global_mutex);
+			::CloseHandle(this->global_mutex);
+		}
+	}
+
+	DuplicateAppLock(DuplicateAppLock&) = delete;
+	DuplicateAppLock(DuplicateAppLock&&) = delete;
+	DuplicateAppLock& DuplicateAppLock::operator= (const DuplicateAppLock&) = delete;
+	DuplicateAppLock& DuplicateAppLock::operator= (DuplicateAppLock&&) = delete;
+};
 
 bool Init_DEVICE (void)
 {
@@ -67,102 +92,42 @@ void Free_DEVICE (void)
 	::closeFileSystem();
 	::destZnzin();  
 }
-//------------------------------------------------------------------------------------------------
-// 2005. 5. 6. 조호동
-// 중복 실행 체크용 소켓 해제
-SOCKET listener;
 
-void CloseDuplicateAppSocket (void)
-{
-	closesocket(listener);
-	::WSACleanup();
-}
-
-// 중복 실행 체크 : 특정 포트가 중복 생성 안되는 점을 이용.
-bool IsDuplicateApp (void)
-{
-	WSADATA wsadata;
-	::WSAStartup( MAKEWORD( 2, 2 ), &wsadata );
-
-	// socket 생성
-	listener = ::socket(AF_INET, SOCK_STREAM, 0);
-	// listening
-	sockaddr_in addr;
-	memset(&addr, 0, sizeof(sockaddr_in));
-	addr.sin_family = AF_INET;
-	addr.sin_addr.S_un.S_addr = INADDR_ANY;
-	addr.sin_port = htons(7777);
-
-	int result = ::bind(listener, (sockaddr*) &addr, sizeof(sockaddr_in));
-	result = ::listen(listener, 5);
-
-	if( result == SOCKET_ERROR )
-	{
-		CloseDuplicateAppSocket();
-		MessageBox(NULL, "이미 게임이 실행 중입니다 !", "에러", MB_OK );
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-//-------------------------------------------------------------------------------------------------
 int APIENTRY WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
-#if 0
-	if( IsDuplicateApp() )
-		return FALSE;
+#ifndef _DEBUG
+	DuplicateAppLock app_lock;
+	if (app_lock.is_duplicate) {
+		::MessageBox(nullptr, "Rose Next is already running.", "Duplicate Instance", MB_OK);
+		return 0;
+	}
 #endif
 
-	//-------------------------------------------------------------------------------
-	/// Init Trigger VFS
-	//-------------------------------------------------------------------------------
 	VHANDLE hVFS = OpenVFS( "data.idx", "mr" );
 	(CVFSManager::GetSingleton()).SetVFS( hVFS );
 	(CVFSManager::GetSingleton()).InitVFS( VFS_TRIGGER_VFS );	
 
-
-	//-------------------------------------------------------------------------------
-	/// Get Time
-	//-------------------------------------------------------------------------------
 	GetLocalTime(	&g_GameDATA.m_SystemTime );	
 
-	//-------------------------------------------------------------------------------
-	/// Init System object
-	//-------------------------------------------------------------------------------
-	g_pCApp		= CApplication::Instance ();
-	g_pNet		= CNetwork::Instance (hInstance);
-	g_pCRange	= CRangeTBL::Instance ();
+	g_pCApp = CApplication::Instance ();
+	g_pNet = CNetwork::Instance (hInstance);
+	g_pCRange = CRangeTBL::Instance ();
 
-	//-------------------------------------------------------------------------------
-	/// Load Range table
-	//-------------------------------------------------------------------------------
 	if ( !g_pCRange->Load_TABLE ("3DDATA\\TERRAIN\\O_Range.TBL") ) {
 		g_pCApp->ErrorBOX ( "3DDATA\\TERRAIN\\O_Range.TBL file open error", CUtil::GetCurrentDir (), MB_OK);
 		return 0;
 	}	
 
-	// Parse args
-	if ( !g_pCApp->ParseArgument( lpCmdLine ) )
+	if (!g_pCApp->ParseArgument(lpCmdLine)) {
 		return 0;
+	}
 
-	//-------------------------------------------------------------------------------
-	/// 윈도우 생성시 해상도에 관한 Data가 필요하여 이곳에서 로드한다.
-	//-------------------------------------------------------------------------------	
 	g_TblResolution.Load2( "3DDATA\\STB\\RESOLUTION.STB",	false, false );
 	g_TblCamera.Load2( "3DDATA\\STB\\LIST_CAMERA.STB" ,false, false );
 
-	//-------------------------------------------------------------------------------
-	///클라이언트에 저장된 Data를 로드한다.
-	//-------------------------------------------------------------------------------
 	g_ClientStorage.Load();
 
-	//-------------------------------------------------------------------------------
-	///이전 옵션에서 조정된 해상도의 인덱스를 가져와서 g_TblResolution을 참조하여
-	///해상도를 조정한다.
-	//-------------------------------------------------------------------------------	
 	t_OptionResolution Resolution = g_ClientStorage.GetResolution();
-	/// 범위값 체크 
 	UINT iFullScreen = g_ClientStorage.GetVideoFullScreen();
 
 	g_pCApp->SetFullscreenMode( iFullScreen );
@@ -172,60 +137,11 @@ int APIENTRY WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	g_pCApp->ResetExitGame();
 
 	bool bDeviceInitialized = Init_DEVICE();
-
 	if ( bDeviceInitialized ) {
-
-#ifndef singleclient
 		CGame::GetInstance().GameLoop();
-#else
-		///중복실행막은 버젼
-		HANDLE  hMUTEX = NULL;
-		const char szMUTEX[] = "ROSEonline";
-
-		/// 중복실행 체크...		2004. 9. 30 by icarus
-#ifdef	_DEBUG
-		if ( !g_GameDATA.m_bCheckDupRUN ) 
-		{
-			CGame::GetInstance().GameLoop();
-		} 
-		else
-#endif
-		{
-			hMUTEX = ::CreateMutex( NULL, true, szMUTEX );
-			switch( GetLastError() ) {
-				case ERROR_SUCCESS	:
-					CGame::GetInstance().GameLoop();
-
-					::ReleaseMutex( hMUTEX );
-					::CloseHandle( hMUTEX );
-					break;
-				case ERROR_ALREADY_EXISTS :
-					// 이미 다른 클라이언트가 실행중이다..
-				default :
-					// 뭐냐 ???
-					break;
-			}				
-			/*	
-			hMUTEX = ::OpenMutex( MUTEX_ALL_ACCESS, false, szMUTEX );
-			if ( NULL == hMUTEX ) {
-			hMUTEX = ::CreateMutex( NULL, true, szMUTEX );
-
-			CGame::GetInstance().GameLoop();
-
-			::ReleaseMutex( hMUTEX );
-			::CloseHandle( hMUTEX );
-			} /// else 이미 다른 클라이언트가 실행중이다..
-			*/
-		}
-#endif
 	}
 
-#if !defined(_DE) && !defined(_TAIWAN)
-	CloseDuplicateAppSocket();
-#endif
-
 	Free_DEVICE ();
-
 
 	g_TblCamera.Free();
 	g_TblResolution.Free();
