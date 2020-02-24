@@ -516,9 +516,9 @@ void CEndurancePack::Draw()
 						auto ent = static_cast<CEnduranceGoddess*>(pEntity);
 						int goddess_move = max(0, ent->goddess_effect.move_speed - GetStateValue(ING_INC_MOV_SPD));
 						int goddess_attack = max(0, ent->goddess_effect.attack_damage - GetStateValue(ING_INC_APOWER));
-						int goddess_hit = max(0, ent->goddess_effect.attack_damage - GetStateValue(ING_INC_HIT));
-						int goddess_aspd = max(0, ent->goddess_effect.attack_damage - GetStateValue(ING_INC_ATK_SPD));
-						int goddess_crit = max(0, ent->goddess_effect.attack_damage - GetStateValue(ING_INC_CRITICAL));
+						int goddess_hit = max(0, ent->goddess_effect.hit - GetStateValue(ING_INC_HIT));
+						int goddess_aspd = max(0, ent->goddess_effect.attack_speed - GetStateValue(ING_INC_ATK_SPD));
+						int goddess_crit = max(0, ent->goddess_effect.crit - GetStateValue(ING_INC_CRITICAL));
 
 						Tooltip.AddString("");
 
