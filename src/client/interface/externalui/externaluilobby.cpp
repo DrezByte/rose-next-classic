@@ -76,21 +76,6 @@ void CExternalUILobby::CloseLoginDlg()
 	((CTDialog*)m_EUIManager.GetEUI( EUI_LOGIN ))->Hide();
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////
-// Warning
-bool CExternalUILobby::CreateWarningDlg()
-{
-	m_pCurrDialog = (CTDialog*)m_EUIManager.GetEUI( EUI_WARNING );
-	m_pCurrDialog->Show();
-
-	return true;
-}
-void CExternalUILobby::CloseWarningDlg()
-{
-	((CTDialog*)m_EUIManager.GetEUI( EUI_WARNING ))->Hide();
-}
-
 ///////////////////////////////////////////////////////////////////////////////////
 /// Select server
 

@@ -198,24 +198,11 @@ bool CImageResManager::LoadImageResources()
 	if( m_ImageRes[ IMAGE_RES_CLANCENTER ].LoadRES( pFileSystem ) == false )
 		return false;
 
-
-
-	//EX UI
 	pFileSystem->OpenFile( "3DData\\Control\\Res\\ExUi.TSI", OPEN_READ_BIN );
 	if( m_ImageRes[ IMAGE_RES_EXUI ].LoadRES( pFileSystem ) == false )
 		return false;
 
 	CResourceMgr::GetInstance()->AddResource("3DData\\Control\\XML\\EXUI_strID.ID",IMAGE_RES_EXUI);
-
-#ifdef _WARNING
-	//WARNING
-	pFileSystem->OpenFile( "3DData\\Control\\Res\\WARNING.TSI", OPEN_READ_BIN );
-	if( m_ImageRes[ IMAGE_RES_WARNING ].LoadRES( pFileSystem ) == false )
-		return false;
-
-	CResourceMgr::GetInstance()->AddResource("3DData\\Control\\XML\\WARNING_strID.ID",IMAGE_RES_WARNING);
-#endif
-
 
 #ifdef _NEWUI
 	pFileSystem->OpenFile( "3DData\\Control\\Res\\UI2.TSI", OPEN_READ_BIN );

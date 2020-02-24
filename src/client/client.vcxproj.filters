@@ -266,9 +266,6 @@
     <ClCompile Include="System\CGameStateExitMain.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="System\CGameStateLogin.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="System\CGameStateLoginVirtual.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -303,9 +300,6 @@
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="System\GameStateMovePlanet.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="System\GameStateWarning.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="System\System_FUNC.cpp">
@@ -1154,6 +1148,9 @@
     <ClCompile Include="system\CGameStateAutoConnect.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
+    <ClCompile Include="system\cgamestatelogin.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCamera.h">
@@ -1412,9 +1409,6 @@
       <Filter>Source Files\System</Filter>
     </ClInclude>
     <ClInclude Include="System\GameStateMovePlanet.h">
-      <Filter>Source Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="System\GameStateWarning.h">
       <Filter>Source Files\System</Filter>
     </ClInclude>
     <ClInclude Include="System\System_FUNC.h">

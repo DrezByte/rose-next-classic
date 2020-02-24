@@ -193,6 +193,7 @@
     <ClCompile Include="JCommandState.cpp" />
     <ClCompile Include="SqliteDB.cpp" />
     <ClCompile Include="system\CGameStateAutoConnect.cpp" />
+    <ClCompile Include="system\cgamestatelogin.cpp" />
     <ClCompile Include="Util\ADSStream.cpp" />
     <ClCompile Include="Util\CCheat.cpp" />
     <ClCompile Include="Util\CD3DUtil.cpp" />
@@ -238,7 +239,6 @@
     <ClCompile Include="System\CGameState.cpp" />
     <ClCompile Include="System\CGameStateCreateAvatar.cpp" />
     <ClCompile Include="System\CGameStateExitMain.cpp" />
-    <ClCompile Include="System\CGameStateLogin.cpp" />
     <ClCompile Include="System\CGameStateLoginVirtual.cpp" />
     <ClCompile Include="System\CGameStateMain.cpp" />
     <ClCompile Include="System\CGameStateMoveMain.cpp" />
@@ -251,7 +251,6 @@
     <ClCompile Include="System\CGameStateTitle.cpp" />
     <ClCompile Include="System\CGameStateWarp.cpp" />
     <ClCompile Include="System\GameStateMovePlanet.cpp" />
-    <ClCompile Include="System\GameStateWarning.cpp" />
     <ClCompile Include="System\System_FUNC.cpp" />
     <ClCompile Include="System\SystemProcScript.cpp" />
     <ClCompile Include="System\TCmdSystem.cpp" />
@@ -629,7 +628,6 @@
     <ClInclude Include="System\CGameStateTitle.h" />
     <ClInclude Include="System\CGameStateWarp.h" />
     <ClInclude Include="System\GameStateMovePlanet.h" />
-    <ClInclude Include="System\GameStateWarning.h" />
     <ClInclude Include="System\System_FUNC.h" />
     <ClInclude Include="System\SystemProcScript.h" />
     <ClInclude Include="System\TCmdSystem.h" />

@@ -78,17 +78,11 @@ int CGameStateTitle::Enter( int iPrevStateID )
 #endif
 		ThreadFunc(NULL);
 
-
-#ifdef _WARNING
-		CGame::GetInstance().ChangeState( CGame::GS_WARNING );
-#else
 		if (g_GameDATA.auto_connect()) {
 			CGame::GetInstance().ChangeState(CGame::GS_AUTOCONNECT);
 		} else {
 			CGame::GetInstance().ChangeState(CGame::GS_LOGIN);
 		}
-#endif
-
 	}
 	
 	return 0; 

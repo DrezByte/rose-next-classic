@@ -6,7 +6,6 @@
 #include "CGameStateNull.h"
 #include "CGameStateTitle.h"
 #include "CGameStateLogin.h"
-#include "GameStateWarning.h"
 #include "CGameStateSelectSvr.h"
 #include "CGameStatePrepareSelectAvatar.h"
 #include "CGameStateSelectAvatar.h"
@@ -149,9 +148,6 @@ CGameState* CGame::MakeState( int iState )
 		break;
 	case GS_LOGIN:
 		pState = new CGameStateLogin( GS_LOGIN );
-		break;
-	case GS_WARNING:
-		pState = new CGameStateWarning( GS_WARNING );
 		break;
 	case GS_SELECTSVR:
 		pState = new CGameStateSelectSvr( GS_SELECTSVR );

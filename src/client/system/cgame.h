@@ -79,22 +79,20 @@ public:
 	void	ChangeScreenMode();
 
 	enum eGAME_STATE{
-
 		GS_NULL,
 		GS_TITLE,
 		GS_LOGIN,
-		GS_WARNING,
 		GS_SELECTSVR,
 		GS_PREPARESELECTAVATAR,
 		GS_SELECTAVATAR,
 		GS_LOGINVIRTUAL,
 		GS_CREATEAVATAR,
-		GS_MOVEMAIN,		///아바타를 선택후 카메라 모션을 위한 상태
-		GS_PREPAREMAIN,     ///메인으로 들어가기전 DATA Loading
+		GS_MOVEMAIN,
+		GS_PREPAREMAIN,
 		GS_MAIN,
 		GS_WARP,
 		GS_EXITMAIN,
-		GS_MOVEPLANET,		///행성간이동
+		GS_MOVEPLANET,
 		GS_RELOGIN,
 		GS_AUTOCONNECT,
 		GS_MAX

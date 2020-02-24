@@ -82,18 +82,6 @@ bool CExternalUIManager::InitExternalUIs()
 	ptNew.y = g_pCApp->GetHEIGHT() / 3;
 	pLoginDlg->MoveWindow( ptNew );
 
-#ifdef _WARNING
-	// EUI_WARNING
-	CWarningDlg * pWarningDlg = new CWarningDlg;
-	AddEUI( EUI_WARNING, pWarningDlg );
-	pWarningDlg->SetEUIObserver( this );
-
-	pWarningDlg->Create("Warning");	
-	ptNew.x = g_pCApp->GetWIDTH()/2 - pWarningDlg->GetWidth()/2;
-	ptNew.y = g_pCApp->GetHEIGHT()/2 - pWarningDlg->GetHeight()/2;
-	pWarningDlg->MoveWindow( ptNew );
-#endif
-
 	//EUI_SELECT_AVATA,
 	CSelectAvata* pSelectAvata = new CSelectAvata;
 	AddEUI( EUI_SELECT_AVATA, pSelectAvata );	

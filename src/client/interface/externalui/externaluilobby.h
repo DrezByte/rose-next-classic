@@ -57,13 +57,10 @@ public:
 
 	bool InitEUIManager();
 	void Free();
+
 	// Login
 	bool CreateLoginDlg();
 	void CloseLoginDlg();
-
-	// Warning
-	bool CreateWarningDlg();
-	void CloseWarningDlg();
 
 	// Select server
 	bool CreateServerListDlg();
