@@ -18,8 +18,14 @@ CGameStateTitle::CGameStateTitle(int iID) :
 
 CGameStateTitle::~CGameStateTitle(void)
 {
+	// NOTE: Crashes the application if it is terminated while data_thread
+	// is still running. Root cause is calling destructor of joinable std::thread.
+	// The real issue is that we cannot safely join/detach the thread here because 
+	// it will corrupt memory anyway. By the time this destructor is called several
+	// objects have been deallocated which load_data depends on. The fix to this
+	// problem is to improve the memory safety of those objects (e.g. smart pointers, etc.)
+	// and then join/detach the thread here.
 }
-
 
 int	CGameStateTitle::Update( bool bLostFocus )
 {	
@@ -35,6 +41,7 @@ int	CGameStateTitle::Update( bool bLostFocus )
 
 	return 0;
 }
+
 int CGameStateTitle::Enter( int iPrevStateID )
 { 
 	CGame::GetInstance().Load_DataNotUseThread();
