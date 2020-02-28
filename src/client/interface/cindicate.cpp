@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cindicate.h"
 #include "../Game.h"
 CIndicate::CIndicate(void)

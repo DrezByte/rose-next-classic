@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cjustmodelavt.h"
 #include "Common/IO_STB.h"
 #include "tgamectrl/tcommand.h"

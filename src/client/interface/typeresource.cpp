@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+
 #include "TypeResource.h"
 
 

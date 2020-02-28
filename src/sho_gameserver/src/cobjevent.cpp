@@ -51,6 +51,7 @@
  * Updated in $/SevenHearts/Server/SHO_GS_LIB
 */
 #include "stdafx.h"
+
 #include "LIB_gsMAIN.h"
 #include "OBJECT.h"
 #include "GS_ThreadZONE.h"

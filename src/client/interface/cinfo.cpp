@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cinfo.h"
 #include "IO_ImageRes.h"
 #include "CTDrawImpl.h"

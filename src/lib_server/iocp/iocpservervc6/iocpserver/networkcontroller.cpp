@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include "networkcontroller.h"
 #include <assert.h>
 

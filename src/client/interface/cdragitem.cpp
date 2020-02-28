@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cdragitem.h"
 #include "Icon/CIcon.h"
 #include "tgamectrl/tcommand.h"

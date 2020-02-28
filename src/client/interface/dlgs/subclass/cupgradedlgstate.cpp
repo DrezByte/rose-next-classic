@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cupgradedlgstate.h"
 
 CUpgradeDlgState::CUpgradeDlgState(void)

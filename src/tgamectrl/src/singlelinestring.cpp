@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\singlelinestring.h"
 #include "TControlMgr.h"
 #include "ITFont.h"

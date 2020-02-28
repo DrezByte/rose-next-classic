@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\citstateappraisal.h"
 #include "../../System/CGame.h"
 #include "../dlgs/CItemDlg.h"

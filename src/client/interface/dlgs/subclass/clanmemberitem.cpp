@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\clanmemberitem.h"
 #include "tgamectrl/zlistbox.h"
 #include "../../../Game.h"

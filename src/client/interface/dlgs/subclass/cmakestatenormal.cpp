@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cmakestatenormal.h"
 #include "../../Icon/CIconItem.h"
 #include "../MakeDLG.h"

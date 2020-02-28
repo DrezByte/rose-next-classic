@@ -1,5 +1,6 @@
 
 #include "StdAfx.h"
+
 #include "CCheat.h"
 #include <shlwapi.h>
 

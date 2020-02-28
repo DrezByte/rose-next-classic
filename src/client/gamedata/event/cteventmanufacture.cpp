@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventmanufacture.h"
 #include "../../gamecommon/Item.h"
 CTEventManufacture::CTEventManufacture(void)

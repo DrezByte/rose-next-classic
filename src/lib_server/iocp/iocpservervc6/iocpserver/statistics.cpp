@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include "statistics.h"
 #include "resource.h"
 #include <assert.h>

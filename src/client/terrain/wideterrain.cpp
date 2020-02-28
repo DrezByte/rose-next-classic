@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\wideterrain.h"
 #include "../CClientStorage.h"
 

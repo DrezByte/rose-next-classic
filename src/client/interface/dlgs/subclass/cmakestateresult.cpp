@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cmakestateresult.h"
 #include "CGuage.h"
 #include "tgamectrl/resourcemgr.h"

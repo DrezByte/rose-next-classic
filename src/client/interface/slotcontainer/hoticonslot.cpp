@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\hoticonslot.h"
 
 #include "../../Object.h"

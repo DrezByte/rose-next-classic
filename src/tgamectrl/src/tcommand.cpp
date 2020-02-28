@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tcommand.h"
 #include <crtdbg.h>
 CTCommand::CTCommand(void)

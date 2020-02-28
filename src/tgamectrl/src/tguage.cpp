@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tguage.h"
 #include "TControlMgr.h"
 

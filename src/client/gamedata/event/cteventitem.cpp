@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventitem.h"
 #include "../../GameCommon/Item.h"
 CTEventItem::CTEventItem(void)

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\bgmmanager.h"
 #include "../Sound/MusicMgr.h"
 #include "../Common/IO_STB.h"

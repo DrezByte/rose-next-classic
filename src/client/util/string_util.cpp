@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "string_util.h"
 #include "util/localizing.h"
 #include "misc/gameutil.h"

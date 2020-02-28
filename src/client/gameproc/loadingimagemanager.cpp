@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\loadingimagemanager.h"
 
 #include <algorithm>

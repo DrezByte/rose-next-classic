@@ -2,6 +2,7 @@
 	$Header: /Client/CCamera.cpp 37    04-10-11 8:21p Navy $
 */
 #include "stdAFX.h"
+
 #include "CCamera.h"
 #include "Game.h"
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include <iostream>
 
 #ifndef WIN32_LEAN_AND_MEAN

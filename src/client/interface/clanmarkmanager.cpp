@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\clanmarkmanager.h"
 #include "../Game.h"
 #include "ClanMarkTransfer.h"

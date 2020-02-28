@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventskill.h"
 
 CTEventSkill::CTEventSkill(void)

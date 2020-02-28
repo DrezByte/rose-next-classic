@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cprivatestoredlg.h"
 #include "tgamectrl/tradiobox.h"
 #include "tgamectrl/teditbox.h"

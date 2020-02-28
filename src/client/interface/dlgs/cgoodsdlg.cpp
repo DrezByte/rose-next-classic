@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cgoodsdlg.h"
 #include "../Icon/CIconItem.h"
 #include "tgamectrl/teditbox.h"

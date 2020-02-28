@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CDayNNightProc.h"
 #include "Game.h"
 #include "../Common/IO_STB.h"

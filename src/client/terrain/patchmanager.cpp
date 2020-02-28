@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\patchmanager.h"
 #include "../Game.h"
 #include "CCamera.h"

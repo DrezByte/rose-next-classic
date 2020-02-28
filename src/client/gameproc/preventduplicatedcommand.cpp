@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\preventduplicatedcommand.h"
 #include "../Game.h"
 

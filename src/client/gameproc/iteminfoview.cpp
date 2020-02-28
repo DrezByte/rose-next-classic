@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\iteminfoview.h"
 #include <algorithm>
 #include <functional>

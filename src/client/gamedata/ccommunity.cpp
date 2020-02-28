@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ccommunity.h"
 
 CCommunity::CCommunity(void)

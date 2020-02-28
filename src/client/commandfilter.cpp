@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\commandfilter.h"
 #include "ObjectCommand/ObjCommand.h"
 #include "Object.h"

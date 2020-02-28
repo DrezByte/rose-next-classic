@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\citstatewaitdisconnect.h"
 #include "../../Network/CNetwork.h"
 #include "../dlgs/cmsgboxspecial.h"

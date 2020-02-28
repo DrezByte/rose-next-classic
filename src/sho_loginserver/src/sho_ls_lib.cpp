@@ -1,4 +1,4 @@
-﻿
+
 #include "stdAFX.h"
 
 #include "SHO_LS_LIB.h"

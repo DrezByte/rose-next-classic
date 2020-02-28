@@ -1,5 +1,6 @@
 #include "stdAFX.h"
 
+
 #ifdef __SERVER
 	#include "NET_Prototype.h"
 #else

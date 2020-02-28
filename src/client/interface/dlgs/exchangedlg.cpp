@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "exchangedlg.h"
 #include "../command/uicommand.h"
 #include "../command/dragcommand.h"

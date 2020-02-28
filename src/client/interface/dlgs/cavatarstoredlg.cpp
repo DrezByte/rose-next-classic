@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cavatarstoredlg.h"
 #include "../CDragItem.h"
 #include "../../GameCommon/Item.h"

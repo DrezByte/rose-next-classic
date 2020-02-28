@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\clanmarktransfer.h"
 #include "../Network/CNetWork.h"
 #include "../System/CGame.h"

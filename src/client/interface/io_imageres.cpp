@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "IO_ImageRes.h"
 #include "Game.h"
 #include "Util/VFSManager.h"

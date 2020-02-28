@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\jtable.h"
 
 CJTable::CJTable(void)

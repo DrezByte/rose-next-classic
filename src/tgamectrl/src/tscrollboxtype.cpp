@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tscrollboxtype.h"
 
 CTScrollBoxType::CTScrollBoxType(void)

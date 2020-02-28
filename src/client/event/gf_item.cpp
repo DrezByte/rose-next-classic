@@ -3,6 +3,7 @@
 */
 
 #include "stdAFX.h"
+
 #include "Quest_FUNC.h"
 #include "tgamectrl/TGameCtrl.h"
 #include "OBJECT.h"  /* <=== 이 파일을 인클루드 시켜 사용할 것 */

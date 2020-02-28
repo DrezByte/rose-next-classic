@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cicon.h"
 #include "../CTDrawImpl.h"
 #include "../CToolTipMgr.h"

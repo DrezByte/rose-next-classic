@@ -1,5 +1,5 @@
-﻿
-#include "StdAfx.h"
+﻿#include "StdAfx.h"
+
 #include "QuickToolBAR.h"
 #include "../CDragItem.h"
 #include "../CTDrawImpl.h"

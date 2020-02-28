@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "citemequip.h"
 
 #include "../object.h"

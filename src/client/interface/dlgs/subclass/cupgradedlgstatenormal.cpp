@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cupgradedlgstatenormal.h"
 #include "../CUpgradeDlg.h"
 #include "../../../GameData/CUpgrade.h"

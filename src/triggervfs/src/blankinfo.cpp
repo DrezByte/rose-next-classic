@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "BlankInfo.h"
 
 int CBlankInfo::iMaxCount = 0;

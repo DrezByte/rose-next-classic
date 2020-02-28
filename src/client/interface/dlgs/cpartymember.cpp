@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cpartymember.h"
 #include "../IO_ImageRes.h"
 #include "../CTDrawImpl.h"

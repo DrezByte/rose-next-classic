@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\selecteventdlg.h"
 #include "../IO_ImageRes.h"
 #include "subclass/CDialogNpcScriptAnswerItemNew.h"

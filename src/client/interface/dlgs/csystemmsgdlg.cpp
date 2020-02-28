@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "csystemmsgdlg.h"
 #include "../../Game.h"
 #include "../CHelpMgr.h"

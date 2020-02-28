@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+
 #include "IO_SKILL.h"
 #include "IO_QUEST.h"
 #include "CUserDATA.h"

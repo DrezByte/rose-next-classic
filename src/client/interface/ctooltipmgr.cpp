@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "ctooltipmgr.h"
 #include "cdragndropmgr.h"
 #include "interfacetype.h"

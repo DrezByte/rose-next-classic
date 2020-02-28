@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 
+
 #include "it_mgr.h"
 #include "..\\Object.h"
 #include "CDragNDropMgr.h"

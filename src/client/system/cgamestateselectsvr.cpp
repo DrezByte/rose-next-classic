@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cgamestateselectsvr.h"
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../CCamera.h"

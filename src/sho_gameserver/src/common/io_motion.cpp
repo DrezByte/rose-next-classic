@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+
 #include "IO_Motion.h"
 #ifndef	__SERVER
 	#include "Game.h"

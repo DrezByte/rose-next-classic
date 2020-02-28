@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cbankwindowdlg.h"
 #include "../typeresource.h"
 #include "../../Game.h"

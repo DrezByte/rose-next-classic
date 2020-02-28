@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cdragndropmgr.h"
 #include "CDragItem.h"
 #include "Icon/CIcon.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "avatarinfodlg.h"
 #include "tgamectrl/tguage.h"
 #include "tgamectrl/resourcemgr.h"

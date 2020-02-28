@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CFileSystemTriggerVFS.h"
 #include <assert.h>
 

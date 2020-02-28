@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+
 #ifndef	__SERVER
 #include "CRegenAREA.h"
 #include "Game.h"

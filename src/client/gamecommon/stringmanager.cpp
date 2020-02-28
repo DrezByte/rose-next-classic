@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "stringmanager.h"
 #include "../Util/VFSManager.h"
 #include "../Util/Localizing.h"

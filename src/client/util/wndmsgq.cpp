@@ -2,6 +2,7 @@
 	$Header: /Client/Util/WndMsgQ.cpp 3     03-09-26 1:26p Icarus $
 */
 #include "StdAfx.h"
+
 #include "WndMsgQ.h"
 
 //-------------------------------------------------------------------------------------------------

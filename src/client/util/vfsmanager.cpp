@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "VFSManager.h"
 #include "CFileSystemNormal.h"
 #include "CFileSystemTriggerVFS.h"

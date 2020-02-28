@@ -1,5 +1,6 @@
 
 #include "StdAfx.h"
+
 #include "QueryDLG.h"
 #include "../CSplitHangul.h"
 #include "../../Game.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "ciconitem.h"
 #include "../CTDrawImpl.h"
 #include "../interfacetype.h"

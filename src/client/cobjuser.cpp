@@ -2,6 +2,7 @@
 	$Header: /Client/CObjUSER.cpp 176   05-09-14 11:44a Raning $
 */
 #include "stdAFX.h"
+
 #include "Game.h"
 #include "CObjUSER.h"
 #include "Game_FUNC.h"

@@ -2,6 +2,7 @@
 	$Header: /Client/CSkyDOME.cpp 23    04-10-11 6:15p Jeddli $
 */
 #include "stdAFX.h"
+
 #include "common\\IO_STB.h"
 #include "CSkyDOME.h"
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CStoreDLG.h"
 #include "DealDlg.h"
 #include "../CTDrawImpl.h"

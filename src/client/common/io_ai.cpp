@@ -1,5 +1,6 @@
 
 #include "stdAFX.h"
+
 #ifndef	__SERVER
 	#include "..\util\CGameSTB.h"
 #else

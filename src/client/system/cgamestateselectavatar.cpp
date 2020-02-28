@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CGameStateSelectAvatar.h"
 #include "CGame.h"
 #include "SystemProcScript.h"

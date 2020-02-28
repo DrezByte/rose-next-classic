@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cdelegatedobservable.h"
 
 CDelegatedObservable::CDelegatedObservable(void)

@@ -2,6 +2,7 @@
 	$Header: /Client/Game_FUNC.cpp 54    05-06-19 5:33p Navy $
 */
 #include "stdAFX.h"
+
 #include "IO_Effect.h"
 #include "OBJECT.h"
 #include "Game_FUNC.h"

@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include "CharacterDLG.h"
 #include "../CTDrawImpl.h"
 #include "../CToolTipMgr.h"

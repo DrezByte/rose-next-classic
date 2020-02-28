@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ciconquick.h"
 
 CIconQuick::CIconQuick( CIcon* pIcon )

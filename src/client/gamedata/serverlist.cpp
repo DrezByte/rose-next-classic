@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\serverlist.h"
 #include <utility>
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventavatarstore.h"
 
 CTEventAvatarStore::CTEventAvatarStore(void)

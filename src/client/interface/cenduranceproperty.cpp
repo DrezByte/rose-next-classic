@@ -1,4 +1,5 @@
 #include "stdafx.h"	
+
 #include "CEnduranceProperty.h"	
 #include <algorithm>
 #include <functional>

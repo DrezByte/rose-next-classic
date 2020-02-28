@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\chelpmgr.h"
 #include "dlgs/CSystemMsgDlg.h"
 #include "interfacetype.h"

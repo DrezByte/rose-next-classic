@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cgamestateMoveMain.h"
 #include "CGame.h"
 #include "SystemProcScript.h"

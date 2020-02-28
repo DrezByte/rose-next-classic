@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ccursorstate.h"
 #include "CCursor.h"
 CCursorState::CCursorState(void)

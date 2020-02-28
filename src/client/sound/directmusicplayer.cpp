@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\directmusicplayer.h"
 #include "../CApplication.h"
 

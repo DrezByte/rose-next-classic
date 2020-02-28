@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventchatroom.h"
 
 CTEventChatRoom::CTEventChatRoom(void)

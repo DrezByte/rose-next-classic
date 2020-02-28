@@ -3,6 +3,7 @@
 */
 
 #include "stdAFX.h"
+
 #include "Quest_FUNC.h"
 #include "Game_FUNC.h"
 #include "OBJECT.h"

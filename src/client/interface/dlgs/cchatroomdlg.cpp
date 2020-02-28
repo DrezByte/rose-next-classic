@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cchatroomdlg.h"
 #include "../../Game.h"
 #include "../../GameData/CChatRoom.h"

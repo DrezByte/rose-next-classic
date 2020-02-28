@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\caddfrienddlg.h"
 #include "tgamectrl/teditbox.h"
 #include "CCommDlg.h"

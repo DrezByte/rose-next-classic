@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\ctooltip.h"
 #include "WinCtrl.h"
 #include "ITFont.h"

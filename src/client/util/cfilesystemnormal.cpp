@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CFileSystemNormal.h"
 #include <assert.h>
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "LngTbl.h"
 #include <stdio.h>
 #include "StringManager.h"

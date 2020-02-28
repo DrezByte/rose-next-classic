@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\citemdlg.h"
 #include "../../GameData/Event/CTEventItem.h"
 #include "../../GameCommon/Item.h"

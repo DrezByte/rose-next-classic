@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cseparatedlg.h"
 #include "../CDragItem.h"
 #include "../icon/ciconitem.h"

@@ -1,5 +1,6 @@
 #include "stdAFX.h"
 
+
 #ifdef __SHO_WS
 #include "CThreadLOG.h"
 #include "CWS_Client.h"

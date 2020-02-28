@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\personalstoremanager.h"
 
 #include "../CObjCHAR.h"

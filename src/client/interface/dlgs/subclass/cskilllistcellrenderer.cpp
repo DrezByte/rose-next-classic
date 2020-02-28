@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cskilllistcellrenderer.h"
 
 CSkillListCellRenderer::CSkillListCellRenderer(void)

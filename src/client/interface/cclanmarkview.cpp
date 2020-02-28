@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cclanmarkview.h"
 #include "../CObjChar.h"
 #include "CClanMarkUserDefined.h"

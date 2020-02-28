@@ -2,6 +2,7 @@
 ///  Includes
 /// ---------------------------------------------------------------------------
 #include "StdAfx.h"
+
 #include ".\jlistbox.h"
 #include "tcontainer.h"
 #include "IListCellRenderer.h"

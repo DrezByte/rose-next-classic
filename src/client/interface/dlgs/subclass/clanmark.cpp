@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\clanmark.h"
 #include "../../CTDrawImpl.h"
 

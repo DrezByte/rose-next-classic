@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\eventdialog.h"
 #include "../../Object.h"
 #include "subclass/CDialogNpcScriptItem.h"

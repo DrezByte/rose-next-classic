@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\CITStateRideCart.h"
 #include "../../Object.h"
 

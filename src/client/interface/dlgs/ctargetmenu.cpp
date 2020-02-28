@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "ctargetmenu.h"
 #include "CPartyDlg.h"
 #include "ExchangeDlg.h"

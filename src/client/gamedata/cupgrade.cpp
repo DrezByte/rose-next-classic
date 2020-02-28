@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cupgrade.h"
 #include "CRequireMaterial.h"
 #include "../gamecommon/item.h"

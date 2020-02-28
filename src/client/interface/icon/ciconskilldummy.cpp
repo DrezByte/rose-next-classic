@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ciconskilldummy.h"
 #include "../IO_ImageRes.h"
 #include "../../common/IO_SKILL.H"

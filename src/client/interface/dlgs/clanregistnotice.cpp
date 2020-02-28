@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\clanregistnotice.h"
 #include "../../Network/CNetwork.h"
 

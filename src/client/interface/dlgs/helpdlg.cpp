@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\helpdlg.h"
 #include "../InterfaceType.h"
 #include "../IO_ImageRes.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\citstatenormal.h"
 #include "../CDragNDropMgr.h"
 #include "../Dlgs/ChattingDLG.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventupgrade.h"
 #include "../../gamecommon/Item.h"
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CLogin.h"
 
 #include "CExternalUIManager.h"

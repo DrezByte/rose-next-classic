@@ -2,6 +2,7 @@
 /// 2004 / 6 /11 . 외부에서 입력된 Command의 삭제는 하지 않는다.
 //*------------------------------------------------------------------------------------
 #include "stdafx.h"
+
 #include ".\cnumberinputdlg.h"
 #include "tgamectrl/teditbox.h"
 #include "tgamectrl/tbutton.h"

@@ -9,6 +9,7 @@
 	서버와의 코드 분리로.. CObjAI 는 이제 클라이언트에서만 사용함..
 */
 #include "stdAFX.h"
+
 #include "CObjCHAR.h"
 #include "OBJECT.h"
 #include "..\Network\CNetwork.h"

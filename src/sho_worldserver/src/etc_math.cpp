@@ -3,6 +3,7 @@
 */
 
 #include "stdAFX.h"
+
 #include "ETC_Math.h"
 
 

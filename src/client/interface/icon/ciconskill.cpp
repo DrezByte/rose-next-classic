@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ciconskill.h"
 #include "../SlotContainer/CSkillSlot.h"
 #include "../../Object.h"

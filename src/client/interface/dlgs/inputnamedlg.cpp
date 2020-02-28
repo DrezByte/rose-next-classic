@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\inputnamedlg.h"
 #include "../command/uicommand.h"
 #include "tgamectrl/teditbox.h"

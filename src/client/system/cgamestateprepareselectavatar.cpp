@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CGameStatePrepareSelectAvatar.h"
 #include <process.h>
 #include "CGame.h"

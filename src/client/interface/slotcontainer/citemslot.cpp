@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\citemslot.h"
 #include "common/CInventory.h"
 #include "../../gamecommon/Item.h"

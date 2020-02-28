@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cchatroom.h"
 #include "../Object.h"
 #include "../Network/CNetwork.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CSelectAvata.h"
 #include "ExternalUILobby.h"
 

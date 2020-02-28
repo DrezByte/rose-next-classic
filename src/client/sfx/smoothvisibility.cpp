@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\smoothvisibility.h"
 #include "../Game.h"
 

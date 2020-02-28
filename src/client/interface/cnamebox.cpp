@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CNameBox.h"
 #include "..\\Game.h"
 #include "CTDrawImpl.h"

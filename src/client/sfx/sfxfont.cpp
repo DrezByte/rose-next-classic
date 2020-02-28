@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\sfxfont.h"
 #include "../Util/Localizing.h"
 #include "../interface/controls/EffectString.h"

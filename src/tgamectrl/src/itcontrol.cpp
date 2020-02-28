@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\itcontrol.h"
 
 ITControl::ITControl(void)

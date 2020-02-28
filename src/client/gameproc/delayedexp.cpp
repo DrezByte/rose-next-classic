@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\delayedexp.h"
 #include "../CObjCHAR.h"
 #include "../Object.h"

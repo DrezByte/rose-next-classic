@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\jstring.h"
 #include "TControlMgr.h"
 #include "ITFont.h"

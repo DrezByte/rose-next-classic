@@ -2,6 +2,7 @@
 	$Header: /Client/Util/CMessageQ.cpp 4     03-09-26 1:26p Icarus $
 */
 #include "stdAFX.h"
+
 #include "CMessageQ.h"
 #include "classSTR.h"
 

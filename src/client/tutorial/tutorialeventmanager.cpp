@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\tutorialeventmanager.h"
 #include "TutorialEventUtility.h"
 #include "TutorialEventManager.h"

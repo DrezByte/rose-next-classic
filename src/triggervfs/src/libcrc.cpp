@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "libCrc.h"
 #include "classCRC.h"
 

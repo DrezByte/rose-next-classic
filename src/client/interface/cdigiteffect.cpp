@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CDigitEffect.h"
 #include "..\\Game.h"
 

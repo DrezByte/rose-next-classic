@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventclan.h"
 
 CTEventClan::CTEventClan(void)

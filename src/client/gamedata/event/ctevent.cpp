@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ctevent.h"
 
 CTEvent::CTEvent(void)

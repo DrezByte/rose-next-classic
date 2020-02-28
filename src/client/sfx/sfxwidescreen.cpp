@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\sfxwidescreen.h"
 
 CSFXWideScreen::CSFXWideScreen(void)

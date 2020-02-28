@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cbank.h"
 //#include "../gamecommon/citemequip.h"
 //#include "../gamecommon/citemuse.h"

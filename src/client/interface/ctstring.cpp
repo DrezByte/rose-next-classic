@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ctstring.h"
 
 CTString::CTString(void)

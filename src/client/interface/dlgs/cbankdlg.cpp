@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cbankdlg.h"
 #include "CBankWindowDlg.h"
 #include "../../Network/CNetwork.h"

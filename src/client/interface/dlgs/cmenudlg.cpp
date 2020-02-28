@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cmenudlg.h"
 #include "../CDragNDropMgr.h"
 #include "../../System/CGame.h"

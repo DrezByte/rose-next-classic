@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cgamestate.h"
 #include "../CApplication.h"
 CGameState::CGameState(void)

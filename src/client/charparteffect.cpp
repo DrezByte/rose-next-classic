@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\charparteffect.h"
 
 CCharPartEffect::CCharPartEffect(void)

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\skillcommanddelay.h"
 
 #include "..\Game.h"

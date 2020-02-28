@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "iconcommand.h"
 #include "item.h"
 #include "../gamedata/cdealdata.h"

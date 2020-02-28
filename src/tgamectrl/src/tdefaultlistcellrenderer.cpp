@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tdefaultlistcellrenderer.h"
 #include "TStatic.h"
 CTDefaultListCellRenderer::CTDefaultListCellRenderer(void)

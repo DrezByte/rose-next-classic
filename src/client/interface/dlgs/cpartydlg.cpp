@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cpartydlg.h"
 #include "CPartyMember.h"
 #include "ExchangeDlg.h"

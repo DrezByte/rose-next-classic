@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\notifybuttondlg.h"
 
 #include "../../Tutorial/TutorialEventUtility.h"

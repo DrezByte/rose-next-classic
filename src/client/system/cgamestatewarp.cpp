@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CGameStateWarp.h"
 #include <process.h>
 #include "../Object.h"

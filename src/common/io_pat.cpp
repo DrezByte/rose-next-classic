@@ -1,5 +1,6 @@
 #include "stdAFX.h"
 
+
 #include "IO_PAT.h"
 
 CPatITEM g_PatITEM;

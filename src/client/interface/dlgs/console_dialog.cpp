@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+
 #include "interface/dlgs/console_dialog.h"
 
 #include "tgamectrl/tcontrolmgr.h"

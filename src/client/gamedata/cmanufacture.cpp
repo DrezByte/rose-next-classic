@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cmanufacture.h"
 #include "../object.h"
 #include "../gamecommon/item.h"

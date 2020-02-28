@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cparty.h"
 #include "Object.h"
 #include "../interface/interfacetype.h"

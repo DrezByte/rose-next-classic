@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+
 #include "CHotICON.h"
 #ifndef	__SERVER
 #include "..\\Object.h"

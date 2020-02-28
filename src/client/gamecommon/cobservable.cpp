@@ -5,6 +5,7 @@
 
 
 #include "stdafx.h"
+
 #include ".\cobservable.h"
 #include "IObserver.h"
 #include <algorithm>

@@ -1,5 +1,6 @@
 
 #include "stdAFX.h"
+
 #include "CObjNPC.h"
 #include "GS_ThreadZONE.h"
 #include "IO_Quest.h"

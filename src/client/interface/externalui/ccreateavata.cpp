@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CCreateAvata.h"
 
 #include "..\\..\\Network\\CNetwork.h"

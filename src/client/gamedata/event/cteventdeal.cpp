@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "cteventdeal.h"
 #include "../../GameCommon/Item.h"
 

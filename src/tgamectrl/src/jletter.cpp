@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\jletter.h"
 #include <crtdbg.h>
 CJLetter::CJLetter()

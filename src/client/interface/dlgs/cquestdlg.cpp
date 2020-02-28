@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CQuestDlg.h"
 #include "CDialogDlg.h"
 

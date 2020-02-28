@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\resourcecache.h"
  
 const int iDefaultCacheSize = 20;

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\partyoptiondlg.h"
 #include "../../GameData/CParty.h"
 #include "../../GameData/Event/CTEventParty.h"

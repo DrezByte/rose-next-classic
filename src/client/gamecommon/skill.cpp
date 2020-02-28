@@ -2,6 +2,7 @@
 	$Header: /Client/GameCommon/Skill.cpp 71    05-10-26 2:56p Gioend $
 */
 #include "stdAFX.h"
+
 #include "Skill.h"
 #include "JCommandState.h"	
 #include "Network\CNetWork.h"	

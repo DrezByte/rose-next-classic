@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "jresourcecontainer.h"
 
 namespace JED

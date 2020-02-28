@@ -1,5 +1,6 @@
 #include "stdAFX.h"
 
+
 #include "CNetwork.h"
 #include "Game.h"
 #include "CCamera.h"

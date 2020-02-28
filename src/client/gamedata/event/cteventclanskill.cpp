@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventclanskill.h"
 
 CTEventClanSkill::CTEventClanSkill(void)

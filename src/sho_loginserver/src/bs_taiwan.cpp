@@ -63,6 +63,7 @@
 */
 
 #include "stdAFX.h"
+
 #include "BS_Taiwan.h"
 
 CBS_Taiwan *CBS_Taiwan::m_pInstance = NULL;

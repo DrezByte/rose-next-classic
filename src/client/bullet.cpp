@@ -2,6 +2,7 @@
 	$Header: /Client/BULLET.CPP 50    05-10-19 6:36p Raning $
 */
 #include "stdAFX.h"
+
 #include "BULLET.h"
 #include "CGameOBJ.h"
 

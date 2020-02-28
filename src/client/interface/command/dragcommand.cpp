@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "dragcommand.h"
 
 #include "../dlgs/QuickToolBar.h"

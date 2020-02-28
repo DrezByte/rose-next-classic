@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ctcmdnumberinput.h"
 
 #include "../IO_ImageRes.h"

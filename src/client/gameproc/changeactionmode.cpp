@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\changeactionmode.h"
 #include "../Game.h"
 #include "../CObjCHAR.h"

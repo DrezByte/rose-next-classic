@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ccursorstatedx.h"
 #include "../../CApplication.h"
 #include "resource.h"

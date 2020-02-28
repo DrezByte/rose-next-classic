@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CSkillCommand.h"
 #include "OBJECT.h"	
 #include "Skill.h"	

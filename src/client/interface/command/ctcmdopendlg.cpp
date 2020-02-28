@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "ctcmdopendlg.h"
 #include "CTCmdNumberInput.h"
 #include <algorithm>

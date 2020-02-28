@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CExternalUIManager.h"
 #include "../../Game.h"
 

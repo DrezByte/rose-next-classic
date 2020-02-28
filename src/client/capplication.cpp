@@ -3,6 +3,7 @@
 */
 
 #include "stdAFX.h"
+
 #include "Resource.h"
 #include "CApplication.h"
 #include "Network\CNetwork.h"

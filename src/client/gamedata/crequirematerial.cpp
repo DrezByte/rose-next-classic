@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\crequirematerial.h"
 #include "../interface/typeresource.h"
 

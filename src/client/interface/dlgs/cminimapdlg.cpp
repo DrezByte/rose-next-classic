@@ -13,6 +13,7 @@
 *
 */
 #include "stdafx.h"
+
 #include "CMinimapDLG.h"
 #include "../CTDrawImpl.h"
 #include "../CToolTipMgr.h"

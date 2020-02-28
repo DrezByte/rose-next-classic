@@ -2,6 +2,7 @@
 	$Header: /Client/CObjCHAR_Collision.cpp 105   05-08-30 5:29p Gioend $
 */
 #include "stdAFX.h"
+
 #include "Game.h"
 #include "OBJECT.h"
 #include "Network\CNetwork.h"

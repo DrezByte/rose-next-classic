@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tstatic.h"
 #include "TControlMgr.h"
 #include "TImage.h"

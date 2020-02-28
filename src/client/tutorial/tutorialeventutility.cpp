@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\tutorialeventutility.h"
 #include "../System/SystemProcScript.h"
 #include "../Object.h"

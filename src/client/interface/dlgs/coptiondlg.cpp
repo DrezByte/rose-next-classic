@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+
 #include "coptiondlg.h"
 
 #include "../../Game.h"

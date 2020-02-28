@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cchatfilterdlg.h"
 
 #include "tgamectrl/tcheckbox.h"

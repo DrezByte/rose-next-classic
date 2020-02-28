@@ -2,6 +2,7 @@
 	$Header: /Client/Sound/IO_Sound.cpp 23    04-10-08 8:02p Jeddli $
 */
 #include "stdAFX.h"
+
 #include "IO_Sound.h"
 
 //-------------------------------------------------------------------------------------------------

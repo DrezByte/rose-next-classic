@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cclanmarkuserdefined.h"
 #include "..\Game.h"
 

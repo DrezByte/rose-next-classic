@@ -1,5 +1,6 @@
 
 #include "stdAFX.h"
+
 #if defined(__SHO_WS)
 
 #ifdef	__SHO_WS

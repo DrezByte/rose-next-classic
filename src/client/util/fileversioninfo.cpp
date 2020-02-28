@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\fileversioninfo.h"
 
 CFileVersionInfo::CFileVersionInfo(void)

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cmemoviewdlg.h"
 #include "../../Game.h"
 #include "../../SqliteDB.h"

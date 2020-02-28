@@ -2,6 +2,7 @@
 	$Header: /Client/Network/CNetwork.cpp 168   05-10-18 3:10p Young $
 */
 #include "stdAFX.h"
+
 #include "CNetwork.h"
 #include "Game.h"
 #include "../Interface/ExternalUI/ExternalUILobby.h"

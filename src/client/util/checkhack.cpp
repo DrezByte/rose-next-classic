@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\checkhack.h"
 //#include "TRose.h"
 /*

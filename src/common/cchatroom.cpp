@@ -1,6 +1,7 @@
 
 #include "stdAFX.h"
 
+
 #include "CChatROOM.h"
 #if defined(__SHO_WS)
 

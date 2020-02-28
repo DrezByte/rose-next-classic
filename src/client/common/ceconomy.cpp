@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+
 #include "CEconomy.h"
 #include "IO_STB.h"
 

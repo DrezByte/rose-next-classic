@@ -7,6 +7,7 @@ pEVENT->m_pSourCHAR;
 */
 
 #include "stdAFX.h"
+
 #include "CAI_FILE.h"
 #include "CAI_LIB.h"
 

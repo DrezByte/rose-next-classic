@@ -3,6 +3,7 @@
 */
 
 #include "stdAFX.h"
+
 #include "CEvent.h"
 #include "Quest_FUNC.h"
 

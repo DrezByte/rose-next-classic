@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tdefaulttreenode.h"
 
 CTDefaultTreeNode::CTDefaultTreeNode(void)

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cmakestate.h"
 #include "../MakeDLG.h"
 CMakeState::CMakeState(void)

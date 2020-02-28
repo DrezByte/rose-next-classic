@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cdealdata.h"
 #include "event/cteventdeal.h"
 #include "../Object.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\mssmusicplayer.h"
 
 #ifdef _USE_MSS

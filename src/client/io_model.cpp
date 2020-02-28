@@ -3,6 +3,7 @@
 */
 
 #include "stdAFX.h"
+
 #include "Game.h"
 #include "IO_Model.h"
 #include "Common/IO_Motion.h"

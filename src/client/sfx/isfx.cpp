@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\isfx.h"
 
 ISFX::ISFX(void)

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CChatBox.h"
 #include "..\\Object.h"
 #include "..\\Game.h"

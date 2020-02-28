@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\objecttargeteffect.h"
 #include "../CObjCHAR.h"
 

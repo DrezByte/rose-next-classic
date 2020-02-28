@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+
 #include "IO_Skill.h"
 #ifndef	__SERVER
 	#include "..\util\CGameSTB.h"

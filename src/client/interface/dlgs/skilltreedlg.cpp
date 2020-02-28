@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\skilltreedlg.h"
 
 #include "icon/ciconskilldummy.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "ErrorEtc.h"
 #include <stdio.h>
 #include <stdarg.h>

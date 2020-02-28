@@ -2,6 +2,7 @@
 	$Header: /Client/OBJECT.cpp 68    05-08-30 5:18p Gioend $
 */
 #include "stdAFX.h"
+
 #include "OBJECT.h"
 #include "CObjMORPH.h"
 #include "CObjGROUND.h"

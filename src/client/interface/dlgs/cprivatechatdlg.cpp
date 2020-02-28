@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cprivatechatdlg.h"
 #include "Net_Prototype.h"
 #include "../../Network/CNetwork.h"

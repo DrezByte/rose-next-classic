@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "cgamestaterelogin.h"
 #include <process.h>
 #include "CGame.h"

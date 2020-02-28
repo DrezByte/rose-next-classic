@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cprivatestore.h"
 #include "../Object.h"
 #include "Net_Prototype.h"

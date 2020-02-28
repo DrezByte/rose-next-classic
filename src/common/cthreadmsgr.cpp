@@ -1,13 +1,13 @@
 #include "stdAFX.h"
 #if defined(__SHO_WS)
 
-#ifdef __SHO_WS
-#include "CWS_Client.h"
-#endif
+    #ifdef __SHO_WS
+        #include "CWS_Client.h"
+    #endif
 
-#include "CThreadMSGR.h"
-//#include "classLOG.h"
-#include "IO_STB.h"
+    #include "CThreadMSGR.h"
+    //#include "classLOG.h"
+    #include "IO_STB.h"
 
 //-------------------------------------------------------------------------------------------------
 CThreadMSGR::CThreadMSGR(UINT uiInitDataCNT, UINT uiIncDataCNT):
@@ -51,7 +51,15 @@ CThreadMSGR::Check_FRIENDS() {
                     FR.m_dwDBID = pFrH->m_dwDBID;
                     FR.m_btSTATUS = pFrH->m_btSTATUS;
                     FR.m_Name.Set( pName );
-                    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -129,8 +137,10 @@ CThreadMSGR::Execute() {
     int iCnt = m_AddPACKET.GetNodeCount();
     _ASSERT(iCnt == 0);
 
-    g_LOG.CS_ODS(
-        0xffff, "<<<< CThreadMSGR::Execute() ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID);
+    g_LOG.CS_ODS(0xffff,
+        "<<<< CThreadMSGR::Execute() ThreadID: %d(0x%x)\n",
+        this->ThreadID,
+        this->ThreadID);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -205,10 +215,10 @@ CThreadMSGR::Run_MessengerPACKET(tagMSGR_CMD* pMsgCMD) {
                                 pMSGR2->MSGR_Add(pMSGR1);
                                 return true;
                             }
-                            // pMSGR2¿¡°Ô Ä£±¸ Ãß°¡ ½ÇÆÐ Àü¼Û
+                            // pMSGR2ï¿½ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                         }
                     }
-                    // pMSGR1¿¡°Ô Ä£±¸ Ãß°¡ ½ÇÆÐ Àü¼Û
+                    // pMSGR1ï¿½ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 }
             }
             return true;
@@ -229,7 +239,7 @@ CThreadMSGR::Run_MessengerPACKET(tagMSGR_CMD* pMsgCMD) {
         }
 
         case MSGR_CMD_CHANGE_STATUS: {
-            // ³»»óÅÂ º¯°æ... µî·ÏµÈ ¸ðµç Ä£±¸¿¡°Ô...
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½... ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...
             CMessenger* pMSGR = this->SearchMSGR(pMsgCMD->m_Name.Get());
             if (pMSGR)
                 pMSGR->MSGR_Status2ALL(pMsgCMD->m_pPacket->m_cli_MCMD_STATUS_REQ.m_btStatus);
@@ -269,8 +279,8 @@ CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
     pMSGR->Init(pCMD->m_Name.Get(), pCMD->m_dwDBID, pCMD->m_iSocketIDX);
     if (!this->m_pSQL->GetNextRECORD()) {
         // insert !!!
-        if (this->m_pSQL->ExecSQL(
-                (char*)"INSERT tblWS_FRIEND ( intCharID ) VALUES(%d);", pCMD->m_dwDBID)
+        if (this->m_pSQL->ExecSQL((char*)"INSERT tblWS_FRIEND ( intCharID ) VALUES(%d);",
+                pCMD->m_dwDBID)
             < 1) {
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: INSERT %s friend : %s \n",
@@ -329,7 +339,7 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
                 MQ_PARAM_END);
         }
         if (this->m_pSQL->ExecSQLBuffer() < 0) {
-            // °íÄ¡±â ½ÇÆÐ !!!
+            // ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ !!!
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: UPDATE messenger:%d %s \n",
                 pMSGR->Get_DBID(),
@@ -337,14 +347,14 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
         }
     }
 
-#ifdef _DEBUG
+    #ifdef _DEBUG
     if (pMSGR->Get_FriendCNT()) {
         g_LOG.CS_ODS(0xffff,
             "ERROR:: pMSGR->m_ListFRIEND.GetNodeCount() must 0 / %d ",
             pMSGR->Get_FriendCNT(),
             pMSGR->m_dwDBID);
     }
-#endif
+    #endif
 
     t_HASHKEY HashKEY = CStr::GetHASH(pMSGR->m_Name.Get());
     this->m_HashMSGR.Delete(HashKEY, pMSGR);
@@ -362,7 +372,7 @@ CMessenger::SendPacket(int iClientSocketIDX, DWORD dwDBID, classPACKET* packet) 
     CWS_Client* pFindUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(iClientSocketIDX);
     if (pFindUSER && pFindUSER->m_dwDBID == dwDBID) {
         if (!pFindUSER->SendPacket(pCPacket)) {
-            // º¸³»±â ½ÇÆÐ...
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½...
         }
         return true;
     }
@@ -401,7 +411,7 @@ CMessenger::MSGR_LogIN(int iCount, BYTE* pLIST) {
         pName = (char*)(pLIST + sizeof(tagFriend_H));
 
         if (this->m_dwDBID == pFrH->m_dwDBID) {
-            // ÀÚ±â ÀÚ½ÅÀÌ µî·ÏµÈ ¿À·ù°¡ ÀÖ´Â°¡ ?
+            // ï¿½Ú±ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Â°ï¿½ ?
             CStrVAR tmpName;
             tmpName.Set(pName);
             pLIST += (sizeof(tagFriend_H) + tmpName.BuffLength() + 1);
@@ -424,15 +434,15 @@ CMessenger::MSGR_LogIN(int iCount, BYTE* pLIST) {
                 pNODE->m_VALUE.m_btSTATUS =
                     pFindMSGR->MSGR_OnOffLine(pToFR, this, this->Get_DBID(), FRIEND_STATUS_ONLINE);
                 if (FRIEND_STATUS_DELETED != pNODE->m_VALUE.m_btSTATUS) {
-                    // pFindMSGR¸ñ·Ï¿¡ ³»°¡ ÀÖ´Ù...
+                    // pFindMSGRï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½...
                     pNODE->m_VALUE.m_pMSGR = pFindMSGR;
                 }
             } else {
                 pNODE->m_VALUE.m_btSTATUS = FRIEND_STATUS_OFFLINE;
             }
         } /* else {
-            // ³ª¸¦ »èÁ¦ÇÏ°Å³ª ³»°¡ Â÷´ÜÇÑ³ÑÀÌ±â ¶«¿¡ ³» »óÅÂ Åëº¸ÇÒ ÇÊ¿ä¾ø´Ù.
-            // ³ªµµ ÀÌ³ÑÀ» ·Î±×¾Æ¿ô »óÅÂ·Î º¸ÀÌ°ÔÇÔ...
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°Å³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ³ï¿½ï¿½Ì±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ëº¸ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ï¿½.
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½Î±×¾Æ¿ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ï¿½ï¿½...
         } */
 
         sFrStatus.m_dwDBID = pNODE->m_VALUE.m_dwDBID;
@@ -454,9 +464,9 @@ CMessenger::MSGR_LogIN(int iCount, BYTE* pLIST) {
 
 //-------------------------------------------------------------------------------------------------
 /*
-2. ·Î±×¾Æ¿ô½Ã
-    . ³ª°¡ µî·ÏÇÑ Ä£±¸¸®½ºÆ® Á¶È¸..
-        NODE->m_VALUE.m_pUSER != NULL ÀÌ¸é ·Î±×¾Æ¿ô Àü¼Û.
+2. ï¿½Î±×¾Æ¿ï¿½ï¿½ï¿½
+    . ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¸..
+        NODE->m_VALUE.m_pUSER != NULL ï¿½Ì¸ï¿½ ï¿½Î±×¾Æ¿ï¿½ ï¿½ï¿½ï¿½ï¿½.
 */
 int
 CMessenger::MSGR_LogOUT(BYTE* pOutBUFF) {
@@ -482,22 +492,23 @@ CMessenger::MSGR_LogOUT(BYTE* pOutBUFF) {
         pFR->m_dwDBID = pNODE->m_VALUE.m_dwDBID;
 
         iBuffLEN += sizeof(tagFriend_H);
-        ::CopyMemory(
-            &pOutBUFF[iBuffLEN], pNODE->m_VALUE.m_Name.Get(), pNODE->m_VALUE.m_Name.BuffLength());
+        ::CopyMemory(&pOutBUFF[iBuffLEN],
+            pNODE->m_VALUE.m_Name.Get(),
+            pNODE->m_VALUE.m_Name.BuffLength());
         iBuffLEN += pNODE->m_VALUE.m_Name.BuffLength();
         pOutBUFF[iBuffLEN++] = 0;
 
         pFindMSGR = g_pThreadMSGR->SearchMSGR(pNODE->m_VALUE.m_Name.Get());
         if (pFindMSGR) {
             if (pFR->m_btSTATUS == FRIEND_STATUS_OFFLINE) {
-                // Á¢¼ÓÇØ ÀÖ´Âµ¥, ³ª¿¡°Ô »óÅÂ¸¦ µî·Ï¾ÈÇß´Ù´Â°ÍÀº ³ª¸¦ »èÁ¦Çß°Å³ª, ³ª¸¦
-                // »èÁ¦Çß´Ù´Â°Í...
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Âµï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½Ï¾ï¿½ï¿½ß´Ù´Â°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ß´Ù´Â°ï¿½...
                 pFR->m_btSTATUS = FRIEND_STATUS_DELETED;
             }
             pFindMSGR->MSGR_OnOffLine(pCPacket, NULL, this->Get_DBID(), FRIEND_STATUS_OFFLINE);
         } else {
             if (pNODE->m_VALUE.m_pMSGR) {
-                // ¹¹³Ä ???
+                // ï¿½ï¿½ï¿½ï¿½ ???
                 g_LOG.CS_ODS(0xffff,
                     "**ERROR in MSGR_LogOUT owner[ 0x%x:%d:%s ], frined[ 0x%x, %d:%s ]\n",
                     this->m_btMsgrSTATUS,
@@ -513,15 +524,15 @@ CMessenger::MSGR_LogOUT(BYTE* pOutBUFF) {
                     if ( pFindMSGR == pNODE->m_VALUE.m_pMSGR ) {
                         pNODE->m_VALUE.m_pMSGR->MSGR_OnOffLine( pCPacket, NULL, this->Get_DBID(),
            FRIEND_STATUS_OFFLINE ); } else {
-                        // ¿À·ù~~~ :: ¾î¶² °æ¿ì³Ä ???
+                        // ï¿½ï¿½ï¿½ï¿½~~~ :: ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ ???
                         g_LOG.CS_ODS( 0xffff, "**ERROR in MSGR_LogOUT owner[ 0x%x:%d:%s ], frined[
            0x%x, %d:%s ]\n", this->m_btMsgrSTATUS, this->m_dwDBID, this->m_Name.Get(),
            pNODE->m_VALUE.m_btSTATUS, pNODE->m_VALUE.m_dwDBID, pNODE->m_VALUE.m_Name.Get() );
                     }
                 } else
                 if ( pFindMSGR && pFR->m_btSTATUS == FRIEND_STATUS_OFFLINE ) {
-                    // Á¢¼ÓÇØ ÀÖ´Âµ¥, ³ª¿¡°Ô »óÅÂ¸¦ µî·Ï¾ÈÇß´Ù´Â°ÍÀº ³ª¸¦ »èÁ¦Çß°Å³ª, ³ª¸¦
-           »èÁ¦Çß´Ù´Â°Í... pFR->m_btSTATUS = FRIEND_STATUS_DELETED;
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Âµï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½ï¿½Ï¾ï¿½ï¿½ß´Ù´Â°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½
+           ï¿½ï¿½ï¿½ï¿½ï¿½ß´Ù´Â°ï¿½... pFR->m_btSTATUS = FRIEND_STATUS_DELETED;
                 }
         */
         m_ListFRIEND.DeleteNFree(pNODE);
@@ -540,11 +551,12 @@ CMessenger::MSGR_Add(CMessenger* pFriend) {
     pNODE = m_ListFRIEND.GetHeadNode();
     while (pNODE) {
         if (pNODE->m_VALUE.m_dwDBID == pFriend->Get_DBID()) {
-            // ÀÌ¹Ì µî·ÏµÈ »ç¿ëÀÚ´Ù... »èÁ¦µÇ¾ú´ø³ÑÀÌ ´Ù½Ã Ãß°¡ÇÒ °æ¿ì..
+            // ï¿½Ì¹ï¿½ ï¿½ï¿½Ïµï¿½ ï¿½ï¿½ï¿½ï¿½Ú´ï¿½... ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½..
             pNODE->m_VALUE.m_btSTATUS = pFriend->m_btMsgrSTATUS;
             pNODE->m_VALUE.m_pMSGR = pFriend;
-            this->MSGR_Status2ONE(
-                pFriend->Get_DBID(), pFriend->m_btMsgrSTATUS, pFriend); // CMessenger::MSGR_Add
+            this->MSGR_Status2ONE(pFriend->Get_DBID(),
+                pFriend->m_btMsgrSTATUS,
+                pFriend); // CMessenger::MSGR_Add
             return true;
         }
         pNODE = pNODE->GetNext();
@@ -585,11 +597,12 @@ CMessenger::MSGR_Del(DWORD dwDBID) {
     pNODE = m_ListFRIEND.GetHeadNode();
     while (pNODE) {
         if (dwDBID == pNODE->m_VALUE.m_dwDBID) {
-            // ¿À³ÊÅ¬¶óÀÌ¾ðÆ® ¾Ë¾Æ¼­ »èÁ¦ÇÏ¶ó°í...
+            // ï¿½ï¿½ï¿½ï¿½Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½Ë¾Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½...
             if (pNODE->m_VALUE.m_pMSGR) {
-                // "´ë»óÀº »èÁ¦µÈ»óÅÂ·Î ¼³Á¤ÇÏ°í ¹Ýµå½Ã m_pFRIEND = NULL·Î ¸¸µé¾î¾ß...... " )
-                pNODE->m_VALUE.m_pMSGR->MSGR_Status2ONE(
-                    this->Get_DBID(), FRIEND_STATUS_DELETED, NULL); // CMessenger::MSGR_Del
+                // "ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ýµï¿½ï¿½ m_pFRIEND = NULLï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...... " )
+                pNODE->m_VALUE.m_pMSGR->MSGR_Status2ONE(this->Get_DBID(),
+                    FRIEND_STATUS_DELETED,
+                    NULL); // CMessenger::MSGR_Del
             }
 
             m_ListFRIEND.DeleteNFree(pNODE);
@@ -614,7 +627,7 @@ CMessenger::MSGR_OnOffLine(classPACKET* pCPacket,
             pNODE->m_VALUE.m_pMSGR = pFriend;
 
             if (!(FRIEND_STATUS_REFUSED & pNODE->m_VALUE.m_btSTATUS)) {
-                // ³»°¡ °ÅºÎÇß°Å³ª, ³ª¸¦ »èÁ¦ÇÑ ³ÑÀÌ¾Æ´Ï¸é...
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½Åºï¿½ï¿½ß°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¾Æ´Ï¸ï¿½...
                 pNODE->m_VALUE.m_btSTATUS = btNewStatus;
                 this->SendPacket(this->m_iOwnerSocetIDX, this->m_dwDBID, pCPacket);
                 return this->m_btMsgrSTATUS;
@@ -631,18 +644,18 @@ CMessenger::MSGR_OnOffLine(classPACKET* pCPacket,
 //-------------------------------------------------------------------------------------------------
 void
 CMessenger::MSGR_Status2ONE(DWORD dwDBID, BYTE btNewStatus, CMessenger* pMessenger) {
-    // ³»¸ñ·Ï¿¡¼­ dwDBID¸¦ Ã£¾Æ btNewStatus»óÅÂ·Î ¹Ù²Û´Ù.
-    // dwDBID°¡ ³ª¸¦ »èÁ¦ÇÑ°ÍÀÌ¶ó¸é... ³» ¸ñ·ÏÀÇ m_pFRIEND¸¦ NULL !!!·Î ¼³Á¤ÇØ¾ßÇÔ.
+    // ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ï¿½ï¿½ dwDBIDï¿½ï¿½ Ã£ï¿½ï¿½ btNewStatusï¿½ï¿½ï¿½Â·ï¿½ ï¿½Ù²Û´ï¿½.
+    // dwDBIDï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ°ï¿½ï¿½Ì¶ï¿½ï¿½... ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ m_pFRIENDï¿½ï¿½ NULL !!!ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½.
     CDLList<tagMyFriend>::tagNODE* pNODE;
 
     pNODE = m_ListFRIEND.GetHeadNode();
     while (pNODE) {
-        if (dwDBID == pNODE->m_VALUE.m_dwDBID) { // 04. 10. 11 : 0x0013bfe¿À·ù...
-            pNODE->m_VALUE.m_pMSGR = pMessenger; // ³ª¸¦ »èÁ¦ÇÒ¶§´Â pMessenger = NULL·Î ¿Å
+        if (dwDBID == pNODE->m_VALUE.m_dwDBID) { // 04. 10. 11 : 0x0013bfeï¿½ï¿½ï¿½ï¿½...
+            pNODE->m_VALUE.m_pMSGR = pMessenger; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½ pMessenger = NULLï¿½ï¿½ ï¿½ï¿½
 
             if (!(FRIEND_STATUS_REFUSED & pNODE->m_VALUE.m_btSTATUS)) {
-                // ³»°¡ °ÅºÎÇÑ »óÅÂ°Å³ª, ³ÑÀÌ ³ª¸¦ »èÁ¦ÇÑ »óÅÂ°¡ ¾Æ´Ï¸é??? (³ª¸¦ »èÁ¦ÇÑ ³ÑÀÌ ³ªÇÑÅ×
-                // º¸³»-»èÁ¦ÇÒ ´ç½Ã)
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½Åºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°Å³ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Æ´Ï¸ï¿½??? (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                // ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
                 this->m_bFriendUPDATE =
                     (FRIEND_STATUS_REFUSED & (pNODE->m_VALUE.m_btSTATUS | btNewStatus)) ? true
                                                                                         : false;
@@ -707,7 +720,7 @@ CMessenger::MSGR_Ban(DWORD dwDBID) {
         pNODE = m_ListFRIEND.GetHeadNode ();
         while( pNODE ) {
             if ( dwDBID == pNODE->m_VALUE.m_dwDBID ) {
-                // ÀÌ³ÑÀÇ ¸Þ¼¼Áö Â÷´Ü..
+                // ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½..
                 if ( FRIEND_STATUS_DELETED != pNODE->m_VALUE.m_btSTATUS ) {
                     if ( FRIEND_STATUS_REFUSED & pNODE->m_VALUE.m_btSTATUS ) {
                         if ( pNODE->m_VALUE.m_pMSGR )
@@ -718,7 +731,7 @@ CMessenger::MSGR_Ban(DWORD dwDBID) {
                         pNODE->m_VALUE.m_btSTATUS = FRIEND_STATUS_REFUSED;
                 }
 
-                #pragma COMPILE_TIME_MSG ( " ¹Ù²ï »óÅÂ Àü¼Û??? " )
+                #pragma COMPILE_TIME_MSG ( " ï¿½Ù²ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½??? " )
 
                 break;
             }

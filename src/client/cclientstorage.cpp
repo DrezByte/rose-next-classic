@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cclientstorage.h"
 #include "Interface/Dlgs/ChattingDLG.h"
 #include "interface/Dlgs/QuickToolBar.h"

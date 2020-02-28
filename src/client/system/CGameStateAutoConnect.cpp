@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+
 #include <sstream>
 
 #include "cgame.h"

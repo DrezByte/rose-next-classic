@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cseparate.h"
 #include "../GameCommon/Item.h"
 #include "../Common/CItem.h"

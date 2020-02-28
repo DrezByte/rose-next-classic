@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventprivatestore.h"
 
 CTEventPrivateStore::CTEventPrivateStore(void)

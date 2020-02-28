@@ -2,6 +2,7 @@
 	$Header: /Client/CModelCHAR.cpp 53    04-09-02 8:36p Jeddli $
 */
 #include "stdAFX.h"
+
 #include "IO_Basic.h"
 #include "CModelCHAR.h"
 #include "Util\\VFSManager.h"

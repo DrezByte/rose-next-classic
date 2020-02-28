@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+
 #include "TGameCtrl.h"
 #include "TControlMgr.h"
 #include "ResourceMgr.h"

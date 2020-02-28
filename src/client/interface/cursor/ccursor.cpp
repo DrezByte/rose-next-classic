@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ccursor.h"
 #include "CCursorStateDx.h"
 #include "CCursorStateWindow.h"

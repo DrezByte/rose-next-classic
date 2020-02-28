@@ -2,6 +2,7 @@
 	$Header: /Client/IO_Terrain.cpp 294   05-10-27 10:48a Choo0219 $
 */
 #include "stdAFX.h"
+
 #include "Game.h"
 #include "CObjFIXED.h"
 #include "ObjFixedEvent.h"

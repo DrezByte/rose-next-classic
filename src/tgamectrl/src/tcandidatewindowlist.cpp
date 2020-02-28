@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tcandidatewindowlist.h"
 #include "TControlMgr.h"
 #include "ResourceMgr.h"

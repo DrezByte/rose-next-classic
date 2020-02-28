@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventexchange.h"
 
 CTEventExchange::CTEventExchange(void)

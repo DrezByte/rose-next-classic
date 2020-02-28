@@ -2,6 +2,7 @@
 	$Header: /Client/CObjCHAR.cpp 652   05-10-20 2:46p Gioend $  
 */
 #include "stdAFX.h"
+
 #include "Game.h"
 #include "OBJECT.h"
 #include "BULLET.h"

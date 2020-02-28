@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\citstatedead.h"
 #include "../../Object.h"
 

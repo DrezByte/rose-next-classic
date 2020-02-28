@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\damageeffect.h"
 
 CDamageEffect::CDamageEffect(void)

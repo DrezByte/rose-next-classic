@@ -3,6 +3,7 @@
 */
 #include "stdafx.h"
 
+
 #include "CSLList.h"
 #include "CThreadGUILD.h"
 #include "GS_ListUSER.h"

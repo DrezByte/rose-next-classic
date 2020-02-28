@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cupgradedlg.h"
 #include "subclass/CUpgradeDlgStateNormal.h"
 #include "subclass/CUpgradeDlgStateWait.h"

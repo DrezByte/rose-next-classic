@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\citemetc.h"
 #include "../game.h"
 #include "../common/io_stb.h"

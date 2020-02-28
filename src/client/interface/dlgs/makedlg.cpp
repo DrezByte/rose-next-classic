@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include "MakeDLG.h"
 #include "tgamectrl/resourcemgr.h"
 #include "tgamectrl/jcombobox.h"

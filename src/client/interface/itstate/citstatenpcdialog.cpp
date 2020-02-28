@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\citstatenpcdialog.h"
 #include "../SFX/SFXManager.h"
 

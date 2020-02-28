@@ -2,6 +2,7 @@
 	$Header: /Client/CViewMSG.cpp 21    04-09-19 8:13p Zho $
 */
 #include "stdAFX.h"
+
 #include "CViewMSG.h"
 #include "Game.h"
 #include "Object.h"

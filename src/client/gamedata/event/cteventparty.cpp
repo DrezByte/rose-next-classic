@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cteventparty.h"
 
 CTEventParty::CTEventParty(void)

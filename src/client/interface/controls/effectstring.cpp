@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\effectstring.h"
 #include "../util/localizing.h"
 #include "../Game.h"

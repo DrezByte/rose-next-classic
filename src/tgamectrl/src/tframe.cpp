@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tframe.h"
 #include "TImage.h"
 CTFrame::CTFrame(void)

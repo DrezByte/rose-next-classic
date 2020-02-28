@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cskilllistitem.h"
 #include "tgamectrl/tbutton.h"
 #include "tgamectrl/resourcemgr.h"

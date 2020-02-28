@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\teditbox.h"
 #include "mbstring.h"
 #include "ITFont.h"

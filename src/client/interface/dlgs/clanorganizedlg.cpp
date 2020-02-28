@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\clanorganizedlg.h"
 #include "tgamectrl/jtable.h"
 #include "subclass/ClanMark.h"

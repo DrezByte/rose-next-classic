@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cquestlistitem.h"
 #include "../../../Game.h"
 #include "../../../common/io_quest.h"

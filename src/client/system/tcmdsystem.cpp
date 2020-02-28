@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\tcmdsystem.h"
 #include "CGame.h"
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cfriendlistitem.h"
 #include "../CPrivateChatDlg.h"
 #include "../CMemoDlg.h"

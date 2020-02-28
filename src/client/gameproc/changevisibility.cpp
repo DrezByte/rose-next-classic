@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\changevisibility.h"
 #include "..\CObjCHAR.h"
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cmsgbox.h"
 #include "tgamectrl/tcommand.h"
 #include "tgamectrl/tmsgbox.h"

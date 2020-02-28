@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cobjcart.h"
 #include "Common/IO_Pat.h"
 #include "CObjCHAR_Collision.h"

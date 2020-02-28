@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\notifydlg.h"
 
 #include "tgamectrl/tbutton.h"

@@ -1,5 +1,6 @@
 
 #include "stdAFX.h"
+
 #include "IO_Mesh.h"
 #include "Common\\IO_Motion.h"
 #include "IO_Material.h"

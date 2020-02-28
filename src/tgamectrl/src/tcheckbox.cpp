@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tcheckbox.h"
 #include "TControlMgr.h"
 CTCheckBox::CTCheckBox(void)

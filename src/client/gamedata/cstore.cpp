@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cstore.h"
 //#include "../gamecommon/CItemEquip.h"
 //#include "../gamecommon/CItemEtc.h"

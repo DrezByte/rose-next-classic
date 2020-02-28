@@ -2,6 +2,7 @@
 	$Header: /Client/Network/SendPACKET.cpp 210   05-10-18 3:10p Young $
 */
 #include "stdAFX.h"
+
 #include "CNetwork.h"
 #include "..\util\classMD5.h"
 #include "Game.h"

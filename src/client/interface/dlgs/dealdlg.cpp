@@ -1,5 +1,6 @@
 
 #include "StdAfx.h"
+
 #include "DealDLG.h"
 #include "CMsgBox.h"
 #include "../TypeResource.h"

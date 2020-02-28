@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "item.h"
 #include "../Object.h"
 #include "../JCommandState.h"

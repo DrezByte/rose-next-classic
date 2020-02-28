@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ccommdlg.h"
 #include "../../Network/CNetwork.h"
 #include "subclass/CFriendListItem.h"

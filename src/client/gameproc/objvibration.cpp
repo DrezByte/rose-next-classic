@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\objvibration.h"
 #include "../Game.h"
 #include "../CObjCHAR.h"

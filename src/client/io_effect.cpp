@@ -2,6 +2,7 @@
 	$Header: /Client/IO_Effect.cpp 73    05-01-10 6:14p Jeddli $
 */
 #include "stdAFX.h"
+
 #include "Game.h"
 #include "Common\IO_Motion.h"
 #include "IO_Effect.h"

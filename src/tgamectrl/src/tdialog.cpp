@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tdialog.h"
 #include "TCaption.h"
 #include "TStatusBar.h"

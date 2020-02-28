@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\actionlistenerlist.h"
 
 CActionListenerList::CActionListenerList(void)

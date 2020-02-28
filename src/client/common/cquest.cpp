@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+
 #include "CQuest.h"
 #include "IO_Quest.h"
 

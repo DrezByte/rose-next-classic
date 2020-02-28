@@ -1,6 +1,7 @@
 
 #include "stdAFX.h"
 
+
 #include "status_effects.h"
 
 #include "rose/common/status_effect/status_effect_data.h"

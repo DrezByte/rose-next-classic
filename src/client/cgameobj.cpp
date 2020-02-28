@@ -2,6 +2,7 @@
 	$Header: /Client/CGameOBJ.cpp 7     05-06-08 4:32p Gioend $
 */
 #include "stdAFX.h"
+
 #include "OBJECT.h"
 #include "CGameOBJ.h"
 #include "System/CGame.h"

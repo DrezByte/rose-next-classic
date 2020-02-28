@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "uicommand.h"
 #include "CTCmdNumberInput.h"
 

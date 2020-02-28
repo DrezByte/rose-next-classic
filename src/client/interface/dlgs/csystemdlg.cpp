@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CSystemDLG.h"
 #include "../../Network/CNetwork.h"
 #include "../../System/CGame.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cpatdlg.h"
 ////#include "../CDragItem.h"
 //#include "../Icon/CIconItem.h"

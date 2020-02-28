@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cdialognpcscriptitem.h"
 #include "../../../game.h"
 #include "../../CTDrawImpl.h"

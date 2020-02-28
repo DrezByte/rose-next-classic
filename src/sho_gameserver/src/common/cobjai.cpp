@@ -6,6 +6,7 @@
 	$Header: /7HeartsOnline/Server/SHO_GS/Sho_gs_lib/Common/CObjAI.cpp 44    05-10-06 10:21p Maior $
 */
 #include "stdAFX.h"
+
 #include "CObjCHAR.h"
 #include "OBJECT.h"
 #ifndef	__SERVER

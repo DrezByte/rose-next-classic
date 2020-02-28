@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cupgradedlgstateresult.h"
 #include "../CUpgradeDlg.h"
 #include "Net_prototype.h"

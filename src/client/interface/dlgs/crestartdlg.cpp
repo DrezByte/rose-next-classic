@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CRestartDLG.h"
 #include "..\\..\\NetWork\\CNetwork.h"
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\ctfontimpl.h"
 #include "../Game.h"
 #include "../../engine/include/zz_interface.h"

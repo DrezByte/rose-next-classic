@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cmailboxlistitem.h"
 
 #include "../CMemoViewDlg.h"

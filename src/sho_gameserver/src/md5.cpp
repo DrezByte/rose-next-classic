@@ -32,6 +32,7 @@ documentation and/or software.
 
 #include "stdafx.h"
 
+
 /* interface header */
 #include "md5.h"
 

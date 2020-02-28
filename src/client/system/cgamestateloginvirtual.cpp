@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cgamestateloginvirtual.h"
 #include "../Network/CNetwork.h"
 #include "../Interface/Command/CTCmdHotExec.h"

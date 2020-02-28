@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\livecheck.h"
 #include "../Network/CNetwork.h"
 

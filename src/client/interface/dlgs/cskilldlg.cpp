@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "CSkillDLG.h"
 #include "../CToolTipMgr.h"
 #include "../Object.h"

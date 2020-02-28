@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "cslot.h"
 #include "../CGoodsDlg.h"
 #include "../../Icon/CIconItem.h"

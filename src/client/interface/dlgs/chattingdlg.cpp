@@ -1,6 +1,7 @@
 
 #include "StdAfx.h"
 
+
 #include "ChattingDLG.h"
 #include "CTargetMenu.h"
 #include "ExchangeDlg.h"

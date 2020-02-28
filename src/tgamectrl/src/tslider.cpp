@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include ".\tslider.h"
 
 CTSlider::CTSlider(void)

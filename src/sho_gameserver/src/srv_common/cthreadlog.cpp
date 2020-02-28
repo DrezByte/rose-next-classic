@@ -1,5 +1,6 @@
 
 #include "stdAFX.h"
+
 #include "CThreadLOG.h"
 #include "CThreadGUILD.h"
 

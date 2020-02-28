@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cclanskilllistitem.h"
 #include "../../interfaceType.h"
 #include "../../IO_ImageRes.h"

@@ -1,5 +1,6 @@
 #include "stdAFX.h"
 
+
 #include "GS_ListUSER.h"
 #include "GS_PARTY.h"
 #include "GS_ThreadLOG.h"

@@ -1,5 +1,6 @@
 
 #include "StdAfx.h"
+
 #include "InventoryDLG.h"
 #include "DealDlg.h"
 #include "MakeDlg.h"

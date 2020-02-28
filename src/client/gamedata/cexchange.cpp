@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include ".\cexchange.h"
 #include "event/CTEventExchange.h"
 #include "../gamecommon/item.h"

@@ -1,6 +1,7 @@
 
 #if defined( _VFSTOOL )
 #include "stdAFX.h"
+
 #endif
 #ifdef  __BORLANDC__
 	#include <VCL.h>

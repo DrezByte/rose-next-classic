@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "system/CGAME.h"
 #include ".\ctcmdhotexec.h"
 #include "../../CApplication.h"
