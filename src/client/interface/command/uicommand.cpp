@@ -8,7 +8,6 @@
 #include "../Dlgs/CNumberInputDlg.h"
 #include "../Dlgs/QuickToolBAR.h"
 #include "../Dlgs/CUpgradeDlg.h"
-#include "../Dlgs/DeliveryStoreDlg.h"
 #include "../Icon/CIconItem.h"
 #include "../Icon/CIconDialog.h"
 
@@ -701,38 +700,6 @@ void CTCmdInputName::SetName( const char* pszName )
 
 bool CTCmdInputName::Exec( CTObject* pObj )
 {
-	return true;
-}
-
-/*--------------------------------------------------------------------------------------------------------------*/
-bool CTCmdInputNameGiftReceiver::Exec( CTObject* pObj )
-{
-	if( m_name.empty() ) return true;
-
-	if( CTDialog* pDlg = g_itMGR.FindDlg( DLG_TYPE_DELIVERYSTORE ) )
-	{
-		CDeliveryStoreDlg* p = (CDeliveryStoreDlg*)pDlg;
-		p->save_receiver_name( m_name.c_str() );
-	}
-	
-	g_pNet->Send_cli_MAIL_ITEM_FIND_CHAR( (char*)m_name.c_str() );
-	return true;
-}
-
-CTCmdGiftMallItem::CTCmdGiftMallItem( BYTE slotindex, const char* name )
-{
-	assert( name );
-	if( name )
-	{
-		m_slotindex = slotindex;
-		m_name      = name;
-	}
-}
-
-bool CTCmdGiftMallItem::Exec( CTObject* pObj )
-{
-	if( !m_name.empty() )
-		g_pNet->Send_cli_MALL_ITEM_GIVE( m_slotindex, (char*)m_name.c_str() );
 	return true;
 }
 

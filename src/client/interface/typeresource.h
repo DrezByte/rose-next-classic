@@ -546,9 +546,6 @@
 
 #define STR_SKILLTREE								CStringManager::GetSingleton().GetString( 580 )
 
-
-
-
 #define STR_RECEIVER								CStringManager::GetSingleton().GetString( 581 )
 #define STR_SENDING_ITEM							CStringManager::GetSingleton().GetString( 582 )
 #define STR_REPLY_MALL_ITEM_CHECK_CHAR_NONE			CStringManager::GetSingleton().GetString( 583 )

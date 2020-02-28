@@ -321,27 +321,6 @@ protected:
 	std::string  m_name;
 };
 
-/// 몰아이템 창고에서 받을 사람이 존재하는지 서버에 의뢰요청
-class CTCmdInputNameGiftReceiver : public CTCmdInputName
-{
-public:
-	CTCmdInputNameGiftReceiver(){}
-	virtual ~CTCmdInputNameGiftReceiver(){}
-	virtual bool Exec( CTObject* pObj );
-};
-
-/// 몰아이템 창고의 아이템을 다른 유저에게 보낸다.
-class CTCmdGiftMallItem : public CTCommand
-{
-public:
-	CTCmdGiftMallItem( BYTE slotindex, const char* name );
-	virtual ~CTCmdGiftMallItem(){}
-	virtual bool Exec( CTObject* pObj );
-protected:
-	BYTE		m_slotindex;
-	std::string m_name;
-};
-
 /// 클랜마크를 등록한다.( 서버로 )
 class CTCmdRegisterClanMark : public CTCommand
 {

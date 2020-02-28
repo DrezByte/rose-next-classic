@@ -39,7 +39,6 @@
 #include "Dlgs/CUpgradeDlg.h"
 #include "Dlgs/ClanOrganizeDlg.h"
 #include "Dlgs/ClanRegistNotice.h"
-#include "Dlgs/DeliveryStoreDlg.h"
 #include "Dlgs/EventDialog.h"
 #include "Dlgs/InputNameDlg.h"
 #include "Dlgs/NotifyButtonDlg.h"
@@ -180,7 +179,6 @@ static const std::array<char*, DLG_TYPE_MAX> DIALOG_FILENAME = {
     "DlgDialogEvent", // DLG_TYPE_EVENTDIALOG
     "dlgnotify", // DLG_TYPE_NOTIFY
     "dlgskilltree", // DLG_TYPE_SKILLTREE
-    "deliverystore", // DLG_TYPE_DELIVERYSTORE
     "dlginputname", // DLG_TYPE_INPUTNAME
     "DlgBankWindow", // DLG_TYPE_BANKWINDOW
     "DlgQuickBar", // DLG_TYPE_QUICKBAR_EXT
@@ -381,10 +379,6 @@ IT_MGR::InitDLG() {
     CInputNameDlg* pInputNameDlg = new CInputNameDlg;
     pInputNameDlg->Create(DIALOG_FILENAME[DLG_TYPE_INPUTNAME]);
     AppendDlg(DLG_TYPE_INPUTNAME, pInputNameDlg, pInputNameDlg->GetControlID());
-
-    CDeliveryStoreDlg* pDeliveryStoreDlg = new CDeliveryStoreDlg;
-    pDeliveryStoreDlg->Create(DIALOG_FILENAME.at(DLG_TYPE_INPUTNAME));
-    AppendDlg(DLG_TYPE_DELIVERYSTORE, pDeliveryStoreDlg, pDeliveryStoreDlg->GetControlID());
 
     CSkillTreeDlg* pSkilltreedlg = new CSkillTreeDlg;
     pSkilltreedlg->Create(DIALOG_FILENAME[DLG_TYPE_SKILLTREE]);

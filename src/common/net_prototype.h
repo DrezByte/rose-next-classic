@@ -339,9 +339,6 @@
 #define CLI_ITEM_RESULT_REPORT 0x07d8
 #define GSV_ITEM_RESULT_REPORT 0x07d8
 
-#define CLI_MALL_ITEM_REQ 0x07d9
-#define GSV_MALL_ITEM_REPLY 0x07d9
-
 #define CLI_MOVE_ZULY 0x07da
 #define GSV_MOVE_ZULY 0x07da
 
@@ -2325,60 +2322,6 @@ struct wsv_MEMO: public t_PACKETHEADER {
     */
 };
 
-#define REQ_MALL_ITEM_LIST 0x01 // 리스트 요청
-#define REQ_MALL_ITEM_FIND_CHAR 0x02 // 케릭 이름 체크
-#define REQ_MALL_ITEM_BRING 0x03 // 꺼내오기
-#define REQ_MALL_ITEM_GIVE 0x04 // 선물하기
-struct cli_MALL_ITEM_REQ: public t_PACKETHEADER {
-    BYTE m_btReqTYPE;
-    short m_nDupCnt; // REQ_MALL_ITEM_BRING, REQ_MALL_ITEM_GIVE시에 갯수..
-    BYTE m_btInvIDX[0]; // REQ_MALL_ITEM_GIVE일경우 0~39 사이의 인벤토리 번호
-    // char m_szCharName[]							// REQ_MALL_ITEM_BRING, REQ_MALL_ITEM_GIVE
-    // 요청시
-    // char m_szDesc[]								// REQ_MALL_ITEM_GIVE 요청시 덧붙일말(선물할때
-    // 메세지)::최대 80자
-};
-
-#define REPLY_MALL_ITEM_CHECK_CHAR_FOUND 0x01 // 대상 찾았다
-#define REPLY_MALL_ITEM_CHECK_CHAR_NONE 0x02 // 대상 없다.
-#define REPLY_MALL_ITEM_CHECK_CHAR_INVALID 0x03 // 자기 자신 계정등..잘못된 대상
-#define REPLY_MALL_ITEM_BRING_SUCCESS 0x04
-#define REPLY_MALL_ITEM_BRING_FAILED 0x05
-#define REPLY_MALL_ITME_GIVE_SUCCESS 0x06
-#define REPLY_MALL_ITEM_GIVE_FAILED 0x07
-#define REPLY_MALL_ITEM_LIST_START 0x08
-#define REPLY_MALL_ITEM_LIST_DATA 0x09
-#define REPLY_MALL_ITEM_LIST_END 0x0a
-#define REPLY_MALL_ITEM_NOT_FOUND 0x0b
-
-struct gsv_MALL_ITEM_REPLY: public t_PACKETHEADER {
-    BYTE m_btReplyTYPE;
-    BYTE m_btCntOrIdx; // 갯수 / 몰 인벤토리 인덱스
-
-    /* MALL_ITEM_REQ_LIST 응답 :: m_nCntOrIdx 갯수만큼..
-        m_btReplyTYPE == REPLY_MALL_ITEM_LIST_START
-            m_btReplyTYPE == REPLY_MALL_ITEM_LIST_DATA
-            {
-                m_btCntOrIdx :: 갯수
-                {
-                    tagBaseITEM
-                    szFrom[]		// 선물한 케릭
-                    if ( '\0' != szFrom[0] ) {
-                        // szDesc[]	// 선물할때 메세지
-                        // szTo[]	// 선물한 대상 케릭 이름
-                    }
-                }
-            }
-        m_btReplyTYPE == REPLY_MALL_ITEM_LIST_END
-    */
-    // REPLY_MALL_ITEM_BRING_SUCCESS응답 :: m_nCntOrIdx에는 몰 인벤토리 인덱스 m_BringITEM[0]에는
-    // 추가된 아이템
-    union {
-        tag_SET_INVITEM m_BringITEM[0]; // MALL_ITEM_REQ_BRING에 대한 응답(변경된 인벤토리 정보) ::
-                                        // m_btCntOrIdx의 몰 인벤토리 아이템이 이동
-    };
-};
-
 #define BILLING_MSG_FREE_USER 0x00 //
 
 //#define	BILLING_MSG_FEE_TYPE1				0x01	//  /요금: 귀하는 정액요금제 사용자 입니다.
@@ -2896,9 +2839,6 @@ struct t_PACKET {
 
         gsv_SET_MONEY_ONLY m_gsv_SET_MONEY_ONLY;
         gsv_SET_ABILITY m_gsv_SET_ABILITY;
-
-        cli_MALL_ITEM_REQ m_cli_MALL_ITEM_REQ;
-        gsv_MALL_ITEM_REPLY m_gsv_MALL_ITEM_REPLY;
 
         gsv_BILLING_MESSAGE m_gsv_BILLING_MESSAGE;
         gsv_BILLING_MESSAGE_EXT m_gsv_BILLING_MESSAGE_EXT;

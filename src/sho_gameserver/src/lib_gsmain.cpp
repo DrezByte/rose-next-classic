@@ -13,7 +13,6 @@
 #include "GS_PARTY.h"
 #include "GS_SocketASV.h"
 #include "GS_SocketLSV.h"
-#include "GS_ThreadMALL.h"
 #include "IO_AI.h"
 #include "IO_PAT.h"
 #include "IO_Quest.h"
@@ -99,8 +98,6 @@ GS_CThreadSQL* g_pThreadSQL = NULL;
 GS_CThreadLOG* g_pThreadLOG = NULL;
 
 CThreadGUILD* g_pThreadGUILD = NULL;
-
-GS_CThreadMALL* g_pThreadMALL = NULL;
 
 char g_szURL[MAX_PATH];
 
@@ -232,10 +229,6 @@ CLIB_GameSRV::~CLIB_GameSRV() {
     if (g_pThreadGUILD) {
         g_pThreadGUILD->Free();
         SAFE_DELETE(g_pThreadGUILD);
-    }
-    if (g_pThreadMALL) {
-        g_pThreadMALL->Free();
-        SAFE_DELETE(g_pThreadMALL);
     }
 
     DisconnectFromLSV();
@@ -813,8 +806,6 @@ CLIB_GameSRV::ConnectSERVER(char* szDBServerIP,
     char* szDBPassword,
     char* szLogUser,
     char* szLogPW,
-    char* szMallUser,
-    char* szMallPW,
     char* szLoginServerIP,
     int iLoginServerPort,
     char* szAccountServerIP,
@@ -883,18 +874,6 @@ CLIB_GameSRV::ConnectSERVER(char* szDBServerIP,
         return false;
     }
     g_pThreadGUILD->Resume();
-
-#define MALL_DB_IP "127.0.0.1"
-#define MALL_DB_NAME "SHO_MALL"
-
-    if (*szMallUser != '?') {
-        g_pThreadMALL = new GS_CThreadMALL;
-        if (!g_pThreadMALL->Connect(
-                USE_ODBC, MALL_DB_IP, szMallUser, szMallPW, MALL_DB_NAME, 32, 1024 * 8)) {
-            return false;
-        }
-        g_pThreadMALL->Resume();
-    }
 
     return true;
 }

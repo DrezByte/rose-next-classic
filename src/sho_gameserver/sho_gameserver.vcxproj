@@ -48,7 +48,6 @@
     <ClInclude Include="src\gs_socketasv.h" />
     <ClInclude Include="src\gs_socketlsv.h" />
     <ClInclude Include="src\gs_threadlog.h" />
-    <ClInclude Include="src\gs_threadmall.h" />
     <ClInclude Include="src\gs_threadsql.h" />
     <ClInclude Include="src\gs_threadzone.h" />
     <ClInclude Include="src\gs_user.h" />
@@ -102,7 +101,6 @@
     <ClCompile Include="src\gs_socketasv.cpp" />
     <ClCompile Include="src\gs_socketlsv.cpp" />
     <ClCompile Include="src\gs_threadlog.cpp" />
-    <ClCompile Include="src\gs_threadmall.cpp" />
     <ClCompile Include="src\gs_threadsql.cpp" />
     <ClCompile Include="src\gs_threadzone.cpp" />
     <ClCompile Include="src\gs_user.cpp" />

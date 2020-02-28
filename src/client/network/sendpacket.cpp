@@ -1799,48 +1799,6 @@ void CSendPACKET::Send_cli_CLAN_MEMBER_JOBnLEV( short nLev, short nJob )
 
 }
 
-void CSendPACKET::Send_cli_MALL_ITEM_LIST_REQ()
-{
-	m_pSendPacket->m_HEADER.m_wType = CLI_MALL_ITEM_REQ;
-	m_pSendPacket->m_HEADER.m_nSize = sizeof( cli_MALL_ITEM_REQ );
-	m_pSendPacket->m_cli_MALL_ITEM_REQ.m_btReqTYPE = REQ_MALL_ITEM_LIST;
-	Send_PACKET( m_pSendPacket );
-}
-
-void CSendPACKET::Send_cli_MAIL_ITEM_FIND_CHAR( char* pszName )
-{
-	assert( pszName );
-	if( pszName == NULL ) return;
-	m_pSendPacket->m_HEADER.m_wType = CLI_MALL_ITEM_REQ;
-	m_pSendPacket->m_HEADER.m_nSize = sizeof( cli_MALL_ITEM_REQ );
-	m_pSendPacket->m_cli_MALL_ITEM_REQ.m_btReqTYPE = REQ_MALL_ITEM_FIND_CHAR;
-	Packet_AppendString( m_pSendPacket, pszName );
-	Send_PACKET( m_pSendPacket );
-}
-
-void CSendPACKET::Send_cli_MALL_ITEM_GIVE( BYTE slotindex, char* pszName )
-{
-	assert( pszName );
-	if( pszName == NULL ) return;
-	m_pSendPacket->m_HEADER.m_wType = CLI_MALL_ITEM_REQ;
-	m_pSendPacket->m_HEADER.m_nSize = sizeof( cli_MALL_ITEM_REQ ) + 1;
-	m_pSendPacket->m_cli_MALL_ITEM_REQ.m_btReqTYPE = REQ_MALL_ITEM_GIVE;
-	m_pSendPacket->m_cli_MALL_ITEM_REQ.m_btInvIDX[0] = slotindex;
-	Packet_AppendString( m_pSendPacket, pszName );
-	Packet_AppendString( m_pSendPacket,"");
-	Send_PACKET( m_pSendPacket );
-}
-
-void CSendPACKET::Send_cli_MALL_ITEM_BRING( BYTE slotindex, short nDupCount )
-{
-	m_pSendPacket->m_HEADER.m_wType = CLI_MALL_ITEM_REQ;
-	m_pSendPacket->m_HEADER.m_nSize = sizeof( cli_MALL_ITEM_REQ ) + 1;
-	m_pSendPacket->m_cli_MALL_ITEM_REQ.m_btReqTYPE = REQ_MALL_ITEM_BRING;
-	m_pSendPacket->m_cli_MALL_ITEM_REQ.m_btInvIDX[0] = slotindex;
-	m_pSendPacket->m_cli_MALL_ITEM_REQ.m_nDupCnt     = nDupCount;
-	Send_PACKET( m_pSendPacket );
-}
-
 void CSendPACKET::Send_cli_CLANMARK_REG_TIME()
 {
 	m_pSendPacket->m_HEADER.m_wType = CLI_CLANMARK_REG_TIME;

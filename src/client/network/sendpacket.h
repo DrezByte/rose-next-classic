@@ -175,15 +175,6 @@ public   :
 
 	void Send_cli_CLAN_MEMBER_JOBnLEV( short nLev, short nJob );
 
-
-
-
-	void Send_cli_MALL_ITEM_LIST_REQ();
-	void Send_cli_MAIL_ITEM_FIND_CHAR( char* pszName );
-	void Send_cli_MALL_ITEM_GIVE( BYTE slotindex, char* pszName );
-	void Send_cli_MALL_ITEM_BRING( BYTE slotindex, short nDupCount );
-
-
 	void Send_cli_CLANMARK_REG_TIME();
 
 	void Send_cli_MOVE_ZULY_INV2BANK( __int64 i64MoveZuly );

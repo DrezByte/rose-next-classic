@@ -863,9 +863,6 @@
     <ClCompile Include="Interface\DLGs\DealDLG.cpp">
       <Filter>Source Files\Interface\DLGs</Filter>
     </ClCompile>
-    <ClCompile Include="Interface\DLGs\DeliveryStoreDlg.cpp">
-      <Filter>Source Files\Interface\DLGs</Filter>
-    </ClCompile>
     <ClCompile Include="Interface\DLGs\EventDialog.cpp">
       <Filter>Source Files\Interface\DLGs</Filter>
     </ClCompile>
@@ -1976,9 +1973,6 @@
       <Filter>Source Files\Interface\DLGs</Filter>
     </ClInclude>
     <ClInclude Include="Interface\DLGs\DealDLG.h">
-      <Filter>Source Files\Interface\DLGs</Filter>
-    </ClInclude>
-    <ClInclude Include="Interface\DLGs\DeliveryStoreDlg.h">
       <Filter>Source Files\Interface\DLGs</Filter>
     </ClInclude>
     <ClInclude Include="Interface\DLGs\EventDialog.h">

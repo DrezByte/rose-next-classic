@@ -11,7 +11,6 @@
 #include "GS_SocketASV.h"
 #include "GS_SocketLSV.h"
 #include "GS_ThreadLOG.h"
-#include "GS_ThreadMALL.h"
 #include "GS_ThreadSQL.h"
 #include "GS_USER.h"
 #include "IO_Quest.h"
@@ -7849,73 +7848,6 @@ classUSER::Send_gsv_BILLING_MESSAGE2(BYTE btType, char cFunctionType, DWORD dwPa
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-/// 홈페이지에서 구입한 쇼핑몰 아이템 관련 요청...
-bool
-classUSER::Recv_cli_MALL_ITEM_REQ(t_PACKET* pPacket) {
-    switch (pPacket->m_cli_MALL_ITEM_REQ.m_btReqTYPE) {
-        case REQ_MALL_ITEM_LIST: {
-            // 몰 디비에 요청
-            this->m_MALL.m_HashDestCHAR = 0;
-            if (g_pThreadMALL)
-                g_pThreadMALL->Add_SqlPacketWithACCOUNT(this, pPacket);
-            break;
-        }
-        case REQ_MALL_ITEM_BRING: {
-            if (pPacket->m_HEADER.m_nSize != (1 + sizeof(cli_MALL_ITEM_REQ)))
-                return false;
-            if (pPacket->m_cli_MALL_ITEM_REQ.m_btInvIDX[0] >= MAX_MALL_ITEM_COUNT)
-                return false;
-            if (0 == this->m_MALL.m_ITEMS[pPacket->m_cli_MALL_ITEM_REQ.m_btInvIDX[0]].m_ui64ID
-                || !this->m_MALL.m_ITEMS[pPacket->m_cli_MALL_ITEM_REQ.m_btInvIDX[0]]
-                        .m_ITEM.IsValidITEM()) {
-                return true;
-            }
-            if (g_pThreadMALL)
-                g_pThreadMALL->Add_SqlPacketWithACCOUNT(this, pPacket);
-            break;
-        }
-        case REQ_MALL_ITEM_FIND_CHAR: {
-            short nOffset = sizeof(cli_MALL_ITEM_REQ);
-            char* szCharName = Packet_GetStringPtr(pPacket, nOffset);
-            if (szCharName && *szCharName) {
-                // 케릭이름 확인 요청 :: 메인 디비에 요청...
-                g_pThreadSQL->Add_SqlPacketWithACCOUNT(this, pPacket);
-            }
-            break;
-        }
-        case REQ_MALL_ITEM_GIVE: {
-            if (pPacket->m_HEADER.m_nSize < (2 + sizeof(cli_MALL_ITEM_REQ)))
-                return false;
-
-            if (this->m_MALL.m_HashDestCHAR) {
-                if (pPacket->m_cli_MALL_ITEM_REQ.m_btInvIDX[0] >= MAX_MALL_ITEM_COUNT)
-                    return false;
-                if (0 == this->m_MALL.m_ITEMS[pPacket->m_cli_MALL_ITEM_REQ.m_btInvIDX[0]].m_ui64ID
-                    || !this->m_MALL.m_ITEMS[pPacket->m_cli_MALL_ITEM_REQ.m_btInvIDX[0]]
-                            .m_ITEM.IsValidITEM()) {
-                    return true;
-                }
-
-                short nOffset = 1 + sizeof(cli_MALL_ITEM_REQ);
-                char* szCharName = Packet_GetStringPtr(pPacket, nOffset);
-                if (szCharName && *szCharName) {
-                    // 케릭이름 확인 요청 :: 메인 디비에 요청...
-                    t_HASHKEY HashChar = ::StrToHashKey(szCharName);
-                    if (HashChar == this->m_MALL.m_HashDestCHAR) {
-                        // 몰 디비에 요청
-                        if (g_pThreadMALL)
-                            g_pThreadMALL->Add_SqlPacketWithACCOUNT(this, pPacket);
-                    }
-                }
-            }
-            break;
-        }
-    } // switch( pPacket->m_cli_MALL_ITEM_REQ.m_btReqTYPE )
-
-    return true;
-}
-
 bool
 classUSER::Recv_cli_SCREEN_SHOT_TIME(t_PACKET* pPacket) {
     return Send_gsv_SCREEN_SHOT_TIME();
@@ -8335,9 +8267,6 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
 
         case CLI_PARTY_RULE:
             return Recv_cli_PARTY_RULE(pPacket);
-
-        case CLI_MALL_ITEM_REQ:
-            return Recv_cli_MALL_ITEM_REQ(pPacket);
 
         case CLI_CART_RIDE:
             return Recv_cli_CART_RIDE(pPacket);

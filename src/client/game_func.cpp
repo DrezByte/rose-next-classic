@@ -183,12 +183,6 @@ void	GF_openBank ( int iNPCNO )
 }
 
 //-------------------------------------------------------------------------------------------------
-void	GF_openDeliveryStore ( )
-{
-	g_itMGR.OpenDialog( DLG_TYPE_DELIVERYSTORE );
-}
-
-//-------------------------------------------------------------------------------------------------
 void	GF_repair ( int iNPCNO )
 {
 	CGame::GetInstance().BeginRepair( CGame::REPAIR_NPC );

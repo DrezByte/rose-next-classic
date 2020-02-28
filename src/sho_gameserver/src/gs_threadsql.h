@@ -119,9 +119,6 @@ private:
     bool Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET);
 
-    //	bool Proc_cli_CLAN_COMMAND	( tagQueryDATA *pSqlPACKET );
-    bool Proc_cli_MALL_ITEM_REQ(tagQueryDATA* pSqlPACKET);
-
     void Clear_LoginTABLE();
     void Add_LoginACCOUNT(char* szAccount);
     void Sub_LoginACCOUNT(char* szAccount);

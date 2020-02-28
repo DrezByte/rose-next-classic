@@ -64,8 +64,6 @@ int main() {
 		(char*)config.database.password.c_str(),
 		(char*)config.database.username.c_str(),
 		(char*)config.database.password.c_str(),
-		(char*)config.database.username.c_str(),
-		(char*)config.database.password.c_str(),
 		(char*)config.worldserver.ip.c_str(),
 		config.worldserver.server_port,
 		(char*)config.loginserver.ip.c_str(),

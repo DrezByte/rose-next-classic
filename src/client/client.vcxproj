@@ -441,7 +441,6 @@
     <ClCompile Include="Interface\DLGs\CTargetMenu.cpp" />
     <ClCompile Include="Interface\DLGs\CUpgradeDlg.cpp" />
     <ClCompile Include="Interface\DLGs\DealDLG.cpp" />
-    <ClCompile Include="Interface\DLGs\DeliveryStoreDlg.cpp" />
     <ClCompile Include="Interface\DLGs\EventDialog.cpp" />
     <ClCompile Include="Interface\DLGs\ExchangeDLG.cpp" />
     <ClCompile Include="Interface\DLGs\HelpDlg.cpp" />
@@ -817,7 +816,6 @@
     <ClInclude Include="Interface\DLGs\CTargetMenu.h" />
     <ClInclude Include="Interface\DLGs\CUpgradeDlg.h" />
     <ClInclude Include="Interface\DLGs\DealDLG.h" />
-    <ClInclude Include="Interface\DLGs\DeliveryStoreDlg.h" />
     <ClInclude Include="Interface\DLGs\EventDialog.h" />
     <ClInclude Include="Interface\DLGs\ExchangeDLG.h" />
     <ClInclude Include="Interface\DLGs\HelpDlg.h" />

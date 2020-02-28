@@ -67,9 +67,6 @@
     <ClInclude Include="src\gs_threadlog.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gs_threadmall.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\gs_threadsql.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -229,9 +226,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gs_threadlog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gs_threadmall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gs_threadsql.cpp">

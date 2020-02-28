@@ -279,9 +279,6 @@ void CNetwork::Proc_ZonePacket ()
 			case GSV_BILLING_MESSAGE_EXT:
 				Recv_gsv_BILLING_MESSAGE_EXT();
 				break;
-			case GSV_MALL_ITEM_REPLY:
-				Recv_gsv_MALL_ITEM_REPLY();
-				break;
 			case GSV_ITEM_RESULT_REPORT:
 				Recv_gsv_ITEM_RESULT_REPORT();
 				break;

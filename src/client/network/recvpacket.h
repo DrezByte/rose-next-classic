@@ -247,11 +247,6 @@ public   :
 	void Recv_gsv_LOGOUT_REPLY();	
 	void Recv_gsv_ITEM_RESULT_REPORT();
 
-
-
-	void Recv_gsv_MALL_ITEM_REPLY();
-
-
 	void Recv_gsv_BILLING_MESSAGE();
 
 	void Recv_gsv_BILLING_MESSAGE_EXT();

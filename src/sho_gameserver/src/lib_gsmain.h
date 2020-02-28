@@ -108,8 +108,6 @@ public:
         char* szDBPW,
         char* szLogUser,
         char* szLogPW,
-        char* szMallUser,
-        char* szMallPW,
         char* szLoginServerIP,
         int iLoginServerPort,
         char* szLogServerIP,

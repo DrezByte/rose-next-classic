@@ -146,13 +146,4 @@ public:
 	virtual bool Exec( CTObject* pObj );
 };
 
-/// 마일리지 창고에서 아이템을 가져온다.
-class CTCmdBringItemFromMall : public CTCmdNumberInput
-{
-public:
-	CTCmdBringItemFromMall(){}
-	virtual ~CTCmdBringItemFromMall(){}
-	virtual bool Exec( CTObject* pObj );
-};
-
 #endif

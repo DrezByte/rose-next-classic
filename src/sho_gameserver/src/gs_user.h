@@ -43,22 +43,10 @@ enum {
 #define BIT_TRADE_READY 0x01 // 1 : 1 거래시
 #define BIT_TRADE_DONE 0x02 // 1 : 1 거래시
 #define BIT_TRADE_P_STORE 0x04 // 개인 상점 거래시..
+
 struct tagTradeITEM {
     short m_nInvIDX;
     tagITEM m_Item;
-};
-
-struct tagMallITEM {
-    UINT64 m_ui64ID;
-    tagBaseITEM m_ITEM;
-};
-#define MAX_MALL_ITEM_COUNT 48
-
-struct tagMallDATA {
-    tagMallITEM m_ITEMS[MAX_MALL_ITEM_COUNT];
-    t_HASHKEY m_HashDestCHAR;
-    CStrVAR m_DestCHAR;
-    CStrVAR m_DestACCOUNT;
 };
 
 #define MAX_USER_TITLE 50
@@ -285,8 +273,6 @@ private:
 
     bool Recv_ost_SERVER_IPSEARCH(t_PACKET* pPacket);
     bool Send_gsv_SERVER_IPSEARCH_REPLY(classUSER* pUSER);
-
-    bool Recv_cli_MALL_ITEM_REQ(t_PACKET* pPacket);
 
     bool Recv_cli_CLANMARK_SET(t_PACKET* pPacket);
     bool Recv_cli_CLANMARK_REQ(t_PACKET* pPacket);
@@ -546,8 +532,6 @@ public:
         BYTE m_btWishIdx2StoreIDX[MAX_P_STORE_ITEM_SLOT];
     } m_STORE;
 
-    tagMallDATA m_MALL;
-
     bool Check_TradeITEM();
     void RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket);
     void AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
@@ -703,8 +687,6 @@ public:
 
         m_iAppliedPenaltyEXP = 0;
         m_btPlatinumCHAR = 0;
-
-        ::ZeroMemory(&m_MALL, sizeof(tagMallDATA));
 
         m_bInAGIT = false;
         m_dwGoddnessTIME = 0;

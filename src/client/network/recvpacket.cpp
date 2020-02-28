@@ -37,7 +37,6 @@
 #include "../Interface/ClanMarkTransfer.h"
 #include "../Interface/ClanMarkManager.h"
 
-#include "../Interface/Dlgs/DeliveryStoreDlg.h"
 #include "../Interface/Dlgs/ChattingDlg.h"
 #include "../interface/dlgs/CQuestDlg.h"
 #include "../interface/dlgs/CPartyDlg.h"
@@ -5632,104 +5631,6 @@ void CRecvPACKET::Recv_gsv_ITEM_RESULT_REPORT()
 		}
 	}
 }
-
-void CRecvPACKET::Recv_gsv_MALL_ITEM_REPLY()
-{
-	switch( m_pRecvPacket->m_gsv_MALL_ITEM_REPLY.m_btReplyTYPE )
-	{
-	case REPLY_MALL_ITEM_CHECK_CHAR_FOUND:
-		///선물할 대상을 찾았다.
-		/// 저장해두었던 캐릭터명과 아이템이름을 가져와서 메세지 박스에 확인 버튼에 할당될 Command 를 생성해서 Open한다.
-		if( CTDialog* pDlg = g_itMGR.FindDlg( DLG_TYPE_DELIVERYSTORE ) )
-		{
-
-			CDeliveryStoreDlg* p = (CDeliveryStoreDlg*)pDlg;
-			assert( p->get_selecteditem_slotindex() >= 1 );
-			if( p->get_selecteditem_slotindex() >= 1 )
-			{
-				CTCommand* pCmdOk = new CTCmdGiftMallItem( (BYTE)(p->get_selecteditem_slotindex() - 1 ), p->get_receiver_name() );
-				g_itMGR.OpenMsgBox( CStr::Printf("%s:%s{BR}%s:%s", STR_RECEIVER, p->get_receiver_name(), STR_SENDING_ITEM ,p->GetSelectedItemName() ), CMsgBox::BT_OK | CMsgBox::BT_CANCEL, true, 0, pCmdOk );
-			}
-		}	
-
-		break;
-	case REPLY_MALL_ITEM_CHECK_CHAR_NONE:
-		g_itMGR.OpenMsgBox(STR_REPLY_MALL_ITEM_CHECK_CHAR_NONE);
-		break;
-	case REPLY_MALL_ITEM_CHECK_CHAR_INVALID:
-		g_itMGR.OpenMsgBox(STR_REPLY_MALL_ITEM_CHECK_CHAR_INVALID);
-		break;
-	case REPLY_MALL_ITEM_BRING_SUCCESS:
-		if( CTDialog* pDlg = g_itMGR.FindDlg( DLG_TYPE_DELIVERYSTORE ) )
-		{
-			g_pAVATAR->Set_ITEM( m_pRecvPacket->m_gsv_MALL_ITEM_REPLY.m_BringITEM[0].m_btInvIDX,
-				m_pRecvPacket->m_gsv_MALL_ITEM_REPLY.m_BringITEM[0].m_ITEM );
-
-			CDeliveryStoreDlg* p = (CDeliveryStoreDlg*)pDlg;
-			p->SetItem( m_pRecvPacket->m_gsv_MALL_ITEM_REPLY.m_BringITEM[1].m_btInvIDX,
-				m_pRecvPacket->m_gsv_MALL_ITEM_REPLY.m_BringITEM[1].m_ITEM	);///DeliveryStore에서 지운다.
-		}
-		break;
-	case REPLY_MALL_ITEM_BRING_FAILED:
-		g_itMGR.OpenMsgBox(STR_REPLY_MALL_ITEM_BRING_FAILED);
-		break;
-	case REPLY_MALL_ITME_GIVE_SUCCESS:
-		if( CTDialog* pDlg = g_itMGR.FindDlg( DLG_TYPE_DELIVERYSTORE ) )
-		{
-			CDeliveryStoreDlg* p = (CDeliveryStoreDlg*)pDlg;
-			p->SetItem( m_pRecvPacket->m_gsv_MALL_ITEM_REPLY.m_BringITEM[0].m_btInvIDX,
-				m_pRecvPacket->m_gsv_MALL_ITEM_REPLY.m_BringITEM[0].m_ITEM );
-
-			g_itMGR.OpenMsgBox(STR_REPLY_MALL_ITME_GIVE_SUCCESS);
-		}
-		break;
-	case REPLY_MALL_ITEM_GIVE_FAILED:
-		g_itMGR.OpenMsgBox(STR_REPLY_MALL_ITEM_GIVE_FAILED);
-		break;
-	case REPLY_MALL_ITEM_LIST_START:
-		if( CTDialog* pDlg = g_itMGR.FindDlg( DLG_TYPE_DELIVERYSTORE ) )
-		{
-			CDeliveryStoreDlg* p = (CDeliveryStoreDlg*)pDlg;
-			p->ClearItem();
-		}
-		break;
-	case REPLY_MALL_ITEM_LIST_DATA:
-		if( CTDialog* pDlg = g_itMGR.FindDlg( DLG_TYPE_DELIVERYSTORE ) )
-		{
-			CDeliveryStoreDlg* p = (CDeliveryStoreDlg*)pDlg;
-
-			short nOffset = sizeof( gsv_MALL_ITEM_REPLY );
-
-			tagITEM* pItem = NULL;
-			char* pszFrom	= NULL;
-			char* pszDesc	= NULL;
-			char* pszTo		= NULL;
-
-			for( int count = 0; count < m_pRecvPacket->m_gsv_MALL_ITEM_REPLY.m_btCntOrIdx; ++count )
-			{
-				pItem = (tagITEM*)Packet_GetDataPtr( m_pRecvPacket, nOffset, sizeof(tagITEM) );
-				pszFrom = Packet_GetStringPtr( m_pRecvPacket, nOffset );
-				if( pszFrom[0] != '\0' )
-				{
-					pszDesc = Packet_GetStringPtr( m_pRecvPacket, nOffset );
-					pszTo   = Packet_GetStringPtr( m_pRecvPacket, nOffset );
-				}
-				p->AddItem( pItem , pszFrom , pszDesc, pszTo );
-
-				pszFrom = NULL;
-				pszDesc = NULL;
-				pszTo   = NULL;
-			}
-		}
-		break;
-	case REPLY_MALL_ITEM_LIST_END:
-		///?????
-		break;
-	default:
-		break;
-	}
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //	일본쪽 빌링 처리

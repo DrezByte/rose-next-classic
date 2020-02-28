@@ -725,10 +725,6 @@ GS_CThreadSQL::Execute() {
 bool
 GS_CThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
     switch (pSqlPACKET->m_pPacket->m_wType) {
-        case CLI_MALL_ITEM_REQ:
-            Proc_cli_MALL_ITEM_REQ(pSqlPACKET);
-            break;
-
         case CLI_SELECT_CHAR:
             Proc_cli_SELECT_CHAR(pSqlPACKET);
             break;
@@ -2129,56 +2125,3 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
     return true;
 }
-
-//-------------------------------------------------------------------------------------------------
-// bool GS_CThreadSQL::Proc_cli_CLAN_COMMAND( tagQueryDATA *pSqlPACKET )
-//{
-//	return true;
-//}
-
-//-------------------------------------------------------------------------------------------------
-bool
-GS_CThreadSQL::Proc_cli_MALL_ITEM_REQ(tagQueryDATA* pSqlPACKET) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (NULL == pCPacket)
-        return false;
-    classUSER* pUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-    if (NULL == pUSER)
-        return false;
-
-    // 몰 아이템을 선물할 케릭터가 존재 하는가 ???
-    t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
-
-    short nOffset = sizeof(cli_MALL_ITEM_REQ);
-    char* szCharName = Packet_GetStringPtr(pPacket, nOffset);
-
-    pCPacket->m_HEADER.m_wType = GSV_MALL_ITEM_REPLY;
-    pCPacket->m_HEADER.m_nSize = sizeof(gsv_MALL_ITEM_REPLY);
-
-    if (this->m_pSQL->QuerySQL("{call gs_GetACCOUNT(\'%s\')}", szCharName)) {
-        if (this->m_pSQL->GetNextRECORD()) {
-            // 찾았다..
-            char* szAccount = this->m_pSQL->GetStrPTR(0);
-            // 자기 자신의 계정이면 안됨...
-            if (strcmp(szAccount, pUSER->Get_ACCOUNT())) {
-                pUSER->m_MALL.m_DestACCOUNT.Set(szAccount);
-                pUSER->m_MALL.m_DestCHAR.Set(szCharName);
-                pUSER->m_MALL.m_HashDestCHAR = ::StrToHashKey(szCharName);
-
-                pCPacket->m_gsv_MALL_ITEM_REPLY.m_btReplyTYPE = REPLY_MALL_ITEM_CHECK_CHAR_FOUND;
-            } else
-                pCPacket->m_gsv_MALL_ITEM_REPLY.m_btReplyTYPE = REPLY_MALL_ITEM_CHECK_CHAR_INVALID;
-        } else {
-            // 못찾았다..
-            pCPacket->m_gsv_MALL_ITEM_REPLY.m_btReplyTYPE = REPLY_MALL_ITEM_CHECK_CHAR_NONE;
-        }
-
-        pUSER->Send_Start(*pCPacket);
-    }
-
-    Packet_ReleaseNUnlock(pCPacket);
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
