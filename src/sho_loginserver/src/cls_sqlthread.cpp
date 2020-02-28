@@ -188,85 +188,20 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    DWORD dwRIGHT = 0;
-
-#ifdef USE_ORACLE_DB
-#ifdef USE_MSSQL
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MS-SQL 해외 버젼~~~~~")
-    //	if ( !this->m_pSQL->QuerySQL ( "SELECT
-    //[right],md5password,lastconnect,blockstart,blockend,gender,jumin FROM userinfo WHERE
-    // UPPER(account)=UPPER(\'%s\')", szAccount ) )
-    if (!this->m_pSQL->QuerySQL((char*)"{call UserAuthenticate(\'%s\')}", szAccount)) // SQL LOGIN
-#else
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ ORACLE 국내 버젼~~~~~")
-    if (!this->m_pSQL->QuerySQL(
-            "SELECT right,md5password,lastconnect,blockstart,blockend,gender,jumin, realname FROM "
-            "userinfo WHERE UPPER(account)=UPPER(\'%s\')",
-            szAccount))
-#endif
-#else
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-#pragma COMPILE_TIME_MSG("            @@@@@@@@@@@@ MY-SQL 사내 테스트 버젼~~~~~")
-    if (!this->m_pSQL->QuerySQL(
-            "SELECT `right`,password,lastconnect, `enable` FROM GameLogin WHERE Account=\'%s\'",
-            szAccount))
-#endif
-    {
-        // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+    const char* query = "SELECT [Right], MD5Password, LastConnect, BlockStart, BlockEnd, Gender, MailIsConfirm FROM UserInfo WHERE Account = \'%s\'";
+    if (!this->m_pSQL->QuerySQL((char*)query, szAccount)) {
+        LOG_ERROR("Query ERROR:: %s \n", m_pSQL->GetERROR());
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_FAILED);
         return false;
     }
 
-    // if ( !this->m_pSQL->GetRecordCNT() ) :: GetRecordCNT갯수는 Update/Insert시에만 값이 들어 있다
     if (!this->m_pSQL->GetNextRECORD()) {
-        // 등록 안된 계정이다.
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(
             pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
         return false;
     }
 
-#ifdef USE_ORACLE_DB
-    // 실명 인증됐냐 ?
-    if (NULL == this->m_pSQL->GetInteger(LGNTBL_REALNAME)
-        || 1 != (DWORD)this->m_pSQL->GetInteger(LGNTBL_REALNAME)) {
-        // char szTmp[ 256 ];
-        // sprintf (szTmp, "%d / %d ", LGNTBL_REALNAME, (DWORD)this->m_pSQL->GetInteger(
-        // LGNTBL_REALNAME ) );
-        //::MessageBox( NULL, szTmp, "Realname Value", MB_OK );
-        g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_NO_REAL_NAME);
-        return false;
-    }
-#endif
-
-    dwRIGHT = (DWORD)this->m_pSQL->GetInteger(LGNTBL_RIGHT);
-    // 접속 제한 레벨...
+    int32_t dwRIGHT = (DWORD)this->m_pSQL->GetInteger(LGNTBL_RIGHT);
     if (this->m_bCheckLogIN && dwRIGHT < this->m_dwCheckRIGHT) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(
             pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_NO_RIGHT_TO_CONNECT);
@@ -303,13 +238,6 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-#ifndef USE_ORACLE_DB
-    // 접근 거부된 계정..
-    if (*(this->m_pSQL->GetStrPTR(LGNTBL_ENABLE)) != 'Y') {
-        g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_REFUSED_ACCOUNT);
-        return false;
-    }
-#else
     DWORD dwBlockSTART = this->m_pSQL->GetInteger(LGNTBL_BLOCK_START); // block start
     if (dwBlockSTART) {
         DWORD dwBlockEND = (DWORD)(this->m_pSQL->GetInteger(LGNTBL_BLOCK_END)); // block end
@@ -322,10 +250,6 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
     }
 
     this->m_pSQL->GetInteger(LGNTBL_GENDER); // gender
-#ifndef USE_MSSQL // MS-SQL에선 주민 번호 없다.
-    char* szJuMin = (char*)this->m_pSQL->GetDataPTR(LGNTBL_JUMIN); // 주민번호
-#endif
-#endif
 
 #define RIGHT_NG 0x00100 // 일반 GM
 #define RIGHT_MG 0x00200 // 마스타 GM
