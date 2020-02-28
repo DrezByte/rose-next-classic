@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "CThreadGUILD.h"
 #include "CThreadLOG.h"
 #include "CWS_Client.h"
@@ -9,9 +8,9 @@
 #include "WS_ZoneLIST.h"
 
 #ifdef __EUROPE // Oct. 6 2005 추가 (권형근)
-#define MAX_CHAR_PER_USER 3
+    #define MAX_CHAR_PER_USER 3
 #else
-#define MAX_CHAR_PER_USER 5
+    #define MAX_CHAR_PER_USER 5
 #endif
 
 //#define	MAX_CREATE_CHAR_PER_USER	3
@@ -125,22 +124,22 @@ CWS_ThreadSQL::CWS_ThreadSQL(): CSqlTHREAD(true) {
             //	m_pDefaultBE[ nR ].m_nPartItemIDX[ BODY_PART_FACE		] = m_pDefaultINV[ nR
             //].m_ItemEQUIP[ nI ].m_nItemNo; 	m_pDefaultBE[ nR ].m_nPartItemIDX[ BODY_PART_HAIR
             //] = m_pDefaultINV[ nR ].m_ItemEQUIP[ nI ].m_nItemNo;
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_HELMET, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_HELMET]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_ARMOR, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_ARMOR]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_GAUNTLET, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_GAUNTLET]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_BOOTS, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_BOOTS]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_FACE_ITEM, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_FACE_ITEM]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_KNAPSACK, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_KNAPSACK]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_WEAPON_R, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_R]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_WEAPON_L, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_L]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_HELMET,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_HELMET]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_ARMOR,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_ARMOR]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_GAUNTLET,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_GAUNTLET]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_BOOTS,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_BOOTS]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_FACE_ITEM,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_FACE_ITEM]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_KNAPSACK,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_KNAPSACK]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_WEAPON_R,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_R]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_WEAPON_L,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_L]);
         }
     }
 }
@@ -262,13 +261,17 @@ CWS_ThreadSQL::Execute() {
 //-------------------------------------------------------------------------------------------------
 bool
 CWS_ThreadSQL::Add_SqlPacketWithACCOUNT(CWS_Client* pUSER, t_PACKET* pPacket) {
-    return CSqlTHREAD::Add_SqlPACKET(
-        (int)pUSER->m_iSocketIDX, pUSER->Get_ACCOUNT(), (BYTE*)pPacket, pPacket->m_HEADER.m_nSize);
+    return CSqlTHREAD::Add_SqlPACKET((int)pUSER->m_iSocketIDX,
+        pUSER->Get_ACCOUNT(),
+        (BYTE*)pPacket,
+        pPacket->m_HEADER.m_nSize);
 }
 bool
 CWS_ThreadSQL::Add_SqlPacketWithAVATAR(CWS_Client* pUSER, t_PACKET* pPacket) {
-    return CSqlTHREAD::Add_SqlPACKET(
-        (int)pUSER->m_iSocketIDX, pUSER->Get_NAME(), (BYTE*)pPacket, pPacket->m_HEADER.m_nSize);
+    return CSqlTHREAD::Add_SqlPACKET((int)pUSER->m_iSocketIDX,
+        pUSER->Get_NAME(),
+        (BYTE*)pPacket,
+        pPacket->m_HEADER.m_nSize);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -394,14 +397,14 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
                     sCHAR.m_nLEVEL = pGA->m_nLevel;
                     sCHAR.m_dwRemainSEC = dwDelSEC;
 #ifdef __INC_PLATINUM
-#ifdef __KCHS_BATTLECART__
+    #ifdef __KCHS_BATTLECART__
                     if (nDataVER < DATA_VER_2)
                         sCHAR.m_btIsPlatinumCHAR = *((BYTE*)(&pBE->m_RideITEM[RIDE_PART_ARMS]));
                     else
                         sCHAR.m_btIsPlatinumCHAR = pBE->m_btCharSlotNO;
-#else
+    #else
                     sCHAR.m_btIsPlatinumCHAR = pBE->m_btCharSlotNO;
-#endif
+    #endif
 #endif
                     if (pBE->m_btCharSlotNO)
                         nPlatinumCharCNT++;
@@ -568,8 +571,9 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
                 if (m_pSQL->GetNextRECORD() && m_pSQL->GetInteger(0) > 0) {
                     // 쪽지 갯수...
-                    g_pUserLIST->Send_wsv_MEMO(
-                        pSqlPACKET->m_iTAG, MEMO_REQ_RECEIVED_CNT, m_pSQL->GetInteger(0));
+                    g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG,
+                        MEMO_REQ_RECEIVED_CNT,
+                        m_pSQL->GetInteger(0));
                 }
             }
         }
@@ -676,8 +680,8 @@ CWS_ThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
                 // 최대 5개
                 if (iTotalCharCnt >= 2 + MAX_CREATE_CHAR_PER_USER) { // 최대 5개
                     // 더이상 못만든다.
-                    g_pUserLIST->Send_wsv_CREATE_CHAR(
-                        pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_NO_MORE_SLOT);
+                    g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG,
+                        RESULT_CREATE_CHAR_NO_MORE_SLOT);
                     return true;
                 }
                 if (iNormalCharCnt >= MAX_CREATE_CHAR_PER_USER) {
@@ -686,8 +690,8 @@ CWS_ThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
                 } // else 노말 케릭으루 생성...
             } else if (iNormalCharCnt >= MAX_CREATE_CHAR_PER_USER) { // 최대 3개
                 // 더이상 못만든다.
-                g_pUserLIST->Send_wsv_CREATE_CHAR(
-                    pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_NO_MORE_SLOT);
+                g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG,
+                    RESULT_CREATE_CHAR_NO_MORE_SLOT);
                 return true;
             }
         } else
@@ -805,8 +809,10 @@ CWS_ThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
 #endif
     if (this->m_pSQL->ExecSQLBuffer() < 1) {
         // 오류 또는 만들어진것이 없다.
-        g_LOG.CS_ODS(
-            LOG_NORMAL, "Exec ERROR(CREATE_CHAR:%s):: %s \n", pCharName, m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL,
+            "Exec ERROR(CREATE_CHAR:%s):: %s \n",
+            pCharName,
+            m_pSQL->GetERROR());
         g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED);
         return true;
     }
@@ -920,8 +926,10 @@ CWS_ThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
 #define WSVAR_TBL_BLOB 2
 bool
 CWS_ThreadSQL::Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN) {
-    this->m_pSQL->MakeQuery(
-        (char*)"SELECT * FROM tblWS_VAR WHERE txtNAME=", MQ_PARAM_STR, WORLD_VAR, MQ_PARAM_END);
+    this->m_pSQL->MakeQuery((char*)"SELECT * FROM tblWS_VAR WHERE txtNAME=",
+        MQ_PARAM_STR,
+        WORLD_VAR,
+        MQ_PARAM_END);
     if (!this->m_pSQL->QuerySQLBuffer()) {
         g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
         return false;
@@ -1018,8 +1026,9 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
                 return false;
             }
-            g_pUserLIST->Send_wsv_MEMO(
-                pSqlPACKET->m_iTAG, MEMO_REPLY_RECEIVED_CNT, m_pSQL->GetInteger(0));
+            g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG,
+                MEMO_REPLY_RECEIVED_CNT,
+                m_pSQL->GetInteger(0));
             return true;
         }
 
@@ -1121,7 +1130,8 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 #define MAX_RECV_MEMO_CNT 50
             // 대상 케릭이 몇개의 보관된 쪽지가 있냐?
             if (!this->m_pSQL->QuerySQL(
-                    (char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';", szTargetCHAR)) {
+                    (char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
+                    szTargetCHAR)) {
                 g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
                 return false;
             }

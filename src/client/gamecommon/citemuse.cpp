@@ -8,10 +8,6 @@
 #include "../network/cnetwork.h"
 #include "../common/io_skill.h"
 #include "skill.h"
-CItemUse::CItemUse(void)
-{
-}
+CItemUse::CItemUse(void) {}
 
-CItemUse::~CItemUse(void)
-{
-}
+CItemUse::~CItemUse(void) {}

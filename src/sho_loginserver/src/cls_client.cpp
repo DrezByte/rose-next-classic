@@ -1,7 +1,6 @@
 
 #include "stdAFX.h"
 
-
 #include "blockLIST.h"
 
 #include "CLS_Account.h"
@@ -341,8 +340,10 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
                     if (pCAccount) {
                         // pCAccount->m_dwMD5Password = (DWORD*)Packet_GetDataPtr
                         // (pPak->m_bkd_MOD_ACCOUNT.m_dwMD5, nOffset, sizeof(DWORD) );
-                        memcpy_s(
-                            pCAccount->m_dwMD5Password, 8, pPak->m_bkd_MAKE_ACCOUNT.m_dwMD5, 8);
+                        memcpy_s(pCAccount->m_dwMD5Password,
+                            8,
+                            pPak->m_bkd_MAKE_ACCOUNT.m_dwMD5,
+                            8);
                         // pCAccount->m_dwMD5Password = pPak->m_bkd_MAKE_ACCOUNT.m_dwMD5;
                         pCAccount->m_dwRIGHT = pPak->m_bkd_MOD_ACCOUNT.m_wRight;
                     }
@@ -394,11 +395,14 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
         tagBlockDATA* pBlackNAME =
             g_pListBlackIP->Search(this->m_HashKeyIP, this->m_IP.Get(), false);
         if (pBlackNAME) {
-            g_pListBlackACCOUNT->Update(
-                pBlackNAME, IP_BLOCK_TYPE_PACKET, 60 * 60 * 24 * 7); // 老林老
+            g_pListBlackACCOUNT->Update(pBlackNAME,
+                IP_BLOCK_TYPE_PACKET,
+                60 * 60 * 24 * 7); // 老林老
         } else
-            g_pListBlackACCOUNT->Insert(
-                this->m_HashKeyIP, this->m_IP.Get(), NAME_BLOCK_TYPE_PACKET, 60 * 60 * 24);
+            g_pListBlackACCOUNT->Insert(this->m_HashKeyIP,
+                this->m_IP.Get(),
+                NAME_BLOCK_TYPE_PACKET,
+                60 * 60 * 24);
 
         return false;
     }

@@ -2,10 +2,6 @@
 
 #include ".\soundplayer.h"
 
-CSoundPlayer::CSoundPlayer(void)
-{
-}
+CSoundPlayer::CSoundPlayer(void) {}
 
-CSoundPlayer::~CSoundPlayer(void)
-{
-}
+CSoundPlayer::~CSoundPlayer(void) {}

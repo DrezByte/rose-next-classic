@@ -103,8 +103,10 @@ CWS_Server::SubChannelCLIENT(CWS_Client* pClient) {
         pClient->Set_GSID(0);
 
         if (pClient->GetClanID()) {
-            g_pThreadGUILD->Add_ClanCMD(
-                GCMD_LOGOUT, pClient->GetClanID(), NULL, pClient->Get_NAME());
+            g_pThreadGUILD->Add_ClanCMD(GCMD_LOGOUT,
+                pClient->GetClanID(),
+                NULL,
+                pClient->Get_NAME());
         }
     }
 }
@@ -263,8 +265,8 @@ CWS_Server::Recv_zws_CONFIRM_ACCOUNT_REQ(t_PACKET* pPacket) {
         }
 
     pCLIENT->m_pAccount->Add_GSBit(pPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwClientID);
-    this->AddChannelCLIENT(
-        pPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwClientID, pCLIENT); // Recv_zws_CONFIRM_ACCOUNT_REQ
+    this->AddChannelCLIENT(pPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwClientID,
+        pCLIENT); // Recv_zws_CONFIRM_ACCOUNT_REQ
 
     // "파티 짱이면 존 서버에 현재 파티의 경치,렙을 같이 전송 시킨다"
     return this->Send_wls_CONFIRM_ACCOUNT_REPLY(RESULT_CONFIRM_ACCOUNT_OK,
@@ -300,8 +302,8 @@ CWS_Server::Recv_gsv_CHANGE_CHAR(t_PACKET* pPacket) {
 //-------------------------------------------------------------------------------------------------
 bool
 CWS_Server::Recv_gsv_SET_WORLD_VAR(t_PACKET* pPacket) {
-    g_ZoneLIST.Set_WorldVAR(
-        pPacket->m_srv_SET_WORLD_VAR.m_nVarIDX, pPacket->m_srv_SET_WORLD_VAR.m_nValue[0]);
+    g_ZoneLIST.Set_WorldVAR(pPacket->m_srv_SET_WORLD_VAR.m_nVarIDX,
+        pPacket->m_srv_SET_WORLD_VAR.m_nValue[0]);
     return true;
 }
 
@@ -372,8 +374,10 @@ CWS_Server::Recv_gsv_CHEAT_REQ(t_PACKET* pPacket) {
                         // 경험치를 올려줄 대상이 있는가 ?
                         CWS_Client* pUSER = g_pUserLIST->Find_CHAR(pArg3);
                         if (pUSER && pUSER->GetSERVER()) {
-                            pUSER->GetSERVER()->Send_wsv_CHEAT_REQ(
-                                pPacket, 0, pUSER->Get_GSID(), szCode);
+                            pUSER->GetSERVER()->Send_wsv_CHEAT_REQ(pPacket,
+                                0,
+                                pUSER->Get_GSID(),
+                                szCode);
                         }
                     }
                 }
@@ -457,8 +461,10 @@ CWS_Server::Recv_gsv_CHEAT_REQ(t_PACKET* pPacket) {
                     (CWS_Client*)g_pUserLIST->GetSOCKET(pPacket->m_gsv_CHEAT_REQ.m_dwReqUSER);
                 if (pORDER /* && pORDER->Get_RIGHT() >= pUSER->Get_RIGHT() */) {
                     // pORDER->Send_gsv_WHISPER( pUSER->Get_NAME(), m_TmpStr.Get() );
-                    pUSER->GetSERVER()->Send_wsv_CHEAT_REQ(
-                        pPacket, pORDER->Get_GSID(), pUSER->Get_GSID(), pToken /* szCode */);
+                    pUSER->GetSERVER()->Send_wsv_CHEAT_REQ(pPacket,
+                        pORDER->Get_GSID(),
+                        pUSER->Get_GSID(),
+                        pToken /* szCode */);
                 }
             }
         } else if (!_strcmpi(pToken, "/get")) {
@@ -470,8 +476,10 @@ CWS_Server::Recv_gsv_CHEAT_REQ(t_PACKET* pPacket) {
                     CWS_Client* pORDER =
                         (CWS_Client*)g_pUserLIST->GetSOCKET(pPacket->m_gsv_CHEAT_REQ.m_dwReqUSER);
                     if (pORDER && pORDER->Get_RIGHT() >= pUSER->Get_RIGHT()) {
-                        pUSER->GetSERVER()->Send_wsv_CHEAT_REQ(
-                            pPacket, pORDER->Get_GSID(), pUSER->Get_GSID(), szCode);
+                        pUSER->GetSERVER()->Send_wsv_CHEAT_REQ(pPacket,
+                            pORDER->Get_GSID(),
+                            pUSER->Get_GSID(),
+                            szCode);
                     }
                 }
             }
@@ -504,8 +512,10 @@ CWS_Server::Recv_srv_USER_LIMIT(t_PACKET* pPacket) {
     else if (m_dwLimitUserCNT >= MAX_ZONE_USER_BUFF)
         m_dwLimitUserCNT = MAX_ZONE_USER_BUFF;
 
-    g_LOG.CS_ODS(
-        0xffff, "Server %s user limit count : %d\n", this->m_ServerNAME.Get(), m_dwLimitUserCNT);
+    g_LOG.CS_ODS(0xffff,
+        "Server %s user limit count : %d\n",
+        this->m_ServerNAME.Get(),
+        m_dwLimitUserCNT);
     return true;
 }
 

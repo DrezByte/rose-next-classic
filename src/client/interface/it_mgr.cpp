@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 
-
 #include "it_mgr.h"
 #include "..\\Object.h"
 #include "CDragNDropMgr.h"
@@ -595,7 +594,7 @@ IT_MGR::InitDLG() {
     AppendDlg(DLG_TYPE_CHAT, pChatDLG, pChatDLG->GetControlID());
 
     // TODO: RAM: Move this to an XML file?
-	int console_width = static_cast<int>(g_pCApp->GetWIDTH() * 0.75f);
+    int console_width = static_cast<int>(g_pCApp->GetWIDTH() * 0.75f);
     int console_height = static_cast<int>(g_pCApp->GetHEIGHT() * 0.50f);
     int console_x = (g_pCApp->GetWIDTH() - console_width) / 2;
     int console_y = (g_pCApp->GetHEIGHT() - console_height) / 2;
@@ -1708,8 +1707,14 @@ IT_MGR::AddNotifybutton(int iEventIndex) {
     int iModuleID = IMAGE_RES_UI;
 
     CTButton* pBtn = new CTButton;
-    pBtn->Create(
-        0, 0, iWidth, iHeight, iNormalGraphicID, iOverGraphicID, iDownGraphicID, iModuleID);
+    pBtn->Create(0,
+        0,
+        iWidth,
+        iHeight,
+        iNormalGraphicID,
+        iOverGraphicID,
+        iDownGraphicID,
+        iModuleID);
     pBtn->SetControlID(ID);
     pBtn->SetBlinkGid(iBlinkGraphicID);
     pBtn->SetBlink(1, 500);
@@ -1721,8 +1726,8 @@ IT_MGR::AddNotifybutton(int iEventIndex) {
 
 void
 IT_MGR::ShowQuestStartMessage(int index) {
-    g_itMGR.AppendChatMsg(
-        CStringManager::GetSingleton().GetQuestDesc(index), IT_MGR::CHAT_TYPE_QUEST);
+    g_itMGR.AppendChatMsg(CStringManager::GetSingleton().GetQuestDesc(index),
+        IT_MGR::CHAT_TYPE_QUEST);
 
     // if( ISFX* p = CSFXManager::GetSingleton().FindSFXWithType( SFX_FONT ))
     //{
@@ -1787,39 +1792,39 @@ IT_MGR::GetDrawImplPtr() {
 void
 IT_MGR::reload_dialogs() {
     for (CTDialog* dialog: m_Dlgs) {
-		int dialog_type = dialog->GetDialogType();
-		if (dialog_type >= DLG_TYPE_MAX) {
-			continue;
-		}
+        int dialog_type = dialog->GetDialogType();
+        if (dialog_type >= DLG_TYPE_MAX) {
+            continue;
+        }
 
-		const char* filename = DIALOG_FILENAME[dialog_type];
-		if (strcmp(filename, "") == 0) {
-			continue;
-		}
+        const char* filename = DIALOG_FILENAME[dialog_type];
+        if (strcmp(filename, "") == 0) {
+            continue;
+        }
 
-		int status = dialog->GetCtrlStatus();
-		POINT offset = dialog->GetOffset();
-		POINT position = dialog->GetPosition();
-		bool visible = dialog->IsVision();
+        int status = dialog->GetCtrlStatus();
+        POINT offset = dialog->GetOffset();
+        POINT position = dialog->GetPosition();
+        bool visible = dialog->IsVision();
 
-		dialog->Clear();
-		dialog->Create(filename);
+        dialog->Clear();
+        dialog->Create(filename);
 
-		dialog->SetCtrlStatus(status);
-		dialog->SetOffset(offset);
-		dialog->MoveWindow(position);
-		dialog->RefreshDlg();
+        dialog->SetCtrlStatus(status);
+        dialog->SetOffset(offset);
+        dialog->MoveWindow(position);
+        dialog->RefreshDlg();
 
-		if (dialog->IsDefaultVisible() || visible) {
-			dialog->Show();
-		}
+        if (dialog->IsDefaultVisible() || visible) {
+            dialog->Show();
+        }
 
-		if (dialog_type == DLG_TYPE_SKILL) {
-			g_pAVATAR->GetSkillSlot()->UpdateObservers();
-		}
+        if (dialog_type == DLG_TYPE_SKILL) {
+            g_pAVATAR->GetSkillSlot()->UpdateObservers();
+        }
 
-		POINT mouse_pos;
-		CGame::GetInstance().Get_MousePos(mouse_pos);
-		dialog->Update(mouse_pos);
+        POINT mouse_pos;
+        CGame::GetInstance().Get_MousePos(mouse_pos);
+        dialog->Update(mouse_pos);
     }
 }

@@ -2,27 +2,19 @@
 
 #include ".\ccursorstate.h"
 #include "CCursor.h"
-CCursorState::CCursorState(void)
-{
-	m_iState = CCursor::STATE_MAX;
+CCursorState::CCursorState(void) {
+    m_iState = CCursor::STATE_MAX;
 }
 
-CCursorState::~CCursorState(void)
-{
+CCursorState::~CCursorState(void) {}
 
+int
+CCursorState::GetState() {
+    return m_iState;
 }
 
-int CCursorState::GetState()
-{
-	return m_iState;
-}
+void
+CCursorState::Enter() {}
 
-void CCursorState::Enter()
-{
-
-}
-
-void CCursorState::Leave()
-{
-
-}
+void
+CCursorState::Leave() {}

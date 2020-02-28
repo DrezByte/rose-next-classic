@@ -6,53 +6,50 @@
 //*------------------------------------------------------------------//
 ///
 //*------------------------------------------------------------------//
-class TGAMECTRL_API CZListBox : public CWinCtrl, public IScrollModel
-{
+class TGAMECTRL_API CZListBox: public CWinCtrl, public IScrollModel {
 public:
-	CZListBox(void);
-	virtual ~CZListBox(void);
-	
-	virtual void Draw();
-	virtual void MoveWindow( POINT pt );
-	virtual void Update( POINT ptMouse );
-	virtual void Show();
-	virtual void Hide();
-	virtual unsigned Process( unsigned uiMsg, WPARAM wParam, LPARAM lParam );
+    CZListBox(void);
+    virtual ~CZListBox(void);
 
-	void	Add( CWinCtrl* pCtrl );
-	void	Clear();
-	void	SetSelected( int iIndex );
-	void	DeselectAll();
-	int		GetSelectedItemIndex();
-	CWinCtrl* GetItem( int iIndex );
-	void	InsertItem( int iIndex, CWinCtrl* pCtrl );
-	bool	DelItem( int iIndex );
-	bool	DelItemByControlID( int iID );
-	int		GetSize();
-	
-	
-	//*---------------------------------------------------//
-	/// implemented from IScrollModel
-	virtual int GetValue();
-	virtual int GetExtent();
-	virtual int GetMaximum();
-	virtual int GetMinimum();
-	
-	virtual void SetValue( int );
-	virtual void SetExtent( int );
-	virtual void SetMaximum( int );
-	virtual void SetMinimum( int );
+    virtual void Draw();
+    virtual void MoveWindow(POINT pt);
+    virtual void Update(POINT ptMouse);
+    virtual void Show();
+    virtual void Hide();
+    virtual unsigned Process(unsigned uiMsg, WPARAM wParam, LPARAM lParam);
 
-	virtual RECT GetWindowRect();
-	//*---------------------------------------------------//
+    void Add(CWinCtrl* pCtrl);
+    void Clear();
+    void SetSelected(int iIndex);
+    void DeselectAll();
+    int GetSelectedItemIndex();
+    CWinCtrl* GetItem(int iIndex);
+    void InsertItem(int iIndex, CWinCtrl* pCtrl);
+    bool DelItem(int iIndex);
+    bool DelItemByControlID(int iID);
+    int GetSize();
 
-	std::vector<CWinCtrl*> GetChildren() override;
+    //*---------------------------------------------------//
+    /// implemented from IScrollModel
+    virtual int GetValue();
+    virtual int GetExtent();
+    virtual int GetMaximum();
+    virtual int GetMinimum();
+
+    virtual void SetValue(int);
+    virtual void SetExtent(int);
+    virtual void SetMaximum(int);
+    virtual void SetMinimum(int);
+
+    virtual RECT GetWindowRect();
+    //*---------------------------------------------------//
+
+    std::vector<CWinCtrl*> GetChildren() override;
 
 protected:
+    int m_iValue;
+    int m_iExtent;
 
-	int							m_iValue;
-	int							m_iExtent;
-
-	std::deque<CWinCtrl*>		m_Items;
+    std::deque<CWinCtrl*> m_Items;
 };
 #endif

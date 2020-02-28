@@ -1,35 +1,33 @@
 #ifndef _iconcommand_
 #define _iconcommand_
 #include "tgamectrl/tcommand.h"
-//class CTCmdItemIconInBuyList : public CTCommand
+// class CTCmdItemIconInBuyList : public CTCommand
 //{
-//public:
+// public:
 //	CTCmdItemIconInBuyList(void){}
 //	virtual ~CTCmdItemIconInBuyList(void){}
 //	virtual bool Exec( CTObject* pObj );
 //};
 //
-//class CTCmdItemIconInSellList : public CTCommand
+// class CTCmdItemIconInSellList : public CTCommand
 //{
-//public:
+// public:
 //	CTCmdItemIconInSellList(void){}
 //	virtual ~CTCmdItemIconInSellList(void){}
 //	virtual bool Exec( CTObject* pObj );
 //};
 
-class CTCmdRemoveItemInBuyList : public CTCommand
-{
+class CTCmdRemoveItemInBuyList: public CTCommand {
 public:
-	CTCmdRemoveItemInBuyList(void){}
-	virtual ~CTCmdRemoveItemInBuyList(){}
-	virtual bool Exec( CTObject* pObj );
+    CTCmdRemoveItemInBuyList(void) {}
+    virtual ~CTCmdRemoveItemInBuyList() {}
+    virtual bool Exec(CTObject* pObj);
 };
 
-class CTCmdRemoveItemInSellList : public CTCommand
-{
+class CTCmdRemoveItemInSellList: public CTCommand {
 public:
-	CTCmdRemoveItemInSellList(void){}
-	virtual ~CTCmdRemoveItemInSellList(void){}
-	virtual bool Exec( CTObject* pObj );
+    CTCmdRemoveItemInSellList(void) {}
+    virtual ~CTCmdRemoveItemInSellList(void) {}
+    virtual bool Exec(CTObject* pObj);
 };
 #endif

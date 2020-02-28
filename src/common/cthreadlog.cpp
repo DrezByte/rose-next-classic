@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "CThreadGUILD.h"
 #include "CThreadLOG.h"
 
@@ -183,8 +182,10 @@ CThreadLOG::When_CharacterLOG(classUSER* pSourAVT, char* szCharNAME, BYTE btDelO
     m_csSQL.Lock();
     {
         {
-            this->m_QuerySTR.Printf(
-                (char*)SP_AddCharacterLog, pSourAVT->Get_ACCOUNT(), szCharNAME, btDelOrNew);
+            this->m_QuerySTR.Printf((char*)SP_AddCharacterLog,
+                pSourAVT->Get_ACCOUNT(),
+                szCharNAME,
+                btDelOrNew);
         }
 
         this->Send_gsv_LOG_SQL();

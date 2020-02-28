@@ -39,7 +39,7 @@ public:
         }
 
         quat(const mat3& rot);
-        
+
         void from_matrix(const mat3& mat);
 
         quat& operator=(const quat& q);

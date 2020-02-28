@@ -3,13 +3,12 @@
 
 #include "..\\..\\Util\\RTTI.h"
 
-enum EXTERNALUI
-{
-	EUI_LOGIN = 0,
-	EUI_SELECT_AVATA,
-	EUI_SELECT_SERVER,
-	EUI_CREATE_AVATA,
-	EUI_MAX,
+enum EXTERNALUI {
+    EUI_LOGIN = 0,
+    EUI_SELECT_AVATA,
+    EUI_SELECT_SERVER,
+    EUI_CREATE_AVATA,
+    EUI_MAX,
 };
 
 class CExternalUIManager;
@@ -17,25 +16,21 @@ class CExternalUIManager;
 ///	Abstraction class for external UI
 ///
 
-class CExternalUI
-{
+class CExternalUI {
 public:
-	///
-	/// Create RTTI base
-	///
-	CREATE_RTTI_BASE( CExternalUI );
+    ///
+    /// Create RTTI base
+    ///
+    CREATE_RTTI_BASE(CExternalUI);
 
 public:
+    CExternalUI(){};
+    virtual ~CExternalUI(){};
 
-	CExternalUI(){};
-	virtual ~CExternalUI(){};
-
-	///
-	/// set observer class
-	///
-	virtual void SetEUIObserver( CExternalUIManager* pObserver ) = 0;
-
+    ///
+    /// set observer class
+    ///
+    virtual void SetEUIObserver(CExternalUIManager* pObserver) = 0;
 };
-
 
 #endif //_EXTERNALUI_

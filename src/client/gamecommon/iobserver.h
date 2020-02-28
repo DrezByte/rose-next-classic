@@ -3,10 +3,8 @@
 
 class CObservable;
 class CTObject;
-class IObserver
-{
+class IObserver {
 public:
-	virtual void Update( CObservable* pObservable, CTObject* pObj ) = 0;
-	
+    virtual void Update(CObservable* pObservable, CTObject* pObj) = 0;
 };
 #endif

@@ -6,51 +6,38 @@
 #include "NetworkController.h"
 #include "Statistics.h"
 
-
-DWORD __stdcall ServerStart(PVOID param)
-{	
-	NetworkController* pNc=(NetworkController*)param;
+DWORD __stdcall ServerStart(PVOID param) {
+    NetworkController* pNc = (NetworkController*)param;
 
     pNc->Init();
-	pNc->AcceptProcess();
-	return 0;
+    pNc->AcceptProcess();
+    return 0;
 }
 
+int
+_tmain(int argc, _TCHAR* argv[]) {
 
-int _tmain(int argc, _TCHAR* argv[])
-{
-	
-	char buffer[256];
-	cout<<"Server Control Commmander"<<endl;
-	cout<<"-------------------------"<<endl;
-	cout<<" Command: start, shutdown"<<endl;
-      
-	NetworkController nc;
+    char buffer[256];
+    cout << "Server Control Commmander" << endl;
+    cout << "-------------------------" << endl;
+    cout << " Command: start, shutdown" << endl;
 
-	while(TRUE)
-	{
-		cout<<">";
-		cin>>buffer;
-		if(!strcmp(buffer,"start"))
-		{
-			DWORD dwThreadId=0;
-			HANDLE hThread=CreateThread(NULL,0,ServerStart,&nc,0,&dwThreadId);
-			CloseHandle(hThread);
-		}
-		else if(!strcmp(buffer,"shutdown"))
-		{
-			nc.ServerClose();
-			break;
-		}
-		else
-		{
-			cout<<"Invalid Operation"<<endl;
-		}
-	}	
-	
+    NetworkController nc;
 
-	return 0;
+    while (TRUE) {
+        cout << ">";
+        cin >> buffer;
+        if (!strcmp(buffer, "start")) {
+            DWORD dwThreadId = 0;
+            HANDLE hThread = CreateThread(NULL, 0, ServerStart, &nc, 0, &dwThreadId);
+            CloseHandle(hThread);
+        } else if (!strcmp(buffer, "shutdown")) {
+            nc.ServerClose();
+            break;
+        } else {
+            cout << "Invalid Operation" << endl;
+        }
+    }
+
+    return 0;
 }
-
-
-

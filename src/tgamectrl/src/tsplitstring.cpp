@@ -4,130 +4,111 @@
 #include "ITFont.h"
 #include "TControlMgr.h"
 
-
-CTSplitString::CTSplitString(void)
-{
-	m_strNull = "";
+CTSplitString::CTSplitString(void) {
+    m_strNull = "";
 }
 
-CTSplitString::~CTSplitString(void)
-{
+CTSplitString::~CTSplitString(void) {}
+
+CTSplitString::CTSplitString(int iFont, char* pszStr, int iDisplayWidth, unsigned uiCodePage) {
+    Split(iFont, pszStr, iDisplayWidth, uiCodePage);
 }
 
-CTSplitString::CTSplitString( int iFont, char* pszStr, int iDisplayWidth ,unsigned uiCodePage )
-{
-	Split( iFont, pszStr, iDisplayWidth, uiCodePage );
+int
+CTSplitString::GetLineCount() {
+    return m_StringList.size();
+}
+const char*
+CTSplitString::GetString(int iIndex) {
+    if (iIndex < 0 || iIndex >= (int)m_StringList.size())
+        return m_strNull.c_str();
+
+    return m_StringList[iIndex].c_str();
 }
 
+bool
+CTSplitString::Split(int iFont, char* pszStr, int iDisplayWidth, unsigned uiCodePage) {
+    if (pszStr == NULL)
+        return false;
 
-int	CTSplitString::GetLineCount()
-{
-	return m_StringList.size();
-}
-const char* CTSplitString::GetString( int iIndex )
-{
-	if( iIndex < 0 ||  iIndex >= (int)m_StringList.size() )
-		return m_strNull.c_str();
+    m_StringList.clear();
 
-	return m_StringList[ iIndex ].c_str();	
-}
+    std::string strTemp;
 
+    char* pCurrPos = pszStr;
+    char* pNextPos = NULL;
+    char* pPrevPos = NULL;
+    char* pStartPos = pCurrPos;
+    char* pCurrPosBuf = NULL;
+    SIZE sizeString;
 
-bool CTSplitString::Split( int iFont, char* pszStr, int iDisplayWidth ,unsigned uiCodePage )
-{
-	if( pszStr == NULL )
-		return false;
+    ITFont* pFont = CTControlMgr::GetInstance()->GetFontMgr();
 
-	m_StringList.clear();
+    pNextPos = CharNextExA((WORD)uiCodePage, pCurrPos, 0);
+    while (pCurrPos != pNextPos) {
+        for (; pCurrPos < pNextPos; ++pCurrPos)
+            strTemp.push_back(*pCurrPos);
 
-	std::string					strTemp;
+        sizeString = pFont->GetFontTextExtent(iFont, strTemp.c_str());
 
-	char* pCurrPos	= pszStr;
-	char* pNextPos	= NULL;
-	char* pPrevPos	= NULL;
-	char* pStartPos = pCurrPos;
-	char* pCurrPosBuf = NULL;
-	SIZE sizeString;
+        if (sizeString.cx > iDisplayWidth) {
+            // hong geun.
+            pCurrPosBuf = pCurrPos;
 
+            if (uiCodePage == 1252) {
+                while (true) {
+                    pPrevPos = CharPrevExA(uiCodePage, pStartPos, pCurrPosBuf, 0);
+                    pCurrPosBuf = pPrevPos;
 
-	ITFont* pFont = CTControlMgr::GetInstance()->GetFontMgr();
+                    if (pPrevPos[0] == ' ') {
+                        break;
+                    }
 
-	pNextPos = CharNextExA( (WORD)uiCodePage, pCurrPos, 0 );
-	while( pCurrPos != pNextPos )
-	{
-		for( ; pCurrPos < pNextPos; ++pCurrPos )
-			strTemp.push_back( *pCurrPos );
+                    if (strTemp.size() < (pCurrPos - pPrevPos) * 3) {
+                        pPrevPos = CharPrevExA(uiCodePage, pStartPos, pCurrPos, 0);
+                        break;
+                    }
+                    // a-z
+                    // A-Z
+                    // if( !((pPrevPos[0] >= 97 && pPrevPos[0] <= 122) || (pPrevPos[0] >= 65 &&
+                    // pPrevPos[0] <= 90)) )
+                    //{
+                    // break;
+                    //}
+                }
+            } else {
+                pPrevPos = CharPrevExA(uiCodePage, pStartPos, pCurrPos, 0);
+            }
 
-		sizeString = pFont->GetFontTextExtent( iFont, strTemp.c_str() );
+            for (; pCurrPos > pPrevPos; --pCurrPos) {
+                strTemp = strTemp.erase(strTemp.size() - 1, 1);
+            }
 
-		if( sizeString.cx > iDisplayWidth )
-		{
-			//hong geun.
-			pCurrPosBuf = pCurrPos;			
+            m_StringList.push_back(strTemp);
 
-			if( uiCodePage == 1252 )
-			{
-				while(true)
-				{
-					pPrevPos = CharPrevExA( uiCodePage, pStartPos, pCurrPosBuf, 0 );				
-					pCurrPosBuf = pPrevPos;				
-					
-					if(	pPrevPos[0] == ' ' )
-					{
-						break;
-					}
+            strTemp.clear();
+            pStartPos = pCurrPos;
+        }
 
-					if( strTemp.size() < (pCurrPos-pPrevPos) * 3 )
-					{
-						pPrevPos = CharPrevExA( uiCodePage, pStartPos, pCurrPos, 0 );
-						break;
-					}					
-					//a-z
-					//A-Z
-					//if( !((pPrevPos[0] >= 97 && pPrevPos[0] <= 122) || (pPrevPos[0] >= 65 && pPrevPos[0] <= 90)) )
-					//{
-					//break;
-					//}				
-				}				
-			}
-			else
-			{
-				pPrevPos = CharPrevExA( uiCodePage, pStartPos, pCurrPos, 0 );				
-			}			
+        pNextPos = CharNextExA(uiCodePage, pCurrPos, 0);
+    }
 
-			for( ;pCurrPos > pPrevPos; --pCurrPos )
-			{
-				strTemp = strTemp.erase( strTemp.size() - 1, 1 );
-			}
+    if (!strTemp.empty())
+        m_StringList.push_back(strTemp);
 
-			m_StringList.push_back( strTemp );
-
-			strTemp.clear();
-			pStartPos = pCurrPos;
-		}
-
-		pNextPos = CharNextExA( uiCodePage, pCurrPos, 0 );
-	}
-
-	if( !strTemp.empty() )
-		m_StringList.push_back( strTemp );
-
-	
-
-	return true;
+    return true;
 }
 
-void CTSplitString::Clear()
-{
-	m_StringList.clear();
+void
+CTSplitString::Clear() {
+    m_StringList.clear();
 }
 
-SIZE & CTSplitString::GetSizeText( int iFont, const char * szStr )
-{		
-	ITFont* pFont = CTControlMgr::GetInstance()->GetFontMgr();
-	if( pFont )
-	{
-		m_szStrSize = pFont->GetFontTextExtent( iFont, szStr );		
-	}	
-	return m_szStrSize;
+SIZE&
+CTSplitString::GetSizeText(int iFont, const char* szStr) {
+    ITFont* pFont = CTControlMgr::GetInstance()->GetFontMgr();
+    if (pFont) {
+        m_szStrSize = pFont->GetFontTextExtent(iFont, szStr);
+    }
+    return m_szStrSize;
 }

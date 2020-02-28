@@ -7,16 +7,16 @@
 class CCheckHack : public CJSingleton< CCheckHack >
 {
 private:
-	bool		m_bCanStartAPP;
+    bool		m_bCanStartAPP;
 
 public:
-	CCheckHack(void);
-	~CCheckHack(void);	
+    CCheckHack(void);
+    ~CCheckHack(void);
 
-	bool CanStartApp();
+    bool CanStartApp();
 
-	bool		Check();
-	void		Release();
+    bool		Check();
+    void		Release();
 };
 */
 

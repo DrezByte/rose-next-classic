@@ -2,10 +2,6 @@
 
 #include ".\tslider.h"
 
-CTSlider::CTSlider(void)
-{
-}
+CTSlider::CTSlider(void) {}
 
-CTSlider::~CTSlider(void)
-{
-}
+CTSlider::~CTSlider(void) {}

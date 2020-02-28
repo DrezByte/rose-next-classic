@@ -14,86 +14,80 @@
 #include "CCamera.h"
 #include "CViewMSG.h"
 
+CApplication* g_pCApp = NULL;
+CSystemMESSAGE g_SysMSG;
 
+CRangeTBL* g_pCRange;
+CSoundLIST* g_pSoundLIST = NULL;
 
-CApplication	*g_pCApp=NULL;
-CSystemMESSAGE	 g_SysMSG;
+// CKeyboard		*g_pCKeybd;
+// CMouse			*g_pCMouse;
+CTERRAIN* g_pTerrain;
 
-CRangeTBL		*g_pCRange;
-CSoundLIST		*g_pSoundLIST=NULL;
+CMatLIST g_MatFILE(NAME_MATERIAL);
+CMeshLIST g_MeshFILE;
+CMotionLIST g_MotionFILE;
+CEffectLIST* g_pEffectLIST;
+CEventLIST* g_pEventLIST;
 
+CCamera* g_pCamera = NULL;
 
-//CKeyboard		*g_pCKeybd;
-//CMouse			*g_pCMouse;
-CTERRAIN		*g_pTerrain;
+CObjectMANAGER* g_pObjMGR = NULL;
+CBulletMANAGER* g_pBltMGR = NULL;
 
+CViewMSG* g_pViewMSG;
 
-CMatLIST		 g_MatFILE(NAME_MATERIAL);
-CMeshLIST		 g_MeshFILE;
-CMotionLIST		 g_MotionFILE;
-CEffectLIST		*g_pEffectLIST;
-CEventLIST		*g_pEventLIST;
+STBDATA g_TblHAIR;
+STBDATA g_TblFACE;
+STBDATA g_TblARMOR;
+STBDATA g_TblGAUNTLET;
+STBDATA g_TblBOOTS;
+STBDATA g_TblHELMET;
+STBDATA g_TblWEAPON;
+STBDATA g_TblSUBWPN;
+STBDATA g_TblEFFECT;
+STBDATA g_TblNPC;
+STBDATA g_TblAniTYPE;
+STBDATA g_TblPRODUCT;
+STBDATA g_TblNATUAL;
+STBDATA g_TblDropITEM;
 
-CCamera			*g_pCamera=NULL;
+STBDATA g_TblFACEITEM;
+STBDATA g_TblUSEITEM;
+STBDATA g_TblBACKITEM;
+STBDATA g_TblGEMITEM;
+STBDATA g_TblQUESTITEM;
+STBDATA g_TblJEWELITEM;
+STBDATA g_TblStore;
 
-CObjectMANAGER	*g_pObjMGR=NULL;
-CBulletMANAGER	*g_pBltMGR=NULL;
+STBDATA g_TblWARP;
+STBDATA g_TblEVENT;
 
-CViewMSG		*g_pViewMSG;
+STBDATA g_TblSKY;
 
-STBDATA			 g_TblHAIR;
-STBDATA			 g_TblFACE;
-STBDATA			 g_TblARMOR;
-STBDATA			 g_TblGAUNTLET;
-STBDATA			 g_TblBOOTS;
-STBDATA			 g_TblHELMET;
-STBDATA			 g_TblWEAPON;
-STBDATA			 g_TblSUBWPN;
-STBDATA			 g_TblEFFECT;
-STBDATA			 g_TblNPC;
-STBDATA			 g_TblAniTYPE;
-STBDATA			 g_TblPRODUCT;
-STBDATA			 g_TblNATUAL;
-STBDATA			 g_TblDropITEM;
+STBDATA g_TblZONE;
 
-STBDATA			 g_TblFACEITEM;	
-STBDATA			 g_TblUSEITEM;	
-STBDATA			 g_TblBACKITEM;	
-STBDATA			 g_TblGEMITEM;	
-STBDATA			 g_TblQUESTITEM;	
-STBDATA			 g_TblJEWELITEM;	
-STBDATA			 g_TblStore;
+STBDATA* g_pTblSTBs[ITEM_TYPE_RIDE_PART + 1];
 
-STBDATA			 g_TblWARP;
-STBDATA			 g_TblEVENT;
+STBDATA g_TblString;
+STBDATA g_TblHitSound;
 
-STBDATA			 g_TblSKY;
+STBDATA g_TblAVATAR; /// 아바타 초기 설정 데이타..
+STBDATA g_TblResolution;
 
-STBDATA			 g_TblZONE;
+STBDATA g_TblSTATE;
 
-STBDATA			*g_pTblSTBs[ ITEM_TYPE_RIDE_PART+1 ];
+STBDATA g_TblCamera;
+STBDATA g_TblRangeSet; /// LOD 거리 관련 정보..
+STBDATA g_TblUnion;
+STBDATA g_TblClass;
+STBDATA g_TblStepSound; /// 발자국소리.
 
+STBDATA g_TblItemGRADE; /// 장비 아이템별 등급 적용 수치
 
-STBDATA			 g_TblString;
-STBDATA			 g_TblHitSound;
+const float g_fMinHeight = -999999999.f;
+const float g_fMaxDistance = 999999999.f;
 
-STBDATA			 g_TblAVATAR;		/// 아바타 초기 설정 데이타..
-STBDATA			 g_TblResolution;
-
-STBDATA			 g_TblSTATE;
-
-STBDATA			g_TblCamera;
-STBDATA			g_TblRangeSet;		/// LOD 거리 관련 정보..
-STBDATA			g_TblUnion;			
-STBDATA			g_TblClass;
-STBDATA			g_TblStepSound;		/// 발자국소리.
-
-STBDATA			g_TblItemGRADE;		/// 장비 아이템별 등급 적용 수치
-
-
-const float		g_fMinHeight   =-999999999.f;
-const float		g_fMaxDistance = 999999999.f;
-
-CAI_LIST		 g_AI_LIST;
+CAI_LIST g_AI_LIST;
 
 //-------------------------------------------------------------------------------------------------

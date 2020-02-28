@@ -2,10 +2,9 @@
 #define _EventHandler_
 #include "tobject.h"
 
-class CEventHandler : public CTObject
-{
+class CEventHandler: public CTObject {
 public:
-	CEventHandler(void);
-	virtual ~CEventHandler(void);
+    CEventHandler(void);
+    virtual ~CEventHandler(void);
 };
 #endif

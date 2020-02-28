@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #include "GS_ListUSER.h"
 #include "GS_SocketLSV.h"
 #include "LIB_gsMAIN.h"
@@ -171,8 +170,9 @@ GS_lsvSOCKET::Recv_wls_CONFIRM_ACCOUNT_REPLY() {
     short nOffset = sizeof(wls_CONFIRM_ACCOUNT_REPLY);
 
     char* szAccount = Packet_GetStringPtr(m_pRecvPket, nOffset);
-    if (!g_pUserLIST->Add_ACCOUNT(
-            m_pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwGSID, m_pRecvPket, szAccount)) {
+    if (!g_pUserLIST->Add_ACCOUNT(m_pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwGSID,
+            m_pRecvPket,
+            szAccount)) {
         // ±×»õ Á¢¼ÓÀÌ ²÷°å´Â°¡ ???
         this->Send_zws_SUB_ACCOUNT(m_pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwWSID, szAccount);
     }
@@ -437,8 +437,8 @@ bool GS_lsvSOCKET::Send_gsv_WARP_USER( classUSER *pUSER )
 //		pCPacket->m_gsv_WARP_USER.m_PosWARP = pUSER->m_PosCUR;
         if ( pUSER->m_IngSTATUS.GetFLAGs() ) {
             ::CopyMemory( pCPacket->m_gsv_WARP_USER.m_IngSTATUS, &pUSER->m_IngSTATUS,
-sizeof(StatusEffects) ); pCPacket->m_HEADER.m_nSize += ( sizeof(StatusEffects)-sizeof(DWORD) ); } else
-            pCPacket->m_gsv_WARP_USER.m_dwIngStatusFLAG = 0;
+sizeof(StatusEffects) ); pCPacket->m_HEADER.m_nSize += ( sizeof(StatusEffects)-sizeof(DWORD) ); }
+else pCPacket->m_gsv_WARP_USER.m_dwIngStatusFLAG = 0;
 
         m_SockLSV.Packet_Register2SendQ( pCPacket );
     }

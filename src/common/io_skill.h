@@ -8,7 +8,7 @@
 
 #include "IO_STB.h"
 #ifndef __SERVER
-#include "../GameCommon/StringManager.h"
+    #include "../GameCommon/StringManager.h"
 #endif
 //-------------------------------------------------------------------------------------------------
 
@@ -60,11 +60,11 @@ enum enumSKILL_TAGER_FILTER {
 //-------------------------------------------------------------------------------------------------
 
 #ifdef __SERVER
-#define SKILL_NAME(I) g_SkillList.m_SkillDATA.m_ppNAME[I] /// 스킬 이름
-#define SKILL_DESC(I) g_SkillList.m_SkillDATA.m_ppDESC[I] /// 스킬 설명
+    #define SKILL_NAME(I) g_SkillList.m_SkillDATA.m_ppNAME[I] /// 스킬 이름
+    #define SKILL_DESC(I) g_SkillList.m_SkillDATA.m_ppDESC[I] /// 스킬 설명
 #else
-#define SKILL_NAME(I) CStringManager::GetSingleton().GetSkillName(I)
-#define SKILL_DESC(I) CStringManager::GetSingleton().GetSkillDesc(I)
+    #define SKILL_NAME(I) CStringManager::GetSingleton().GetSkillName(I)
+    #define SKILL_DESC(I) CStringManager::GetSingleton().GetSkillDesc(I)
 #endif
 
 #define SKILL_1LEV_INDEX(S) g_SkillList.m_SkillDATA.m_ppDATA[S][1]
@@ -204,7 +204,7 @@ enum enumSKILL_TAGER_FILTER {
 #define SA_RESTORE 2 // 스킬 사용후 이전 명령 복귀
 
 #ifdef __SERVER
-#define SKILL_RELOAD_SECOND(S) g_SkillList.m_pReloadTIME[S]
+    #define SKILL_RELOAD_SECOND(S) g_SkillList.m_pReloadTIME[S]
 #endif
 
 /**

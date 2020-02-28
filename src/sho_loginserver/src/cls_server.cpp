@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "CLS_Account.h"
 #include "CLS_Server.h"
 #include "CLS_SqlTHREAD.h"

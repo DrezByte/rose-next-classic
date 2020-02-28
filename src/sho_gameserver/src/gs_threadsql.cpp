@@ -3,7 +3,6 @@
 */
 #include "stdafx.h"
 
-
 #include "CSLList.h"
 #include "CThreadGUILD.h"
 #include "GS_ListUSER.h"
@@ -161,22 +160,22 @@ GS_CThreadSQL::GS_CThreadSQL(): CSqlTHREAD(true), m_csUserLIST(4000), m_TmpSTR(5
             //	m_pDefaultBE[ nR ].m_nPartItemIDX[ BODY_PART_FACE		] = m_pDefaultINV[ nR
             //].m_ItemEQUIP[ nI ].m_nItemNo; 	m_pDefaultBE[ nR ].m_nPartItemIDX[ BODY_PART_HAIR
             //] = m_pDefaultINV[ nR ].m_ItemEQUIP[ nI ].m_nItemNo;
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_HELMET, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_HELMET]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_ARMOR, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_ARMOR]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_GAUNTLET, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_GAUNTLET]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_BOOTS, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_BOOTS]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_FACE_ITEM, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_FACE_ITEM]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_KNAPSACK, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_KNAPSACK]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_WEAPON_R, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_R]);
-            m_pDefaultBE[nR].SetPartITEM(
-                BODY_PART_WEAPON_L, m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_L]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_HELMET,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_HELMET]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_ARMOR,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_ARMOR]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_GAUNTLET,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_GAUNTLET]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_BOOTS,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_BOOTS]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_FACE_ITEM,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_FACE_ITEM]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_KNAPSACK,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_KNAPSACK]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_WEAPON_R,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_R]);
+            m_pDefaultBE[nR].SetPartITEM(BODY_PART_WEAPON_L,
+                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_L]);
         }
     }
 }
@@ -253,13 +252,17 @@ GS_CThreadSQL::Sql_TEST() {
 //-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Add_SqlPacketWithACCOUNT(classUSER* pUSER, t_PACKET* pPacket) {
-    return CSqlTHREAD::Add_SqlPACKET(
-        (int)pUSER->m_iSocketIDX, pUSER->Get_ACCOUNT(), (BYTE*)pPacket, pPacket->m_HEADER.m_nSize);
+    return CSqlTHREAD::Add_SqlPACKET((int)pUSER->m_iSocketIDX,
+        pUSER->Get_ACCOUNT(),
+        (BYTE*)pPacket,
+        pPacket->m_HEADER.m_nSize);
 }
 bool
 GS_CThreadSQL::Add_SqlPacketWithAVATAR(classUSER* pUSER, t_PACKET* pPacket) {
-    return CSqlTHREAD::Add_SqlPACKET(
-        (int)pUSER->m_iSocketIDX, pUSER->Get_NAME(), (BYTE*)pPacket, pPacket->m_HEADER.m_nSize);
+    return CSqlTHREAD::Add_SqlPACKET((int)pUSER->m_iSocketIDX,
+        pUSER->Get_NAME(),
+        (BYTE*)pPacket,
+        pPacket->m_HEADER.m_nSize);
 }
 
 bool
@@ -286,8 +289,10 @@ GS_CThreadSQL::IO_ZoneDATA(CZoneTHREAD* pZONE, bool bSave) {
        pZONE->Get_ZoneNO(), pZONE->Get_NAME() ); CSqlTHREAD::Add_SqlPACKET(pZONE->Get_ZoneNO(),
        m_TmpSTR.Get(), (BYTE*)pPacket, pPacket->m_nSize);
     */
-    CSqlTHREAD::Add_SqlPACKET(
-        pZONE->Get_ZoneNO(), pZONE->Get_NAME(), (BYTE*)pPacket, pPacket->m_nSize);
+    CSqlTHREAD::Add_SqlPACKET(pZONE->Get_ZoneNO(),
+        pZONE->Get_NAME(),
+        (BYTE*)pPacket,
+        pPacket->m_nSize);
 
     SAFE_DELETE_ARRAY(pPacket);
     return true;
@@ -314,8 +319,10 @@ GS_CThreadSQL::IO_NpcObjDATA(CObjNPC* pObjNPC, bool bSave) {
 
     m_TmpSTR.Printf("%s_NPC_%s", CLIB_GameSRV::GetInstance()->GetServerName(), pObjNPC->Get_NAME());
 
-    CSqlTHREAD::Add_SqlPACKET(
-        pObjNPC->Get_CharNO(), m_TmpSTR.Get(), (BYTE*)pPacket, pPacket->m_nSize);
+    CSqlTHREAD::Add_SqlPACKET(pObjNPC->Get_CharNO(),
+        m_TmpSTR.Get(),
+        (BYTE*)pPacket,
+        pPacket->m_nSize);
 
     SAFE_DELETE_ARRAY(pPacket);
     return true;
@@ -334,11 +341,14 @@ GS_CThreadSQL::IO_EventObjDATA(CObjEVENT* pObjEVENT, bool bSave) {
     pPacket->m_btDataTYPE = (bSave) ? SQL_ZONE_DATA_EVENTOBJ_SAVE : SQL_ZONE_DATA_EVENTOBJ_LOAD;
     ::CopyMemory(pPacket->m_btZoneDATA, pObjEVENT->m_pVAR, pPacket->m_nDataSIZE);
 
-    m_TmpSTR.Printf(
-        "%s_EVT_%s", CLIB_GameSRV::GetInstance()->GetServerName(), pObjEVENT->Get_NAME());
+    m_TmpSTR.Printf("%s_EVT_%s",
+        CLIB_GameSRV::GetInstance()->GetServerName(),
+        pObjEVENT->Get_NAME());
 
-    CSqlTHREAD::Add_SqlPACKET(
-        pObjEVENT->Get_ID(), m_TmpSTR.Get(), (BYTE*)pPacket, pPacket->m_nSize);
+    CSqlTHREAD::Add_SqlPACKET(pObjEVENT->Get_ID(),
+        m_TmpSTR.Get(),
+        (BYTE*)pPacket,
+        pPacket->m_nSize);
     SAFE_DELETE_ARRAY(pPacket);
     return true;
 }
@@ -718,8 +728,9 @@ GS_CThreadSQL::Execute() {
     int iCnt = m_AddPACKET.GetNodeCount();
     assert(iCnt == 0);
 
-    LOG_DEBUG(
-        "<  < << GS_CThreadSQL::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
+    LOG_DEBUG("<  < << GS_CThreadSQL::Execute() ThreadID: %d(0x%x)",
+        this->ThreadID,
+        this->ThreadID);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -840,14 +851,14 @@ GS_CThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
                     sCHAR.m_nLEVEL = pGA->m_nLevel;
                     sCHAR.m_dwRemainSEC = dwDelSEC;
 #ifdef __INC_PLATINUM
-#ifdef __KCHS_BATTLECART__
+    #ifdef __KCHS_BATTLECART__
                     if (nDataVER < DATA_VER_2)
                         sCHAR.m_btIsPlatinumCHAR = *((BYTE*)(&pBE->m_RideITEM[RIDE_PART_ARMS]));
                     else
                         sCHAR.m_btIsPlatinumCHAR = pBE->m_btCharSlotNO;
-#else
+    #else
                     sCHAR.m_btIsPlatinumCHAR = pBE->m_btCharSlotNO;
-#endif
+    #endif
 #endif
                     pCPacket->AppendData(&sCHAR, sizeof(tagCHARINFO));
                     pCPacket->AppendData(pBE->m_PartITEM, sizeof(tagPartITEM) * MAX_BODY_PART);
@@ -1043,8 +1054,9 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
                     sizeof(tagPartITEM) * (MAX_RIDING_PART - 1));
                 ZeroMemory(&pUSER->m_RideITEM[RIDE_PART_ARMS], sizeof(tagPartITEM));
             } else
-                ::CopyMemory(
-                    pUSER->m_RideITEM, pBE->m_RideITEM, sizeof(tagPartITEM) * MAX_RIDING_PART);
+                ::CopyMemory(pUSER->m_RideITEM,
+                    pBE->m_RideITEM,
+                    sizeof(tagPartITEM) * MAX_RIDING_PART);
 #else
             ::CopyMemory(pUSER->m_RideITEM, pBE->m_RideITEM, sizeof(tagPartITEM) * MAX_RIDING_PART);
 #endif
@@ -1207,8 +1219,9 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
                 ::CopyMemory(&pCPacket->m_gsv_SELECT_CHAR.m_Skill,
                     &pUSER->m_Skills,
                     sizeof(tagSkillAbility));
-                ::CopyMemory(
-                    &pCPacket->m_gsv_SELECT_CHAR.m_HotICONS, &pUSER->m_HotICONS, sizeof(CHotICONS));
+                ::CopyMemory(&pCPacket->m_gsv_SELECT_CHAR.m_HotICONS,
+                    &pUSER->m_HotICONS,
+                    sizeof(CHotICONS));
                 pCPacket->AppendString(pUSER->Get_NAME());
                 COMPILE_TIME_ASSERT(sizeof(gsv_SELECT_CHAR) < MAX_PACKET_SIZE);
                 pUSER->SendPacket(pCPacket);
@@ -1301,8 +1314,10 @@ GS_CThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
     }
 
     // "SELECT * FROM tblGS_AVATAR WHERE Name='xxxx';"
-    this->m_pSQL->MakeQuery(
-        "SELECT intCharID FROM tblGS_AVATAR WHERE txtNAME=", MQ_PARAM_STR, pCharName, MQ_PARAM_END);
+    this->m_pSQL->MakeQuery("SELECT intCharID FROM tblGS_AVATAR WHERE txtNAME=",
+        MQ_PARAM_STR,
+        pCharName,
+        MQ_PARAM_END);
     if (!this->m_pSQL->QuerySQLBuffer()) {
         // ???
         g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
@@ -1715,8 +1730,10 @@ GS_CThreadSQL::Proc_LOAD_ZONE_DATA(int iZoneNO) {
 
     m_TmpSTR.Printf(ZONE_VAR_ECONOMY, CLIB_GameSRV::GetInstance()->GetServerName(), iZoneNO);
 
-    this->m_pSQL->MakeQuery(
-        "SELECT * FROM tblWS_VAR WHERE txtNAME=", MQ_PARAM_STR, m_TmpSTR.Get(), MQ_PARAM_END);
+    this->m_pSQL->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
+        MQ_PARAM_STR,
+        m_TmpSTR.Get(),
+        MQ_PARAM_END);
     if (!this->m_pSQL->QuerySQLBuffer()) {
         g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
         return false;
@@ -1780,8 +1797,10 @@ GS_CThreadSQL::Proc_SAVE_ZONE_DATA(int iZoneNO, sql_ZONE_DATA* pSqlZONE) {
         MQ_PARAM_END);
     if (this->m_pSQL->ExecSQLBuffer() < 0) {
         // 고치기 실패 !!!
-        g_LOG.CS_ODS(
-            LOG_NORMAL, "SQL Exec ERROR:: UPDATE %s %s \n", m_TmpSTR.Get(), m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL,
+            "SQL Exec ERROR:: UPDATE %s %s \n",
+            m_TmpSTR.Get(),
+            m_pSQL->GetERROR());
     }
 
     return true;
@@ -1886,8 +1905,10 @@ GS_CThreadSQL::Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET) {
 bool
 GS_CThreadSQL::Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN) {
     //	this->m_pSQL->MakeQuery( "SELECT binDATA FROM tblWS_VAR WHERE txtNAME=",
-    this->m_pSQL->MakeQuery(
-        "SELECT * FROM tblWS_VAR WHERE txtNAME=", MQ_PARAM_STR, WORLD_VAR, MQ_PARAM_END);
+    this->m_pSQL->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
+        MQ_PARAM_STR,
+        WORLD_VAR,
+        MQ_PARAM_END);
     if (!this->m_pSQL->QuerySQLBuffer()) {
         g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
         return false;
@@ -1912,8 +1933,10 @@ GS_CThreadSQL::Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN) {
             ");",
             MQ_PARAM_END);
         if (this->m_pSQL->ExecSQLBuffer() < 1) {
-            g_LOG.CS_ODS(
-                LOG_NORMAL, "SQL Exec ERROR:: INSERT %s : %s \n", WORLD_VAR, m_pSQL->GetERROR());
+            g_LOG.CS_ODS(LOG_NORMAL,
+                "SQL Exec ERROR:: INSERT %s : %s \n",
+                WORLD_VAR,
+                m_pSQL->GetERROR());
             return true;
         }
     } else {
@@ -1961,8 +1984,9 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
                 return false;
             }
-            g_pUserLIST->Send_wsv_MEMO(
-                pSqlPACKET->m_iTAG, MEMO_REPLY_RECEIVED_CNT, m_pSQL->GetInteger(0));
+            g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG,
+                MEMO_REPLY_RECEIVED_CNT,
+                m_pSQL->GetInteger(0));
             return true;
         }
 
@@ -2061,8 +2085,8 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
 #define OPTION_REFUSE_JJOKJI 0x00000001
             // 대상 케릭의 쪽지 수신 거부 여부...
-            if (!this->m_pSQL->QuerySQL(
-                    "SELECT dwOPTION FROM tblGS_AVATAR WHERE txtNAME=\'%s\';", szTargetCHAR)) {
+            if (!this->m_pSQL->QuerySQL("SELECT dwOPTION FROM tblGS_AVATAR WHERE txtNAME=\'%s\';",
+                    szTargetCHAR)) {
                 g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
                 return false;
             }
@@ -2079,8 +2103,8 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
 #define MAX_RECV_MEMO_CNT 50
             // 대상 케릭이 몇개의 보관된 쪽지가 있냐?
-            if (!this->m_pSQL->QuerySQL(
-                    "SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';", szTargetCHAR)) {
+            if (!this->m_pSQL->QuerySQL("SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
+                    szTargetCHAR)) {
                 g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
                 return false;
             }

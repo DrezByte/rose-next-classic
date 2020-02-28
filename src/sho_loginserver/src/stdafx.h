@@ -6,7 +6,7 @@
 //#define	__SERVER
 
 #if _MSC_VER > 1000
-#pragma once
+    #pragma once
 #endif // _MSC_VER > 1000
 
 #define __SHO_LS_LIB

@@ -3,21 +3,17 @@
 #include ".\useitemdelay.h"
 #include "../Game.h"
 
-//USEITEM
-CUseItemDelay	g_UseItemDelay,
-				g_CurUseItemDelayTick,
-				g_SoloUseItemDelayTick;
+// USEITEM
+CUseItemDelay g_UseItemDelay, g_CurUseItemDelayTick, g_SoloUseItemDelayTick;
 
-//SKILL
-CUseItemDelay	g_UseSkillDelay,
-				g_CurSkillDelayTick,
-				g_SoloSkillDelayTick;
+// SKILL
+CUseItemDelay g_UseSkillDelay, g_CurSkillDelayTick, g_SoloSkillDelayTick;
 
 ////----------------------------------------------------------------------------------------------------
 ///// @param
 ///// @brief
 ////----------------------------------------------------------------------------------------------------
-//CUseItemDelay::CUseItemDelay(void)
+// CUseItemDelay::CUseItemDelay(void)
 //{
 //	for( int i = 0; i < MAX_DELAYTICK_TYPE ; i++ )
 //	{
@@ -30,7 +26,7 @@ CUseItemDelay	g_UseSkillDelay,
 ///// @brief
 ////----------------------------------------------------------------------------------------------------
 //
-//CUseItemDelay::~CUseItemDelay(void)
+// CUseItemDelay::~CUseItemDelay(void)
 //{
 //}
 //
@@ -39,7 +35,7 @@ CUseItemDelay	g_UseSkillDelay,
 ///// @brief
 ////----------------------------------------------------------------------------------------------------
 //
-//void CUseItemDelay::Clear()
+// void CUseItemDelay::Clear()
 //{
 //	for( int i = 0; i < MAX_DELAYTICK_TYPE ; i++ )
 //	{
@@ -52,7 +48,7 @@ CUseItemDelay	g_UseSkillDelay,
 ///// @brief
 ////----------------------------------------------------------------------------------------------------
 //
-//void CUseItemDelay::Proc()
+// void CUseItemDelay::Proc()
 //{
 //	for( int i = 0; i < MAX_DELAYTICK_TYPE ; i++ )
 //	{
@@ -62,74 +58,56 @@ CUseItemDelay	g_UseSkillDelay,
 //	}
 //}
 
+//생성자
+CUseItemDelay::CUseItemDelay() {
 
-//생성자 
-CUseItemDelay::CUseItemDelay()
-{
-
-	m_nCount	= 0;
-
+    m_nCount = 0;
 }
 
-//소멸자 
-CUseItemDelay::~CUseItemDelay()
-{
+//소멸자
+CUseItemDelay::~CUseItemDelay() {
 
-	Release();
-
+    Release();
 }
 
-//자원 해제 
-void CUseItemDelay::Release(void)
-{
+//자원 해제
+void
+CUseItemDelay::Release(void) {
 
-	m_nCount	= 0;
-	m_UseItemDelay.clear();
-
+    m_nCount = 0;
+    m_UseItemDelay.clear();
 }
 
-void CUseItemDelay::SetUseItemDelay(int iUseItemType, float iDelayTime)
-{
+void
+CUseItemDelay::SetUseItemDelay(int iUseItemType, float iDelayTime) {
 
-	m_UseItemDelay[iUseItemType] = iDelayTime;
+    m_UseItemDelay[iUseItemType] = iDelayTime;
 
-	m_nCount = m_UseItemDelay.size();
-
+    m_nCount = m_UseItemDelay.size();
 }
 
+float
+CUseItemDelay::GetUseItemDelay(int iUseItemType) {
 
-float	CUseItemDelay::GetUseItemDelay(int iUseItemType)
-{
+    USERITEMDELAYITR itr = m_UseItemDelay.find(iUseItemType);
 
-	USERITEMDELAYITR itr = m_UseItemDelay.find(iUseItemType);
+    if (itr == m_UseItemDelay.end())
+        return 0;
 
-	if(itr == m_UseItemDelay.end())
-		return 0;
-
-	return itr->second;
-
+    return itr->second;
 }
 
+void
+CUseItemDelay::Proc(void) {
 
+    for (USERITEMDELAYITR itr = m_UseItemDelay.begin(); itr != m_UseItemDelay.end(); itr++) {
 
-void CUseItemDelay::Proc(void)
-{
+        if (itr->second <= 0.0f)
+            continue;
 
-	for(USERITEMDELAYITR itr = m_UseItemDelay.begin();itr != m_UseItemDelay.end();itr++)
-	{
+        itr->second -= (float)g_GameDATA.GetElapsedFrameTime();
 
-		if(itr->second <= 0.0f)
-			continue;
-		
-
-		itr->second-=(float)g_GameDATA.GetElapsedFrameTime();
-		
-		if(itr->second < 0.0f)
-			itr->second = 0.0f;
-	}
-
+        if (itr->second < 0.0f)
+            itr->second = 0.0f;
+    }
 }
-
-
-
-

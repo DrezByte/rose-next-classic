@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "CLS_Account.h"
 #include "classTIME.h"
 

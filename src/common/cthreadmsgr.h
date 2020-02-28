@@ -1,25 +1,25 @@
 #ifndef __CTHREAD_MSGR_H
 #define __CTHREAD_MSGR_H
 #if defined(__SHO_WS)
-//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
 
-#define MAX_FRIEND_COUNT 35 // < ( max_packet_size / max_char_name_len )
+    #define MAX_FRIEND_COUNT 35 // < ( max_packet_size / max_char_name_len )
 
 class CMessenger;
 
-#ifdef __SHO_WS
+    #ifdef __SHO_WS
 class CWS_Client;
-#endif
+    #endif
 
-#include "CSqlTHREAD.h"
+    #include "CSqlTHREAD.h"
 
-//-------------------------------------------------------------------------------------------------
-#pragma pack(push, 1)
+    //-------------------------------------------------------------------------------------------------
+    #pragma pack(push, 1)
 struct tagFriend_H {
     DWORD m_dwDBID;
     BYTE m_btSTATUS;
 };
-#pragma pack(pop)
+    #pragma pack(pop)
 
 // 내가 등록한 친구 리스트
 struct tagMyFriend: public tagFriend_H {

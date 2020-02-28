@@ -3,7 +3,7 @@
 
 #include "MusicPlayer.h"
 #ifdef _USE_MSS
-#include "MSS.h"
+    #include "MSS.h"
 #endif
 
 //---------------------------------------------------------------------------------------------
@@ -13,31 +13,29 @@
 ///
 //---------------------------------------------------------------------------------------------
 
-class CMSSMusicPlayer : public CMusicPlayer
-{
+class CMSSMusicPlayer: public CMusicPlayer {
 private:
 #ifdef _USE_MSS
-	HDIGDRIVER		m_hDig;
-	HSTREAM			m_hStream;
-	
-	U32				m_Paused;	
+    HDIGDRIVER m_hDig;
+    HSTREAM m_hStream;
+
+    U32 m_Paused;
 #endif
 
 public:
-	CMSSMusicPlayer(void);
-	~CMSSMusicPlayer(void);
+    CMSSMusicPlayer(void);
+    ~CMSSMusicPlayer(void);
 
-	void	HandleEvent();
+    void HandleEvent();
 
-	bool	Init();
-	bool	Play( const char* fName );
-	void	Stop();
+    bool Init();
+    bool Play(const char* fName);
+    void Stop();
 
-	void	Run();
-	void    Pause();
-	
-	void	SetVolume( long lVolume );
+    void Run();
+    void Pause();
+
+    void SetVolume(long lVolume);
 };
-
 
 #endif //_MSS_MUSIC_PLAYER_

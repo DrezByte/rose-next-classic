@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #include "GS_ListUSER.h"
 #include "GS_Party.h"
 #include "GS_SocketASV.h"

@@ -8,19 +8,19 @@ namespace Common {
 /// A special base effect applied to all users
 class GoddessEffect {
 public:
-	short move_speed;
-	short attack_damage;
-	short hit;
-	short attack_speed;
-	short crit;
-	short additional_damage;
+    short move_speed;
+    short attack_damage;
+    short hit;
+    short attack_speed;
+    short crit;
+    short additional_damage;
 
 public:
-	GoddessEffect();
-	void update(int level);
+    GoddessEffect();
+    void update(int level);
 };
 
-} // Common
-} // Rose
+} // namespace Common
+} // namespace Rose
 
 #endif // GODDESS_EFFECT_H

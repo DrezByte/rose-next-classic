@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "CWS_Account.h"
 #include "CWS_Client.h"
 #include "SHO_WS_LIB.h"

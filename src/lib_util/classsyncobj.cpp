@@ -1,36 +1,36 @@
 
-#define	_WIN32_WINNT	0x0500
+#define _WIN32_WINNT 0x0500
 
 #include <windows.h>
 #include <tchar.h>
 #include <crtdbg.h>
 #include "classSYNCOBJ.h"
 
-
 //-------------------------------------------------------------------------------------------------
-classEVENT::classEVENT( LPSECURITY_ATTRIBUTES lpEventAttributes, BOOL bManualReset, BOOL bInitialState, LPCTSTR lpName )
-{
-/*
-HANDLE CreateEvent(
-  LPSECURITY_ATTRIBUTES lpEventAttributes, // SD
-  BOOL bManualReset,                       // reset type
-  BOOL bInitialState,                      // initial state
-  LPCTSTR lpName                           // object name
-);*/
-	m_Event = ::CreateEvent( lpEventAttributes, bManualReset, bInitialState, lpName );
-	if ( NULL == m_Event ) {
-		DWORD dwErrCode;
-		dwErrCode = ::GetLastError ();
-	} else {
-		_ASSERT( ::GetLastError() != ERROR_ALREADY_EXISTS );
-	}
+classEVENT::classEVENT(LPSECURITY_ATTRIBUTES lpEventAttributes,
+    BOOL bManualReset,
+    BOOL bInitialState,
+    LPCTSTR lpName) {
+    /*
+    HANDLE CreateEvent(
+      LPSECURITY_ATTRIBUTES lpEventAttributes, // SD
+      BOOL bManualReset,                       // reset type
+      BOOL bInitialState,                      // initial state
+      LPCTSTR lpName                           // object name
+    );*/
+    m_Event = ::CreateEvent(lpEventAttributes, bManualReset, bInitialState, lpName);
+    if (NULL == m_Event) {
+        DWORD dwErrCode;
+        dwErrCode = ::GetLastError();
+    } else {
+        _ASSERT(::GetLastError() != ERROR_ALREADY_EXISTS);
+    }
 }
 
-classEVENT::~classEVENT ()
-{
-	if ( m_Event ) {
-		::CloseHandle( m_Event );
-	}
+classEVENT::~classEVENT() {
+    if (m_Event) {
+        ::CloseHandle(m_Event);
+    }
 }
 
 /*
@@ -46,35 +46,33 @@ begin
         FLastError := GetLastError;
       end;
   else
-    Result := wrError;    
+    Result := wrError;
   end;
 end;
 */
 //-------------------------------------------------------------------------------------------------
-DWORD classEVENT::WaitFor ( DWORD dwMilliseconds )
-{
-	DWORD dwResult = ::WaitForSingleObject( m_Event, dwMilliseconds );
-	return dwResult;
+DWORD
+classEVENT::WaitFor(DWORD dwMilliseconds) {
+    DWORD dwResult = ::WaitForSingleObject(m_Event, dwMilliseconds);
+    return dwResult;
 }
-void classEVENT::SetEvent(void)
-{
-	::SetEvent( m_Event );
+void
+classEVENT::SetEvent(void) {
+    ::SetEvent(m_Event);
 }
-void classEVENT::ResetEvent(void)
-{
-	::ResetEvent( m_Event );
+void
+classEVENT::ResetEvent(void) {
+    ::ResetEvent(m_Event);
 }
-
 
 //-------------------------------------------------------------------------------------------------
-CCriticalSection::CCriticalSection( DWORD dwSpinCount )
-{
-	if ( dwSpinCount ) {
-		#if !defined(_WIN32_WINNT) || ( _WIN32_WINNT < 0x0500 )
-			#error >>> ERROR :: _WIN32_WINNT >= 0x0500 !!!
-		#endif
-		::InitializeCriticalSectionAndSpinCount( &m_CS, dwSpinCount );
-	} else
-		::InitializeCriticalSection( &m_CS );		
+CCriticalSection::CCriticalSection(DWORD dwSpinCount) {
+    if (dwSpinCount) {
+#if !defined(_WIN32_WINNT) || (_WIN32_WINNT < 0x0500)
+    #error>>> ERROR :: _WIN32_WINNT >= 0x0500 !!!
+#endif
+        ::InitializeCriticalSectionAndSpinCount(&m_CS, dwSpinCount);
+    } else
+        ::InitializeCriticalSection(&m_CS);
 }
 //-------------------------------------------------------------------------------------------------

@@ -49,9 +49,9 @@ struct tagSqlUSER {
     classUSER* m_pUSER;
 };
 #ifdef FRAROSE
-#define MAX_GRAW_ABILITY_BUFF 394
+    #define MAX_GRAW_ABILITY_BUFF 394
 #else
-#define MAX_GRAW_ABILITY_BUFF 384
+    #define MAX_GRAW_ABILITY_BUFF 384
 #endif
 struct tagGrowA_BUFF {
     union {

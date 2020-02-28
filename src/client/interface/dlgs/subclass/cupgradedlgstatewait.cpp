@@ -2,10 +2,6 @@
 
 #include ".\cupgradedlgstatewait.h"
 
-CUpgradeDlgStateWait::CUpgradeDlgStateWait(void)
-{
-}
+CUpgradeDlgStateWait::CUpgradeDlgStateWait(void) {}
 
-CUpgradeDlgStateWait::~CUpgradeDlgStateWait(void)
-{
-}
+CUpgradeDlgStateWait::~CUpgradeDlgStateWait(void) {}

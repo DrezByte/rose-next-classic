@@ -1,14 +1,13 @@
 #include "stdAFX.h"
 
-
 #include "CItem.h"
 #include "IO_STB.h"
 
 #ifndef __SERVER
-#include "CInventory.h"
-#include "Object.h"
+    #include "CInventory.h"
+    #include "Object.h"
 
-#include "../Util/LogWnd.h"
+    #include "../Util/LogWnd.h"
 #endif
 
 enum {
@@ -328,8 +327,9 @@ tagBaseITEM::GettingMESSAGE(int iInventoryListNo) {
         if (sItem.GetTYPE() == 0)
             sItem.m_iQuantity = 0;
 
-        return CStr::Printf(
-            F_STR_GETTING_ITEMS, ITEM_NAME(m_cType, m_nItemNo), m_iQuantity - sItem.GetQuantity());
+        return CStr::Printf(F_STR_GETTING_ITEMS,
+            ITEM_NAME(m_cType, m_nItemNo),
+            m_iQuantity - sItem.GetQuantity());
     } else {
         // 장비..
         return CStr::Printf(F_STR_GETTING_ITEM, ITEM_NAME(m_cType, m_nItemNo));
@@ -474,11 +474,11 @@ tagBaseITEM::IsEnableSeparate() {
     if (HasSocket() && GetGemNO()) ///재밍된 경우
         return true;
 
-#ifdef _NEWBREAK
+    #ifdef _NEWBREAK
     if (ITEM_DECOMPOSITION_NUMBER(GetTYPE(), GetItemNO()))
-#else
+    #else
     if (ITEM_PRODUCT_IDX(GetTYPE(), GetItemNO()))
-#endif
+    #endif
         return true;
 
     return false;

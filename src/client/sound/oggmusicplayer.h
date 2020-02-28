@@ -11,25 +11,24 @@
 ///
 //---------------------------------------------------------------------------------------------
 
-class COggMusicPlayer : public CMusicPlayer
-{
+class COggMusicPlayer: public CMusicPlayer {
 private:
-	AOggSTREAM*		m_pOggStream;
+    AOggSTREAM* m_pOggStream;
 
 public:
-	COggMusicPlayer(void);
-	~COggMusicPlayer(void);
+    COggMusicPlayer(void);
+    ~COggMusicPlayer(void);
 
-	void	HandleEvent();
+    void HandleEvent();
 
-	bool	Init();
-	bool	Play( const char* fName );
-	void	Stop();
+    bool Init();
+    bool Play(const char* fName);
+    void Stop();
 
-	void	Run();
-	void    Pause();
+    void Run();
+    void Pause();
 
-	void	SetVolume( long lVolume );
+    void SetVolume(long lVolume);
 };
 
 #endif //_OGG_MUSIC_PLAYER_

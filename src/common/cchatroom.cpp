@@ -1,14 +1,13 @@
 
 #include "stdAFX.h"
 
-
 #include "CChatROOM.h"
 #if defined(__SHO_WS)
 
 //-------------------------------------------------------------------------------------------------
 bool
 CChatROOM::ReqMake(classUSER* pUSER, cli_CHAT_ROOM_MAKE* pMake, char* szTitle, char* szPasswd) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     m_btMaxUSER = pMake->m_btMaxUSER;
     m_btRoomTYPE = pMake->m_btRoomTYPE;
 
@@ -21,12 +20,12 @@ CChatROOM::ReqMake(classUSER* pUSER, cli_CHAT_ROOM_MAKE* pMake, char* szTitle, c
     m_szPASSWD.Set(szPasswd);
 
     m_ListUSER.AppendNode(pUSER->m_pNodeChatROOM);
-#endif
+    #endif
     return true;
 }
 bool
 CChatROOM::ReqJoin(classUSER* pUSER) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     CDLList<classUSER*>::tagNODE* pNode;
 
     classPACKET pCPketADD;
@@ -65,13 +64,13 @@ CChatROOM::ReqJoin(classUSER* pUSER) {
     m_ListCS.Unlock();
 
     pUSER->SendPacket(pCPketJOIN);
-#endif
+    #endif
 
     return true;
 }
 int
 CChatROOM::ReqLeft(classUSER* pUSER) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     m_ListCS.Lock();
     {
         m_ListUSER.DeleteNode(pUSER->m_pNodeChatROOM);
@@ -83,12 +82,12 @@ CChatROOM::ReqLeft(classUSER* pUSER) {
     m_ListCS.Unlock();
 
     return this->GetRoomUSERS();
-#endif
+    #endif
     return 0;
 }
 bool
 CChatROOM::ReqKick(classUSER* pUSER, t_HASHKEY HashUSER) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     m_ListCS.Lock();
 
     if (pUSER->m_pNodeChatROOM == m_ListUSER.GetHeadNode()) {
@@ -98,8 +97,9 @@ CChatROOM::ReqKick(classUSER* pUSER, t_HASHKEY HashUSER) {
         while (pNode) {
             if (pNode->m_VALUE->m_HashCHAR == HashUSER) {
                 // 내 쫒겼다...
-                pNode->m_VALUE->Send_wsv_CHATROOM(
-                    CHAT_REPLY_KICKED, pNode->m_VALUE->m_iSocketIDX, NULL);
+                pNode->m_VALUE->Send_wsv_CHATROOM(CHAT_REPLY_KICKED,
+                    pNode->m_VALUE->m_iSocketIDX,
+                    NULL);
 
                 this->ReqLeft(pNode->m_VALUE);
                 break;
@@ -109,14 +109,14 @@ CChatROOM::ReqKick(classUSER* pUSER, t_HASHKEY HashUSER) {
     }
 
     m_ListCS.Unlock();
-#endif
+    #endif
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool
 CChatROOM::Send_wsv_CHATROOM(BYTE btCMD, WORD wUserID, char* szSTR) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     classPACKET pCPacket;
     pCPacket.m_HEADER.m_wType = WSV_CHATROOM;
     pCPacket.m_HEADER.m_nSize = sizeof(tag_CHAT_HEADER);
@@ -142,7 +142,7 @@ CChatROOM::Send_wsv_CHATROOM(BYTE btCMD, WORD wUserID, char* szSTR) {
         }
     }
     m_ListCS.Unlock();
-#endif
+    #endif
 
     return true;
 }
@@ -150,7 +150,7 @@ CChatROOM::Send_wsv_CHATROOM(BYTE btCMD, WORD wUserID, char* szSTR) {
 //-------------------------------------------------------------------------------------------------
 bool
 CChatROOM::Send_wsv_CHATROOM_MSG(WORD wObjectID, char* szMSG) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     classPACKET pCPacket;
     pCPacket.m_HEADER.m_wType = WSV_CHATROOM_MSG;
     pCPacket.m_HEADER.m_nSize = sizeof(wsv_CHATROOM_MSG);
@@ -167,7 +167,7 @@ CChatROOM::Send_wsv_CHATROOM_MSG(WORD wObjectID, char* szMSG) {
         pNode = pNode->GetNext();
     }
     this->m_ListCS.Unlock();
-#endif
+    #endif
     return true;
 }
 
@@ -183,29 +183,29 @@ CChatRoomLIST::~CChatRoomLIST() {
 //-------------------------------------------------------------------------------------------------
 bool
 CChatRoomLIST::Recv_cli_CHATROOM_MSG(classUSER* pUSER, t_PACKET* pPacket) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     if (pUSER->m_iChatRoomID) {
         CChatROOM* pRoom;
         this->m_RoomsCS.Lock();
         pRoom = this->GetData(pUSER->m_iChatRoomID);
         this->m_RoomsCS.Unlock();
         if (pRoom) {
-            return pRoom->Send_wsv_CHATROOM_MSG(
-                pUSER->m_iSocketIDX, pPacket->m_cli_CHATROOM_MSG.m_szMSG);
+            return pRoom->Send_wsv_CHATROOM_MSG(pUSER->m_iSocketIDX,
+                pPacket->m_cli_CHATROOM_MSG.m_szMSG);
         }
 
         // 얼래..방이 없당
         pUSER->m_iChatRoomID = 0;
     }
-    // 방이 없어 ???
-#endif
+        // 방이 없어 ???
+    #endif
     return true;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool
 CChatRoomLIST::Recv_cli_CHATROOM(classUSER* pUSER, t_PACKET* pPacket) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     switch (pPacket->m_tag_CHAT_HEADER.m_btCMD) {
         case CHAT_REQ_MAKE: {
             short nOffset = sizeof(cli_CHAT_ROOM_MAKE);
@@ -223,8 +223,10 @@ CChatRoomLIST::Recv_cli_CHATROOM(classUSER* pUSER, t_PACKET* pPacket) {
             if (iRoomSLOT > 0) {
                 this->m_pINDEX[iRoomSLOT] = &m_pROOMs[iRoomSLOT];
                 this->m_iUsedSlot++;
-                m_pROOMs[iRoomSLOT].ReqMake(
-                    pUSER, &pPacket->m_cli_CHAT_ROOM_MAKE, szTitle, szPasswd);
+                m_pROOMs[iRoomSLOT].ReqMake(pUSER,
+                    &pPacket->m_cli_CHAT_ROOM_MAKE,
+                    szTitle,
+                    szPasswd);
 
                 pUSER->m_iChatRoomID = iRoomSLOT;
 
@@ -278,7 +280,7 @@ CChatRoomLIST::Recv_cli_CHATROOM(classUSER* pUSER, t_PACKET* pPacket) {
             return true;
         }
         case CHAT_REQ_ROOM_LIST: {
-#define MAX_ROOM_LIST_CNT 15
+        #define MAX_ROOM_LIST_CNT 15
 
             CChatROOM* pRoom;
             int iCnt = 0, iR;
@@ -321,14 +323,14 @@ CChatRoomLIST::Recv_cli_CHATROOM(classUSER* pUSER, t_PACKET* pPacket) {
             return true;
         }
     }
-#endif
+    #endif
     return false;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool
 CChatRoomLIST::LeftUSER(classUSER* pUSER) {
-#ifdef ENABLE_CHATROOM
+    #ifdef ENABLE_CHATROOM
     this->m_RoomsCS.Lock();
     if (pUSER->m_iChatRoomID) {
         CChatROOM* pRoom = this->GetData(pUSER->m_iChatRoomID);
@@ -343,7 +345,7 @@ CChatRoomLIST::LeftUSER(classUSER* pUSER) {
         }
     }
     this->m_RoomsCS.Unlock();
-#endif
+    #endif
     return true;
 }
 

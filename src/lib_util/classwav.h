@@ -1,39 +1,41 @@
-#ifndef	__CLASSWAV_H
+#ifndef __CLASSWAV_H
 #define __CLASSWAV_H
 #include <stdio.h>
-#include <mmstream.h>		// multimedia stream interfaces
+#include <mmstream.h> // multimedia stream interfaces
 //-------------------------------------------------------------------------------------------------
 
-#ifdef	DLL_ICARUS_EXPORTS
-	#define DLL_WAVCLASS	__declspec(dllexport)
+#ifdef DLL_ICARUS_EXPORTS
+    #define DLL_WAVCLASS __declspec(dllexport)
 #else
-	#define DLL_WAVCLASS	//__declspec(dllimport)
+    #define DLL_WAVCLASS //__declspec(dllimport)
 #endif
 
 //-------------------------------------------------------------------------------------------------
 
 class DLL_WAVCLASS classWAV {
-private :
-	FILE					*m_fp;
-	long					 m_lDataFPTR;
-public  :
-	WAVEFORMATEX			 m_sWFX;
-    DWORD					 m_dwDataSize;
-	DWORD					 m_dwReadData;
+private:
+    FILE* m_fp;
+    long m_lDataFPTR;
 
-	classWAV();
-	~classWAV()		{	_Free();	}
+public:
+    WAVEFORMATEX m_sWFX;
+    DWORD m_dwDataSize;
+    DWORD m_dwReadData;
 
-	bool	_Init (void);
-	void	_Free (void);
+    classWAV();
+    ~classWAV() { _Free(); }
 
-	void	Reset (void)	{	m_dwReadData = 0;	fseek(m_fp, m_lDataFPTR, SEEK_SET);	}
+    bool _Init(void);
+    void _Free(void);
 
-	bool	OpenFile (char *szWAVFile, long lFilePtr);
-	bool	ReadData (UINT uiSizeToRead, void *pBuffer, UINT *puiActualBytesWritten);
-} ;
+    void Reset(void) {
+        m_dwReadData = 0;
+        fseek(m_fp, m_lDataFPTR, SEEK_SET);
+    }
 
+    bool OpenFile(char* szWAVFile, long lFilePtr);
+    bool ReadData(UINT uiSizeToRead, void* pBuffer, UINT* puiActualBytesWritten);
+};
 
 //-------------------------------------------------------------------------------------------------
 #endif
-

@@ -1,42 +1,42 @@
 /*
-	$History: classSTR.cpp $
- * 
+    $History: classSTR.cpp $
+ *
  * *****************  Version 4  *****************
  * User: Icarus       Date: 05-06-20   Time: 7:18p
  * Updated in $/7HeartsOnline/LIB_Util
- * 
+ *
  * *****************  Version 3  *****************
  * User: Icarus       Date: 05-06-20   Time: 7:18p
  * Updated in $/7HeartsOnline/LIB_Util
- * 
+ *
  * *****************  Version 2  *****************
  * User: Icarus       Date: 04-05-27   Time: 8:32p
  * Updated in $/7HeartsOnline/LIB_Util
- * 
+ *
  * *****************  Version 1  *****************
  * User: Icarus       Date: 04-03-25   Time: 11:20a
  * Created in $/7HeartsOnline/LIB_Util
- * 
+ *
  * *****************  Version 1  *****************
  * User: Icarus       Date: 04-03-25   Time: 11:09a
  * Created in $/SevenHearts/LIB_Util
- * 
+ *
  * *****************  Version 1  *****************
  * User: Icarus       Date: 04-03-25   Time: 10:51a
  * Created in $/SevenHearts/LIB_Util/LIB_Util
- * 
+ *
  * *****************  Version 1  *****************
  * User: Icarus       Date: 04-03-25   Time: 10:47a
  * Created in $/SevenHearts/LIB_Util
- * 
+ *
  * *****************  Version 1  *****************
  * User: Icarus       Date: 04-03-25   Time: 10:35a
  * Created in $/SHO/LIB_Util
- * 
+ *
  * *****************  Version 1  *****************
  * User: Icarus       Date: 04-03-25   Time: 10:26a
  * Created in $/SevenHearts/LIB_Util/LIB_Util
- * 
+ *
  * *****************  Version 1  *****************
  * User: Icarus       Date: 03-07-03   Time: 11:38a
  * Created in $/LIB_Util
@@ -51,383 +51,384 @@
 #include "classSTR.h"
 #include "classHASH.h"
 
-bool			CStr::m_bInit = false;
-unsigned short	CStr::m_wStaticStrLen;
-char		   *CStr::m_pStaticStr;
+bool CStr::m_bInit = false;
+unsigned short CStr::m_wStaticStrLen;
+char* CStr::m_pStaticStr;
 
-char  **CStr::m_ppStr;	// [	CSTRING_BUFFER_CNT ][ CSTRING_BUFFER_LEN ];
-short	CStr::m_nStrBuffLEN = CSTRING_BUFFER_LEN;
-short	CStr::m_nStrBuffCNT = CSTRING_BUFFER_CNT;
-short	CStr::m_nStrIdx;
+char** CStr::m_ppStr; // [	CSTRING_BUFFER_CNT ][ CSTRING_BUFFER_LEN ];
+short CStr::m_nStrBuffLEN = CSTRING_BUFFER_LEN;
+short CStr::m_nStrBuffCNT = CSTRING_BUFFER_CNT;
+short CStr::m_nStrIdx;
 char* CStr::m_next_token;
 
 //-------------------------------------------------------------------------------------------------
-void CStr::Init (short nStrBufferCNT, short nStrBufferLEN)
-{
-	if ( nStrBufferCNT <= 0 || nStrBufferLEN <= 0 )
-		return;
+void
+CStr::Init(short nStrBufferCNT, short nStrBufferLEN) {
+    if (nStrBufferCNT <= 0 || nStrBufferLEN <= 0)
+        return;
 
-	m_nStrIdx = 0;
+    m_nStrIdx = 0;
 
-	m_wStaticStrLen = m_nStrBuffLEN;// CSTRING_BUFFER_LEN;
-	m_pStaticStr = new char [ m_wStaticStrLen ];
+    m_wStaticStrLen = m_nStrBuffLEN; // CSTRING_BUFFER_LEN;
+    m_pStaticStr = new char[m_wStaticStrLen];
 
-	m_nStrBuffLEN = nStrBufferLEN;
-	m_ppStr = new char*[ m_nStrBuffCNT ];
-	for (short nI=0; nI<m_nStrBuffCNT; nI++) 
-		m_ppStr[ nI ] = new char[ m_nStrBuffLEN ];
+    m_nStrBuffLEN = nStrBufferLEN;
+    m_ppStr = new char*[m_nStrBuffCNT];
+    for (short nI = 0; nI < m_nStrBuffCNT; nI++)
+        m_ppStr[nI] = new char[m_nStrBuffLEN];
 
-	m_bInit = true;
+    m_bInit = true;
 }
-void CStr::Free (void)
-{
-	m_bInit = false;
+void
+CStr::Free(void) {
+    m_bInit = false;
 
-	for (short nI=0; nI<m_nStrBuffCNT; nI++)
-		delete[] m_ppStr[ nI ];
-	delete[] m_ppStr;
+    for (short nI = 0; nI < m_nStrBuffCNT; nI++)
+        delete[] m_ppStr[nI];
+    delete[] m_ppStr;
 
-	if ( m_pStaticStr )
-		delete[] m_pStaticStr;
-}
-
-//-------------------------------------------------------------------------------------------------
-void CStr::SetBufferLength (short nStrBufferLEN)
-{
-	if ( !m_bInit ) return;
-	for (short nI=0; nI<m_nStrBuffCNT; nI++) {
-		delete[] m_ppStr[ nI ];
-		m_ppStr[ nI ] = new char[ nStrBufferLEN ];
-	}
-	m_nStrBuffLEN = nStrBufferLEN;
-}
-void CStr::SetBufferCount (short nStrBufferCNT)
-{
-	if ( !m_bInit ) return;
-
-	short nI;
-	for (nI=0; nI<m_nStrBuffCNT; nI++)
-		delete[] m_ppStr[ nI ];
-	delete[] m_ppStr;
-
-	m_ppStr = new char*[ nStrBufferCNT ];
-	for (nI=0; nI<m_nStrBuffCNT; nI++)
-		m_ppStr[ nI ] = new char[ m_nStrBuffCNT ];
+    if (m_pStaticStr)
+        delete[] m_pStaticStr;
 }
 
 //-------------------------------------------------------------------------------------------------
-int CStr::ParamCount (char *pStr)
-{
-	int   iCount=0;
-	char  pDelimiters[] = " \t\n";
-	char *pToken;
-	short nStrLen = (short)strlen( pStr );
+void
+CStr::SetBufferLength(short nStrBufferLEN) {
+    if (!m_bInit)
+        return;
+    for (short nI = 0; nI < m_nStrBuffCNT; nI++) {
+        delete[] m_ppStr[nI];
+        m_ppStr[nI] = new char[nStrBufferLEN];
+    }
+    m_nStrBuffLEN = nStrBufferLEN;
+}
+void
+CStr::SetBufferCount(short nStrBufferCNT) {
+    if (!m_bInit)
+        return;
 
-	if ( nStrLen >= m_wStaticStrLen ) {
-		delete[] m_pStaticStr;
-		m_wStaticStrLen = nStrLen+1;
-		m_pStaticStr = new char [ m_wStaticStrLen ];
-	}
+    short nI;
+    for (nI = 0; nI < m_nStrBuffCNT; nI++)
+        delete[] m_ppStr[nI];
+    delete[] m_ppStr;
 
-	strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr) );
-	m_pStaticStr[ nStrLen ] = 0;
-
-	char* next_token;
-	pToken = strtok_s( m_pStaticStr, pDelimiters, &next_token);
-	while( pToken )
-	{
-		iCount ++;
-
-		// Get next token: 
-		pToken = strtok_s( NULL, pDelimiters, &next_token);
-	}
-
-	return iCount;
+    m_ppStr = new char*[nStrBufferCNT];
+    for (nI = 0; nI < m_nStrBuffCNT; nI++)
+        m_ppStr[nI] = new char[m_nStrBuffCNT];
 }
 
 //-------------------------------------------------------------------------------------------------
-void CStr::DebugString (char *fmt, ...)
-{
-	char *pStr;
+int
+CStr::ParamCount(char* pStr) {
+    int iCount = 0;
+    char pDelimiters[] = " \t\n";
+    char* pToken;
+    short nStrLen = (short)strlen(pStr);
 
-	pStr = GetString ();
+    if (nStrLen >= m_wStaticStrLen) {
+        delete[] m_pStaticStr;
+        m_wStaticStrLen = nStrLen + 1;
+        m_pStaticStr = new char[m_wStaticStrLen];
+    }
+
+    strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr));
+    m_pStaticStr[nStrLen] = 0;
+
+    char* next_token;
+    pToken = strtok_s(m_pStaticStr, pDelimiters, &next_token);
+    while (pToken) {
+        iCount++;
+
+        // Get next token:
+        pToken = strtok_s(NULL, pDelimiters, &next_token);
+    }
+
+    return iCount;
+}
+
+//-------------------------------------------------------------------------------------------------
+void
+CStr::DebugString(char* fmt, ...) {
+    char* pStr;
+
+    pStr = GetString();
 
     va_list argptr;
     va_start(argptr, fmt);
-    vsprintf_s(pStr,m_nStrBuffLEN, fmt,argptr);
+    vsprintf_s(pStr, m_nStrBuffLEN, fmt, argptr);
     va_end(argptr);
 
-	::OutputDebugString( pStr );
+    ::OutputDebugString(pStr);
 }
 
 //-------------------------------------------------------------------------------------------------
-char *CStr::Printf (char *fmt, ...)
-{
-	char *pStr;
+char*
+CStr::Printf(char* fmt, ...) {
+    char* pStr;
 
-	pStr = GetString ();
+    pStr = GetString();
 
     va_list argptr;
     va_start(argptr, fmt);
-    vsprintf_s(pStr,m_nStrBuffLEN, fmt,argptr);
+    vsprintf_s(pStr, m_nStrBuffLEN, fmt, argptr);
     va_end(argptr);
 
-	return pStr;
+    return pStr;
 }
 
 //-------------------------------------------------------------------------------------------------
-char *CStr::ParamStr(char *pStr, int iIndex)
-{
-	int   iCount=0;
-	char  pDelimiters[] = " \t\n";
-	char *pToken;
-	short nStrLen = (short)strlen( pStr );
+char*
+CStr::ParamStr(char* pStr, int iIndex) {
+    int iCount = 0;
+    char pDelimiters[] = " \t\n";
+    char* pToken;
+    short nStrLen = (short)strlen(pStr);
 
-	if ( nStrLen >= m_wStaticStrLen ) {
-		delete[] m_pStaticStr;
-		m_wStaticStrLen = nStrLen+1;
-		m_pStaticStr = new char [ m_wStaticStrLen ];
-	}
+    if (nStrLen >= m_wStaticStrLen) {
+        delete[] m_pStaticStr;
+        m_wStaticStrLen = nStrLen + 1;
+        m_pStaticStr = new char[m_wStaticStrLen];
+    }
 
-	strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr) );
-	m_pStaticStr[ nStrLen ] = 0;
+    strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr));
+    m_pStaticStr[nStrLen] = 0;
 
-	char* next_char;
-	pToken = strtok_s( m_pStaticStr, pDelimiters, &next_char );
-	while( pToken )
-	{
-		if ( iCount == iIndex )
-			return pToken;
-		iCount ++;
+    char* next_char;
+    pToken = strtok_s(m_pStaticStr, pDelimiters, &next_char);
+    while (pToken) {
+        if (iCount == iIndex)
+            return pToken;
+        iCount++;
 
-		// Get next token: 
-		pToken = strtok_s( NULL, pDelimiters, &next_char );
-	}
+        // Get next token:
+        pToken = strtok_s(NULL, pDelimiters, &next_char);
+    }
 
-	return NULL;
+    return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
-char *CStr::GetTokenFirst (char *pStr, char *pDelimiters)
-{
-	short nStrLen = (short)strlen( pStr );
+char*
+CStr::GetTokenFirst(char* pStr, char* pDelimiters) {
+    short nStrLen = (short)strlen(pStr);
 
-	if ( nStrLen >= m_wStaticStrLen ) {
-		delete[] m_pStaticStr;
-		m_wStaticStrLen = nStrLen+1;
-		m_pStaticStr = new char [ m_wStaticStrLen ];
-	}
+    if (nStrLen >= m_wStaticStrLen) {
+        delete[] m_pStaticStr;
+        m_wStaticStrLen = nStrLen + 1;
+        m_pStaticStr = new char[m_wStaticStrLen];
+    }
 
-	strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr) );
-	m_pStaticStr[ nStrLen ] = 0;
+    strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr));
+    m_pStaticStr[nStrLen] = 0;
 
-	return strtok_s( m_pStaticStr, pDelimiters, &m_next_token);
+    return strtok_s(m_pStaticStr, pDelimiters, &m_next_token);
 }
 
 //-------------------------------------------------------------------------------------------------
-char *CStr::GetTokenNext (char *pDelimiters)
-{
-	return strtok_s( NULL, pDelimiters, &m_next_token);
+char*
+CStr::GetTokenNext(char* pDelimiters) {
+    return strtok_s(NULL, pDelimiters, &m_next_token);
 }
 
 //-------------------------------------------------------------------------------------------------
-char *CStr::ReadString (FILE *fp, bool bIgnoreWhiteSpace)
-{
-	char cChar, *szStrOut=CStr::GetString();
-	bool bGetChar=false, bInDoubleQuote=false;
-	int  iReadCnt=0;
-	do {
-		if ( fread (&cChar, sizeof(char), 1, fp) < 1 )
-			break;
+char*
+CStr::ReadString(FILE* fp, bool bIgnoreWhiteSpace) {
+    char cChar, *szStrOut = CStr::GetString();
+    bool bGetChar = false, bInDoubleQuote = false;
+    int iReadCnt = 0;
+    do {
+        if (fread(&cChar, sizeof(char), 1, fp) < 1)
+            break;
 
-		if ( cChar == '\"' ) {
-			bInDoubleQuote = !bInDoubleQuote;
-			continue;
-		}
+        if (cChar == '\"') {
+            bInDoubleQuote = !bInDoubleQuote;
+            continue;
+        }
 
-		if ( (cChar==' ' || cChar=='\t' || cChar==0x0D || cChar==0x0A) ) {
-			if ( !bInDoubleQuote && !bIgnoreWhiteSpace ) {
-				if ( bGetChar ) break;
-				continue;
-			}
+        if ((cChar == ' ' || cChar == '\t' || cChar == 0x0D || cChar == 0x0A)) {
+            if (!bInDoubleQuote && !bIgnoreWhiteSpace) {
+                if (bGetChar)
+                    break;
+                continue;
+            }
 
-			if ( !bGetChar ) continue;
-		}
+            if (!bGetChar)
+                continue;
+        }
 
-		szStrOut[ iReadCnt++ ] = cChar;
-		bGetChar = true;
-	} while( cChar && !feof(fp) && iReadCnt < m_nStrBuffLEN-1 );
+        szStrOut[iReadCnt++] = cChar;
+        bGetChar = true;
+    } while (cChar && !feof(fp) && iReadCnt < m_nStrBuffLEN - 1);
 
-	szStrOut[ iReadCnt ] = 0;
+    szStrOut[iReadCnt] = 0;
 
-	return szStrOut;
+    return szStrOut;
 }
 
 //-------------------------------------------------------------------------------------------------
-bool CStr::SaveString (char *szFileName, char *szString)
-{
-	FILE *fp;
-	if (0 != fopen_s(&fp, szFileName, "wt")) {
-		return false;
-	}
+bool
+CStr::SaveString(char* szFileName, char* szString) {
+    FILE* fp;
+    if (0 != fopen_s(&fp, szFileName, "wt")) {
+        return false;
+    }
 
-	fputs (szString, fp);
+    fputs(szString, fp);
 
-	fclose (fp);
-	return true;
+    fclose(fp);
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
-unsigned int CStr::GetHASH (char const * szString)
-{
-	return StrToHashKey( szString );
-}
-
-
-//-------------------------------------------------------------------------------------------------
-CStrVAR::CStrVAR(WORD wStrLen, WORD wStaticStrLen)
-{
-	m_pStr = NULL;
-	m_pStaticStr = NULL;
-
-	this->Alloc( wStrLen, wStaticStrLen );
-}
-
-char *CStrVAR::Alloc (WORD wStrLen, WORD wStaticStrLen)
-{
-	this->Del ();
-
-	if ( wStrLen > 0 ) {
-		m_wStrLen = wStrLen;
-		m_pStr = new char[ wStrLen ];
-	}
-
-	return m_pStr;
-}
-
-void CStrVAR::Del ()
-{	
-	if ( m_pStr ) {
-		delete[] m_pStr; 
-		m_pStr=NULL;
-	}
-	m_wStrLen=0;
-
-	if ( m_pStaticStr ) {
-		delete[] m_pStaticStr;
-		m_pStaticStr=NULL;
-	}
-	m_wStaticStrLen = 0;
-}
-
-void CStrVAR::Set (char *szStrIn)
-{
-	this->Del ();
-
-	if ( szStrIn ) {
-		m_wStrLen = static_cast<WORD>(strlen( szStrIn ));
-		if ( m_wStrLen > 0 ) {
-			m_pStr = new char[ m_wStrLen+1 ];
-			_ASSERT( m_pStr );
-			strncpy_s(m_pStr, m_wStrLen + 1, szStrIn, m_wStrLen);
-			m_pStr[ m_wStrLen ] = 0;
-			return;
-		}
-	}
-	
-	m_wStrLen = 0;
+unsigned int
+CStr::GetHASH(char const* szString) {
+    return StrToHashKey(szString);
 }
 
 //-------------------------------------------------------------------------------------------------
-char *CStrVAR::Printf (char *fmt, ...)
-{
-	if ( !m_pStr )
-		return NULL;
+CStrVAR::CStrVAR(WORD wStrLen, WORD wStaticStrLen) {
+    m_pStr = NULL;
+    m_pStaticStr = NULL;
+
+    this->Alloc(wStrLen, wStaticStrLen);
+}
+
+char*
+CStrVAR::Alloc(WORD wStrLen, WORD wStaticStrLen) {
+    this->Del();
+
+    if (wStrLen > 0) {
+        m_wStrLen = wStrLen;
+        m_pStr = new char[wStrLen];
+    }
+
+    return m_pStr;
+}
+
+void
+CStrVAR::Del() {
+    if (m_pStr) {
+        delete[] m_pStr;
+        m_pStr = NULL;
+    }
+    m_wStrLen = 0;
+
+    if (m_pStaticStr) {
+        delete[] m_pStaticStr;
+        m_pStaticStr = NULL;
+    }
+    m_wStaticStrLen = 0;
+}
+
+void
+CStrVAR::Set(char* szStrIn) {
+    this->Del();
+
+    if (szStrIn) {
+        m_wStrLen = static_cast<WORD>(strlen(szStrIn));
+        if (m_wStrLen > 0) {
+            m_pStr = new char[m_wStrLen + 1];
+            _ASSERT(m_pStr);
+            strncpy_s(m_pStr, m_wStrLen + 1, szStrIn, m_wStrLen);
+            m_pStr[m_wStrLen] = 0;
+            return;
+        }
+    }
+
+    m_wStrLen = 0;
+}
+
+//-------------------------------------------------------------------------------------------------
+char*
+CStrVAR::Printf(char* fmt, ...) {
+    if (!m_pStr)
+        return NULL;
 
     va_list argptr;
     va_start(argptr, fmt);
-    vsprintf_s(m_pStr, m_wStrLen, fmt,argptr);
+    vsprintf_s(m_pStr, m_wStrLen, fmt, argptr);
     va_end(argptr);
 
-	return m_pStr;
+    return m_pStr;
 }
 
 //-------------------------------------------------------------------------------------------------
-char *CStrVAR::GetTokenFirst (char *pStr, char *pDelimiters)
-{
-	short nStrLen = (short)strlen( pStr );
+char*
+CStrVAR::GetTokenFirst(char* pStr, char* pDelimiters) {
+    short nStrLen = (short)strlen(pStr);
 
-	if ( nStrLen >= m_wStaticStrLen ) {
-		if ( m_pStaticStr )
-			delete[] m_pStaticStr;
+    if (nStrLen >= m_wStaticStrLen) {
+        if (m_pStaticStr)
+            delete[] m_pStaticStr;
 
-		m_wStaticStrLen = nStrLen+1;
-		m_pStaticStr = new char [ m_wStaticStrLen ];
-	}
+        m_wStaticStrLen = nStrLen + 1;
+        m_pStaticStr = new char[m_wStaticStrLen];
+    }
 
-	strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr) );
-	m_pStaticStr[ nStrLen ] = 0;
+    strncpy_s(m_pStaticStr, m_wStaticStrLen, pStr, strlen(pStr));
+    m_pStaticStr[nStrLen] = 0;
 
-	return strtok_s( m_pStaticStr, pDelimiters, &m_next_token);
-}
-
-
-//-------------------------------------------------------------------------------------------------
-char *CStrVAR::GetTokenNext (char *pDelimiters)
-{
-	return strtok_s( NULL, pDelimiters, &m_next_token);
+    return strtok_s(m_pStaticStr, pDelimiters, &m_next_token);
 }
 
 //-------------------------------------------------------------------------------------------------
-unsigned int CStrVAR::GetHASH (char *szString)
-{
-	return StrToHashKey( szString );
+char*
+CStrVAR::GetTokenNext(char* pDelimiters) {
+    return strtok_s(NULL, pDelimiters, &m_next_token);
 }
 
 //-------------------------------------------------------------------------------------------------
-char *CStrVAR::ReadString (FILE *fp, bool bIgnoreWhiteSpace)
-{
-	char cChar;
-	bool bGetChar=false, bInDoubleQuote=false;
-	int  iReadCnt=0;
-	do {
-		if ( fread (&cChar, sizeof(char), 1, fp) < 1 )
-			break;
-
-		if ( cChar == '\"' ) {
-			bInDoubleQuote = !bInDoubleQuote;
-			continue;
-		}
-
-		if ( (cChar==' ' || cChar=='\t' || cChar==0x0D || cChar==0x0A) ) {
-			if ( !bInDoubleQuote && !bIgnoreWhiteSpace ) {
-				if ( bGetChar ) break;
-				continue;
-			}
-
-			if ( !bGetChar ) continue;
-		}
-
-		m_pStr[ iReadCnt++ ] = cChar;
-		bGetChar = true;
-	} while( cChar && !feof(fp) && iReadCnt < m_wStrLen-1 );
-
-	m_pStr[ iReadCnt ] = 0;
-
-	return m_pStr;
+unsigned int
+CStrVAR::GetHASH(char* szString) {
+    return StrToHashKey(szString);
 }
 
 //-------------------------------------------------------------------------------------------------
-bool CStrVAR::SaveString (char *szFileName, char *szString)
-{
-	FILE *fp;
-	if ( 0 != fopen_s(&fp, szFileName, "wt"))
-		return false;
+char*
+CStrVAR::ReadString(FILE* fp, bool bIgnoreWhiteSpace) {
+    char cChar;
+    bool bGetChar = false, bInDoubleQuote = false;
+    int iReadCnt = 0;
+    do {
+        if (fread(&cChar, sizeof(char), 1, fp) < 1)
+            break;
 
-	fputs (szString, fp);
+        if (cChar == '\"') {
+            bInDoubleQuote = !bInDoubleQuote;
+            continue;
+        }
 
-	fclose (fp);
-	return true;
+        if ((cChar == ' ' || cChar == '\t' || cChar == 0x0D || cChar == 0x0A)) {
+            if (!bInDoubleQuote && !bIgnoreWhiteSpace) {
+                if (bGetChar)
+                    break;
+                continue;
+            }
+
+            if (!bGetChar)
+                continue;
+        }
+
+        m_pStr[iReadCnt++] = cChar;
+        bGetChar = true;
+    } while (cChar && !feof(fp) && iReadCnt < m_wStrLen - 1);
+
+    m_pStr[iReadCnt] = 0;
+
+    return m_pStr;
+}
+
+//-------------------------------------------------------------------------------------------------
+bool
+CStrVAR::SaveString(char* szFileName, char* szString) {
+    FILE* fp;
+    if (0 != fopen_s(&fp, szFileName, "wt"))
+        return false;
+
+    fputs(szString, fp);
+
+    fclose(fp);
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

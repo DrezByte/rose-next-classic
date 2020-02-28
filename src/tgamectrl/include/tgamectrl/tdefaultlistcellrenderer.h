@@ -3,13 +3,14 @@
 #include "ilistcellrenderer.h"
 
 class CTStatic;
-class TGAMECTRL_API CTDefaultListCellRenderer : public IListCellRenderer
-{
-	CTStatic*		m_pComponent;
-public:
-	CTDefaultListCellRenderer(void);
-	~CTDefaultListCellRenderer(void);
+class TGAMECTRL_API CTDefaultListCellRenderer: public IListCellRenderer {
+    CTStatic* m_pComponent;
 
-	virtual CWinCtrl* GetListCellRendererComponent( const CTObject* pObject, bool selected, bool mouseover );
+public:
+    CTDefaultListCellRenderer(void);
+    ~CTDefaultListCellRenderer(void);
+
+    virtual CWinCtrl*
+    GetListCellRendererComponent(const CTObject* pObject, bool selected, bool mouseover);
 };
 #endif

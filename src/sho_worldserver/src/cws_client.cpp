@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "CChatROOM.h"
 #include "CThreadGUILD.h"
 #include "CThreadLOG.h"
@@ -167,8 +166,9 @@ CWS_Client::Send_wsv_CHAR_CHANGE() {
 //-------------------------------------------------------------------------------------------------
 bool
 CWS_Client::Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket) {
-    ::CopyMemory(
-        this->m_dwMD5Password, pPacket->m_cli_JOIN_SERVER_REQ.m_MD5Password, sizeof(DWORD) * 8);
+    ::CopyMemory(this->m_dwMD5Password,
+        pPacket->m_cli_JOIN_SERVER_REQ.m_MD5Password,
+        sizeof(DWORD) * 8);
     g_pSockLSV->Send_zws_CONFIRM_ACCOUNT_REQ(this->Get_WSID(), pPacket);
     return true;
 }
@@ -276,13 +276,17 @@ CWS_Client::Recv_cli_MESSENGER(t_PACKET* pPacket) {
         }
 
         case MSGR_CMD_APPEND_ACCEPT: // 쌍방에 추가..
-            g_pThreadMSGR->Add_MessengerCMD(
-                this->Get_NAME(), MSGR_CMD_APPEND_ACCEPT, pPacket, this->m_iSocketIDX);
+            g_pThreadMSGR->Add_MessengerCMD(this->Get_NAME(),
+                MSGR_CMD_APPEND_ACCEPT,
+                pPacket,
+                this->m_iSocketIDX);
             return true;
 
         default:
-            g_pThreadMSGR->Add_MessengerCMD(
-                this->Get_NAME(), pPacket->m_tag_MCMD_HEADER.m_btCMD, pPacket, this->m_iSocketIDX);
+            g_pThreadMSGR->Add_MessengerCMD(this->Get_NAME(),
+                pPacket->m_tag_MCMD_HEADER.m_btCMD,
+                pPacket,
+                this->m_iSocketIDX);
             return true;
     }
 
@@ -375,8 +379,9 @@ CWS_Client::Recv_cli_CLAN_COMMAND(t_PACKET* pPacket) {
         return IS_HACKING(this, "Recv_cli_CLAN_COMMAND");
     }
 
-    return g_pThreadGUILD->Add_ClanCMD(
-        pPacket->m_cli_CLAN_COMMAND.m_btCMD, this->m_iSocketIDX, pPacket);
+    return g_pThreadGUILD->Add_ClanCMD(pPacket->m_cli_CLAN_COMMAND.m_btCMD,
+        this->m_iSocketIDX,
+        pPacket);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -394,8 +399,8 @@ CWS_Client::GuildCMD(char* szCMD) {
 
     classPACKET pCPacket = classPACKET();
 
-    if (!_strcmpi(
-            pArg1, "invite")) { //길드초대, /ginvite <플레이어> - 길드에 해당 플레이어 초대하기
+    if (!_strcmpi(pArg1,
+            "invite")) { //길드초대, /ginvite <플레이어> - 길드에 해당 플레이어 초대하기
         pArg2 = pStrVAR->GetTokenNext(pDelimiters);
         if (pArg2) {
             pCPacket.m_HEADER.m_wType = CLI_CLAN_COMMAND;
@@ -568,7 +573,7 @@ CWS_Client::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
 //-------------------------------------------------------------------------------------------------
 bool
 CWS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
-	LOG_TRACE("Client %d sent packet: 0x%04X", Get_WSID(), pPacket->m_wType);
+    LOG_TRACE("Client %d sent packet: 0x%04X", Get_WSID(), pPacket->m_wType);
 
     /*
         패킷 디코딩...
@@ -765,8 +770,8 @@ CWS_ListCLIENT::Add_ACCOUNT(int iSocketIDX, t_PACKET* pRecvPket, char* szAccount
     CWS_Client* pUSER = (CWS_Client*)this->GetSOCKET(iSocketIDX);
     if (NULL == pUSER) {
         // 그새 접속이 끊겼는가 ???
-        g_pSockLSV->Send_zws_SUB_ACCOUNT(
-            pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLSID, szAccount);
+        g_pSockLSV->Send_zws_SUB_ACCOUNT(pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLSID,
+            szAccount);
         return false;
     }
 
@@ -778,10 +783,11 @@ CWS_ListCLIENT::Add_ACCOUNT(int iSocketIDX, t_PACKET* pRecvPket, char* szAccount
             // 로그인 서버가 혹시 뻣었을 경우...중복 접속을 로그인서버가 막지 못할경우를 대비해서
             // 월드에서 중복 접속을 확인... 아이템 복사가 일어 날수 있기때문에...
             // 다른 월드로 접속할경우는 ????.
-            g_pSockLSV->Send_zws_SUB_ACCOUNT(
-                pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLSID, szAccount);
-            return pUSER->Send_srv_JOIN_SERVER_REPLY(
-                RESULT_CONFIRM_ACCOUNT_ALREADY_LOGGEDIN, dwRecvSeqNO, 0);
+            g_pSockLSV->Send_zws_SUB_ACCOUNT(pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLSID,
+                szAccount);
+            return pUSER->Send_srv_JOIN_SERVER_REPLY(RESULT_CONFIRM_ACCOUNT_ALREADY_LOGGEDIN,
+                dwRecvSeqNO,
+                0);
         }
 
         pUSER->m_dwRIGHT = pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwRIGHT;
@@ -817,8 +823,9 @@ CWS_ListCLIENT::Add_ACCOUNT(int iSocketIDX, t_PACKET* pRecvPket, char* szAccount
             szPass);
     }
 
-    return pUSER->Send_srv_JOIN_SERVER_REPLY(
-        pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_btResult, dwRecvSeqNO, dwPayFlag);
+    return pUSER->Send_srv_JOIN_SERVER_REPLY(pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_btResult,
+        dwRecvSeqNO,
+        dwPayFlag);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -871,8 +878,8 @@ CWS_ListCLIENT::Del_ACCOUNT(char* szAccount, BYTE btDelLoginBIT, CWS_Server* pCl
                         CWS_Server* pCServer =
                             g_pListSERVER->Get_ChannelSERVER(pAccount->m_btChannelNO);
                         if (pCServer) {
-                            pCServer->Send_str_PACKET(
-                                WLS_KICK_ACCOUNT, szAccount); // GS에 계정 삭제하라고 통보....
+                            pCServer->Send_str_PACKET(WLS_KICK_ACCOUNT,
+                                szAccount); // GS에 계정 삭제하라고 통보....
                             pCServer->SubChannelCLIENT(pAccount->m_pCLIENT);
                             pAccount->m_pCLIENT = NULL;
                             // 여기서 리턴되면 pAccount->m_pCLIENT는 메모리가 해제된다.
@@ -896,8 +903,8 @@ CWS_ListCLIENT::Del_ACCOUNT(char* szAccount, BYTE btDelLoginBIT, CWS_Server* pCl
                                 pAccount->Get_ACCOUNT());
                         }
 
-                        g_pSockLSV->Send_zws_SUB_ACCOUNT(
-                            pAccount->m_dwLSID, pAccount->Get_ACCOUNT()); // LS에 삭제 전송.
+                        g_pSockLSV->Send_zws_SUB_ACCOUNT(pAccount->m_dwLSID,
+                            pAccount->Get_ACCOUNT()); // LS에 삭제 전송.
 
                         SAFE_DELETE(pAccount);
                         btRamainBIT = 0;
@@ -976,8 +983,11 @@ CWS_ListCLIENT::Add_CHAR(CWS_Client* pCLIENT, char* szCharName) {
     pCLIENT->m_Name.Set(szCharName);
     pCLIENT->m_HashCHAR = CStr::GetHASH(pCLIENT->Get_NAME());
 
-    g_pThreadMSGR->Add_MessengerCMD(
-        szCharName, MSGR_CMD_LOGIN, NULL, pCLIENT->m_iSocketIDX, pCLIENT->m_dwDBID);
+    g_pThreadMSGR->Add_MessengerCMD(szCharName,
+        MSGR_CMD_LOGIN,
+        NULL,
+        pCLIENT->m_iSocketIDX,
+        pCLIENT->m_dwDBID);
 
     m_csHashCHAR.Lock();
     m_pHashCHAR->Insert(pCLIENT->m_HashCHAR, pCLIENT);

@@ -85,8 +85,11 @@ classODBC::RegisterDSN(char* szDSN, char* szDBName, char* szServerIP, char* szUs
     HKEY hKey = NULL;
     BYTE buffer[128];
     ULONG size = 128;
-    if (::RegOpenKeyEx(
-            HKEY_LOCAL_MACHINE, _T("Software\\ODBC\\ODBCINST.INI\\SQL Server"), 0, KEY_READ, &hKey)
+    if (::RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+            _T("Software\\ODBC\\ODBCINST.INI\\SQL Server"),
+            0,
+            KEY_READ,
+            &hKey)
         != ERROR_SUCCESS) {
         return false;
     }
@@ -106,12 +109,24 @@ classODBC::RegisterDSN(char* szDSN, char* szDBName, char* szServerIP, char* szUs
         return false;
     }
 
-    dwRet = ::RegSetValueEx(
-        hKey, _T("Database"), NULL, REG_SZ, (const BYTE*)(LPCSTR)szDBName, strlen(szDBName));
-    dwRet = ::RegSetValueEx(
-        hKey, _T("Server"), NULL, REG_SZ, (const BYTE*)(LPCSTR)szServerIP, strlen(szServerIP));
-    dwRet = ::RegSetValueEx(
-        hKey, _T("Lastuser"), NULL, REG_SZ, (const BYTE*)(LPCSTR)szUser, strlen(szUser));
+    dwRet = ::RegSetValueEx(hKey,
+        _T("Database"),
+        NULL,
+        REG_SZ,
+        (const BYTE*)(LPCSTR)szDBName,
+        strlen(szDBName));
+    dwRet = ::RegSetValueEx(hKey,
+        _T("Server"),
+        NULL,
+        REG_SZ,
+        (const BYTE*)(LPCSTR)szServerIP,
+        strlen(szServerIP));
+    dwRet = ::RegSetValueEx(hKey,
+        _T("Lastuser"),
+        NULL,
+        REG_SZ,
+        (const BYTE*)(LPCSTR)szUser,
+        strlen(szUser));
     dwRet = ::RegSetValueEx(hKey, _T("Driver"), NULL, REG_SZ, buffer, strlen((char*)buffer));
 
     ::RegCloseKey(hKey);
@@ -121,8 +136,12 @@ classODBC::RegisterDSN(char* szDSN, char* szDBName, char* szServerIP, char* szUs
     }
 
     stMsg.Set("SQL Server");
-    dwRet = ::RegSetValueEx(
-        hKey, szDSN, NULL, REG_SZ, (const BYTE*)(LPCSTR)stMsg.Get(), stMsg.BuffLength());
+    dwRet = ::RegSetValueEx(hKey,
+        szDSN,
+        NULL,
+        REG_SZ,
+        (const BYTE*)(LPCSTR)stMsg.Get(),
+        stMsg.BuffLength());
 
     return true;
 }
@@ -165,8 +184,14 @@ classODBC::GetERROR(void) {
 
     int iCnt = 1;
     while (SQL_NO_DATA
-        != ::SQLGetDiagRec(
-            SQL_HANDLE_STMT, m_hSTMT1, iCnt, SqlState, &NativeError, Msg, sizeof(Msg), &MsgLen)) {
+        != ::SQLGetDiagRec(SQL_HANDLE_STMT,
+            m_hSTMT1,
+            iCnt,
+            SqlState,
+            &NativeError,
+            Msg,
+            sizeof(Msg),
+            &MsgLen)) {
         g_LOG.CS_ODS(0xffff, "SQLSTATE:%s, Diagnostic information:%s \n", SqlState, Msg);
         if (1 == iCnt) {
             this->m_ErrMSG.Printf("SQLSTATE:%s, %s \n", SqlState, Msg);
@@ -340,7 +365,8 @@ classODBC::SetParameter(short nParamIDX,
     ::OutputDebugString(this->GetERROR());
     return false;
 }
-bool classODBC::SetParam_long(short nParamIDX,
+bool
+classODBC::SetParam_long(short nParamIDX,
     long& lOutResult,
     long& cbLen) { /*	SQLBindParameter(
                            hstmt,
@@ -1044,8 +1070,14 @@ classODBC::get_error_messages(SQLHANDLE handle, SQLSMALLINT type) {
 
     int record_id = 1;
     while (res != SQL_NO_DATA) {
-        res = SQLGetDiagRec(
-            type, handle, record_id, sql_state, &native_error_id, sql_msg, 255, &sql_msg_len);
+        res = SQLGetDiagRec(type,
+            handle,
+            record_id,
+            sql_state,
+            &native_error_id,
+            sql_msg,
+            255,
+            &sql_msg_len);
 
         if (res == SQL_SUCCESS) {
             messages.push_back((char*)sql_msg);

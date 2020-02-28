@@ -34,8 +34,7 @@ enum {
  * \brief	로그 디비와 연결되는 쓰래드 클래스
  *			기본 로그를 처리하는 CThreadLOG를 상속 받음
  */
-class GS_CThreadLOG:
-    public CThreadLOG // CSqlTHREAD
+class GS_CThreadLOG: public CThreadLOG // CSqlTHREAD
 {
 public:
     /*

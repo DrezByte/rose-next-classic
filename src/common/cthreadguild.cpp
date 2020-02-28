@@ -1,15 +1,14 @@
 #include "stdAFX.h"
 
-
 #ifdef __SHO_WS
-#include "CThreadLOG.h"
-#include "CWS_Client.h"
-#include "CWS_Server.h"
+    #include "CThreadLOG.h"
+    #include "CWS_Client.h"
+    #include "CWS_Server.h"
 #else
-#include "GS_ListUSER.h"
-#include "GS_SocketLSV.h"
-#include "GS_ThreadLOG.h"
-#include "LIB_gsMAIN.h"
+    #include "GS_ListUSER.h"
+    #include "GS_SocketLSV.h"
+    #include "GS_ThreadLOG.h"
+    #include "LIB_gsMAIN.h"
 #endif
 
 #include "CThreadGUILD.h"
@@ -218,8 +217,9 @@ CClan::AddClanSKILL(short nSkillNo) {
                 }
 
                 // 월드섭이나 개인섭에서만 이함수가 호출된다...
-                if (!g_pThreadGUILD->Query_UpdateClanBINARY(
-                        this->m_dwClanID, (BYTE*)&ClanBIN, sizeof(tagClanBIN))) {
+                if (!g_pThreadGUILD->Query_UpdateClanBINARY(this->m_dwClanID,
+                        (BYTE*)&ClanBIN,
+                        sizeof(tagClanBIN))) {
                     return false;
                 }
                 // skill log...
@@ -252,8 +252,9 @@ CClan::DelClanSKILL(short nSkillNo) {
             ClanBIN.m_SKILL[nI].m_dwExpiredAbsSEC = 0;
 
             // 월드섭이나 개인섭에서만 이함수가 호출된다...
-            if (!g_pThreadGUILD->Query_UpdateClanBINARY(
-                    this->m_dwClanID, (BYTE*)&ClanBIN, sizeof(tagClanBIN))) {
+            if (!g_pThreadGUILD->Query_UpdateClanBINARY(this->m_dwClanID,
+                    (BYTE*)&ClanBIN,
+                    sizeof(tagClanBIN))) {
                 return false;
             }
             // skill log...
@@ -384,8 +385,9 @@ CClan::Insert_MEMBER(BYTE btResult, CWS_Client* pMember, int iClanPos, char* szM
     this->Lock();
     {
         if (m_ListUSER.GetNodeCount() < this->GetUserLimitCNT()) {
-            if (g_pThreadGUILD->Query_InsertClanMember(
-                    pMember->Get_NAME(), this->m_dwClanID, iClanPos)) {
+            if (g_pThreadGUILD->Query_InsertClanMember(pMember->Get_NAME(),
+                    this->m_dwClanID,
+                    iClanPos)) {
 
                 // 클랜 가입 로그...
 
@@ -420,8 +422,9 @@ CClan::Insert_MEMBER(BYTE btResult, CWS_Client* pMember, int iClanPos, char* szM
                 pMember->SetClanMONEY(this->m_biClanMONEY);
                 pMember->SetClanRATE(this->m_iClanRATE);
 
-                ::CopyMemory(
-                    pMember->m_CLAN.m_ClanBIN.m_pDATA, this->m_ClanBIN.m_pDATA, sizeof(tagClanBIN));
+                ::CopyMemory(pMember->m_CLAN.m_ClanBIN.m_pDATA,
+                    this->m_ClanBIN.m_pDATA,
+                    sizeof(tagClanBIN));
 
                 this->Send_SetCLAN(btResult, pMember);
 
@@ -887,8 +890,11 @@ CThreadGUILD::Test_add(char* pGuildName, char* pGuildDesc) {
 
     ((classODBC*)this->m_pSQL)->SetParam_long(1, iResultSP, cbSize1);
 
-    if (this->m_pSQL->QuerySQL(
-            (char*)"{?=call ws_ClanCREATE(\'%s\',\'%s\',%d,%d)}", pGuildName, pGuildDesc, 1, 2)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanCREATE(\'%s\',\'%s\',%d,%d)}",
+            pGuildName,
+            pGuildDesc,
+            1,
+            2)) {
         DWORD dwClanID = 0;
         while (this->m_pSQL->GetNextRECORD()) {
             // 기존 클랜 ID...
@@ -1125,8 +1131,8 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
 #else
             switch (pGuildCMD->m_pPacket->m_gsv_ADJ_CLAN_VAR.m_btVarType) {
                 case CLVAR_INC_LEV:
-                    if (!this->Query_UpdateClanDATA(
-                            "intLEVEL", pGuildCMD->m_pPacket)) // CLVAR_INC_LEV, 1 ) )
+                    if (!this->Query_UpdateClanDATA("intLEVEL",
+                            pGuildCMD->m_pPacket)) // CLVAR_INC_LEV, 1 ) )
                         return true;
                     break;
                 case CLVAR_ADD_SCORE:
@@ -1204,8 +1210,8 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
                             return true;
                         }
 
-                        g_pSockLSV->Send_zws_CREATE_CLAN(
-                            pFindUSER->m_dwWSID, pFindUSER->m_HashCHAR);
+                        g_pSockLSV->Send_zws_CREATE_CLAN(pFindUSER->m_dwWSID,
+                            pFindUSER->m_HashCHAR);
                         return true;
                     } else {
                         this->Query_DeleteCLAN(pClan->m_Name.Get());
@@ -1667,8 +1673,10 @@ CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClan
     SDWORD cbSize1 = SQL_NTS;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL(
-            (char*)"{?=call ws_ClanCharADD(\'%s\',%d,%d)}", szCharName, dwClanID, iClanPos)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanCharADD(\'%s\',%d,%d)}",
+            szCharName,
+            dwClanID,
+            iClanPos)) {
         while (this->m_pSQL->GetMoreRESULT()) {
             ;
         }
@@ -1683,8 +1691,10 @@ CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClan
                     szCharName);
                 break;
             case -2: // insert 오류( 디비 오류 )
-                g_LOG.CS_ODS(
-                    0xffff, "insert clan user failed : result: %d / %s\n", dwClanID, szCharName);
+                g_LOG.CS_ODS(0xffff,
+                    "insert clan user failed : result: %d / %s\n",
+                    dwClanID,
+                    szCharName);
                 break;
             default:
                 assert("invalid ws_CreateCLAN SP retrun value" && 0);
@@ -1734,8 +1744,10 @@ CThreadGUILD::Query_AdjustClanMember(char* szCharName, int iAdjContr, int iAdjPo
     SDWORD cbSize1 = SQL_NTS;
 
     this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL(
-            (char*)"{?=call ws_ClanCharADJ(\'%s\',%d,%d)}", szCharName, iAdjContr, iAdjPos)) {
+    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanCharADJ(\'%s\',%d,%d)}",
+            szCharName,
+            iAdjContr,
+            iAdjPos)) {
         while (this->m_pSQL->GetMoreRESULT()) {
             ;
         }

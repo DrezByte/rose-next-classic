@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #include "LIB_gsMAIN.h"
 
 #include "CSocketWND.h"
@@ -484,8 +483,8 @@ CLIB_GameSRV::TranslateNameWithDescKey(STBDATA* pOri, char* szStbFile, int iLang
 
     STBDATA tmpTBL;
     // 아이템 이름만 읽음 :: 이름 컬럼은 1, 3, 5 ... 설명 컬럼은 2, 4, 6 ...
-    if (!tmpTBL.LoadWSTB(
-            true, CStr::Printf("%s%s", BASE_DATA_DIR, szStbFile), iKeyCol, iLangCol, -1))
+    if (!tmpTBL
+             .LoadWSTB(true, CStr::Printf("%s%s", BASE_DATA_DIR, szStbFile), iKeyCol, iLangCol, -1))
         return;
     STBDATA* pLang = &tmpTBL;
 
@@ -519,8 +518,8 @@ CLIB_GameSRV::TranslateNameWithColoumKey(STBDATA* pOri,
     STBDATA tmpTBL;
 
     // 아이템 이름만 읽음 :: 이름 컬럼은 1, 3, 5 ... 설명 컬럼은 2, 4, 6 ...
-    if (!tmpTBL.LoadWSTB(
-            true, CStr::Printf("%s%s", BASE_DATA_DIR, szStbFile), iKeyCol, iLangCol, -1))
+    if (!tmpTBL
+             .LoadWSTB(true, CStr::Printf("%s%s", BASE_DATA_DIR, szStbFile), iKeyCol, iLangCol, -1))
         return;
     STBDATA* pLang = &tmpTBL;
 
@@ -566,51 +565,68 @@ bool
 CLIB_GameSRV::Load_BasicDATA() {
     size_t ttt = sizeof(tagGrowAbility);
 
-    if (!g_AI_LIST.Load(
-            BASE_DATA_DIR, "3DDATA\\STB\\FILE_AI.STB", "3DDATA\\AI\\AI_s.STB", m_iLangTYPE))
+    if (!g_AI_LIST.Load(BASE_DATA_DIR,
+            "3DDATA\\STB\\FILE_AI.STB",
+            "3DDATA\\AI\\AI_s.STB",
+            m_iLangTYPE))
         return false;
 
     g_TblHAIR.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Hair.STB"), true, false);
     g_TblFACE.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Face.STB"), true, false);
     g_TblARMOR.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Body.STB"), true, true);
 
-    g_TblGAUNTLET.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Arms.STB"), true, true);
+    g_TblGAUNTLET.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Arms.STB"),
+        true,
+        true);
     g_TblBOOTS.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Foot.STB"), true, true);
     g_TblHELMET.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Cap.STB"), true, true);
 
-    g_TblWEAPON.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Weapon.STB"), true, true);
-    g_TblSUBWPN.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SUBWPN.STB"), true, true);
-    g_TblEFFECT.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_EFFECT.STB"), false, false);
-    g_TblDropITEM.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\ITEM_DROP.STB"), false, false);
+    g_TblWEAPON.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Weapon.STB"),
+        true,
+        true);
+    g_TblSUBWPN.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SUBWPN.STB"),
+        true,
+        true);
+    g_TblEFFECT.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_EFFECT.STB"),
+        false,
+        false);
+    g_TblDropITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\ITEM_DROP.STB"),
+        false,
+        false);
 
-    g_TblPRODUCT.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_PRODUCT.STB"), true, false);
-    g_TblNATUAL.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NATURAL.STB"), true, true);
-    g_TblFACEITEM.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_FACEITEM.STB"), true, true);
-    g_TblUSEITEM.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_USEITEM.STB"), true, true);
-    g_TblBACKITEM.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_BACK.STB"), true, true);
-    g_TblGEMITEM.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEMITEM.STB"), true, true);
-    g_TblJEWELITEM.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEWEL.STB"), true, true);
-    g_TblQUESTITEM.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_QUESTITEM.STB"), true, true);
+    g_TblPRODUCT.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_PRODUCT.STB"),
+        true,
+        false);
+    g_TblNATUAL.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NATURAL.STB"),
+        true,
+        true);
+    g_TblFACEITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_FACEITEM.STB"),
+        true,
+        true);
+    g_TblUSEITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_USEITEM.STB"),
+        true,
+        true);
+    g_TblBACKITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_BACK.STB"),
+        true,
+        true);
+    g_TblGEMITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEMITEM.STB"),
+        true,
+        true);
+    g_TblJEWELITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEWEL.STB"),
+        true,
+        true);
+    g_TblQUESTITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_QUESTITEM.STB"),
+        true,
+        true);
     g_TblStore.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SELL.STB"), true, false);
 
-    g_TblAniTYPE.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\TYPE_MOTION.STB"), false, false);
+    g_TblAniTYPE.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\TYPE_MOTION.STB"),
+        false,
+        false);
 
-    g_TblEVENT.Load2(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_EVENT.STB"), false, true);
+    g_TblEVENT.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_EVENT.STB"),
+        false,
+        true);
 
     g_TblWARP.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\WARP.STB"), true, false);
     g_TblZONE.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ZONE.STB"), true, false);
@@ -619,23 +635,30 @@ CLIB_GameSRV::Load_BasicDATA() {
     g_TblNPC.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NPC.STB"), true, false);
     //	assert( g_TblNPC.m_nColCnt > 43 );
 
-    g_TblAVATAR.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\INIT_AVATAR.STB"), false, false);
-    g_TblSTATE.Load2(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_STATUS.STB"), true, false);
+    g_TblAVATAR.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\INIT_AVATAR.STB"),
+        false,
+        false);
+    g_TblSTATE.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_STATUS.STB"),
+        true,
+        false);
 
-    g_TblUnion.Load2(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_UNION.STB"), false, false);
-    g_TblClass.Load2(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_CLASS.STB"), false, false);
+    g_TblUnion.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_UNION.STB"),
+        false,
+        false);
+    g_TblClass.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_CLASS.STB"),
+        false,
+        false);
 
-    g_TblItemGRADE.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_GRADE.STB"), false, false);
-    g_TblSkillPoint.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Skill_P.STB"), false, false);
+    g_TblItemGRADE.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_GRADE.STB"),
+        false,
+        false);
+    g_TblSkillPoint.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Skill_P.STB"),
+        false,
+        false);
 #ifdef __APPLY_2ND_JOB
-    g_TblATTR.Load(
-        CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ATTRIBUTE.STB"), false, false);
+    g_TblATTR.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ATTRIBUTE.STB"),
+        false,
+        false);
 #endif
 
     if (!g_MotionFILE.Load("3DDATA\\STB\\FILE_MOTION.stb", 0, BASE_DATA_DIR))
@@ -676,37 +699,52 @@ CLIB_GameSRV::Load_BasicDATA() {
     g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM.m_ItemDATA;
 
     // 아이템 이름만 읽음 :: 이름 컬럼은 1, 3, 5 ... 설명 컬럼은 2, 4, 6 ...
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_FACE_ITEM], "Language\\LIST_FACEITEM_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_HELMET], "Language\\LIST_CAP_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_ARMOR], "Language\\LIST_BODY_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_GAUNTLET], "Language\\LIST_ARMS_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_BOOTS], "Language\\LIST_FOOT_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_KNAPSACK], "Language\\LIST_BACK_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_JEWEL], "Language\\LIST_JEWEL_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_WEAPON], "Language\\LIST_WEAPON_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_SUBWPN], "Language\\LIST_SUBWPN_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_USE], "Language\\LIST_USEITEM_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_GEM], "Language\\LIST_JEMITEM_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_NATURAL], "Language\\LIST_NATURAL_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_QUEST], "Language\\LIST_QUESTITEM_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_RIDE_PART], "Language\\LIST_PAT_s.STB", 1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_FACE_ITEM],
+        "Language\\LIST_FACEITEM_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_HELMET],
+        "Language\\LIST_CAP_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_ARMOR],
+        "Language\\LIST_BODY_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_GAUNTLET],
+        "Language\\LIST_ARMS_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_BOOTS],
+        "Language\\LIST_FOOT_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_KNAPSACK],
+        "Language\\LIST_BACK_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_JEWEL],
+        "Language\\LIST_JEWEL_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_WEAPON],
+        "Language\\LIST_WEAPON_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_SUBWPN],
+        "Language\\LIST_SUBWPN_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_USE],
+        "Language\\LIST_USEITEM_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_GEM],
+        "Language\\LIST_JEMITEM_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_NATURAL],
+        "Language\\LIST_NATURAL_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_QUEST],
+        "Language\\LIST_QUESTITEM_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_RIDE_PART],
+        "Language\\LIST_PAT_s.STB",
+        1 + 2 * m_iLangTYPE);
 
-    this->TranslateNameWithDescKey(
-        &g_SkillList.m_SkillDATA, "Language\\LIST_SKILL_s.stb", 1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(&g_SkillList.m_SkillDATA,
+        "Language\\LIST_SKILL_s.stb",
+        1 + 2 * m_iLangTYPE);
 
     // 이름 컬럼은 1,2,3 ...
     this->TranslateNameWithColoumKey(&g_TblNPC,
@@ -795,8 +833,8 @@ CLIB_GameSRV::CheckZoneToLocal(short nZoneNO, bool bChecked) {
 #define IS_UNSIGNED(type) (((type)(-1)) > ((type)0))
 
 #ifndef COMPILE_TIME_ASSERT
-#define COMPILE_TIME_ASSERT(expr) \
-    { typedef int compile_time_assert_fail[1 - 2 * !(expr)]; }
+    #define COMPILE_TIME_ASSERT(expr) \
+        { typedef int compile_time_assert_fail[1 - 2 * !(expr)]; }
 #endif
 
 //-------------------------------------------------------------------------------------------------

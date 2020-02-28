@@ -1,24 +1,24 @@
 #if defined(__SHO_WS)
-#ifndef __CCHAT_ROOM_H
-#define __CCHAT_ROOM_H
-#include "CDLList.h"
-#include "classINDEX.h"
-#include "classSTR.h"
-#include "classSyncOBJ.h"
+    #ifndef __CCHAT_ROOM_H
+        #define __CCHAT_ROOM_H
+        #include "CDLList.h"
+        #include "classINDEX.h"
+        #include "classSTR.h"
+        #include "classSyncOBJ.h"
 
-#if !defined(__SHO_WS) && !defined(__SHO_GS)
-#error>>> ERROR :: must defined __SHO_WS or __SHO_GS
-#endif
-//-------------------------------------------------------------------------------------------------
+        #if !defined(__SHO_WS) && !defined(__SHO_GS)
+            #error>>> ERROR :: must defined __SHO_WS or __SHO_GS
+        #endif
+    //-------------------------------------------------------------------------------------------------
 
-#ifdef __SHO_WS
-#include "CWS_Client.h"
+        #ifdef __SHO_WS
+            #include "CWS_Client.h"
 typedef CWS_Client classUSER;
-#endif
+        #endif
 
-#ifdef __SHO_GS
-#include "GS_USER.h"
-#endif
+        #ifdef __SHO_GS
+            #include "GS_USER.h"
+        #endif
 
 class CChatROOM {
 private:
@@ -67,6 +67,6 @@ public:
 };
 extern CChatRoomLIST* g_pChatROOMs;
 
-//-------------------------------------------------------------------------------------------------
-#endif
+    //-------------------------------------------------------------------------------------------------
+    #endif
 #endif

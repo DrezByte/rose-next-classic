@@ -1,7 +1,6 @@
 
 #include "stdAFX.h"
 
-
 #include "CLS_Account.h"
 #include "CLS_Client.h"
 #include "CLS_Server.h"
@@ -41,8 +40,10 @@ CLS_SqlTHREAD::Add_SqlPACKET(DWORD dwSocketID, char* szAccount, t_PACKET* pPacke
         return false;
     }
 
-    return CSqlTHREAD::Add_SqlPACKET(
-        dwSocketID, szAccount, (BYTE*)pPacket, pPacket->m_HEADER.m_nSize);
+    return CSqlTHREAD::Add_SqlPACKET(dwSocketID,
+        szAccount,
+        (BYTE*)pPacket,
+        pPacket->m_HEADER.m_nSize);
 }
 
 bool
@@ -162,9 +163,9 @@ enum LOGINTBL_COL_IDX {
     LGNTBL_BLOCK_START,
     LGNTBL_BLOCK_END,
     LGNTBL_GENDER,
-#ifndef USE_MSSQL
+    #ifndef USE_MSSQL
     LGNTBL_JUMIN,
-#endif
+    #endif
     LGNTBL_REALNAME,
 #else
     LGNTBL_ENABLE,
@@ -184,12 +185,13 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
 
     if (NULL == szAccount || nOutStrLen > MAX_ACCOUNT_LEN) {
         // 클라이언트 버그로 입력된 계정의 길이가 초과되서 옮.
-        g_pListCLIENT->Send_lsv_LOGIN_REPLY(
-            pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
+        g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
+            RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
         return false;
     }
 
-    const char* query = "SELECT [Right], MD5Password, LastConnect, BlockStart, BlockEnd, Gender, MailIsConfirm FROM UserInfo WHERE Account = \'%s\'";
+    const char* query = "SELECT [Right], MD5Password, LastConnect, BlockStart, BlockEnd, Gender, "
+                        "MailIsConfirm FROM UserInfo WHERE Account = \'%s\'";
     if (!this->m_pSQL->QuerySQL((char*)query, szAccount)) {
         LOG_ERROR("Query ERROR:: %s \n", m_pSQL->GetERROR());
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_FAILED);
@@ -197,15 +199,15 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
     }
 
     if (!this->m_pSQL->GetNextRECORD()) {
-        g_pListCLIENT->Send_lsv_LOGIN_REPLY(
-            pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
+        g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
+            RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
         return false;
     }
 
     int32_t dwRIGHT = (DWORD)this->m_pSQL->GetInteger(LGNTBL_RIGHT);
     if (this->m_bCheckLogIN && dwRIGHT < this->m_dwCheckRIGHT) {
-        g_pListCLIENT->Send_lsv_LOGIN_REPLY(
-            pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_NO_RIGHT_TO_CONNECT);
+        g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
+            RESULT_LOGIN_REPLY_NO_RIGHT_TO_CONNECT);
         return false;
     }
 
@@ -213,8 +215,8 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
     for (short nI = 0; nI < 8; nI++) {
         if (pPacket->m_cli_LOGIN_REQ.m_dwMD5[nI] != pMD5Pass[nI]) {
             // 비번 틀리다.
-            g_pListCLIENT->Send_lsv_LOGIN_REPLY(
-                pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_INVALID_PASSWORD);
+            g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
+                RESULT_LOGIN_REPLY_INVALID_PASSWORD);
             return false;
         }
     }
@@ -234,8 +236,8 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
                 pCAccount->m_pWorldServer->Send_str_PACKET(WLS_KICK_ACCOUNT, szAccount);
             }
         }
-        g_pListCLIENT->Send_lsv_LOGIN_REPLY(
-            pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_ALREADY_LOGGEDIN);
+        g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
+            RESULT_LOGIN_REPLY_ALREADY_LOGGEDIN);
         return false;
     }
 
@@ -244,8 +246,8 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
         DWORD dwBlockEND = (DWORD)(this->m_pSQL->GetInteger(LGNTBL_BLOCK_END)); // block end
         if (0 == dwBlockEND || dwBlockEND > dwCurTIME) {
             // 영구 블럭 또는 아직 블럭이 풀리지 않았다...
-            g_pListCLIENT->Send_lsv_LOGIN_REPLY(
-                pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_REFUSED_ACCOUNT);
+            g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
+                RESULT_LOGIN_REPLY_REFUSED_ACCOUNT);
             return false;
         }
     }
@@ -266,8 +268,8 @@ __SKIP_AUTH__:
     if (pClient) {
         // 동접자 접속 제한...
         if (0 == dwRIGHT && g_pListCLIENT->IsMaxiumUSER()) {
-            g_pListCLIENT->Send_lsv_LOGIN_REPLY(
-                pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_TOO_MANY_USER);
+            g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
+                RESULT_LOGIN_REPLY_TOO_MANY_USER);
             return false;
         }
         pClient->Set_ACCOUNT(szAccount, pPacket->m_cli_LOGIN_REQ.m_dwMD5);

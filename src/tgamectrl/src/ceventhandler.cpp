@@ -2,10 +2,6 @@
 
 #include ".\ceventhandler.h"
 
-CEventHandler::CEventHandler(void)
-{
-}
+CEventHandler::CEventHandler(void) {}
 
-CEventHandler::~CEventHandler(void)
-{
-}
+CEventHandler::~CEventHandler(void) {}

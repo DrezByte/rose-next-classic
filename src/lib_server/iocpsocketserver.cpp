@@ -362,8 +362,10 @@ IOCPSocketSERVER::On_TRUE(LPOVERLAPPED lpOverlapped, DWORD dwCompletionKey, DWOR
                 switch (pSOCKET->Recv_Complete(pIOData)) {
                     case eRESULT_PACKET_BLOCK:
                         // 30초 블럭...
-                        m_pBlockingIP->Insert(
-                            pSOCKET->m_HashKeyIP, pSOCKET->Get_IP(), IP_BLOCK_TYPE_PACKET, 30);
+                        m_pBlockingIP->Insert(pSOCKET->m_HashKeyIP,
+                            pSOCKET->Get_IP(),
+                            IP_BLOCK_TYPE_PACKET,
+                            30);
 
                     case eRESULT_PACKET_DISCONNECT:
                         // 짤러라 !!!

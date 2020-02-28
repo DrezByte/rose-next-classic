@@ -1,8 +1,7 @@
 #pragma once
 
-class CWarningDlg
-{
+class CWarningDlg {
 public:
-	CWarningDlg(void);
-	~CWarningDlg(void);
+    CWarningDlg(void);
+    ~CWarningDlg(void);
 };

@@ -77,10 +77,10 @@
 #define PAT_BULLET(I) g_PatITEM.GetValue(I, 55)
 
 #ifdef __KCHS_BATTLECART__
-#define PAT_ITEM_HP(I) g_PatITEM.GetValue(I, 67) // PAT 체력
-#define PAT_ITEM_EQUIP_REQUIRE_CLASS(I) g_PatITEM.GetValue(I, 68) // 사용 클래스
-#define PAT_DAMAGE_TYPE(I) g_PatITEM.GetValue(I, 69) // 일반/마법데미지 ???
-#define PAT_ABILITY_TYPE(I) g_PatITEM.GetValue(I, 70) // 의자 ???
+    #define PAT_ITEM_HP(I) g_PatITEM.GetValue(I, 67) // PAT 체력
+    #define PAT_ITEM_EQUIP_REQUIRE_CLASS(I) g_PatITEM.GetValue(I, 68) // 사용 클래스
+    #define PAT_DAMAGE_TYPE(I) g_PatITEM.GetValue(I, 69) // 일반/마법데미지 ???
+    #define PAT_ABILITY_TYPE(I) g_PatITEM.GetValue(I, 70) // 의자 ???
 #endif
 
 //----------------------------------------------------------------------------------------

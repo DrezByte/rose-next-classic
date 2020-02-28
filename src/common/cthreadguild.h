@@ -10,7 +10,7 @@
 #include "classSTR.h"
 
 #if !defined(__SHO_WS) && !defined(__SHO_GS)
-#error>>> ERROR :: must defined __SHO_WS or __SHO_GS
+    #error>>> ERROR :: must defined __SHO_WS or __SHO_GS
 #endif
 
 #ifdef __SHO_WS

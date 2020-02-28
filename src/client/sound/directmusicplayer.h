@@ -4,11 +4,9 @@
 #include "MusicPlayer.h"
 #include "../util/CMMPlayer.h"
 
+#define MAX_MUSIC_VOLUME 0
 
-
-#define MAX_MUSIC_VOLUME		0
-
-#define	WM_MUSIC_EVENT	( WM_APP + 9238 )
+#define WM_MUSIC_EVENT (WM_APP + 9238)
 
 //---------------------------------------------------------------------------------------------
 ///
@@ -17,26 +15,25 @@
 ///
 //---------------------------------------------------------------------------------------------
 
-class CDirectMusicPlayer : public CMusicPlayer
-{
+class CDirectMusicPlayer: public CMusicPlayer {
 private:
-	classMMPLAYER	m_MMPlayer;
-	IBasicAudio		*m_pBA;
+    classMMPLAYER m_MMPlayer;
+    IBasicAudio* m_pBA;
 
 public:
-	CDirectMusicPlayer(void);
-	~CDirectMusicPlayer(void);
+    CDirectMusicPlayer(void);
+    ~CDirectMusicPlayer(void);
 
-	bool	Init();
-	bool	Play( const char* fName );
-	void	Stop();
+    bool Init();
+    bool Play(const char* fName);
+    void Stop();
 
-	void	Run();
-	void    Pause();
+    void Run();
+    void Pause();
 
-	void	SetVolume( long lVolume );
+    void SetVolume(long lVolume);
 
-	void	HandleEvent();
+    void HandleEvent();
 };
 
 #endif //_DIRECT_MUSIC_PLAYER_

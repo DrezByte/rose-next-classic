@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #include "GS_ListUSER.h"
 #include "GS_SocketASV.h"
 #include "LIB_gsMAIN.h"
@@ -41,8 +40,10 @@ GS_asvSOCKET::Init(HWND hWND, char* szLoginServerIP, int iLoginServerPort, UINT 
 //-------------------------------------------------------------------------------------------------
 bool
 GS_asvSOCKET::Connect() {
-    return m_SockASV.Connect(
-        m_hMainWND, m_AccountServerIP.Get(), m_AccountServerPORT, m_uiSocketMSG);
+    return m_SockASV.Connect(m_hMainWND,
+        m_AccountServerIP.Get(),
+        m_AccountServerPORT,
+        m_uiSocketMSG);
 }
 void
 GS_asvSOCKET::Disconnect() {

@@ -4,7 +4,7 @@
 #include "IO_STB.h"
 
 #ifndef __SERVER
-#include "..\\Object.h"
+    #include "..\\Object.h"
 #endif
 
 /*
@@ -477,7 +477,7 @@ void CInventory::SubtractITEM (short nListNO, int iQuantity, short &nCurWEIGHT)
         // 중복된 갯수를 갖는 아이템이다.
         SubITEM.m_iQuantity = iQuantity;
     }
-    
+
     nCurWEIGHT -= m_ItemLIST[ nListNO ].Subtract( SubITEM );
 }
 */

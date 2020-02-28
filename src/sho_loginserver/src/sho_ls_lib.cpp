@@ -178,8 +178,9 @@ SHO_LS::StartClientSOCKET(int iClientListenPort, int iLimitUserCNT, BYTE btMD5[3
     ::CopyMemory(m_btMD5, btMD5, 32);
 
     m_iClientListenPortNO = iClientListenPort;
-    g_pListCLIENT->Active(
-        m_iClientListenPortNO, 65535, 3 * 60); // µ¿½Ã Á¢¼Ó ¼ÒÄÏ °¹¼ö 65535. Á¢¼ÓÀ¯Áö Ã¼Å© 3ºÐ
+    g_pListCLIENT->Active(m_iClientListenPortNO,
+        65535,
+        3 * 60); // µ¿½Ã Á¢¼Ó ¼ÒÄÏ °¹¼ö 65535. Á¢¼ÓÀ¯Áö Ã¼Å© 3ºÐ
     this->SetLimitUserCNT(iLimitUserCNT);
 
     return true;
@@ -217,11 +218,16 @@ SHO_LS::StartServerSOCKET(HWND hMainWND,
         g_pThreadSQL = CLS_SqlTHREAD::Instance();
 
 #ifndef USE_ORACLE_DB
-        if (!g_pThreadSQL->Connect(
-                USE_MY_SQL, (char*)szDBServerIP, szDBUser, szPassword, szDBName, 32, 1024 * 8)) {
+        if (!g_pThreadSQL->Connect(USE_MY_SQL,
+                (char*)szDBServerIP,
+                szDBUser,
+                szPassword,
+                szDBName,
+                32,
+                1024 * 8)) {
 #else
-        if (!g_pThreadSQL->Connect(
-                USE_ODBC, szDBServerIP, szDBUser, szPassword, szDBName, 32, 1024 * 4)) {
+        if (!g_pThreadSQL
+                 ->Connect(USE_ODBC, szDBServerIP, szDBUser, szPassword, szDBName, 32, 1024 * 4)) {
 #endif
             g_LOG.CS_ODS(0xffff, "sql connect failed ...");
             g_pThreadSQL->Destroy();
@@ -237,11 +243,14 @@ SHO_LS::StartServerSOCKET(HWND hMainWND,
     g_dwStartTIME = classTIME::GetCurrentAbsSecond();
 
     m_iServerListenPortNO = iServerListenPort;
-    g_pListSERVER->Active(
-        m_iServerListenPortNO, 1024, 60); // µ¿½Ã Á¢¼Ó ¼ÒÄÏ °¹¼ö 1024. Á¢¼ÓÀ¯Áö Ã¼Å© 1ºÐ
+    g_pListSERVER->Active(m_iServerListenPortNO,
+        1024,
+        60); // µ¿½Ã Á¢¼Ó ¼ÒÄÏ °¹¼ö 1024. Á¢¼ÓÀ¯Áö Ã¼Å© 1ºÐ
 
-    m_pTIMER = new CTimer(
-        hMainWND, LS_TIMER_CHECK_WAIT_LIST, LS_TICK_CHECK_WAIT_LIST, (TIMERPROC)LS_TimerProc);
+    m_pTIMER = new CTimer(hMainWND,
+        LS_TIMER_CHECK_WAIT_LIST,
+        LS_TICK_CHECK_WAIT_LIST,
+        (TIMERPROC)LS_TimerProc);
     m_pTIMER->Start();
 
     return true;

@@ -10,13 +10,13 @@
 // #define	__NEW_LOG_2005_05
 
 #if !defined(__SHO_WS) && !defined(__SHO_GS)
-#error>>> ERROR :: must defined __SHO_WS or __SHO_GS
+    #error>>> ERROR :: must defined __SHO_WS or __SHO_GS
 #endif
 
 #ifdef __SHO_WS
-#include "CWS_Client.h"
+    #include "CWS_Client.h"
 typedef CWS_Client classUSER;
-#include "IO_STB.h"
+    #include "IO_STB.h"
 #endif
 
 #define SP_M_DEFLOG "{call gs_M_DefLOG(%I64d, \'%s\',\'%s\',\'%s\',\'%s\',\'%s\')}"
@@ -40,9 +40,9 @@ typedef CWS_Client classUSER;
 #define SP_M_LOGInOut "{call gs_M_LogInOut(%I64d, \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\')}"
 
 #ifdef __NEW_LOG_2005_05
-// gs_M_ChangeABILITY( 계정, 캐릭터, 스탯타입, 소모포인트, IP, 위치, X좌표, Y좌표 )
-#define SP_M_CHAGEABILITY \
-    "{call AddChangeAbility(%d, \'%s\', \'%s\', %d, %d, \'%s\', \'%s\', %d, %d)}"
+    // gs_M_ChangeABILITY( 계정, 캐릭터, 스탯타입, 소모포인트, IP, 위치, X좌표, Y좌표 )
+    #define SP_M_CHAGEABILITY \
+        "{call AddChangeAbility(%d, \'%s\', \'%s\', %d, %d, \'%s\', \'%s\', %d, %d)}"
 #endif
 
 //-------------------------------------------------------------------------------------------------
@@ -92,219 +92,223 @@ typedef CWS_Client classUSER;
 #define NEWLOG_UNION_USE_POINT 4
 
 #ifdef __NEW_LOG
-/*
-[AddLevelUpLog]
-    @CharID int,
-    @CharName nvarchar(30),
-    @toLevel smallint,
-    @BPoint smallint,
-    @SPoint smallint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int
-*/
-#define SP_LevelUpLog "{call AddLevelUpLog(%d,\'%s\',%d,%d,%d,\'%s\',%d,%d)}"
+    /*
+    [AddLevelUpLog]
+        @CharID int,
+        @CharName nvarchar(30),
+        @toLevel smallint,
+        @BPoint smallint,
+        @SPoint smallint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int
+    */
+    #define SP_LevelUpLog "{call AddLevelUpLog(%d,\'%s\',%d,%d,%d,\'%s\',%d,%d)}"
 
-/*
-[AddSkillLog]
-    @CharID int,
-    @CharName nvarchar(30),
-    @SkillID int,
-    @SkillName varchar(24),
-    @SkillLevel smallint,
-    @SPoint smallint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int
-*/
-#define SP_SkillLog "{call AddSkillLog(%d,\'%s\',%d,\'%s\',%d,%d,\'%s\',%d,%d)}"
+    /*
+    [AddSkillLog]
+        @CharID int,
+        @CharName nvarchar(30),
+        @SkillID int,
+        @SkillName varchar(24),
+        @SkillLevel smallint,
+        @SPoint smallint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int
+    */
+    #define SP_SkillLog "{call AddSkillLog(%d,\'%s\',%d,\'%s\',%d,%d,\'%s\',%d,%d)}"
 
-/*
-[AddUpgradeLog]
-    @CharID int,
-    @CharName nvarchar(30),
-    @ItemID varchar(10),
-    @ItemName varchar(50),
-    @UpLevel smallint,
-    @Success tinyint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int
+    /*
+    [AddUpgradeLog]
+        @CharID int,
+        @CharName nvarchar(30),
+        @ItemID varchar(10),
+        @ItemName varchar(50),
+        @UpLevel smallint,
+        @Success tinyint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int
 
-*/
-#define SP_UpgradeLog "{call AddUpgradeLog(%d,\'%s\',\'%s\',\'%s\',%d,%d,\'%s\',%d,%d)}"
+    */
+    #define SP_UpgradeLog "{call AddUpgradeLog(%d,\'%s\',\'%s\',\'%s\',%d,%d,\'%s\',%d,%d)}"
 
-/*
-[AddGemmingLog]
-    @CharID int,
-    @CharName nvarchar(30),
-    @ItemID varchar(10),
-    @ItemName varchar(50),
-    @JewelID varchar(10),
-    @JewelName varchar(24),
-    @Gemming tinyint,
-    @Success tinyint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int
-*/
-#define SP_GemmingLog \
-    "{call AddGemmingLog(%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,%d,\'%s\',%d,%d)}"
+    /*
+    [AddGemmingLog]
+        @CharID int,
+        @CharName nvarchar(30),
+        @ItemID varchar(10),
+        @ItemName varchar(50),
+        @JewelID varchar(10),
+        @JewelName varchar(24),
+        @Gemming tinyint,
+        @Success tinyint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int
+    */
+    #define SP_GemmingLog \
+        "{call AddGemmingLog(%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,%d,\'%s\',%d,%d)}"
 
-/*
-[AddCreateLog]
-    @CharID int,
-    @CharName nvarchar(30),
-    @ItemID varchar(10),
-    @ItemName varchar(50),
-    @Stuff1 varchar(24),
-    @Stuff2 varchar(24),
-    @Stuff3 varchar(24),
-    @Stuff4 varchar(24),
-    @Making tinyint,
-    @Success tinyint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int
-*/
-#define SP_CreateLog \
-    "{call AddCreateLog(%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,%d,\'%s\',%d,%d)}"
+    /*
+    [AddCreateLog]
+        @CharID int,
+        @CharName nvarchar(30),
+        @ItemID varchar(10),
+        @ItemName varchar(50),
+        @Stuff1 varchar(24),
+        @Stuff2 varchar(24),
+        @Stuff3 varchar(24),
+        @Stuff4 varchar(24),
+        @Making tinyint,
+        @Success tinyint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int
+    */
+    #define SP_CreateLog \
+        "{call "         \
+        "AddCreateLog(%d,\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d,%d,\'%s\',%d,%d)}"
 
-/*
-[AddLoginLog]
-    @Login tinyint,
-    @CharName nvarchar(30),
-    @Channel tinyint,
-    @CharLevel smallint,
-    @Money bigint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int,
-    @LoginIP varchar(15)
-*/
-#define SP_AddLoginLog "{call AddLoginLog(%d,\'%s\',%d,%d,%I64d,\'%s\',%d,%d,\'%s\')}"
+    /*
+    [AddLoginLog]
+        @Login tinyint,
+        @CharName nvarchar(30),
+        @Channel tinyint,
+        @CharLevel smallint,
+        @Money bigint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int,
+        @LoginIP varchar(15)
+    */
+    #define SP_AddLoginLog "{call AddLoginLog(%d,\'%s\',%d,%d,%I64d,\'%s\',%d,%d,\'%s\')}"
 
-/*
-[AddQuestLog]
-    @CharID int,
-    @CharName nvarchar(30),
-    @QuestID int,
-    @QuestDo tinyint
+    /*
+    [AddQuestLog]
+        @CharID int,
+        @CharName nvarchar(30),
+        @QuestID int,
+        @QuestDo tinyint
 
-*/
-#define SP_AddQuestLog "{call AddQuestLog(%d,\'%s\',%d,%d)}"
+    */
+    #define SP_AddQuestLog "{call AddQuestLog(%d,\'%s\',%d,%d)}"
 
-/*
-[AddCheatLog]
-    @Account nvarchar(20),
-    @CharName nvarchar(30),
-    @ChannelNo tinyint,
-    @CheatCode varchar(25),
-*/
-#define SP_AddCheatLog "{call AddCheatLog(\'%s\',\'%s\',%d,\'%s\')}"
+    /*
+    [AddCheatLog]
+        @Account nvarchar(20),
+        @CharName nvarchar(30),
+        @ChannelNo tinyint,
+        @CheatCode varchar(25),
+    */
+    #define SP_AddCheatLog "{call AddCheatLog(\'%s\',\'%s\',%d,\'%s\')}"
 
-/*
-[AddItemLog]
-    @Action int,
-    @SbjAccount nvarchar(20),
-    @SbjCharID int,
-    @SbjCharName nvarchar(30),
-    @ItemID varchar(10),
-    @ItemName varchar(50),
-    @ItemCount smallint,
-    @ItemSN bigint,
-    @Money bigint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int,
-    @ObjAccount nvarchar(20),
-    @ObjCharID int,
-    @ObjCharName nvarchar(30),
-    @SbjIP varchar(15),
-    @ObjIP varchar(15)
-*/
-#ifdef __NEW_LOG_2005_05
-#define SP_AddItemLog                                                                           \
-    "{call "                                                                                    \
-    "AddItemLog(%d,\'%s\',%d,\'%s\',\'%s\',\'%s\',%d,%I64d,%d,%I64d,\'%s\',%d,%d,\'%s\',%d,\'%" \
-    "s\',\'%s\',\'%s\')}"
-#else
-#define SP_AddItemLog                                                                            \
-    "{call "                                                                                     \
-    "AddItemLog(%d,\'%s\',%d,\'%s\',\'%s\',\'%s\',%d,%I64d,%I64d,\'%s\',%d,%d,\'%s\',%d,\'%s\'," \
-    "\'%s\',\'%s\')}"
-#endif
+    /*
+    [AddItemLog]
+        @Action int,
+        @SbjAccount nvarchar(20),
+        @SbjCharID int,
+        @SbjCharName nvarchar(30),
+        @ItemID varchar(10),
+        @ItemName varchar(50),
+        @ItemCount smallint,
+        @ItemSN bigint,
+        @Money bigint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int,
+        @ObjAccount nvarchar(20),
+        @ObjCharID int,
+        @ObjCharName nvarchar(30),
+        @SbjIP varchar(15),
+        @ObjIP varchar(15)
+    */
+    #ifdef __NEW_LOG_2005_05
+        #define SP_AddItemLog                                                                      \
+            "{call "                                                                               \
+            "AddItemLog(%d,\'%s\',%d,\'%s\',\'%s\',\'%s\',%d,%I64d,%d,%I64d,\'%s\',%d,%d,\'%s\',%" \
+            "d,\'%"                                                                                \
+            "s\',\'%s\',\'%s\')}"
+    #else
+        #define SP_AddItemLog                                                                     \
+            "{call "                                                                              \
+            "AddItemLog(%d,\'%s\',%d,\'%s\',\'%s\',\'%s\',%d,%I64d,%I64d,\'%s\',%d,%d,\'%s\',%d," \
+            "\'%s\',"                                                                             \
+            "\'%s\',\'%s\')}"
+    #endif
 
-/*
-[AddCharacterLog]
-    @AccountName nvarchar(20),
-    @CharName nvarchar(30),
-    @DelAdd tinyint
-*/
-#define SP_AddCharacterLog "{call AddCharacterLog(\'%s\',\'%s\',%d)}"
+    /*
+    [AddCharacterLog]
+        @AccountName nvarchar(20),
+        @CharName nvarchar(30),
+        @DelAdd tinyint
+    */
+    #define SP_AddCharacterLog "{call AddCharacterLog(\'%s\',\'%s\',%d)}"
 
-/*
-[AddDieLog]
-    @CharName varchar(32),
-    @Money bigint,
-    @KillPos varchar(24),
-    @CharLevel smallint,
-    @Exp int,
-    @PosX int,
-    @PosY int,
-    @ObjectName varchar(32)
-*/
-#define SP_AddDieLog "{call AddDieLog(\'%s\',%I64d,\'%s\',%d,%d,%d,%d,\'%s\')}"
+    /*
+    [AddDieLog]
+        @CharName varchar(32),
+        @Money bigint,
+        @KillPos varchar(24),
+        @CharLevel smallint,
+        @Exp int,
+        @PosX int,
+        @PosY int,
+        @ObjectName varchar(32)
+    */
+    #define SP_AddDieLog "{call AddDieLog(\'%s\',%I64d,\'%s\',%d,%d,%d,%d,\'%s\')}"
 
-/*
-[AddPeriodicCHARLog]
-    @CharName varchar(32),
-    @Channel tinyint,
-    @CharLevel smallint,
-    @Money bigint,
-    @Exp int,
-    @BPoint smallint,
-    @SPoint smallint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int
-*/
-#define SP_AddPeriodicCHARLog "{call AddPeriodicCHARLog(\'%s\',%d,%d,%I64d,%d,%d,%d,\'%s\',%d,%d)}"
+    /*
+    [AddPeriodicCHARLog]
+        @CharName varchar(32),
+        @Channel tinyint,
+        @CharLevel smallint,
+        @Money bigint,
+        @Exp int,
+        @BPoint smallint,
+        @SPoint smallint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int
+    */
+    #define SP_AddPeriodicCHARLog \
+        "{call AddPeriodicCHARLog(\'%s\',%d,%d,%I64d,%d,%d,%d,\'%s\',%d,%d)}"
 
-/*
-[Success] Column
-    0 : 클랜 생성 시작
-    1 : 클랜 생성 성공
-    2 : 클랜 생성 실패
-    3 : 클랜 해체
-[AddClanLog]
-    @CharName nvarchar(32),
-    @ClanName nvarchar(20),
-    @ClanLevel smallint,
-    @Point int,
-    @Success tinyint,
-    @Location varchar(24),
-    @LocX int,
-    @LocY int
-*/
-#define SP_AddClanLog "{call AddClanLog(\'%s\',\'%s\',%d,%d,%d,\'%s\',%d,%d)}"
+    /*
+    [Success] Column
+        0 : 클랜 생성 시작
+        1 : 클랜 생성 성공
+        2 : 클랜 생성 실패
+        3 : 클랜 해체
+    [AddClanLog]
+        @CharName nvarchar(32),
+        @ClanName nvarchar(20),
+        @ClanLevel smallint,
+        @Point int,
+        @Success tinyint,
+        @Location varchar(24),
+        @LocX int,
+        @LocY int
+    */
+    #define SP_AddClanLog "{call AddClanLog(\'%s\',\'%s\',%d,%d,%d,\'%s\',%d,%d)}"
 
-#ifdef __NEW_LOG_2005_05
-/*
-[AddUnionLog]
-    @iCharID int,
-    @szCharName nvarchar(30),
-    @nAction smallint,
-    @nCurUnion smallint,
-    @iCurPoint int,
-    @nAfterUnion smallint,
-    @iAfterPoint int,
-    @szLocation varchar(50),
-    @iLocX int,
-    @iLocY int
-*/
-#define SP_AddUnionLog "{call AddUnionLog(%d,\'%s\',%d,%d,%d,%d,%d,\'%s\',%d,%d)}"
-#endif
+    #ifdef __NEW_LOG_2005_05
+        /*
+        [AddUnionLog]
+            @iCharID int,
+            @szCharName nvarchar(30),
+            @nAction smallint,
+            @nCurUnion smallint,
+            @iCurPoint int,
+            @nAfterUnion smallint,
+            @iAfterPoint int,
+            @szLocation varchar(50),
+            @iLocX int,
+            @iLocY int
+        */
+        #define SP_AddUnionLog "{call AddUnionLog(%d,\'%s\',%d,%d,%d,%d,%d,\'%s\',%d,%d)}"
+    #endif
 
 #endif
 //-------------------------------------------------------------------------------------------------

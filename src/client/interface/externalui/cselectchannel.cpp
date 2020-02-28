@@ -7,32 +7,21 @@
 #include "tgamectrl/tlistbox.h"
 #include "tgamectrl/tmsgbox.h"
 
+CSelectChannel::CSelectChannel(void) {}
 
-CSelectChannel::CSelectChannel(void)
-{
+CSelectChannel::~CSelectChannel(void) {}
+
+void
+CSelectChannel::SetEUIObserver(CExternalUIManager* pObserver) {}
+
+unsigned
+CSelectChannel::Process(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
+    if (!IsVision())
+        return 0;
+
+    return 0;
 }
-
-CSelectChannel::~CSelectChannel(void)
-{
-}
-
-void CSelectChannel::SetEUIObserver( CExternalUIManager* pObserver )
-{
-
-}
-
-
-
-
-
-unsigned CSelectChannel::Process( UINT uiMsg,WPARAM wParam,LPARAM lParam )
-{
-	if( !IsVision() )
-		return 0;
-
-	return 0;
-}
-void CSelectChannel::Show()
-{
-	CTDialog::Show();
+void
+CSelectChannel::Show() {
+    CTDialog::Show();
 }

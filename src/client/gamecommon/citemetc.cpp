@@ -8,12 +8,6 @@
 #include "../interface/dlgs/MakeDlg.h"
 #include "../interface/command/CTCMDHOTEXEC.h"
 #include "../interface/command/uicommand.h"
-CItemEtc::CItemEtc(void)
-{
+CItemEtc::CItemEtc(void) {}
 
-}
-
-CItemEtc::~CItemEtc(void)
-{
-
-}
+CItemEtc::~CItemEtc(void) {}

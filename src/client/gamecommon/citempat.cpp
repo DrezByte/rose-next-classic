@@ -2,10 +2,6 @@
 
 #include ".\citempat.h"
 
-CItemPat::CItemPat(void)
-{
-}
+CItemPat::CItemPat(void) {}
 
-CItemPat::~CItemPat(void)
-{
-}
+CItemPat::~CItemPat(void) {}

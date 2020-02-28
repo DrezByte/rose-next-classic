@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "GS_ListUSER.h"
 #include "GS_PARTY.h"
 #include "GS_ThreadLOG.h"
@@ -67,15 +66,16 @@ CPartyBUFF::DeletePARTY(CParty* pCParty) {
 #ifdef __USE_ARRAY_PARTY_USER
             for (short nI = 0; nI < pCParty->GetMemberCNT(); nI++) {
                 if (NULL == pCParty->m_pPartyUSERs[nI]) {
-                    g_pThreadLOG->When_SysERR(
-                        __FILE__, nI, "DeletePARTY:: NULL == pCParty->m_pPartyUSERs[ nI ]");
+                    g_pThreadLOG->When_SysERR(__FILE__,
+                        nI,
+                        "DeletePARTY:: NULL == pCParty->m_pPartyUSERs[ nI ]");
                     continue;
                 }
 
                 if (pCParty->m_pPartyUSERs[nI]->m_pUSER) {
                     pCParty->m_pPartyUSERs[nI]->m_pUSER->m_pPartyBUFF = NULL;
-                    pCParty->m_pPartyUSERs[nI]->m_pUSER->Send_gsv_PARTY_REPLY(
-                        0, PARTY_REPLY_DESTROY);
+                    pCParty->m_pPartyUSERs[nI]->m_pUSER->Send_gsv_PARTY_REPLY(0,
+                        PARTY_REPLY_DESTROY);
                 }
 
                 SAFE_DELETE(pCParty->m_pPartyUSERs[nI]);
@@ -102,8 +102,9 @@ CParty::OnConnect(classUSER* pUSER) {
 #ifdef __USE_ARRAY_PARTY_USER
         for (short nI = 0; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "OnConnect:: NULL == this->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "OnConnect:: NULL == this->m_pPartyUSERs[ nI ]");
                 continue;
             }
 
@@ -147,14 +148,15 @@ CParty::OnDisconnect(classUSER* pUSER) {
     if (0 == pUSER->m_nPartyPOS) { // 파티 오너가 짤렸네...
         for (short nI = 1; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "OnDisconnect:: NULL == this->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "OnDisconnect:: NULL == this->m_pPartyUSERs[ nI ]");
                 continue;
             }
 
             if (this->m_pPartyUSERs[nI]->m_pUSER) {
-                this->Change_PartyOWNER(
-                    this->m_pPartyUSERs[nI]->m_pUSER, PARTY_REPLY_CHANGE_OWNERnDISCONN);
+                this->Change_PartyOWNER(this->m_pPartyUSERs[nI]->m_pUSER,
+                    PARTY_REPLY_CHANGE_OWNERnDISCONN);
                 return;
             }
         }
@@ -192,8 +194,9 @@ CParty::Kick_MEMBER(DWORD dwDBID) {
 #ifdef __USE_ARRAY_PARTY_USER
         for (short nI = 1; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "Kick_MEMBER:: NULL == this->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "Kick_MEMBER:: NULL == this->m_pPartyUSERs[ nI ]");
                 continue;
             }
 
@@ -240,8 +243,9 @@ CParty::SendToPartyMembers(classPACKET* pCPacket) {
 #ifdef __USE_ARRAY_PARTY_USER
         for (short nI = 0; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "SendToPartyMembers:: NULL == this->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "SendToPartyMembers:: NULL == this->m_pPartyUSERs[ nI ]");
                 continue;
             }
 
@@ -266,8 +270,9 @@ CParty::LevelUP() {
 #ifdef __USE_ARRAY_PARTY_USER
         for (short nI = 0; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "LevelUP:: NULL == this->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "LevelUP:: NULL == this->m_pPartyUSERs[ nI ]");
                 continue;
             }
 
@@ -378,8 +383,9 @@ CParty::AddEXP(CObjMOB* pMobCHAR, int iTotalEXP, int iPartyExpA, int iPartyExpB)
 #ifdef __USE_ARRAY_PARTY_USER
         for (short nI = 0; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "AddEXP:: NULL == this->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "AddEXP:: NULL == this->m_pPartyUSERs[ nI ]");
                 continue;
             }
 
@@ -575,8 +581,9 @@ CParty::Send_PartyUserLIST(classUSER* pUSER, DWORD dwUserTAG) {
         for (short nI = 0; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
                 // 이런 경우는 뭐냐 ???
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "Send_PartyUserLIST:: NULL == pCParty->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "Send_PartyUserLIST:: NULL == pCParty->m_pPartyUSERs[ nI ]");
                 continue;
             }
 
@@ -775,8 +782,9 @@ CParty::Share_MONEY(int iMoney) {
         for (short nI = 0; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
                 // 이런 경우는 뭐냐 ???
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "Share_MONEY:: NULL == pCParty->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "Share_MONEY:: NULL == pCParty->m_pPartyUSERs[ nI ]");
                 continue;
             }
             if (this->m_pPartyUSERs[nI]
@@ -874,8 +882,9 @@ CParty::Send_gsv_CHECK_NPC_EVENT(classUSER* pTryOBJ, short nNpcIDX) {
 #ifdef __USE_ARRAY_PARTY_USER
         for (short nI = 0; nI < this->m_nMemberCNT; nI++) {
             if (NULL == this->m_pPartyUSERs[nI]) {
-                g_pThreadLOG->When_SysERR(
-                    __FILE__, nI, "SendToPartyMembers:: NULL == this->m_pPartyUSERs[ nI ]");
+                g_pThreadLOG->When_SysERR(__FILE__,
+                    nI,
+                    "SendToPartyMembers:: NULL == this->m_pPartyUSERs[ nI ]");
                 continue;
             }
 

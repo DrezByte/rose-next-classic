@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #include "LIB_gsMAIN.h"
 //#include "GS_SocketLOG.h"
 #include "GS_ThreadZONE.h"
@@ -226,10 +225,10 @@ txtITEM ) VALUES( \'%s\',\'%s\',\'%s\',\'%s\',\'%s\' );", this->GetCurDateTimeST
 
 //-------------------------------------------------------------------------------------------------
 #ifdef __NEW_LOG
-#define CHECK_TRADE_MONEY_AMOUNT 10000
-#define CHECK_ITEM_PRICE 5000
+    #define CHECK_TRADE_MONEY_AMOUNT 10000
+    #define CHECK_ITEM_PRICE 5000
 #else
-#define CHECK_TRADE_MONEY_AMOUNT 10000
+    #define CHECK_TRADE_MONEY_AMOUNT 10000
 #endif
 
 /*
@@ -299,8 +298,13 @@ GS_CThreadLOG::GetItemINFO(tagITEM* pITEM,
     int iMoneyAmout,
     DWORD dwTradeMoney,
     int iTradeCnt) {
-    return this->MakeItemDESC(
-        &m_ItemSTR, pITEM, iItmePrice, iDupCnt, iMoneyAmout, dwTradeMoney, iTradeCnt);
+    return this->MakeItemDESC(&m_ItemSTR,
+        pITEM,
+        iItmePrice,
+        iDupCnt,
+        iMoneyAmout,
+        dwTradeMoney,
+        iTradeCnt);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -920,8 +924,8 @@ GS_CThreadLOG::When_GemmingITEM(classUSER* pSourAVT,
                     pSourAVT->m_dwDBID, //	@CharID int,
                     pSourAVT->Get_NAME(), //	@CharName nvarchar(30),
                     m_ItemSTR.Get(), //	@ItemID varchar(10),
-                    ITEM_NAME(
-                        pEquipITEM->GetTYPE(), pEquipITEM->GetItemNO()), //	@ItemName varchar(50),
+                    ITEM_NAME(pEquipITEM->GetTYPE(),
+                        pEquipITEM->GetItemNO()), //	@ItemName varchar(50),
                     m_DescSTR.Get(), //	@JewelID varchar(10),
                     GEMITEM_NAME(pJewelITEM->GetItemNO()), //	@JewelName varchar(24),
                     btGemming, //	@Gemming tinyint,
@@ -934,8 +938,8 @@ GS_CThreadLOG::When_GemmingITEM(classUSER* pSourAVT,
                     pSourAVT->m_dwDBID, //	@CharID int,
                     pSourAVT->Get_NAME(), //	@CharName nvarchar(30),
                     m_ItemSTR.Get(), //	@ItemID varchar(10),
-                    ITEM_NAME(
-                        pEquipITEM->GetTYPE(), pEquipITEM->GetItemNO()), //	@ItemName varchar(50),
+                    ITEM_NAME(pEquipITEM->GetTYPE(),
+                        pEquipITEM->GetItemNO()), //	@ItemName varchar(50),
                     "0", //	@JewelID varchar(10),
                     GEMITEM_NAME(pEquipITEM->GetGemNO()), //	@JewelName varchar(24),
                     btGemming, //	@Gemming tinyint,
@@ -1055,8 +1059,8 @@ GS_CThreadLOG::When_UpgradeITEM(classUSER* pSourAVT,
                 pSourAVT->m_dwDBID, //	@CharID int,
                 pSourAVT->Get_NAME(), //	@CharName nvarchar(30),
                 this->m_ItemSTR.Get(), //	@ItemID varchar(10),
-                ITEM_NAME(
-                    pEquipITEM->GetTYPE(), pEquipITEM->GetItemNO()), //	@ItemName varchar(50),
+                ITEM_NAME(pEquipITEM->GetTYPE(),
+                    pEquipITEM->GetItemNO()), //	@ItemName varchar(50),
                 btBeforeGrade + 1, //	@UpLevel smallint,
                 btResult, //	@Success tinyint,
                 szZoneName ? szZoneName : "null", //	@Location varchar(24),
@@ -1075,7 +1079,7 @@ GS_CThreadLOG::When_UpgradeITEM(classUSER* pSourAVT,
 bool
 GS_CThreadLOG::When_ChangeUNION(classUSER* pSourAVT, int iBeforeUnion, int iNewUnion) {
 #ifdef __NEW_LOG_2005_05
-#ifdef __NEW_LOG
+    #ifdef __NEW_LOG
     m_csSQL.Lock();
     {
         int iCurPnt, iAfterPnt;
@@ -1112,7 +1116,7 @@ GS_CThreadLOG::When_ChangeUNION(classUSER* pSourAVT, int iBeforeUnion, int iNewU
         this->Send_gsv_LOG_SQL();
     }
     m_csSQL.Unlock();
-#endif
+    #endif
 #endif
     return true;
 }
@@ -1120,7 +1124,7 @@ GS_CThreadLOG::When_ChangeUNION(classUSER* pSourAVT, int iBeforeUnion, int iNewU
 bool
 GS_CThreadLOG::When_PointUNION(classUSER* pSourAVT, int iCurUnion, int iCurPoint, int iNewPoint) {
 #ifdef __NEW_LOG_2005_05
-#ifdef __NEW_LOG
+    #ifdef __NEW_LOG
     m_csSQL.Lock();
     {
         // 조합 포인트로 조합상점에서 아이템 구매시 ITEM log와 함께 조합 포인트 로그가 같이
@@ -1147,7 +1151,7 @@ GS_CThreadLOG::When_PointUNION(classUSER* pSourAVT, int iCurUnion, int iCurPoint
         this->Send_gsv_LOG_SQL();
     }
     m_csSQL.Unlock();
-#endif
+    #endif
 #endif
     return true;
 }
@@ -1387,9 +1391,9 @@ GS_CThreadLOG::When_TagItemLOG(int iAction,
                         szItemName, // @ItemName varchar(50),
                         nQuantity, // @ItemCount smallint,
                         pItem->m_iSN, // @ItemSN bigint,
-#ifdef __NEW_LOG_2005_05
+    #ifdef __NEW_LOG_2005_05
                         pItem->GetOption(), // @ItemOpt smallint,
-#endif
+    #endif
                         biTradeZuly, // @Money bigint,
                         szZoneName ? szZoneName : "null", // @Location varchar(24),
                         (int)pSourAVT->m_PosCUR.x, // @LocX int,
@@ -1410,9 +1414,9 @@ GS_CThreadLOG::When_TagItemLOG(int iAction,
                         szItemName, // @ItemName varchar(50),
                         nQuantity, // @ItemCount smallint,
                         pItem->m_iSN, // @ItemSN bigint,
-#ifdef __NEW_LOG_2005_05
+    #ifdef __NEW_LOG_2005_05
                         pItem->GetOption(), // @ItemOpt smallint,
-#endif
+    #endif
                         biTradeZuly, // @Money bigint,
                         szZoneName ? szZoneName : "null", // @Location varchar(24),
                         (int)pSourAVT->m_PosCUR.x, // @LocX int,
@@ -1441,9 +1445,9 @@ GS_CThreadLOG::When_TagItemLOG(int iAction,
                         NULL, // @ItemName varchar(50),
                         0, // @ItemCount smallint,
                         (__int64)0, // @ItemSN bigint,
-#ifdef __NEW_LOG_2005_05
+    #ifdef __NEW_LOG_2005_05
                         (int)0,
-#endif
+    #endif
                         biTradeZuly, // @Money bigint,
                         szZoneName ? szZoneName : "null", // @Location varchar(24),
                         (int)pSourAVT->m_PosCUR.x, // @LocX int,
@@ -1464,9 +1468,9 @@ GS_CThreadLOG::When_TagItemLOG(int iAction,
                         NULL, // @ItemName varchar(50),
                         0, // @ItemCount smallint,
                         (__int64)0, // @ItemSN bigint,
-#ifdef __NEW_LOG_2005_05
+    #ifdef __NEW_LOG_2005_05
                         (int)0,
-#endif
+    #endif
                         biTradeZuly, // @Money bigint,
                         szZoneName ? szZoneName : "null", // @Location varchar(24),
                         (int)pSourAVT->m_PosCUR.x, // @LocX int,
@@ -1523,9 +1527,9 @@ GS_CThreadLOG::When_ObjItemLOG(int iAction, classUSER* pSourAVT, CObjITEM* pItem
                     szItemName, // @ItemName varchar(50),
                     nQuantity, // @ItemCount smallint,
                     pItemOBJ->m_ITEM.m_iSN, // @ItemSN bigint,
-#ifdef __NEW_LOG_2005_05
+    #ifdef __NEW_LOG_2005_05
                     pItemOBJ->m_ITEM.GetOption(),
-#endif
+    #endif
                     biTradeZuly, // @Money bigint,
                     szZoneName ? szZoneName : "null", // @Location varchar(24),
                     (int)pSourAVT->m_PosCUR.x, // @LocX int,
@@ -1546,9 +1550,9 @@ GS_CThreadLOG::When_ObjItemLOG(int iAction, classUSER* pSourAVT, CObjITEM* pItem
                     szItemName, // @ItemName varchar(50),
                     nQuantity, // @ItemCount smallint,
                     pItemOBJ->m_ITEM.m_iSN, // @ItemSN bigint,
-#ifdef __NEW_LOG_2005_05
+    #ifdef __NEW_LOG_2005_05
                     pItemOBJ->m_ITEM.GetOption(),
-#endif
+    #endif
                     biTradeZuly, // @Money bigint,
                     szZoneName ? szZoneName : "null", // @Location varchar(24),
                     (int)pSourAVT->m_PosCUR.x, // @LocX int,
@@ -1621,9 +1625,9 @@ GS_CThreadLOG::When_DeletedITEM(CObjITEM* pItemOBJ) {
                         pItemOBJ->m_ITEM.GetItemNO()), // @ItemName varchar(50),
                     nQuantity, // @ItemCount smallint,
                     pItemOBJ->m_ITEM.m_iSN, // @ItemSN bigint,
-#ifdef __NEW_LOG_2005_05
+    #ifdef __NEW_LOG_2005_05
                     pItemOBJ->m_ITEM.GetOption(),
-#endif
+    #endif
                     biTradeZuly, // @Money bigint,
                     szZoneName ? szZoneName : "null", // @Location varchar(24),
                     (int)pItemOBJ->m_PosCUR.x, // @LocX int,
@@ -1645,9 +1649,9 @@ GS_CThreadLOG::When_DeletedITEM(CObjITEM* pItemOBJ) {
                     "Zuly", // @ItemName varchar(50),
                     nQuantity, // @ItemCount smallint,
                     pItemOBJ->m_ITEM.m_iSN, // @ItemSN bigint,
-#ifdef __NEW_LOG_2005_05
+    #ifdef __NEW_LOG_2005_05
                     pItemOBJ->m_ITEM.GetOption(),
-#endif
+    #endif
                     biTradeZuly, // @Money bigint,
                     szZoneName ? szZoneName : "null", // @Location varchar(24),
                     (int)pItemOBJ->m_PosCUR.x, // @LocX int,

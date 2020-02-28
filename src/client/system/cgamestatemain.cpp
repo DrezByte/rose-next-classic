@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #include "../GameCommon/item.h"
 #include "../GameProc/CDayNNightProc.h"
 #include "../Interface/CHelpMgr.h"
@@ -182,8 +181,8 @@ CGameStateMain::Enter(int iPrevStateID) {
         int draw_width;
 
         /// Zone Name
-        SIZE size = getFontTextExtent(
-            g_GameDATA.m_hFONT[FONT_OUTLINE_18_BOLD], ZONE_NAME(g_pTerrain->GetZoneNO()));
+        SIZE size = getFontTextExtent(g_GameDATA.m_hFONT[FONT_OUTLINE_18_BOLD],
+            ZONE_NAME(g_pTerrain->GetZoneNO()));
         draw_width = size.cx;
         draw_position.x = g_pCApp->GetWIDTH() / 2 - size.cx / 2;
         draw_position.y = 150; ///일단 고정
@@ -567,8 +566,8 @@ CGameStateMain::ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
                 /// 'K'
                 case 0x4B: {
                     if (CGame::GetInstance().GetRight() >= CHEAT_GM) {
-                        g_DayNNightProc.SetWorldTime(
-                            g_pTerrain->GetZoneNO(), g_DayNNightProc.GetWorldTime() + 10);
+                        g_DayNNightProc.SetWorldTime(g_pTerrain->GetZoneNO(),
+                            g_DayNNightProc.GetWorldTime() + 10);
                     }
                 } break;
 
@@ -577,7 +576,8 @@ CGameStateMain::ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
                     if (CGame::GetInstance().GetRight() >= CHEAT_GM) {
                         int iClientObjectIndex = g_UserInputSystem.GetCurrentTarget();
                         CObjCHAR* pChar = g_pObjMGR->Get_ClientCharOBJ(
-                            g_pObjMGR->Get_ServerObjectIndex(iClientObjectIndex), false);
+                            g_pObjMGR->Get_ServerObjectIndex(iClientObjectIndex),
+                            false);
                         if (pChar) {
                             switch (pChar->Get_TYPE()) {
                                 case OBJ_MOB:
@@ -707,7 +707,7 @@ CGameStateMain::ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
 
 ///*-------------------------------------------------------------------------------------*/
 #ifdef _DEBUG
-#include "../ObjFixedEvent.h"
+    #include "../ObjFixedEvent.h"
 #endif //_DEBUG
 bool
 CGameStateMain::On_WM_KEYDOWN(WPARAM wParam, LPARAM lParam) {
@@ -783,13 +783,13 @@ CGameStateMain::On_WM_KEYDOWN(WPARAM wParam, LPARAM lParam) {
                 }
             }
         }
-		return true;
+            return true;
 
-		case 'Z':
-		case 'z': {
-			g_itMGR.reload_dialogs();
-		}
-		return true;
+        case 'Z':
+        case 'z': {
+            g_itMGR.reload_dialogs();
+        }
+            return true;
 
         default: {
 
@@ -1117,8 +1117,8 @@ CGameStateMain::UpdateCheckFrame() {
                             MouseInfo.Clear();
                             CObjITEM* pItem = (CObjITEM*)g_pObjMGR->m_pOBJECTS[this->m_iPickedOBJ];
                             MouseInfo.AddString(pItem->Get_NAME(),
-                                CItem::GetItemNameColor(
-                                    pItem->m_ITEM.GetTYPE(), pItem->m_ITEM.GetItemNO()));
+                                CItem::GetItemNameColor(pItem->m_ITEM.GetTYPE(),
+                                    pItem->m_ITEM.GetItemNO()));
                             refCursor.SetCursorType(CCursor::CURSOR_ITEM_PICK, &MouseInfo);
                             break;
                         }

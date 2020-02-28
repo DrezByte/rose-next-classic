@@ -8,66 +8,66 @@ namespace Rose {
 namespace Common {
 
 enum class StatusEffectType : unsigned int {
-	Null,
+    Null,
 
-	// HP/MP status effects
-	HPMPStart,
-	IncreaseHP = HPMPStart,
-	IncreaseMP,
-	Poisoned,
-	IncreaseMaxHP,
-	IncreaseMaxMP,
-	HPMPEnd = IncreaseMaxMP,
+    // HP/MP status effects
+    HPMPStart,
+    IncreaseHP = HPMPStart,
+    IncreaseMP,
+    Poisoned,
+    IncreaseMaxHP,
+    IncreaseMaxMP,
+    HPMPEnd = IncreaseMaxMP,
 
-	// General status effects
-	GeneralStart,
-	IncreaseMoveSpeed = GeneralStart,
-	DecreaseMoveSpeed,
-	IncreaseAttackSpeed,
-	DecreaseAttackSpeed,
-	IncreaseAttackPower,
-	DecreaseAttackPower,
-	IncreaseDefense,
-	DecreaseDefense,
-	IncreaseMagicRes,
-	DecreaseMagicRes,
-	IncreaseHit,
-	DecreaseHit,
-	IncreaseCrit,
-	DecreaseCrit,
-	IncreaseDodge,
-	DecreaseDodge,
-	Dumb,
-	Sleep,
-	Faint,
-	Disguise,
-	Invisible,
-	ShieldDamage,
-	AdditionalDamage,
-	GeneralEnd = AdditionalDamage,
+    // General status effects
+    GeneralStart,
+    IncreaseMoveSpeed = GeneralStart,
+    DecreaseMoveSpeed,
+    IncreaseAttackSpeed,
+    DecreaseAttackSpeed,
+    IncreaseAttackPower,
+    DecreaseAttackPower,
+    IncreaseDefense,
+    DecreaseDefense,
+    IncreaseMagicRes,
+    DecreaseMagicRes,
+    IncreaseHit,
+    DecreaseHit,
+    IncreaseCrit,
+    DecreaseCrit,
+    IncreaseDodge,
+    DecreaseDodge,
+    Dumb,
+    Sleep,
+    Faint,
+    Disguise,
+    Invisible,
+    ShieldDamage,
+    AdditionalDamage,
+    GeneralEnd = AdditionalDamage,
 
-	DecreaseLifetime,
+    DecreaseLifetime,
 
-	ClearGood,
-	ClearBad,
-	ClearAll,
-	ClearInvisible,
+    ClearGood,
+    ClearBad,
+    ClearAll,
+    ClearInvisible,
 
-	Taunt,
-	Revive,
-	Goddess,
+    Taunt,
+    Revive,
+    Goddess,
 
-	Max,
+    Max,
 
-	// "Sub" types
-	Hide,
-	StoreMode,
-	IntroChat,
-	AruaFairy,
-	Invincible,
+    // "Sub" types
+    Hide,
+    StoreMode,
+    IntroChat,
+    AruaFairy,
+    Invincible,
 };
 
-} // Common namespace
-} // Rose namespace
+} // namespace Common
+} // namespace Rose
 
 #endif // STATUS_EFFECT_H

@@ -19,44 +19,45 @@
  */
 class CZoneSECTOR {
 protected:
-	static	int				m_iSectorCNT;
+    static int m_iSectorCNT;
 
-    classDLLIST< CGameOBJ* >  m_ObjLIST;
-	classDLLNODE< CGameOBJ* >*m_pObjNODE;
+    classDLLIST<CGameOBJ*> m_ObjLIST;
+    classDLLNODE<CGameOBJ*>* m_pObjNODE;
 
-#ifdef	__USE_CS_SECTOR
-	CCriticalSection		m_csSECTOR;
+#ifdef __USE_CS_SECTOR
+    CCriticalSection m_csSECTOR;
 
-    void LockSector ()        { ::EnterCriticalSection( &m_csSECTOR );	}
-    void UnlockSector ()      {	::LeaveCriticalSection( &m_csSECTOR );  }
+    void LockSector() { ::EnterCriticalSection(&m_csSECTOR); }
+    void UnlockSector() { ::LeaveCriticalSection(&m_csSECTOR); }
 #else
-    void LockSector ()        {	;	}
-    void UnlockSector ()      {	;	}
+    void LockSector() { ; }
+    void UnlockSector() { ; }
 #endif
 
-public :
-	static int	GetSectorCount ()	{	return m_iSectorCNT;	}
+public:
+    static int GetSectorCount() { return m_iSectorCNT; }
 
-	int	m_iCenterX;
-	int m_iCenterY;
+    int m_iCenterX;
+    int m_iCenterY;
 
-    CZoneSECTOR ();
-    ~CZoneSECTOR ();
+    CZoneSECTOR();
+    ~CZoneSECTOR();
 
-	void SetCenterPOS(int iCenterX, int iCenterY);
-    void InsToSEC  ( CGameOBJ *pObj );
-    void DelFromSEC( CGameOBJ *pObj );
+    void SetCenterPOS(int iCenterX, int iCenterY);
+    void InsToSEC(CGameOBJ* pObj);
+    void DelFromSEC(CGameOBJ* pObj);
 
-	virtual classDLLNODE< CGameOBJ* > *FindFirstCHAR (CGameOBJ *pObjFINDER) = 0;
-	virtual classDLLNODE< CGameOBJ* > *FindNextCHAR (classDLLNODE< CGameOBJ* > *pCurNODE, CGameOBJ *pObjFINDER) = 0;
+    virtual classDLLNODE<CGameOBJ*>* FindFirstCHAR(CGameOBJ* pObjFINDER) = 0;
+    virtual classDLLNODE<CGameOBJ*>* FindNextCHAR(classDLLNODE<CGameOBJ*>* pCurNODE,
+        CGameOBJ* pObjFINDER) = 0;
 
-    virtual void SendPacketToSECTOR( classPACKET *pCPacket, CGameOBJ *pObjSENDER ) = 0;
-	virtual void SendTeamPacketToSECTOR( classPACKET *pCPacket, int iTeamNo, CGameOBJ *pObjSENDER ) = 0;
+    virtual void SendPacketToSECTOR(classPACKET* pCPacket, CGameOBJ* pObjSENDER) = 0;
+    virtual void
+    SendTeamPacketToSECTOR(classPACKET* pCPacket, int iTeamNo, CGameOBJ* pObjSENDER) = 0;
 
-    virtual void SendAddUserPacket( classUSER *pUSER, classPACKET *pCPacket ) = 0;
-    virtual void SendSubUserPacket( classUSER *pUSER, classPACKET *pCPacket ) = 0;
-} ;
-
+    virtual void SendAddUserPacket(classUSER* pUSER, classPACKET* pCPacket) = 0;
+    virtual void SendSubUserPacket(classUSER* pUSER, classPACKET* pCPacket) = 0;
+};
 
 //-------------------------------------------------------------------------------------------------
 /**
@@ -66,18 +67,17 @@ public :
  * \brief	일반 존의 영역을 구성하는 섹터 클래스
  *			기본섹터 클래스 CZoneSECTOR를 상속받음
  */
-class CNormalSECTOR : public CZoneSECTOR
-{
-public :
-	classDLLNODE< CGameOBJ* > *FindFirstCHAR (CGameOBJ *pObjFINDER);
-	classDLLNODE< CGameOBJ* > *FindNextCHAR (classDLLNODE< CGameOBJ* > *pCurNODE, CGameOBJ *pObjFINDER);
+class CNormalSECTOR: public CZoneSECTOR {
+public:
+    classDLLNODE<CGameOBJ*>* FindFirstCHAR(CGameOBJ* pObjFINDER);
+    classDLLNODE<CGameOBJ*>* FindNextCHAR(classDLLNODE<CGameOBJ*>* pCurNODE, CGameOBJ* pObjFINDER);
 
-    void SendPacketToSECTOR( classPACKET *pCPacket, CGameOBJ *pObjSENDER  );
-	void SendTeamPacketToSECTOR( classPACKET *pCPacket, int iTeamNo, CGameOBJ *pObjSENDER );
+    void SendPacketToSECTOR(classPACKET* pCPacket, CGameOBJ* pObjSENDER);
+    void SendTeamPacketToSECTOR(classPACKET* pCPacket, int iTeamNo, CGameOBJ* pObjSENDER);
 
-    void SendAddUserPacket( classUSER *pUSER, classPACKET *pCPacket );
-    void SendSubUserPacket( classUSER *pUSER, classPACKET *pCPacket );
-} ;
+    void SendAddUserPacket(classUSER* pUSER, classPACKET* pCPacket);
+    void SendSubUserPacket(classUSER* pUSER, classPACKET* pCPacket);
+};
 
 //-------------------------------------------------------------------------------------------------
 /**
@@ -85,21 +85,19 @@ public :
  * \class	CAgitSECTOR
  * \author	wookSang.Jo
  * \brief	아지트 존의 영역을 구성하는 섹터 클래스
-  *			기본섹터 클래스 CZoneSECTOR를 상속받음
-*/
-class CAgitSECTOR : public CZoneSECTOR
-{
-public :
-	classDLLNODE< CGameOBJ* > *FindFirstCHAR (CGameOBJ *pObjFINDER);
-	classDLLNODE< CGameOBJ* > *FindNextCHAR (classDLLNODE< CGameOBJ* > *pCurNODE, CGameOBJ *pObjFINDER);
+ *			기본섹터 클래스 CZoneSECTOR를 상속받음
+ */
+class CAgitSECTOR: public CZoneSECTOR {
+public:
+    classDLLNODE<CGameOBJ*>* FindFirstCHAR(CGameOBJ* pObjFINDER);
+    classDLLNODE<CGameOBJ*>* FindNextCHAR(classDLLNODE<CGameOBJ*>* pCurNODE, CGameOBJ* pObjFINDER);
 
-    void SendPacketToSECTOR( classPACKET *pCPacket, CGameOBJ *pObjSENDER  );
-	void SendTeamPacketToSECTOR( classPACKET *pCPacket, int iTeamNo, CGameOBJ *pObjSENDER );
+    void SendPacketToSECTOR(classPACKET* pCPacket, CGameOBJ* pObjSENDER);
+    void SendTeamPacketToSECTOR(classPACKET* pCPacket, int iTeamNo, CGameOBJ* pObjSENDER);
 
-    void SendAddUserPacket( classUSER *pUSER, classPACKET *pCPacket );
-    void SendSubUserPacket( classUSER *pUSER, classPACKET *pCPacket );
-} ;
+    void SendAddUserPacket(classUSER* pUSER, classPACKET* pCPacket);
+    void SendSubUserPacket(classUSER* pUSER, classPACKET* pCPacket);
+};
 
 //-------------------------------------------------------------------------------------------------
 #endif
- 

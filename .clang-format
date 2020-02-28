@@ -1,13 +1,16 @@
 ---
+Language: Cpp
+# BasedOnStyle: None
 AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign
+# AlignConsecutiveMacros: false
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: Left
 AlignOperands: false
 AlignTrailingComments: false
-# AllowAllArgumentsOnNextLine: false # LLVM9?
-# AllowAllConstructorInitializersOnNextLine: false # LLVM9?
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
@@ -43,7 +46,7 @@ IncludeBlocks: Preserve
 # IncludeCategories:
 # IncludeIsMainRegex:
 IndentCaseLabels: true
-# IndentPPDirectives: BeforeHash
+IndentPPDirectives: BeforeHash
 IndentWidth: 4
 IndentWrappedFunctionNames: false
 KeepEmptyLinesAtTheStartOfBlocks: true
@@ -61,17 +64,17 @@ NamespaceIndentation: None
 # PenaltyExcessCharacter:
 # PenaltyReturnTypeOnItsOwnLine:
 PointerAlignment: Left
-# RawStringFormats
+RawStringFormats
 ReflowComments: true
-SortIncludes: true
+SortIncludes: false
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
-# SpaceAfterLogicalNot: false # LLVM9?
+SpaceAfterLogicalNot: false # LLVM9?
 SpaceAfterTemplateKeyword: false
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: false
-# SpaceBeforeInheritanceColon: false
+SpaceBeforeInheritanceColon: false
 SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: false
 SpaceInEmptyParentheses: false

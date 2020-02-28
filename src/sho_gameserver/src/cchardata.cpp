@@ -3,175 +3,168 @@
 #include "LIB_gsMAIN.h"
 #include "CCharDATA.h"
 
-
 //-------------------------------------------------------------------------------------------------
-CCharDATA::CCharDATA ()
-{
-	m_nAniCNT = 0;
-	m_ppAniFILE = NULL;
+CCharDATA::CCharDATA() {
+    m_nAniCNT = 0;
+    m_ppAniFILE = NULL;
 }
-CCharDATA::~CCharDATA ()
-{
-	SAFE_DELETE_ARRAY( m_ppAniFILE );
+CCharDATA::~CCharDATA() {
+    SAFE_DELETE_ARRAY(m_ppAniFILE);
 }
 
 //-------------------------------------------------------------------------------------------------
-bool CCharDATA::Load_MOBorNPC (FILE *fp, t_HASHKEY *pAniKEY, short nAniCNT)
-{
-	char cIsValid;
+bool
+CCharDATA::Load_MOBorNPC(FILE* fp, t_HASHKEY* pAniKEY, short nAniCNT) {
+    char cIsValid;
 
-	fread (&cIsValid,	sizeof(char), 1, fp);
-	if ( cIsValid == 0 )
-		return true;
+    fread(&cIsValid, sizeof(char), 1, fp);
+    if (cIsValid == 0)
+        return true;
 
-	short nI, nIndex;
+    short nI, nIndex;
 
-	// read skel index
-	fread (&nIndex, sizeof(short), 1, fp);
+    // read skel index
+    fread(&nIndex, sizeof(short), 1, fp);
 
-	char *pStr = CStr::ReadString (fp);
+    char* pStr = CStr::ReadString(fp);
 
-#ifdef	_DEBUG
-	m_Name.Set( pStr );
+#ifdef _DEBUG
+    m_Name.Set(pStr);
 #endif
 
-	// read data index
-	fread (&nIndex, sizeof(short),			1, fp);
-	fseek ( fp,		nIndex*sizeof(short),	SEEK_CUR);
+    // read data index
+    fread(&nIndex, sizeof(short), 1, fp);
+    fseek(fp, nIndex * sizeof(short), SEEK_CUR);
 
-	// read ani index counter
-	short nAniIDX;
+    // read ani index counter
+    short nAniIDX;
 
-	fread (&m_nAniCNT, sizeof(short), 1, fp);
-	assert( m_nAniCNT > 0 );
+    fread(&m_nAniCNT, sizeof(short), 1, fp);
+    assert(m_nAniCNT > 0);
 
-	m_ppAniFILE = new tagMOTION*[ MAX_MOB_ANI ];
-	::ZeroMemory( m_ppAniFILE,	sizeof( tagMOTION* ) * MAX_MOB_ANI );
+    m_ppAniFILE = new tagMOTION*[MAX_MOB_ANI];
+    ::ZeroMemory(m_ppAniFILE, sizeof(tagMOTION*) * MAX_MOB_ANI);
 
-	for (nI=0; nI<m_nAniCNT; nI++) {
-		// nAniIDX == 0 인 정지가 안들어 온다..
-		fread (&nAniIDX, sizeof(short), 1, fp);
-		fread (&nIndex,  sizeof(short), 1, fp);
+    for (nI = 0; nI < m_nAniCNT; nI++) {
+        // nAniIDX == 0 인 정지가 안들어 온다..
+        fread(&nAniIDX, sizeof(short), 1, fp);
+        fread(&nIndex, sizeof(short), 1, fp);
 
-		if ( nAniIDX < 0 ) {
-			// 사용하지 않는다...
-			continue;
-		}
+        if (nAniIDX < 0) {
+            // 사용하지 않는다...
+            continue;
+        }
 
-		assert( nAniIDX < MAX_MOB_ANI );
-		assert( nIndex >= 0 );
-		assert( nIndex < nAniCNT );
+        assert(nAniIDX < MAX_MOB_ANI);
+        assert(nIndex >= 0);
+        assert(nIndex < nAniCNT);
 
-		m_ppAniFILE[ nAniIDX ] = g_MotionFILE.KEY_GetMOTION( pAniKEY[ nIndex ] );
+        m_ppAniFILE[nAniIDX] = g_MotionFILE.KEY_GetMOTION(pAniKEY[nIndex]);
 
-		// 여기서 뻑나면...
-		// Load_MOBorNPC함수에서 g_MotionFILE.Add_FILE함수 호출시 nAniIDX값을 이용해서
-		// 모션 파일 이름을 찾자~~~~
-		if ( 0 == m_ppAniFILE[ nAniIDX ] ) {
-			int i=00;
-			// Ralph: Something in LIST_NPC.CHR is causing an assert
-			// assert( m_ppAniFILE[ nAniIDX ] );
-		}
-	}
-	m_nAniCNT = MAX_MOB_ANI;
+        // 여기서 뻑나면...
+        // Load_MOBorNPC함수에서 g_MotionFILE.Add_FILE함수 호출시 nAniIDX값을 이용해서
+        // 모션 파일 이름을 찾자~~~~
+        if (0 == m_ppAniFILE[nAniIDX]) {
+            int i = 00;
+            // Ralph: Something in LIST_NPC.CHR is causing an assert
+            // assert( m_ppAniFILE[ nAniIDX ] );
+        }
+    }
+    m_nAniCNT = MAX_MOB_ANI;
 
-	// read bone effect counter
-	fread (&nIndex, sizeof(short),			1, fp);
-	fseek (fp,		nIndex*sizeof(short)*2,	SEEK_CUR);
+    // read bone effect counter
+    fread(&nIndex, sizeof(short), 1, fp);
+    fseek(fp, nIndex * sizeof(short) * 2, SEEK_CUR);
 
-	return true;
-}
-
-
-//-------------------------------------------------------------------------------------------------
-
-IMPLEMENT_INSTANCE( CCharDatLIST );
-
-CCharDatLIST::CCharDatLIST ()
-{
-	m_pMODELS = NULL;
-	m_nModelCNT = NULL;
-}
-CCharDatLIST::~CCharDatLIST ()
-{
-	this->Free ();
-}
-
-void CCharDatLIST::Free ()
-{
-	SAFE_DELETE_ARRAY( m_pMODELS );
-	m_nModelCNT = 0;
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
-bool CCharDatLIST::Load_MOBorNPC (char *szBaseDIR, char *szFileName)
-{
-	char *pFullPath;
-	FILE *fp;
 
-	if ( szBaseDIR ) {
-		pFullPath = CStr::Printf ("%s%s", szBaseDIR, szFileName);
-	} else
-		pFullPath = szFileName;
+IMPLEMENT_INSTANCE(CCharDatLIST);
 
-	fp = fopen( pFullPath, "rb" );
-	if ( fp == NULL ) {
-		return false;
-	}
+CCharDatLIST::CCharDatLIST() {
+    m_pMODELS = NULL;
+    m_nModelCNT = NULL;
+}
+CCharDatLIST::~CCharDatLIST() {
+    this->Free();
+}
 
-	t_HASHKEY *pAniKEY;
-	char *pStr;
-	short nI, nFileCNT, nAniCNT;
+void
+CCharDatLIST::Free() {
+    SAFE_DELETE_ARRAY(m_pMODELS);
+    m_nModelCNT = 0;
+}
 
-	// skel file ...
-	fread (&nFileCNT, sizeof(short), 1, fp);
-	for (nI=0; nI<nFileCNT; nI++) {
-		pStr = CStr::ReadString (fp);
-	}
+//-------------------------------------------------------------------------------------------------
+bool
+CCharDatLIST::Load_MOBorNPC(char* szBaseDIR, char* szFileName) {
+    char* pFullPath;
+    FILE* fp;
 
-	// motion file ...
-	fread (&nAniCNT, sizeof(short), 1, fp);
-	assert( nAniCNT > 0 );
-	pAniKEY = new t_HASHKEY[ nAniCNT ];
-	for (nI=0; nI<nAniCNT; nI++) {
-		pStr = CStr::ReadString (fp);
-		if ( szBaseDIR ) {
-			pFullPath = CStr::Printf ("%s%s", szBaseDIR, pStr);
-		} else {
-			pFullPath = pStr;
-		}
+    if (szBaseDIR) {
+        pFullPath = CStr::Printf("%s%s", szBaseDIR, szFileName);
+    } else
+        pFullPath = szFileName;
 
-		if ( !CUtil::Is_FileExist( pFullPath ) ) {
-			LOG_WARN("Could not load mob or npc file: %s", pFullPath);
-		}
-		pAniKEY[ nI ] = g_MotionFILE.Add_FILE ( pFullPath );
-		assert( pAniKEY[ nI ] );
-	}
+    fp = fopen(pFullPath, "rb");
+    if (fp == NULL) {
+        return false;
+    }
 
-	// bone effect file ...
-	fread (&nFileCNT, sizeof(short), 1, fp);
-	for (nI=0; nI<nFileCNT; nI++) {
-		pStr = CStr::ReadString (fp);
-	}
+    t_HASHKEY* pAniKEY;
+    char* pStr;
+    short nI, nFileCNT, nAniCNT;
 
-	fread (&m_nModelCNT, sizeof(short), 1, fp);
-	assert( m_nModelCNT > 0 );
+    // skel file ...
+    fread(&nFileCNT, sizeof(short), 1, fp);
+    for (nI = 0; nI < nFileCNT; nI++) {
+        pStr = CStr::ReadString(fp);
+    }
 
-	m_pMODELS = new CCharDATA[ m_nModelCNT ];
-	for (nI=0; nI<m_nModelCNT; nI++) {
-		// LogString( 0xffff, CStr::Printf(">> load model %d \n", nI ) );
+    // motion file ...
+    fread(&nAniCNT, sizeof(short), 1, fp);
+    assert(nAniCNT > 0);
+    pAniKEY = new t_HASHKEY[nAniCNT];
+    for (nI = 0; nI < nAniCNT; nI++) {
+        pStr = CStr::ReadString(fp);
+        if (szBaseDIR) {
+            pFullPath = CStr::Printf("%s%s", szBaseDIR, pStr);
+        } else {
+            pFullPath = pStr;
+        }
 
-		m_pMODELS[ nI ].Load_MOBorNPC (fp, pAniKEY, nAniCNT);
+        if (!CUtil::Is_FileExist(pFullPath)) {
+            LOG_WARN("Could not load mob or npc file: %s", pFullPath);
+        }
+        pAniKEY[nI] = g_MotionFILE.Add_FILE(pFullPath);
+        assert(pAniKEY[nI]);
+    }
 
-		// LogString( 0xffff, CStr::Printf("<< load model %d \n", nI ) );
-	}
+    // bone effect file ...
+    fread(&nFileCNT, sizeof(short), 1, fp);
+    for (nI = 0; nI < nFileCNT; nI++) {
+        pStr = CStr::ReadString(fp);
+    }
 
-	SAFE_DELETE_ARRAY( pAniKEY  );
+    fread(&m_nModelCNT, sizeof(short), 1, fp);
+    assert(m_nModelCNT > 0);
 
-	fclose (fp);
+    m_pMODELS = new CCharDATA[m_nModelCNT];
+    for (nI = 0; nI < m_nModelCNT; nI++) {
+        // LogString( 0xffff, CStr::Printf(">> load model %d \n", nI ) );
 
-	return true;
+        m_pMODELS[nI].Load_MOBorNPC(fp, pAniKEY, nAniCNT);
 
+        // LogString( 0xffff, CStr::Printf("<< load model %d \n", nI ) );
+    }
+
+    SAFE_DELETE_ARRAY(pAniKEY);
+
+    fclose(fp);
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

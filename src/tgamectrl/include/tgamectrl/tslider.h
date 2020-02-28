@@ -3,10 +3,9 @@
 
 #include "winctrl.h"
 
-class CTSlider : public CWinCtrl
-{
+class CTSlider: public CWinCtrl {
 public:
-	CTSlider(void);
-	virtual ~CTSlider(void);
+    CTSlider(void);
+    virtual ~CTSlider(void);
 };
 #endif

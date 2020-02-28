@@ -146,8 +146,9 @@ public:
         m_LIST.DeleteNode(&pServer->m_ListNODE);
         this->UnlockLIST();
 
-        LOG_INFO(
-            "World server %s (%s) disconnected", pServer->m_ServerNAME.Get(), pSOCKET->m_IP.Get());
+        LOG_INFO("World server %s (%s) disconnected",
+            pServer->m_ServerNAME.Get(),
+            pSOCKET->m_IP.Get());
 
         ((CLS_Server*)pSOCKET)->Free();
         this->Pool_Free(pServer);

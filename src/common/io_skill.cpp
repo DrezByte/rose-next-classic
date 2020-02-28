@@ -1,11 +1,10 @@
 #include "stdAFX.h"
 
-
 #include "IO_Skill.h"
 #ifndef __SERVER
-#include "..\util\CGameSTB.h"
+    #include "..\util\CGameSTB.h"
 #else
-#include "..\util\classSTB.h"
+    #include "..\util\classSTB.h"
 #endif
 
 CSkillLIST g_SkillList;
@@ -78,8 +77,9 @@ CSkillLIST::LoadSkillTable(const char* pFileName) {
                 }
             }
 
-            pMOTION = g_MotionFILE.IDX_GetMOTION(
-                FILE_MOTION(nMotionTYPE, SKILL_ANI_CASTING_REPEAT(nI)), 0);
+            pMOTION =
+                g_MotionFILE.IDX_GetMOTION(FILE_MOTION(nMotionTYPE, SKILL_ANI_CASTING_REPEAT(nI)),
+                    0);
             wTotFrame = pMOTION->Get_TotalFRAME() * SKILL_ANI_CASTING_REPEAT_CNT(nI);
 
             // 모션 속도

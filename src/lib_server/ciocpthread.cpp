@@ -25,8 +25,11 @@ CIocpTHREAD::Execute() {
 
     while (!this->Terminated) {
         if (0
-            == ::GetQueuedCompletionStatus(
-                m_hIOCP, &dwBytesIO, &dwCompletionKey, (LPOVERLAPPED*)&lpOverlapped, INFINITE)) {
+            == ::GetQueuedCompletionStatus(m_hIOCP,
+                &dwBytesIO,
+                &dwCompletionKey,
+                (LPOVERLAPPED*)&lpOverlapped,
+                INFINITE)) {
             /*
             If *lpOverlapped is NULL and the function does not dequeue a completion packet from the
             completion port, the RETURN VALUE IS ZERO. The function does not store information in

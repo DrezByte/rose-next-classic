@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "CThreadLOG.h"
 #include "CWS_Client.h"
 #include "CWS_Server.h"
@@ -362,8 +361,11 @@ SHO_WS::TranslateNameWithDescKey(STBDATA* pOri, char* szStbFile, int iLangCol) {
 
     STBDATA tmpTBL;
     // 아이템 이름만 읽음 :: 이름 컬럼은 1, 3, 5 ... 설명 컬럼은 2, 4, 6 ...
-    if (!tmpTBL.LoadWSTB(
-            true, CStr::Printf((char*)"%s%s", BASE_DATA_DIR, szStbFile), iKeyCol, iLangCol, -1))
+    if (!tmpTBL.LoadWSTB(true,
+            CStr::Printf((char*)"%s%s", BASE_DATA_DIR, szStbFile),
+            iKeyCol,
+            iLangCol,
+            -1))
         return;
     STBDATA* pLang = &tmpTBL;
 
@@ -401,8 +403,11 @@ SHO_WS::TranslateNameWithColoumKey(STBDATA* pOri,
     STBDATA tmpTBL;
 
     // 아이템 이름만 읽음 :: 이름 컬럼은 1, 3, 5 ... 설명 컬럼은 2, 4, 6 ...
-    if (!tmpTBL.LoadWSTB(
-            true, CStr::Printf((char*)"%s%s", BASE_DATA_DIR, szStbFile), iKeyCol, iLangCol, -1))
+    if (!tmpTBL.LoadWSTB(true,
+            CStr::Printf((char*)"%s%s", BASE_DATA_DIR, szStbFile),
+            iKeyCol,
+            iLangCol,
+            -1))
         return;
     STBDATA* pLang = &tmpTBL;
 
@@ -427,42 +432,58 @@ SHO_WS::TranslateNameWithColoumKey(STBDATA* pOri,
 //-------------------------------------------------------------------------------------------------
 bool
 SHO_WS::Load_BasicDATA() {
-    g_TblHAIR.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Hair.STB"), true, false);
-    g_TblFACE.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Face.STB"), true, false);
-    g_TblARMOR.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Body.STB"), true, true);
+    g_TblHAIR.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Hair.STB"),
+        true,
+        false);
+    g_TblFACE.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Face.STB"),
+        true,
+        false);
+    g_TblARMOR.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Body.STB"),
+        true,
+        true);
 
-    g_TblGAUNTLET.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Arms.STB"), true, true);
-    g_TblBOOTS.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Foot.STB"), true, true);
-    g_TblHELMET.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Cap.STB"), true, true);
+    g_TblGAUNTLET.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Arms.STB"),
+        true,
+        true);
+    g_TblBOOTS.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Foot.STB"),
+        true,
+        true);
+    g_TblHELMET.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Cap.STB"),
+        true,
+        true);
 
-    g_TblWEAPON.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Weapon.STB"), true, true);
-    g_TblSUBWPN.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SUBWPN.STB"), true, true);
+    g_TblWEAPON.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Weapon.STB"),
+        true,
+        true);
+    g_TblSUBWPN.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SUBWPN.STB"),
+        true,
+        true);
 
     //	g_TblPRODUCT.Load	( CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_PRODUCT.STB"),
     // true, false );
-    g_TblNATUAL.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NATURAL.STB"), true, true);
+    g_TblNATUAL.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NATURAL.STB"),
+        true,
+        true);
 
-    g_TblFACEITEM.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_FACEITEM.STB"), true, true);
-    g_TblUSEITEM.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_USEITEM.STB"), true, true);
-    g_TblBACKITEM.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_BACK.STB"), true, true);
-    g_TblGEMITEM.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEMITEM.STB"), true, true);
-    g_TblJEWELITEM.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEWEL.STB"), true, true);
+    g_TblFACEITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_FACEITEM.STB"),
+        true,
+        true);
+    g_TblUSEITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_USEITEM.STB"),
+        true,
+        true);
+    g_TblBACKITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_BACK.STB"),
+        true,
+        true);
+    g_TblGEMITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEMITEM.STB"),
+        true,
+        true);
+    g_TblJEWELITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEWEL.STB"),
+        true,
+        true);
     g_TblQUESTITEM.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_QUESTITEM.STB"), true, true);
+        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_QUESTITEM.STB"),
+        true,
+        true);
 
     if (!g_SkillList.LoadSkillTable(
             CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SKILL.STB")))
@@ -491,40 +512,56 @@ SHO_WS::Load_BasicDATA() {
     this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_FACE_ITEM],
         (char*)"Language\\LIST_FACEITEM_s.STB",
         1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_HELMET], (char*)"Language\\LIST_CAP_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_ARMOR], (char*)"Language\\LIST_BODY_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_GAUNTLET], (char*)"Language\\LIST_ARMS_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_BOOTS], (char*)"Language\\LIST_FOOT_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_KNAPSACK], (char*)"Language\\LIST_BACK_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_JEWEL], (char*)"Language\\LIST_JEWEL_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_WEAPON], (char*)"Language\\LIST_WEAPON_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_SUBWPN], (char*)"Language\\LIST_SUBWPN_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_USE], (char*)"Language\\LIST_USEITEM_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_GEM], (char*)"Language\\LIST_JEMITEM_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_NATURAL], (char*)"Language\\LIST_NATURAL_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_QUEST], (char*)"Language\\LIST_QUESTITEM_s.STB", 1 + 2 * m_iLangTYPE);
-    this->TranslateNameWithDescKey(
-        g_pTblSTBs[ITEM_TYPE_RIDE_PART], (char*)"Language\\LIST_PAT_s.STB", 1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_HELMET],
+        (char*)"Language\\LIST_CAP_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_ARMOR],
+        (char*)"Language\\LIST_BODY_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_GAUNTLET],
+        (char*)"Language\\LIST_ARMS_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_BOOTS],
+        (char*)"Language\\LIST_FOOT_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_KNAPSACK],
+        (char*)"Language\\LIST_BACK_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_JEWEL],
+        (char*)"Language\\LIST_JEWEL_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_WEAPON],
+        (char*)"Language\\LIST_WEAPON_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_SUBWPN],
+        (char*)"Language\\LIST_SUBWPN_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_USE],
+        (char*)"Language\\LIST_USEITEM_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_GEM],
+        (char*)"Language\\LIST_JEMITEM_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_NATURAL],
+        (char*)"Language\\LIST_NATURAL_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_QUEST],
+        (char*)"Language\\LIST_QUESTITEM_s.STB",
+        1 + 2 * m_iLangTYPE);
+    this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_RIDE_PART],
+        (char*)"Language\\LIST_PAT_s.STB",
+        1 + 2 * m_iLangTYPE);
 
-    g_TblAVATAR.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\INIT_AVATAR.STB"), false, false);
-    g_TblWARP.Load2(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\WARP.STB"), true, false);
+    g_TblAVATAR.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\INIT_AVATAR.STB"),
+        false,
+        false);
+    g_TblWARP.Load2(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\WARP.STB"),
+        true,
+        false);
 
-    g_TblZONE.Load2(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ZONE.STB"), true, false);
+    g_TblZONE.Load2(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ZONE.STB"),
+        true,
+        false);
     g_ZoneLIST.Init(BASE_DATA_DIR);
 
     return true;

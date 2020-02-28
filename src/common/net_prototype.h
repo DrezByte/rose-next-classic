@@ -2,17 +2,17 @@
 #define __NET_PROTOTYPE_H
 
 #ifdef __SERVER
-#include "DataTYPE.h"
+    #include "DataTYPE.h"
 
-#include "CUserDATA.h"
-#include "PacketHEADER.h"
-#include "classHASH.h"
+    #include "CUserDATA.h"
+    #include "PacketHEADER.h"
+    #include "classHASH.h"
 #else
-#include "../common/DataTYPE.h"
+    #include "../common/DataTYPE.h"
 
-#include "../common/CUserDATA.h"
-#include "../util/PacketHEADER.h"
-#include "../util/classHASH.h"
+    #include "../common/CUserDATA.h"
+    #include "../util/PacketHEADER.h"
+    #include "../util/classHASH.h"
 #endif
 
 #define __APPLY_04_10_15_TEAMNO // 04.10.15일자 팀번호 변경 패킷 적용할래 ?
@@ -2182,8 +2182,8 @@ struct wsv_MCMD_APPEND_ACCEPT: public tag_MCMD_HEADER { // 친구 추가 승낙일경우 
     BYTE m_btStatus;
     char m_szName[0];
 };
-struct wsv_MCMD_STATUS_REPLY:
-    public tag_MCMD_HEADER { // 서버에서의 응답:: m_dwUserTAG상태 변경 통보
+struct wsv_MCMD_STATUS_REPLY
+    : public tag_MCMD_HEADER { // 서버에서의 응답:: m_dwUserTAG상태 변경 통보
     DWORD m_dwUserTAG;
     BYTE m_btStatus;
 };
@@ -2498,7 +2498,7 @@ struct pxy_SET_RIGHTS: public t_PACKETHEADER {
 //-------------------------------------------------------------------------------------------------
 
 #if defined(__SERVER) && !defined(__SKIP_SRV_PROTOTYPE)
-#include "SRV_Prototype.h"
+    #include "SRV_Prototype.h"
 #endif
 
 //-------------------------------------------------------------------------------------------------

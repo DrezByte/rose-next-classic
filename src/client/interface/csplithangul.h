@@ -14,9 +14,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
 #ifndef _SPLITHANGUL_
 #define _SPLITHANGUL_
 
@@ -26,56 +23,47 @@
 using namespace std;
 
 // 현재의 스트링이 한글이 짤린 문장인가 판별..( IsDBCSLeadByte 동작이 불분명함.. )
-inline BOOL IsDBCSTrailByte(char *base, char *p)
- {
-        int lbc = 0; // lead byte count
+inline BOOL
+IsDBCSTrailByte(char* base, char* p) {
+    int lbc = 0; // lead byte count
 
-        while (p > base)
-        {
-                if (!IsDBCSLeadByte(*(--p)))
-                        break;
-                lbc++;  
-        }
+    while (p > base) {
+        if (!IsDBCSLeadByte(*(--p)))
+            break;
+        lbc++;
+    }
 
-        return (lbc & 1);
+    return (lbc & 1);
 }
 
+#define MAX_BUF_SIZE 1024
+#define MAX_STACK_DEPTH 50
 
-#define MAX_BUF_SIZE	1024
-#define MAX_STACK_DEPTH	50
+class CSplitHangul {
+    vector<string> m_StringList;
+    char m_TempBuf[MAX_BUF_SIZE];
 
-class CSplitHangul
-{
-	vector< string >	m_StringList;	
-	char				m_TempBuf[ MAX_BUF_SIZE ];
-
-	int					m_iStackDepth;
+    int m_iStackDepth;
 
 public:
-	CSplitHangul();
-	CSplitHangul( char* Str, int iLength );
+    CSplitHangul();
+    CSplitHangul(char* Str, int iLength);
 
-	~CSplitHangul();
-	
+    ~CSplitHangul();
 
-	int	GetLineCount( ){ return (int)m_StringList.size(); };
-	const char* GetString( int iIndex )
-	{
-		if( iIndex >= m_StringList.size() )
-			return NULL;
+    int GetLineCount() { return (int)m_StringList.size(); };
+    const char* GetString(int iIndex) {
+        if (iIndex >= m_StringList.size())
+            return NULL;
 
-		return m_StringList[ iIndex ].c_str();	
-	}
+        return m_StringList[iIndex].c_str();
+    }
 
+    bool DoSplit(char* Str, int iLength);
 
-	bool DoSplit( char* Str, int iLength );
-
-	// 한글을 주어진 크기로 자른다..
-	bool SplitHangul( char* Str, int iLength );
-	void Clear();
+    // 한글을 주어진 크기로 자른다..
+    bool SplitHangul(char* Str, int iLength);
+    void Clear();
 };
-
-
-
 
 #endif //_SPLITHANGUL_

@@ -17,23 +17,25 @@
  * \author	wookSang.Jo
  * \brief	서버에 존제하는 모든 객체를 관리하는 클래스
  */
-class CObjMNG : public CSyncIdxARRAY < CGameOBJ* > {
-public :
-    CObjMNG (int iMaxGameObject);
-    ~CObjMNG ();
+class CObjMNG: public CSyncIdxARRAY<CGameOBJ*> {
+public:
+    CObjMNG(int iMaxGameObject);
+    ~CObjMNG();
 
-    CGameOBJ *Get_OBJECT ( WORD wIndex );
-    CObjCHAR *Get_CharOBJ( WORD wIndex, bool bCheckHP  );
-    CObjITEM *Get_ItemOBJ( WORD wIndex );
-	classUSER*Get_UserOBJ( DWORD dwIndex );
+    CGameOBJ* Get_OBJECT(WORD wIndex);
+    CObjCHAR* Get_CharOBJ(WORD wIndex, bool bCheckHP);
+    CObjITEM* Get_ItemOBJ(WORD wIndex);
+    classUSER* Get_UserOBJ(DWORD dwIndex);
 
-	CGameOBJ *Get_GameOBJ( WORD wIndex, t_ObjTAG ObjTYPE );
+    CGameOBJ* Get_GameOBJ(WORD wIndex, t_ObjTAG ObjTYPE);
 
-    CGameOBJ *Get_ClientOBJECT( WORD wIndex )					{	return Get_OBJECT(wIndex);				}
-	CObjCHAR *Get_ClientCharOBJ( WORD wIndex, bool bCheckHP  )	{	return Get_CharOBJ(wIndex,bCheckHP);	}
-	int		  Get_ClientObjectIndex( int iServerObject )		{	return iServerObject;					}
-} ;
-extern CObjMNG  *g_pObjMGR;
+    CGameOBJ* Get_ClientOBJECT(WORD wIndex) { return Get_OBJECT(wIndex); }
+    CObjCHAR* Get_ClientCharOBJ(WORD wIndex, bool bCheckHP) {
+        return Get_CharOBJ(wIndex, bCheckHP);
+    }
+    int Get_ClientObjectIndex(int iServerObject) { return iServerObject; }
+};
+extern CObjMNG* g_pObjMGR;
 
 #include "GS_ObjPOOL.h"
 

@@ -29,8 +29,8 @@
 
 struct tagPartITEM {
     unsigned int m_nItemNo : 26; // 0~1023	아아템 번호(ITEM_ID)		(0 ~ 999)
-    unsigned int
-        m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션 번호(m_bHasSocket==0)
+    unsigned int m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션
+                                // 번호(m_bHasSocket==0)
     unsigned int m_bHasSocket : 1; // 0~1		보석 소켓 여부
     unsigned int m_cGrade : 4; // 0~15		등급						(0~9)
 };
@@ -39,8 +39,8 @@ struct tagPartITEM {
 
 struct tagPartITEM {
     unsigned int m_nItemNo : 10; // 0~1023	아아템 번호(ITEM_ID)		(0 ~ 999)
-    unsigned int
-        m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션 번호(m_bHasSocket==0)
+    unsigned int m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션
+                                // 번호(m_bHasSocket==0)
     unsigned int m_bHasSocket : 1; // 0~1		보석 소켓 여부
     unsigned int m_cGrade : 4; // 0~15		등급						(0~9)
 };
@@ -48,7 +48,7 @@ struct tagPartITEM {
 #endif
 
 #ifndef __SERVER
-#define tagITEM tagBaseITEM
+    #define tagITEM tagBaseITEM
 #endif
 
 int getItemNo(int iFullItemNo);
@@ -113,7 +113,7 @@ struct tagBaseITEM {
         unsigned int m_dwITEM;
     };
 
-#ifdef __ITEM_TIME_LIMMIT
+    #ifdef __ITEM_TIME_LIMMIT
 
     struct {
         DWORD dwPickOutTime;
@@ -163,7 +163,7 @@ struct tagBaseITEM {
         return l;
     }
 
-#endif
+    #endif
 
 #else
 
@@ -229,9 +229,9 @@ struct tagBaseITEM {
 #ifdef __ITEM_MAX
     void Clear() {
         m_dwLSB = m_dwMSB = 0;
-#ifdef __ITEM_TIME_LIMMIT
+    #ifdef __ITEM_TIME_LIMMIT
         dwPickOutTime = wPeriod = 0;
-#endif
+    #endif
     }
     unsigned int GetItemNO() { return m_nItemNo; }
     bool IsEmpty() { return (0 == m_wHeader); }
@@ -361,21 +361,21 @@ struct tagITEM: public tagBaseITEM {
         m_iSN = 0;
     }
 
-#ifndef __BORLANDC__
-#ifdef __ITEM_MAX
+    #ifndef __BORLANDC__
+        #ifdef __ITEM_MAX
     void operator=(tagBaseITEM& rBASE) {
         m_dwLSB = rBASE.m_dwLSB;
         m_dwMSB = rBASE.m_dwMSB;
         m_iSN = 0;
     }
-#else
+        #else
     void operator=(tagBaseITEM& rBASE) {
         m_wLSB = rBASE.m_wLSB;
         m_dwMSB = rBASE.m_dwMSB;
         m_iSN = 0;
     }
-#endif
-#endif
+        #endif
+    #endif
 };
 #endif
 #pragma pack(pop)

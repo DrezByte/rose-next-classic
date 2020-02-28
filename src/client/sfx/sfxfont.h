@@ -3,7 +3,6 @@
 
 #include "ISFX.h"
 
-
 //--------------------------------------------------------------------------------------------------
 ///
 /// class CSFXFont
@@ -11,31 +10,28 @@
 ///
 //--------------------------------------------------------------------------------------------------
 class CEffectString;
-class CSFXFont : public ISFX
-{
-	std::list<CEffectString*> m_children;
+class CSFXFont: public ISFX {
+    std::list<CEffectString*> m_children;
+
 public:
-	CSFXFont(void);
-	virtual ~CSFXFont(void);
+    CSFXFont(void);
+    virtual ~CSFXFont(void);
 
-	virtual bool	Init();
-	virtual void	Release();
+    virtual bool Init();
+    virtual void Release();
 
-	virtual	void	Update();
-	virtual void	Draw();
+    virtual void Update();
+    virtual void Draw();
 
-	void	AddEffectString( CEffectString* child );
-	void    RemoveEffectStringsByType( int type );
+    void AddEffectString(CEffectString* child);
+    void RemoveEffectStringsByType(int type);
 
-	enum{
-		TYPE_NONE,
-		TYPE_ZONE_NAME,
-		TYPE_ZONE_DESC,
-		TYPE_QUEST_NAME,
-		TYPE_QUEST_STARTMSG,
-	};
+    enum {
+        TYPE_NONE,
+        TYPE_ZONE_NAME,
+        TYPE_ZONE_DESC,
+        TYPE_QUEST_NAME,
+        TYPE_QUEST_STARTMSG,
+    };
 };
 #endif //_SFX_FONT_
-
-
-

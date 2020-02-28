@@ -2,10 +2,6 @@
 
 #include ".\cavatarstore.h"
 
-CAvatarStore::CAvatarStore(void)
-{
-}
+CAvatarStore::CAvatarStore(void) {}
 
-CAvatarStore::~CAvatarStore(void)
-{
-}
+CAvatarStore::~CAvatarStore(void) {}

@@ -2,10 +2,6 @@
 
 #include ".\itcontrol.h"
 
-ITControl::ITControl(void)
-{
-}
+ITControl::ITControl(void) {}
 
-ITControl::~ITControl(void)
-{
-}
+ITControl::~ITControl(void) {}

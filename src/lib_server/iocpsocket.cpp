@@ -155,8 +155,9 @@ iocpSOCKET::Recv_Complete(tagIO_DATA* recv_data) {
             if (0 == nPacketSIZE) {
                 this->UnlockSOCKET();
                 this->Free_RecvIODATA(recv_data);
-                g_LOG.CS_ODS(
-                    0xffff, "*** ERROR: Decode recv packet header2, IP[ %s ]\n", this->m_IP.Get());
+                g_LOG.CS_ODS(0xffff,
+                    "*** ERROR: Decode recv packet header2, IP[ %s ]\n",
+                    this->m_IP.Get());
 
                 // 블랙 리스트에 ip 등록...
                 return eRESULT_PACKET_BLOCK; // false;
@@ -333,8 +334,9 @@ iocpSOCKET::Recv_Done(tagIO_DATA* pRecvDATA) {
         if (!nTotalPacketLEN) {
             // 패킷이 변조되어 왔다.
             // 헤킹인가 ???
-            g_LOG.CS_ODS(
-                0xffff, "*** ERROR: Decode recv packet body, IP[ %s ]\n", this->m_IP.Get());
+            g_LOG.CS_ODS(0xffff,
+                "*** ERROR: Decode recv packet body, IP[ %s ]\n",
+                this->m_IP.Get());
             this->Free_RecvIODATA(pRecvDATA);
 
             // 블랙 리스트에 ip 등록...

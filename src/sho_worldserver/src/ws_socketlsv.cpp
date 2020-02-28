@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-
 #include "CWS_Client.h"
 #include "CWS_Server.h"
 #include "SHO_WS_LIB.h"
@@ -202,8 +201,9 @@ WS_lsvSOCKET::Recv_wls_CONFIRM_ACCOUNT_REPLY() {
     short nOffset = sizeof(wls_CONFIRM_ACCOUNT_REPLY);
     char* szAccount = Packet_GetStringPtr(m_pRecvPket, nOffset);
 
-    g_pUserLIST->Add_ACCOUNT(
-        m_pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwWSID, m_pRecvPket, szAccount);
+    g_pUserLIST->Add_ACCOUNT(m_pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwWSID,
+        m_pRecvPket,
+        szAccount);
 }
 
 void

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #include "LIB_gsMAIN.h"
 
 #include "CRandom.h"
@@ -88,8 +87,10 @@ classUSER::Send_gsv_ADJ_CLAN_VAR(BYTE btVarType, int iValue) {
         pCPacket->m_gsv_ADJ_CLAN_VAR.m_btVarType = btVarType; // CLVAR_INC_LEV;
         pCPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue = iValue; // 1;
 
-        g_pThreadGUILD->Add_ClanCMD(
-            GCMD_ADJ_VAR, this->m_iSocketIDX, (t_PACKET*)(pCPacket->m_pDATA), this->Get_NAME());
+        g_pThreadGUILD->Add_ClanCMD(GCMD_ADJ_VAR,
+            this->m_iSocketIDX,
+            (t_PACKET*)(pCPacket->m_pDATA),
+            this->Get_NAME());
         Packet_ReleaseNUnlock(pCPacket);
         return true;
     }
@@ -193,8 +194,9 @@ classUSER::CheckClanCreateCondition(char cStep) {
                 break;
             }
 
-            g_pThreadLOG->When_gs_CLAN(
-                this, "Start Create", NEWLOG_CLAN_CREATE_START); // 돈 빼기전에..
+            g_pThreadLOG->When_gs_CLAN(this,
+                "Start Create",
+                NEWLOG_CLAN_CREATE_START); // 돈 빼기전에..
 
             this->LockSOCKET();
             this->Sub_CurMONEY(NEED_CLAN_CREATE_MONEY);
@@ -223,8 +225,9 @@ classUSER::CheckClanCreateCondition(char cStep) {
         }
 
         case 2: // 생성 실패
-            g_pThreadLOG->When_gs_CLAN(
-                this, "Failed Create", NEWLOG_CLAN_CREATE_FAILED); // 돈 복구한 후에...
+            g_pThreadLOG->When_gs_CLAN(this,
+                "Failed Create",
+                NEWLOG_CLAN_CREATE_FAILED); // 돈 복구한 후에...
 
             this->LockSOCKET();
             this->Add_CurMONEY(this->m_iClanCreateMoney);
@@ -435,8 +438,9 @@ classUSER::Parse_CheatCODE(char* szCode) {
                 return CHEAT_PROCED;
             } else if (!strcmpi(pToken, "/nz")) {
                 // 현재 맵 공지
-                g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT(
-                    this->GetZONE()->Get_ZoneNO(), &szCode[4], this->Get_NAME());
+                g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT(this->GetZONE()->Get_ZoneNO(),
+                    &szCode[4],
+                    this->Get_NAME());
                 return CHEAT_PROCED;
             }
 
@@ -836,8 +840,13 @@ classUSER::Save_ItemToFILED(tagITEM& sDropITEM, int iRemainTime) {
         PosSET.x = this->m_PosCUR.x + RANDOM(201) - 100;
         PosSET.y = this->m_PosCUR.y + RANDOM(201) - 100;
 
-        pObjITEM->InitItemOBJ(
-            this, PosSET, this->m_PosSECTOR, sDropITEM, this, true, NULL); // 사용자 드롭.
+        pObjITEM->InitItemOBJ(this,
+            PosSET,
+            this->m_PosSECTOR,
+            sDropITEM,
+            this,
+            true,
+            NULL); // 사용자 드롭.
         pObjITEM->m_iRemainTIME = iRemainTime; // 30분간 유효 하도록...
 
 #ifdef __NEW_LOG
@@ -1193,8 +1202,8 @@ classUSER::Use_pITEM(tagITEM* pITEM) {
         }
     } else {
         // this->Use_ITEM( pITEM->m_nItemNo );
-        this->Add_AbilityValue(
-            USEITEM_ADD_DATA_TYPE(pITEM->m_nItemNo), USEITEM_ADD_DATA_VALUE(pITEM->m_nItemNo));
+        this->Add_AbilityValue(USEITEM_ADD_DATA_TYPE(pITEM->m_nItemNo),
+            USEITEM_ADD_DATA_VALUE(pITEM->m_nItemNo));
     }
 
     return true;
@@ -1215,8 +1224,8 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
     }
 
     if (pITEM->m_nItemNo >= g_TblUSEITEM.m_nDataCnt) {
-        return IS_HACKING(
-            this, "Recv_cli_USE_ITEM-2 : pITEM->m_nItemNo >= g_TblUSEITEM.m_nDataCnt");
+        return IS_HACKING(this,
+            "Recv_cli_USE_ITEM-2 : pITEM->m_nItemNo >= g_TblUSEITEM.m_nDataCnt");
     }
 
     /// 쿨타임 적용..
@@ -1280,8 +1289,9 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
                     tPOINTF PosGOTO;
                     PosGOTO.x = SKILL_WARP_ZONE_XPOS(nSkillIDX) * 1000.f;
                     PosGOTO.y = SKILL_WARP_ZONE_YPOS(nSkillIDX) * 1000.f;
-                    this->Send_gsv_RELAY_REQ(
-                        RELAY_TYPE_RECALL, SKILL_WARP_ZONE_NO(nSkillIDX), PosGOTO);
+                    this->Send_gsv_RELAY_REQ(RELAY_TYPE_RECALL,
+                        SKILL_WARP_ZONE_NO(nSkillIDX),
+                        PosGOTO);
                     break;
                 }
                 case SKILL_TYPE_16: // emotion
@@ -1348,8 +1358,8 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
         this->Send_gsv_SET_INV_ONLY((BYTE)nInventoryIDX, pITEM);
     } else {
         /// 자신 한테만 소모성 아이템 사용했다고 전송.
-        this->Send_gsv_USE_ITEM(
-            pITEM->m_nItemNo, nInventoryIDX); /// 자신 한테만 소모성 아이템 사용했다고 전송.
+        this->Send_gsv_USE_ITEM(pITEM->m_nItemNo,
+            nInventoryIDX); /// 자신 한테만 소모성 아이템 사용했다고 전송.
     }
 
     return true;
@@ -1463,8 +1473,8 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
     if (this->m_btRideMODE && ZONE_RIDING_REFUSE_FLAG(pZONE->Get_ZoneNO())) {
         // 0x01 : 카트 불가, 0x02 : 캐슬기어 불가
         if (ITEM_TYPE_RIDE_PART == this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetTYPE()) {
-            int iType = ITEM_TYPE(
-                ITEM_TYPE_RIDE_PART, this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO());
+            int iType = ITEM_TYPE(ITEM_TYPE_RIDE_PART,
+                this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO());
             if ((iType % 3) & ZONE_RIDING_REFUSE_FLAG(this->GetZONE()->Get_ZoneNO())) {
                 // 탑승 제한~
                 this->m_btRideMODE = 0;
@@ -1618,8 +1628,9 @@ classUSER::Send_gsv_INVENTORYnQUEST_DATA(void) {
         pCPacket->m_HEADER.m_nSize = sizeof(gsv_QUEST_DATA);
 
         ::CopyMemory(&pCPacket->m_gsv_QUEST_DATA.m_Quests, &this->m_Quests, sizeof(tagQuestData));
-        ::CopyMemory(
-            &pCPacket->m_gsv_QUEST_DATA.m_WishLIST, &this->m_WishLIST, sizeof(tagWishLIST));
+        ::CopyMemory(&pCPacket->m_gsv_QUEST_DATA.m_WishLIST,
+            &this->m_WishLIST,
+            sizeof(tagWishLIST));
 
         this->SendPacket(pCPacket);
         Packet_ReleaseNUnlock(pCPacket);
@@ -1727,8 +1738,9 @@ classUSER::Check_WarpPayment(short nZoneNO) {
                 return false;
             }
         } else if (!(this->m_dwPayFLAG & PLAY_FLAG_DUNGEON_ADV)) {
-            this->Send_gsv_BILLING_MESSAGE2(
-                BILLING_MSG_JPN_NEED_CHARGE, 'Q', PLAY_FLAG_DUNGEON_ADV);
+            this->Send_gsv_BILLING_MESSAGE2(BILLING_MSG_JPN_NEED_CHARGE,
+                'Q',
+                PLAY_FLAG_DUNGEON_ADV);
             return false;
         }
     }
@@ -1742,8 +1754,9 @@ classUSER::Check_WarpPayment(short nZoneNO) {
             }
         } else if (!(this->m_dwPayFLAG & PLAY_FLAG_STARSHIP_PASS)) {
             // 행성이동 못해 !!!
-            this->Send_gsv_BILLING_MESSAGE2(
-                BILLING_MSG_JPN_NEED_CHARGE, 'P', PLAY_FLAG_STARSHIP_PASS);
+            this->Send_gsv_BILLING_MESSAGE2(BILLING_MSG_JPN_NEED_CHARGE,
+                'P',
+                PLAY_FLAG_STARSHIP_PASS);
             return false;
         }
     } else if (ZONE_PLANET_NO(nZoneNO) != 1 && !(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
@@ -2217,8 +2230,9 @@ classUSER::Recv_cli_RELAY_REPLY(t_PACKET* pPacket) {
 bool
 classUSER::Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket) {
     // GUMS에 전송하기 위해서 비번 저장...
-    ::CopyMemory(
-        this->m_dwMD5PassWD, pPacket->m_cli_JOIN_SERVER_REQ.m_MD5Password, sizeof(DWORD) * 8);
+    ::CopyMemory(this->m_dwMD5PassWD,
+        pPacket->m_cli_JOIN_SERVER_REQ.m_MD5Password,
+        sizeof(DWORD) * 8);
     this->m_szMD5PassWD[32] = 0;
 
     // 로그인 서버 또는 월드 서버에 인증 요청..
@@ -2464,8 +2478,8 @@ bool
 classUSER::Recv_cli_SET_MOTION(t_PACKET* pPacket) {
     if (this->m_IngSTATUS.IsIgnoreSTATUS())
         return true;
-    this->Send_gsv_SET_MOTION(
-        pPacket->m_cli_SET_MOTION.m_wValue, pPacket->m_cli_SET_MOTION.m_nMotionNO);
+    this->Send_gsv_SET_MOTION(pPacket->m_cli_SET_MOTION.m_wValue,
+        pPacket->m_cli_SET_MOTION.m_nMotionNO);
     return true;
 }
 
@@ -3105,8 +3119,8 @@ classUSER::Recv_cli_EQUIP_ITEM(t_PACKET* pPacket) {
         return IS_HACKING(this, "Recv_cli_EQUIP_ITEM-2 :: Invalid Weapon Inv IDX");
     }
 
-    return this->Change_EQUIP_ITEM(
-        pPacket->m_cli_EQUIP_ITEM.m_nEquipInvIDX, pPacket->m_cli_EQUIP_ITEM.m_nWeaponInvIDX);
+    return this->Change_EQUIP_ITEM(pPacket->m_cli_EQUIP_ITEM.m_nEquipInvIDX,
+        pPacket->m_cli_EQUIP_ITEM.m_nWeaponInvIDX);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -3322,8 +3336,10 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
     }
 
     // 상점 npc와의 거래 체크...
-    int iDistance = distance(
-        (int)m_PosCUR.x, (int)m_PosCUR.y, (int)pCharNPC->m_PosCUR.x, (int)pCharNPC->m_PosCUR.y);
+    int iDistance = distance((int)m_PosCUR.x,
+        (int)m_PosCUR.y,
+        (int)pCharNPC->m_PosCUR.x,
+        (int)pCharNPC->m_PosCUR.y);
     if (iDistance > MAX_TRADE_DISTANCE) {
         return this->Send_gsv_STORE_TRADE_REPLY(STORE_TRADE_RESULT_TOO_FAR);
     }
@@ -3334,8 +3350,9 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
     tag_SELL_ITEM* pSellITEMs;
 
     if (pPacket->m_cli_STORE_TRADE_REQ.m_cBuyCNT > 0) {
-        pBuyITEMs = (tag_BUY_ITEM*)Packet_GetDataPtr(
-            pPacket, nOffset, sizeof(tag_BUY_ITEM) * pPacket->m_cli_STORE_TRADE_REQ.m_cBuyCNT);
+        pBuyITEMs = (tag_BUY_ITEM*)Packet_GetDataPtr(pPacket,
+            nOffset,
+            sizeof(tag_BUY_ITEM) * pPacket->m_cli_STORE_TRADE_REQ.m_cBuyCNT);
         if (!pBuyITEMs)
             return IS_HACKING(this, "Recv_cli_STORE_TRADE_REQ-1 :: Invalid Buy Items");
     }
@@ -3350,8 +3367,9 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
     int iPriceEA, iTotValue;
     short nC;
     if (pPacket->m_cli_STORE_TRADE_REQ.m_cSellCNT > 0) {
-        pSellITEMs = (tag_SELL_ITEM*)Packet_GetDataPtr(
-            pPacket, nOffset, sizeof(tag_SELL_ITEM) * pPacket->m_cli_STORE_TRADE_REQ.m_cSellCNT);
+        pSellITEMs = (tag_SELL_ITEM*)Packet_GetDataPtr(pPacket,
+            nOffset,
+            sizeof(tag_SELL_ITEM) * pPacket->m_cli_STORE_TRADE_REQ.m_cSellCNT);
 
         // 물건 팔자 !!!
         if (!pSellITEMs) {
@@ -3388,11 +3406,18 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
                     iTotValue = iPriceEA * pITEM->GetQuantity();
 
 #ifdef __NEW_LOG
-                    g_pThreadLOG->When_TagItemLOG(
-                        LIA_SELL2NPC, this, pITEM, pITEM->GetQuantity(), iTotValue);
+                    g_pThreadLOG->When_TagItemLOG(LIA_SELL2NPC,
+                        this,
+                        pITEM,
+                        pITEM->GetQuantity(),
+                        iTotValue);
 #else
-                    g_pThreadLOG->When_NpcTRADE(
-                        this, pITEM, pCharNPC, "Sell2NPC", iTotValue, pITEM->GetQuantity());
+                    g_pThreadLOG->When_NpcTRADE(this,
+                        pITEM,
+                        pCharNPC,
+                        "Sell2NPC",
+                        iTotValue,
+                        pITEM->GetQuantity());
 #endif
 
                     this->ClearITEM(pSellITEMs[nC].m_btInvIDX);
@@ -3401,11 +3426,18 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
 
                     iTotValue = iPriceEA * pSellITEMs[nC].m_wDupCNT;
 #ifdef __NEW_LOG
-                    g_pThreadLOG->When_TagItemLOG(
-                        LIA_SELL2NPC, this, pITEM, pSellITEMs[nC].m_wDupCNT, iTotValue);
+                    g_pThreadLOG->When_TagItemLOG(LIA_SELL2NPC,
+                        this,
+                        pITEM,
+                        pSellITEMs[nC].m_wDupCNT,
+                        iTotValue);
 #else
-                    g_pThreadLOG->When_NpcTRADE(
-                        this, pITEM, pCharNPC, "Sell2NPC", iTotValue, pSellITEMs[nC].m_wDupCNT);
+                    g_pThreadLOG->When_NpcTRADE(this,
+                        pITEM,
+                        pCharNPC,
+                        "Sell2NPC",
+                        iTotValue,
+                        pSellITEMs[nC].m_wDupCNT);
 #endif
 
                     pITEM->m_uiQuantity -= pSellITEMs[nC].m_wDupCNT;
@@ -3454,8 +3486,9 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
                 break;
             }
         } else {
-            iPriceEA = this->GetZONE()->Get_ItemBuyPRICE(
-                sBuyITEM.m_cType, sBuyITEM.m_nItemNo, this->GetBuySkillVALUE());
+            iPriceEA = this->GetZONE()->Get_ItemBuyPRICE(sBuyITEM.m_cType,
+                sBuyITEM.m_nItemNo,
+                this->GetBuySkillVALUE());
             if (tagITEM::IsEnableDupCNT(sBuyITEM.GetTYPE())) {
                 iTotValue = iPriceEA * pBuyITEMs[nC].m_wDupCNT;
                 sBuyITEM.m_uiQuantity = pBuyITEMs[nC].m_wDupCNT;
@@ -3476,21 +3509,37 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
         if (btUnionIDX) {
 // 구입한 아이템 로그를 남김...
 #ifdef __NEW_LOG
-            g_pThreadLOG->When_TagItemLOG(
-                LIA_BUYFROMUNION, this, &sBuyITEM, pBuyITEMs[nC].m_wDupCNT, iTotValue, NULL, true);
+            g_pThreadLOG->When_TagItemLOG(LIA_BUYFROMUNION,
+                this,
+                &sBuyITEM,
+                pBuyITEMs[nC].m_wDupCNT,
+                iTotValue,
+                NULL,
+                true);
 #else
-            g_pThreadLOG->When_NpcTRADE(
-                this, &sBuyITEM, pCharNPC, "BuyFromUNION", iTotValue, pBuyITEMs[nC].m_wDupCNT);
+            g_pThreadLOG->When_NpcTRADE(this,
+                &sBuyITEM,
+                pCharNPC,
+                "BuyFromUNION",
+                iTotValue,
+                pBuyITEMs[nC].m_wDupCNT);
 #endif
             this->SubCur_JoHapPOINT(btUnionIDX, iTotValue);
         } else {
 // 구입한 아이템 로그를 남김...
 #ifdef __NEW_LOG
-            g_pThreadLOG->When_TagItemLOG(
-                LIA_BUYFROMNPC, this, &sBuyITEM, pBuyITEMs[nC].m_wDupCNT, iTotValue);
+            g_pThreadLOG->When_TagItemLOG(LIA_BUYFROMNPC,
+                this,
+                &sBuyITEM,
+                pBuyITEMs[nC].m_wDupCNT,
+                iTotValue);
 #else
-            g_pThreadLOG->When_NpcTRADE(
-                this, &sBuyITEM, pCharNPC, "BuyFromNPC", iTotValue, pBuyITEMs[nC].m_wDupCNT);
+            g_pThreadLOG->When_NpcTRADE(this,
+                &sBuyITEM,
+                pCharNPC,
+                "BuyFromNPC",
+                iTotValue,
+                pBuyITEMs[nC].m_wDupCNT);
 #endif
             this->Sub_CurMONEY(iTotValue);
         }
@@ -3527,8 +3576,8 @@ classUSER::Recv_cli_SET_HOTICON(t_PACKET* pPacket) {
     if (pPacket->m_cli_SET_HOTICON.m_btListIDX >= MAX_HOT_ICONS)
         return false;
 
-    if (this->m_HotICONS.RegHotICON(
-            pPacket->m_cli_SET_HOTICON.m_btListIDX, pPacket->m_cli_SET_HOTICON.m_HotICON)) {
+    if (this->m_HotICONS.RegHotICON(pPacket->m_cli_SET_HOTICON.m_btListIDX,
+            pPacket->m_cli_SET_HOTICON.m_HotICON)) {
         classPACKET* pCPacket = Packet_AllocNLock();
 
         pCPacket->m_HEADER.m_wType = GSV_SET_HOTICON;
@@ -3677,7 +3726,8 @@ classUSER::Recv_cli_SET_BULLET(t_PACKET* pPacket) {
         if (0 == pShotITEM->GetHEADER()) {
             // 모두 소모됐는데 클라이언트에서는 남은것으로 오인... 삭제하라는 패킷 전송.
             this->Send_gsv_SET_INV_ONLY(
-                INVENTORY_SHOT_ITEM0 + pPacket->m_cli_SET_BULLET.m_wShotTYPE, pShotITEM);
+                INVENTORY_SHOT_ITEM0 + pPacket->m_cli_SET_BULLET.m_wShotTYPE,
+                pShotITEM);
             goto _RETURN;
         }
 
@@ -3780,9 +3830,9 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
     // 스킬 레벨 비교...
     if (SKILL_LEVEL(nSkillIDX) < ITEM_SKILL_LEV(pPacket->m_cli_CREATE_ITEM_REQ.m_cTargetItemTYPE,
             pPacket->m_cli_CREATE_ITEM_REQ.m_nTargetItemNO)) {
-        return IS_HACKING(
-            this, "Recv_cli_CREATE_ITEM_REQ-2 :: Invalid SKILL_LEVEL"); // ERROR:: 크거나 같아야
-                                                                        // 하는데 ???
+        return IS_HACKING(this,
+            "Recv_cli_CREATE_ITEM_REQ-2 :: Invalid SKILL_LEVEL"); // ERROR:: 크거나 같아야
+                                                                  // 하는데 ???
     }
 
     // 스킬 사용 가능한가 ???
@@ -3849,13 +3899,15 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
         } else {
             if (0 == pInvITEM->GetHEADER()) {
                 // 클라이언트에서 이경우에도 요청한다.. 이미 소모된 아이템을 되돌릴수 없는 문제 !!!
-                return this->Send_gsv_CREATE_ITEM_REPLY(
-                    RESULT_CREATE_ITEM_INVALID_ITEM, nI, fPRO_POINT);
+                return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_INVALID_ITEM,
+                    nI,
+                    fPRO_POINT);
             }
             sOutITEM.Init(PRODUCT_NEED_ITEM_NO(nProductIDX, nI));
             if (pInvITEM->GetHEADER() != sOutITEM.GetHEADER()) {
-                return this->Send_gsv_CREATE_ITEM_REPLY(
-                    RESULT_CREATE_ITEM_INVALID_ITEM, nI, fPRO_POINT);
+                return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_INVALID_ITEM,
+                    nI,
+                    fPRO_POINT);
             }
         }
 
@@ -3921,8 +3973,12 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
         if (fPRO_POINT[nI] < fSUC_POINT[nI]) {
 // 실패...
 #ifdef __NEW_LOG
-            g_pThreadLOG->When_CreateOrDestroyITEM(
-                this, NULL, sUsedITEM, nUsedCNT, NEWLOG_CREATE, NEWLOG_FAILED);
+            g_pThreadLOG->When_CreateOrDestroyITEM(this,
+                NULL,
+                sUsedITEM,
+                nUsedCNT,
+                NEWLOG_CREATE,
+                NEWLOG_FAILED);
 #endif
 
             return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_FAILED, nI, fPRO_POINT);
@@ -3991,8 +4047,12 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
     }
 
 #ifdef __NEW_LOG
-    g_pThreadLOG->When_CreateOrDestroyITEM(
-        this, &sOutITEM, sUsedITEM, nUsedCNT, NEWLOG_CREATE, NEWLOG_SUCCESS);
+    g_pThreadLOG->When_CreateOrDestroyITEM(this,
+        &sOutITEM,
+        sUsedITEM,
+        nUsedCNT,
+        NEWLOG_CREATE,
+        NEWLOG_SUCCESS);
 #else
     g_pThreadLOG->When_CreatedITEM(this, &sOutITEM);
 #endif
@@ -4110,8 +4170,8 @@ classUSER::Recv_cli_DROP_ITEM(t_PACKET* pPacket) {
             } else {
                 // <ZULY_HACK>
                 if (pPacket->m_cli_DROP_ITEM.m_uiQuantity <= 0)
-                    return IS_HACKING(
-                        this, "Recv_cli_DROP_ITEM: Player is attempting to drop negitive zuly.");
+                    return IS_HACKING(this,
+                        "Recv_cli_DROP_ITEM: Player is attempting to drop negitive zuly.");
 
                 this->Sub_CurMONEY(pPacket->m_cli_DROP_ITEM.m_uiQuantity);
                 sDropITEM.m_uiMoney = pPacket->m_cli_DROP_ITEM.m_uiQuantity;
@@ -4517,8 +4577,9 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
 
             if ((this->m_dwPayFLAG & PLAY_FLAG_EXTRA_STOCK)
                 && pPacket->m_cli_MOVE_ITEM.m_btUseSpecialTAB == 1) {
-                nToSlotIDX = this->m_Bank.Add_ITEM(
-                    sMoveITEM, BANKSLOT_PLATINUM_0, BANKSLOT_PLATINUM_0 + BANKSLOT_PLATINUM);
+                nToSlotIDX = this->m_Bank.Add_ITEM(sMoveITEM,
+                    BANKSLOT_PLATINUM_0,
+                    BANKSLOT_PLATINUM_0 + BANKSLOT_PLATINUM);
             } else if (this->m_GrowAbility.IsBankAddON(this->GetCurAbsSEC())) {
                 // 창고 확장슬롯 가능......
                 nToSlotIDX = this->m_Bank.Add_ITEM(sMoveITEM, 0, BANKSLOT_DEFAULT + BANKSLOT_ADDON);
@@ -4726,8 +4787,8 @@ classUSER::Recv_cli_TELEPORT_REQ(t_PACKET* pPacket) {
         return IS_HACKING(this, "Recv_cli_TELEPORT_REQ-3");
     }
 
-    return this->Proc_TELEPORT(
-        pEventPOS->m_nZoneNO, pEventPOS->m_Position); // Recv_cli_TELEPORT_REQ
+    return this->Proc_TELEPORT(pEventPOS->m_nZoneNO,
+        pEventPOS->m_Position); // Recv_cli_TELEPORT_REQ
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -4770,8 +4831,9 @@ classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
     1) 스탯 변동
     ① 변동된 스탯의 종류 및 소모 포인트
     ② 날짜/시간/ IP/좌표*/
-    g_pThreadLOG->When_ChangeABILITY(
-        this, pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO, nNeedPoints);
+    g_pThreadLOG->When_ChangeABILITY(this,
+        pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO,
+        nNeedPoints);
 
     classPACKET* pCPacket = Packet_AllocNLock();
 
@@ -4845,8 +4907,8 @@ classUSER::RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket) 
             // 아이템 줬다.. 빼자 !!!
             this->Sub_ITEM(m_TradeITEM[nI].m_nInvIDX, m_TradeITEM[nI].m_Item);
 #ifdef __NEW_LOG
-            g_pThreadLOG->When_TagItemLOG(
-                LIA_GIVE, this, &m_TradeITEM[nI].m_Item, 0, 0, pTradeUSER);
+            g_pThreadLOG
+                ->When_TagItemLOG(LIA_GIVE, this, &m_TradeITEM[nI].m_Item, 0, 0, pTradeUSER);
 #else
             g_pThreadLOG->When_GiveITEM(this, &m_TradeITEM[nI].m_Item, pTradeUSER, nI);
 #endif
@@ -4862,8 +4924,8 @@ classUSER::RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket) 
 
     if (this->m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item.GetTYPE()) {
         // 돈줬다... 빼자 !!!
-        this->Sub_ITEM(
-            m_TradeITEM[TRADE_MONEY_SLOT_NO].m_nInvIDX, m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item);
+        this->Sub_ITEM(m_TradeITEM[TRADE_MONEY_SLOT_NO].m_nInvIDX,
+            m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item);
 
 #ifdef __NEW_LOG
         g_pThreadLOG->When_TagItemLOG(LIA_GIVE,
@@ -4873,8 +4935,10 @@ classUSER::RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket) 
             m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item.GetMoney(),
             pTradeUSER);
 #else
-        g_pThreadLOG->When_GiveITEM(
-            this, &m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item, pTradeUSER, TRADE_MONEY_SLOT_NO);
+        g_pThreadLOG->When_GiveITEM(this,
+            &m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item,
+            pTradeUSER,
+            TRADE_MONEY_SLOT_NO);
 #endif
     }
 }
@@ -4890,8 +4954,12 @@ classUSER::AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
             // 더하자 !!!
             nInvIDX = this->Add_ITEM(pTradeUSER->m_TradeITEM[nI].m_Item);
 #ifdef __NEW_LOG
-            g_pThreadLOG->When_TagItemLOG(
-                LIA_RECV, this, &pTradeUSER->m_TradeITEM[nI].m_Item, 0, 0, pTradeUSER);
+            g_pThreadLOG->When_TagItemLOG(LIA_RECV,
+                this,
+                &pTradeUSER->m_TradeITEM[nI].m_Item,
+                0,
+                0,
+                pTradeUSER);
 #else
             g_pThreadLOG->When_RecvITEM(this, &pTradeUSER->m_TradeITEM[nI].m_Item, pTradeUSER, nI);
 #endif
@@ -4950,14 +5018,14 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                     return true;
                 }
                 if (!(pUSER->m_dwPayFLAG & PLAY_FLAG_TRADE)) {
-                    return this->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_NO_CHARGE_TARGET);
+                    return this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_NO_CHARGE_TARGET);
                 }
 
                 if (pUSER->m_iTradeUserIDX || pUSER->m_IngSTATUS.IsIgnoreSTATUS()) {
                     // 대상이 바쁘다..
-                    return this->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_BUSY);
+                    return this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_BUSY);
                 }
 
                 int iDistance = distance((int)m_PosCUR.x,
@@ -4966,8 +5034,8 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                     (int)pUSER->m_PosCUR.y);
                 if (iDistance > MAX_TRADE_DISTANCE) {
                     // 거래 요청 pUSER와의 거리는 체크후 자신에게 거래취소 전송...
-                    return this->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_TOO_FAR);
+                    return this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_TOO_FAR);
                 }
 
                 this->m_btTradeBIT = 0;
@@ -4978,14 +5046,14 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
             case RESULT_TRADE_ACCEPT: // 거래 승인 했다.
             {
                 if (pUSER->m_iTradeUserIDX != this->Get_INDEX()) {
-                    return this->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_CANCEL);
+                    return this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_CANCEL);
                 }
                 if (this->m_IngSTATUS.IsIgnoreSTATUS() || pUSER->m_IngSTATUS.IsIgnoreSTATUS()) {
-                    pUSER->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_BUSY);
-                    this->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_BUSY);
+                    pUSER->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_BUSY);
+                    this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_BUSY);
                     return true;
                 }
 
@@ -5014,8 +5082,8 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                     || pUSER->m_iTradeUserIDX != this->Get_INDEX()) {
                     this->m_btTradeBIT = this->m_iTradeUserIDX = 0;
                     pUSER->m_btTradeBIT = pUSER->m_iTradeUserIDX = 0;
-                    return this->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_CANCEL);
+                    return this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_CANCEL);
                 }
 
                 // 둘다 준비가 완료 됐나 ?
@@ -5030,10 +5098,10 @@ classUSER::Recv_cli_TRADE_P2P(t_PACKET* pPacket) {
                     || !this->Check_TradeITEM() || !pUSER->Check_TradeITEM()) {
                     this->m_btTradeBIT = this->m_iTradeUserIDX = 0;
                     pUSER->m_btTradeBIT = pUSER->m_iTradeUserIDX = 0;
-                    this->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_CANCEL);
-                    pUSER->Send_gsv_TRADE_P2P(
-                        pPacket->m_cli_TRADE_P2P.m_wObjectIDX, RESULT_TRADE_CANCEL);
+                    this->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_CANCEL);
+                    pUSER->Send_gsv_TRADE_P2P(pPacket->m_cli_TRADE_P2P.m_wObjectIDX,
+                        RESULT_TRADE_CANCEL);
                     return true;
                 }
 
@@ -5158,8 +5226,8 @@ classUSER::Recv_cli_TRADE_P2P_ITEM(t_PACKET* pPacket) {
             for (short nT = 0; nT < TRADE_MONEY_SLOT_NO; nT++) {
                 if (this->m_TradeITEM[nT].m_nInvIDX
                     == pPacket->m_cli_TRADE_P2P_ITEM.m_nInventoryIndex) {
-                    return IS_HACKING(
-                        this, "Recv_cli_TRADE_P2P_ITEM-3 : Duplicated inventory item");
+                    return IS_HACKING(this,
+                        "Recv_cli_TRADE_P2P_ITEM-3 : Duplicated inventory item");
                 }
             }
 
@@ -5234,8 +5302,8 @@ classUSER::Send_gsv_P_STORE_OPENED() {
 bool
 classUSER::Recv_cli_SET_WISHITEM(t_PACKET* pPacket) {
     if (tagITEM::IsValidITEM(&pPacket->m_cli_SET_WISHITEM.m_ITEM))
-        return this->m_WishLIST.Set(
-            pPacket->m_cli_SET_WISHITEM.m_btWishSLOT, pPacket->m_cli_SET_WISHITEM.m_ITEM);
+        return this->m_WishLIST.Set(pPacket->m_cli_SET_WISHITEM.m_btWishSLOT,
+            pPacket->m_cli_SET_WISHITEM.m_ITEM);
     return true;
 }
 
@@ -5455,8 +5523,8 @@ classUSER::Recv_cli_P_STORE_LIST_REQ(t_PACKET* pPacket) {
 
         Packet_ReleaseNUnlock(pCPacket);
     } else
-        return this->Send_gsv_P_STORE_RESULT(
-            pPacket->m_cli_P_STORE_LIST_REQ.m_wStoreObjectIDX, RESULT_P_STORE_CANCLED);
+        return this->Send_gsv_P_STORE_RESULT(pPacket->m_cli_P_STORE_LIST_REQ.m_wStoreObjectIDX,
+            RESULT_P_STORE_CANCLED);
 
     return true;
 }
@@ -5550,8 +5618,8 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
             // 개인 상점에서 물건을 구매...
             btStoreSLOT = pPacket->m_cli_P_STORE_BUY_REQ.m_BuyITEMs[nI].m_btSLOT;
             if (btStoreSLOT >= MAX_P_STORE_ITEM_SLOT) {
-                return IS_HACKING(
-                    this, "Recv_cli_P_STORE_BUY_REQ :: btStoreSLOT >= MAX_P_STORE_ITEM_SLOT");
+                return IS_HACKING(this,
+                    "Recv_cli_P_STORE_BUY_REQ :: btStoreSLOT >= MAX_P_STORE_ITEM_SLOT");
             }
 
             pSlotITEM = &pStoreOWNER->m_STORE.m_SellITEM[btStoreSLOT];
@@ -5635,8 +5703,8 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
 
 // 개인 상점 거래 로그...
 #ifdef __NEW_LOG
-                g_pThreadLOG->When_TagItemLOG(
-                    LIA_P2PTRADE, pStoreOWNER, &sSubITEM, 0, biNeedMoney, this);
+                g_pThreadLOG
+                    ->When_TagItemLOG(LIA_P2PTRADE, pStoreOWNER, &sSubITEM, 0, biNeedMoney, this);
 #else
                 g_pThreadLOG->When_P2PTRADE(pStoreOWNER, &sSubITEM, this, biNeedMoney);
 #endif
@@ -5660,8 +5728,8 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
 
         Packet_ReleaseNUnlock(pStorePacket);
     } else {
-        return this->Send_gsv_P_STORE_RESULT(
-            pPacket->m_cli_P_STORE_BUY_REQ.m_wStoreObjectIDX, RESULT_P_STORE_CANCLED);
+        return this->Send_gsv_P_STORE_RESULT(pPacket->m_cli_P_STORE_BUY_REQ.m_wStoreObjectIDX,
+            RESULT_P_STORE_CANCLED);
     }
 
     return true;
@@ -5672,8 +5740,8 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
 bool
 classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
     if (pPacket->m_cli_P_STORE_SELL_REQ.m_btItemCNT >= MAX_P_STORE_ITEM_SLOT) {
-        return IS_HACKING(
-            this, "Recv_cli_P_STORE_SELL_REQ :: m_btItemCNT >= MAX_P_STORE_ITEM_SLOT");
+        return IS_HACKING(this,
+            "Recv_cli_P_STORE_SELL_REQ :: m_btItemCNT >= MAX_P_STORE_ITEM_SLOT");
     }
     if (this->m_iIndex == pPacket->m_cli_P_STORE_SELL_REQ.m_wStoreObjectIDX) {
         return IS_HACKING(this, "Recv_cli_P_STORE_SELL_REQ :: Trade from self private store");
@@ -5704,8 +5772,8 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
         for (short nI = 0; nI < pPacket->m_cli_P_STORE_SELL_REQ.m_btItemCNT; nI++) {
             if (pPacket->m_cli_P_STORE_SELL_REQ.m_SellITEMs[nI].m_btWishSLOT
                 >= MAX_P_STORE_ITEM_SLOT) {
-                return IS_HACKING(
-                    this, "Recv_cli_P_STORE_SELL_REQ :: m_btWishSLOT >= MAX_P_STORE_ITEM_SLOT");
+                return IS_HACKING(this,
+                    "Recv_cli_P_STORE_SELL_REQ :: m_btWishSLOT >= MAX_P_STORE_ITEM_SLOT");
             }
             // 개인 상점에 물건을 팔자 ...
             btStoreSLOT = pStoreOWNER->m_STORE.m_btWishIdx2StoreIDX
@@ -5806,8 +5874,8 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
 
 // 개인 상점 거래 로그...
 #ifdef __NEW_LOG
-                g_pThreadLOG->When_TagItemLOG(
-                    LIA_P2PTRADE, this, &sSubITEM, 0, dwNeedMoney, pStoreOWNER);
+                g_pThreadLOG
+                    ->When_TagItemLOG(LIA_P2PTRADE, this, &sSubITEM, 0, dwNeedMoney, pStoreOWNER);
 #else
                 g_pThreadLOG->When_P2PTRADE(this, &sSubITEM, pStoreOWNER, dwNeedMoney);
 #endif
@@ -5833,8 +5901,8 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
 
         Packet_ReleaseNUnlock(pStorePacket);
     } else {
-        return this->Send_gsv_P_STORE_RESULT(
-            pPacket->m_cli_P_STORE_BUY_REQ.m_wStoreObjectIDX, RESULT_P_STORE_CANCLED);
+        return this->Send_gsv_P_STORE_RESULT(pPacket->m_cli_P_STORE_BUY_REQ.m_wStoreObjectIDX,
+            RESULT_P_STORE_CANCLED);
     }
 
     return true;
@@ -5858,8 +5926,8 @@ classUSER::Recv_cli_SKILL_LEVELUP_REQ(t_PACKET* pPacket) {
 
     short nSkillIDX = this->m_Skills.m_nSkillINDEX[pPacket->m_cli_SKILL_LEVELUP_REQ.m_btSkillSLOT];
 
-    BYTE btResult = this->Skill_LevelUpCondition(
-        nSkillIDX, pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
+    BYTE btResult = this->Skill_LevelUpCondition(nSkillIDX,
+        pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
     if (RESULT_SKILL_LEVELUP_SUCCESS == btResult) {
         // 05.05.25 스킬 렙업시 줄리 소모...
         int iNeedZuly =
@@ -5871,11 +5939,11 @@ classUSER::Recv_cli_SKILL_LEVELUP_REQ(t_PACKET* pPacket) {
             this->SetCur_MONEY(this->GetCur_MONEY() - iNeedZuly); // 소모 비용 적용
 
 #ifdef __NEW_LOG
-            g_pThreadLOG->When_LearnSKILL(
-                this, pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
+            g_pThreadLOG->When_LearnSKILL(this,
+                pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
 #else
-            g_pThreadLOG->When_LevelUpSKILL(
-                this, pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
+            g_pThreadLOG->When_LevelUpSKILL(this,
+                pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
 #endif
 
             switch (this->Skill_LEARN(pPacket->m_cli_SKILL_LEVELUP_REQ.m_btSkillSLOT,
@@ -6176,18 +6244,24 @@ classUSER::Do_QuestTRIGGER(t_HASHKEY HashTRIGGER, short nSelectReward) {
     // 서버에서만 체크하고 클라이언트에서 체크하지 않는 조건일 경우
     // 서버에서 조건이 false될수 있다...무조건 접속 끊으면 안됨... 실패를 통보할꺼냐? 걍 무시
     // 할꺼냐???
-    eQST_RESULT eResult = g_QuestList.CheckQUEST(
-        this, HashTRIGGER, true, this->m_iLastEventNpcIDX, NULL, nSelectReward);
+    eQST_RESULT eResult = g_QuestList.CheckQUEST(this,
+        HashTRIGGER,
+        true,
+        this->m_iLastEventNpcIDX,
+        NULL,
+        nSelectReward);
     this->m_iLastEventNpcIDX = 0;
     switch (eResult) {
         case QST_RESULT_SUCCESS:
             g_pThreadLOG->When_QuestLOG(this, HashTRIGGER, NEWLOG_QUEST_HASH_DONE);
             // g_pThreadLOG->When_DoneQUEST( this, HashTRIGGER );
-            return this->Send_gsv_QUEST_REPLY(
-                RESULT_QUEST_REPLY_TRIGGER_SUCCESS, 0, (int)HashTRIGGER);
+            return this->Send_gsv_QUEST_REPLY(RESULT_QUEST_REPLY_TRIGGER_SUCCESS,
+                0,
+                (int)HashTRIGGER);
         case QST_RESULT_FAILED:
-            return this->Send_gsv_QUEST_REPLY(
-                RESULT_QUEST_REPLY_TRIGGER_FAILED, 0, (int)HashTRIGGER);
+            return this->Send_gsv_QUEST_REPLY(RESULT_QUEST_REPLY_TRIGGER_FAILED,
+                0,
+                (int)HashTRIGGER);
         case QST_RESULT_STOPPED:
             return true;
         case QST_RESULT_INVALID:
@@ -6238,12 +6312,13 @@ classUSER::Recv_cli_QUEST_REQ(t_PACKET* pPacket) {
             //	break;
 
         case TYPE_QUEST_REQ_DEL:
-            if (this->Quest_Delete(
-                    pPacket->m_cli_QUEST_REQ.m_btQuestSLOT, pPacket->m_cli_QUEST_REQ.m_iQuestID)) {
+            if (this->Quest_Delete(pPacket->m_cli_QUEST_REQ.m_btQuestSLOT,
+                    pPacket->m_cli_QUEST_REQ.m_iQuestID)) {
 // 퀘스트 포기 로그...
 #ifdef __NEW_LOG
-                g_pThreadLOG->When_QuestLOG(
-                    this, pPacket->m_cli_QUEST_REQ.m_iQuestID, NEWLOG_QUEST_GIVEUP);
+                g_pThreadLOG->When_QuestLOG(this,
+                    pPacket->m_cli_QUEST_REQ.m_iQuestID,
+                    NEWLOG_QUEST_GIVEUP);
 #else
                 g_pThreadLOG->When_GiveUpQUEST(this, pPacket->m_cli_QUEST_REQ.m_iQuestID);
 #endif
@@ -6334,8 +6409,8 @@ classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
 
     classUSER* pUSER = g_pObjMGR->Get_UserOBJ(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG);
     if (NULL == pUSER) {
-        return this->Send_gsv_PARTY_REPLY(
-            pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG, PARTY_REPLY_NOT_FOUND);
+        return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
+            PARTY_REPLY_NOT_FOUND);
     }
     switch (pPacket->m_cli_PARTY_REQ.m_btREQUEST) {
         case PARTY_REQ_MAKE:
@@ -6343,22 +6418,22 @@ classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
             if (!(this->m_dwPayFLAG & PAY_FLAG_JP_BATTLE))
                 return true;
             if (!(pUSER->m_dwPayFLAG & PAY_FLAG_JP_BATTLE)) {
-                return this->Send_gsv_PARTY_REPLY(
-                    pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG, PAATY_REPLY_NO_CHARGE_TARGET);
+                return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
+                    PAATY_REPLY_NO_CHARGE_TARGET);
             }
 
             if (this->GetPARTY())
                 return true;
             if (pUSER->Get_HP() <= 0 || pUSER->GetPARTY()) {
                 // 이미 다른 파티에 참가 중이면..
-                return this->Send_gsv_PARTY_REPLY(
-                    pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG, PARTY_REPLY_BUSY);
+                return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
+                    PARTY_REPLY_BUSY);
             }
 
             // 결성시 파티렙은 0이다 !!
             if (!this->Check_PartyJoinLEVEL(pUSER->Get_LEVEL(), this->Get_LEVEL(), 0)) {
-                return Send_gsv_PARTY_REPLY(
-                    pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG, PARTY_REPLY_INVALID_LEVEL);
+                return Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
+                    PARTY_REPLY_INVALID_LEVEL);
             }
 
             return pUSER->Send_gsv_PARTY_REQ(this->Get_INDEX(), PARTY_REQ_MAKE);
@@ -6369,24 +6444,24 @@ classUSER::Recv_cli_PARTY_REQ(t_PACKET* pPacket) {
                 return true;
             }
             if (!(pUSER->m_dwPayFLAG & PAY_FLAG_JP_BATTLE)) {
-                return this->Send_gsv_PARTY_REPLY(
-                    pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG, PAATY_REPLY_NO_CHARGE_TARGET);
+                return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
+                    PAATY_REPLY_NO_CHARGE_TARGET);
             }
 
             if (!this->GetPARTY())
                 return true;
             if (pUSER->Get_HP() <= 0 || pUSER->GetPARTY()) {
                 // 이미 다른 파티에 참가 중이면..
-                return this->Send_gsv_PARTY_REPLY(
-                    pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG, PARTY_REPLY_BUSY);
+                return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
+                    PARTY_REPLY_BUSY);
             }
 
             // pUSER의 가입 레벨 체크...
             if (!this->Check_PartyJoinLEVEL(pUSER->Get_LEVEL(),
                     this->m_pPartyBUFF->GetAverageLEV(),
                     this->m_pPartyBUFF->GetPartyLEV())) {
-                return Send_gsv_PARTY_REPLY(
-                    pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG, PARTY_REPLY_INVALID_LEVEL);
+                return Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REQ.m_dwDestIDXorTAG,
+                    PARTY_REPLY_INVALID_LEVEL);
             }
 
             return pUSER->Send_gsv_PARTY_REQ(this->Get_INDEX(), PARTY_REQ_JOIN);
@@ -6409,8 +6484,8 @@ bool
 classUSER::Recv_cli_PARTY_REPLY(t_PACKET* pPacket) {
     classUSER* pUSER = g_pObjMGR->Get_UserOBJ(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG);
     if (NULL == pUSER) {
-        return this->Send_gsv_PARTY_REPLY(
-            pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG, PARTY_REPLY_NOT_FOUND);
+        return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
+            PARTY_REPLY_NOT_FOUND);
     }
 
     if (this->Get_CharHASH() == pUSER->Get_CharHASH()) {
@@ -6428,18 +6503,18 @@ classUSER::Recv_cli_PARTY_REPLY(t_PACKET* pPacket) {
             if (NULL == pUSER->GetPARTY()) {
                 // 파티 결성 요청자가 파티를 만든다.
                 if (!g_pPartyBUFF->CreatePARTY(pUSER)) {
-                    return this->Send_gsv_PARTY_REPLY(
-                        pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG, PARTY_REPLY_DESTROY);
+                    return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
+                        PARTY_REPLY_DESTROY);
                 }
             } else if (pUSER != pUSER->m_pPartyBUFF->GetPartyOWNER()) {
                 // 파티 결성 요청자가 이미 다른 파티에 가입했다.
-                return this->Send_gsv_PARTY_REPLY(
-                    pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG, PARTY_REPLY_DESTROY);
+                return this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
+                    PARTY_REPLY_DESTROY);
             }
 
             // 파짱이 된 유저에게 허락 패킷 전송.
-            pUSER->Send_gsv_PARTY_REPLY(
-                pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG, PARTY_REPLY_ACCEPT_MAKE);
+            pUSER->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
+                PARTY_REPLY_ACCEPT_MAKE);
 
             BYTE btFailed = pUSER->m_pPartyBUFF->Add_PartyUSER(this);
             if (btFailed)
@@ -6457,11 +6532,11 @@ classUSER::Recv_cli_PARTY_REPLY(t_PACKET* pPacket) {
             if (pUSER->GetPARTY() && pUSER == pUSER->m_pPartyBUFF->GetPartyOWNER()) {
                 BYTE btFailed = pUSER->m_pPartyBUFF->Add_PartyUSER(this);
                 if (btFailed)
-                    this->Send_gsv_PARTY_REPLY(
-                        pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG, btFailed);
+                    this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
+                        btFailed);
             } else
-                this->Send_gsv_PARTY_REPLY(
-                    pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG, PARTY_REPLY_DESTROY);
+                this->Send_gsv_PARTY_REPLY(pPacket->m_cli_PARTY_REPLY.m_dwDestIDXorTAG,
+                    PARTY_REPLY_DESTROY);
             break;
         }
 
@@ -6489,8 +6564,9 @@ classUSER::Recv_cli_APPRAISAL_REQ(t_PACKET* pPacket) {
     tagITEM* pITEM = &this->m_Inventory.m_ItemLIST[pPacket->m_cli_APPRAISAL_REQ.m_wInventoryIndex];
     if (!pITEM->IsEquipITEM() || pITEM->IsAppraisal())
         return true;
-    int iNeedMoney = CCal::GetMoney_WhenAPPRAISAL(
-        ITEM_BASE_PRICE(pITEM->GetTYPE(), pITEM->GetItemNO()), pITEM->GetDurability());
+    int iNeedMoney =
+        CCal::GetMoney_WhenAPPRAISAL(ITEM_BASE_PRICE(pITEM->GetTYPE(), pITEM->GetItemNO()),
+            pITEM->GetDurability());
 
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)
@@ -6611,8 +6687,10 @@ classUSER::Recv_cli_REPAIR_FROM_NPC(t_PACKET* pPacket) {
     }
 
     // 상점 npc와의 거래 체크...
-    int iDistance = distance(
-        (int)m_PosCUR.x, (int)m_PosCUR.y, (int)pCharNPC->m_PosCUR.x, (int)pCharNPC->m_PosCUR.y);
+    int iDistance = distance((int)m_PosCUR.x,
+        (int)m_PosCUR.y,
+        (int)pCharNPC->m_PosCUR.x,
+        (int)pCharNPC->m_PosCUR.y);
     if (iDistance > MAX_TRADE_DISTANCE) {
         return true;
     }
@@ -6879,8 +6957,11 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
             if (GEM_QUAL <= 35) { // 보석 삭제
 // 로그:: 분해시 보석 삭제 됐음...
 #ifdef __NEW_LOG
-                g_pThreadLOG->When_GemmingITEM(
-                    this, pInITEM, NULL, NEWLOG_UNGEMMING, NEWLOG_FAILED);
+                g_pThreadLOG->When_GemmingITEM(this,
+                    pInITEM,
+                    NULL,
+                    NEWLOG_UNGEMMING,
+                    NEWLOG_FAILED);
 #else
                 g_pThreadLOG->When_UngemmingITEM(this, pInITEM, NULL);
 #endif
@@ -7030,8 +7111,12 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
         }
 
 #ifdef __NEW_LOG
-        g_pThreadLOG->When_CreateOrDestroyITEM(
-            this, pInITEM, sOutLogITEM, nOutLogCnt, NEWLOG_BREAKUP, NEWLOG_SUCCESS);
+        g_pThreadLOG->When_CreateOrDestroyITEM(this,
+            pInITEM,
+            sOutLogITEM,
+            nOutLogCnt,
+            NEWLOG_BREAKUP,
+            NEWLOG_SUCCESS);
 #else
         g_pThreadLOG->When_BreakupITEM(this, pInITEM);
 #endif
@@ -7140,8 +7225,9 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
     }
 
     // 재련 시작을 주변에 통보...
-    this->Send_gsv_ITEM_RESULT_REPORT(
-        REPORT_ITEM_UPGRADE_START, static_cast<BYTE>(pInITEM->GetTYPE()), pInITEM->GetItemNO());
+    this->Send_gsv_ITEM_RESULT_REPORT(REPORT_ITEM_UPGRADE_START,
+        static_cast<BYTE>(pInITEM->GetTYPE()),
+        pInITEM->GetItemNO());
 
     short SUC;
     BYTE btResult, btBeforeGrade;
@@ -7228,7 +7314,8 @@ classUSER::Recv_cli_CRAFT_ITEM_REQ(t_PACKET* pPacket) {
         case CRAFT_BREAKUP_FROM_NPC: {
             CObjNPC* pCharNPC;
             pCharNPC = (CObjNPC*)g_pObjMGR->Get_GameOBJ(
-                pPacket->m_cli_CRAFT_BREAKUP_REQ.m_nSkillSLOTorNpcIDX, OBJ_NPC);
+                pPacket->m_cli_CRAFT_BREAKUP_REQ.m_nSkillSLOTorNpcIDX,
+                OBJ_NPC);
             if (!pCharNPC) { // 상점 주인이 없어???
                 return false;
             }
@@ -7253,7 +7340,8 @@ classUSER::Recv_cli_CRAFT_ITEM_REQ(t_PACKET* pPacket) {
         case CRAFT_UPGRADE_FROM_NPC: {
             CObjNPC* pCharNPC;
             pCharNPC = (CObjNPC*)g_pObjMGR->Get_GameOBJ(
-                pPacket->m_cli_CRAFT_UPGRADE_REQ.m_nSkillSLOTorNpcIDX, OBJ_NPC);
+                pPacket->m_cli_CRAFT_UPGRADE_REQ.m_nSkillSLOTorNpcIDX,
+                OBJ_NPC);
             if (!pCharNPC) { // 상점 주인이 없어???
                 return false;
             }
@@ -7476,8 +7564,9 @@ classUSER::Recv_ost_SERVER_CHGUSER(t_PACKET* pPacket) {
 
     classUSER* pUSER = ::g_pUserLIST->Find_ACCOUNT(szACCOUNT);
 
-    return Send_gsv_SERVER_CHGUSER_REPLY(
-        pUSER, pPacket->m_ost_SERVER_CHGUSER.m_dwSTATUS, pPacket->m_ost_SERVER_CHGUSER.m_dwCMD);
+    return Send_gsv_SERVER_CHGUSER_REPLY(pUSER,
+        pPacket->m_ost_SERVER_CHGUSER.m_dwSTATUS,
+        pPacket->m_ost_SERVER_CHGUSER.m_dwCMD);
 }
 
 #define OST_CHAT_BLOCK_TIME 30 // 기본 채팅블럭 타임
@@ -7732,8 +7821,9 @@ classUSER::Recv_cli_CLAN_COMMAND(t_PACKET* pPacket) {
             return true;
         }
 
-        return g_pThreadGUILD->Add_ClanCMD(
-            pPacket->m_cli_CLAN_COMMAND.m_btCMD, this->m_iSocketIDX, pPacket);
+        return g_pThreadGUILD->Add_ClanCMD(pPacket->m_cli_CLAN_COMMAND.m_btCMD,
+            this->m_iSocketIDX,
+            pPacket);
     }
     return true;
 }
@@ -8089,8 +8179,8 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
             return Recv_cli_CHAR_INFO_REQ( pPacket );
         */
         case CLI_SET_WEIGHT_RATE:
-            return Recv_cli_SET_WEIGHT_RATE(
-                pPacket->m_cli_SET_WEIGHT_RATE.m_btWeightRate, true); // 주변에 전송
+            return Recv_cli_SET_WEIGHT_RATE(pPacket->m_cli_SET_WEIGHT_RATE.m_btWeightRate,
+                true); // 주변에 전송
 
         case CLI_CHAT:
             return Recv_cli_CHAT(pPacket);
@@ -8704,8 +8794,10 @@ classUSER::Proc(void) {
 
                     this->SetCMD_STOP();
                     // send ride on packet to around clients...
-                    return this->Send_gsv_CART_RIDE(
-                        CART_RIDE_ACCEPT, pDriver->Get_INDEX(), this->Get_INDEX(), true);
+                    return this->Send_gsv_CART_RIDE(CART_RIDE_ACCEPT,
+                        pDriver->Get_INDEX(),
+                        this->Get_INDEX(),
+                        true);
                 } // else 이런경우는 없을듯...
             }
 

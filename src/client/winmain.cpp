@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-
 #include "CApplication.h"
 #include "Game.h"
 #include "Network/CNetwork.h"
@@ -19,138 +18,143 @@ using namespace Rose;
 
 class DuplicateAppLock {
 public:
-	HANDLE global_mutex;
-	bool is_duplicate;
+    HANDLE global_mutex;
+    bool is_duplicate;
 
-	DuplicateAppLock() :
-		global_mutex(nullptr),
-		is_duplicate(false)
-	{
-		this->global_mutex = ::CreateMutex(nullptr, FALSE, "Global\\rose-next");
-		this->is_duplicate = ::GetLastError() == ERROR_ALREADY_EXISTS;
-	}
+    DuplicateAppLock(): global_mutex(nullptr), is_duplicate(false) {
+        this->global_mutex = ::CreateMutex(nullptr, FALSE, "Global\\rose-next");
+        this->is_duplicate = ::GetLastError() == ERROR_ALREADY_EXISTS;
+    }
 
-	~DuplicateAppLock() {
-		if (this->global_mutex) {
-			::ReleaseMutex(this->global_mutex);
-			::CloseHandle(this->global_mutex);
-		}
-	}
+    ~DuplicateAppLock() {
+        if (this->global_mutex) {
+            ::ReleaseMutex(this->global_mutex);
+            ::CloseHandle(this->global_mutex);
+        }
+    }
 
-	DuplicateAppLock(DuplicateAppLock&) = delete;
-	DuplicateAppLock(DuplicateAppLock&&) = delete;
-	DuplicateAppLock& DuplicateAppLock::operator= (const DuplicateAppLock&) = delete;
-	DuplicateAppLock& DuplicateAppLock::operator= (DuplicateAppLock&&) = delete;
+    DuplicateAppLock(DuplicateAppLock&) = delete;
+    DuplicateAppLock(DuplicateAppLock&&) = delete;
+    DuplicateAppLock& DuplicateAppLock::operator=(const DuplicateAppLock&) = delete;
+    DuplicateAppLock& DuplicateAppLock::operator=(DuplicateAppLock&&) = delete;
 };
 
-bool Init_DEVICE (void)
-{
-	bool bRet = false;
+bool
+Init_DEVICE(void) {
+    bool bRet = false;
 
-	//--------------------------[ engine related ]-----------------------//
-	::initZnzin();	
-	::openFileSystem("data.idx");
-	::doScript("scripts/init.lua");
+    //--------------------------[ engine related ]-----------------------//
+    ::initZnzin();
+    ::openFileSystem("data.idx");
+    ::doScript("scripts/init.lua");
 
-	t_OptionResolution Resolution = g_ClientStorage.GetResolution();
-	::setDisplayQualityLevel( c_iPeformances[g_ClientStorage.GetVideoPerformance()] );
-	t_OptionVideo Video;
-	g_ClientStorage.GetVideoOption(Video);
-	setFullSceneAntiAliasing( Video.iAntiAlising );
+    t_OptionResolution Resolution = g_ClientStorage.GetResolution();
+    ::setDisplayQualityLevel(c_iPeformances[g_ClientStorage.GetVideoPerformance()]);
+    t_OptionVideo Video;
+    g_ClientStorage.GetVideoOption(Video);
+    setFullSceneAntiAliasing(Video.iAntiAlising);
 
+    if (!g_pCApp->IsFullScreenMode()) {
+        RECT ClientRt;
+        GetClientRect(g_pCApp->GetHWND(), &ClientRt);
+        ::setScreen(ClientRt.right,
+            ClientRt.bottom,
+            Resolution.iDepth,
+            g_pCApp->IsFullScreenMode());
+    } else
+        ::setScreen(g_pCApp->GetWIDTH(),
+            g_pCApp->GetHEIGHT(),
+            Resolution.iDepth,
+            g_pCApp->IsFullScreenMode());
 
-	if(!g_pCApp->IsFullScreenMode()) 
-	{
-		RECT ClientRt;
-		GetClientRect(g_pCApp->GetHWND(),&ClientRt);
-		::setScreen(ClientRt.right, ClientRt.bottom, Resolution.iDepth, g_pCApp->IsFullScreenMode() );		
-	}
-	else
-		::setScreen(g_pCApp->GetWIDTH(), g_pCApp->GetHEIGHT(), Resolution.iDepth, g_pCApp->IsFullScreenMode() );
+    bRet = ::attachWindow((const void*)g_pCApp->GetHWND());
 
+    CD3DUtil::Init();
 
-	bRet = ::attachWindow((const void*)g_pCApp->GetHWND());
+    g_pSoundLIST = new CSoundLIST(g_pCApp->GetHWND());
+    g_pSoundLIST->Load("3DDATA\\STB\\FILE_SOUND.stb");
 
-
-	CD3DUtil::Init( );
-
-	g_pSoundLIST = new CSoundLIST( g_pCApp->GetHWND() );
-	g_pSoundLIST->Load ( "3DDATA\\STB\\FILE_SOUND.stb" );
-
-	return bRet;
+    return bRet;
 }
 
 //-------------------------------------------------------------------------------------------------
-void Free_DEVICE (void)
-{	
-	delete g_pSoundLIST;
+void
+Free_DEVICE(void) {
+    delete g_pSoundLIST;
 
-	CD3DUtil::Free ();
+    CD3DUtil::Free();
 
-	//--------------------------[ engine related ]-----------------------//
-	::detachWindow();
+    //--------------------------[ engine related ]-----------------------//
+    ::detachWindow();
 
-	::closeFileSystem();
-	::destZnzin();  
+    ::closeFileSystem();
+    ::destZnzin();
 }
 
-int APIENTRY WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
-{
+int APIENTRY
+WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow) {
 #ifndef _DEBUG
-	DuplicateAppLock app_lock;
-	if (app_lock.is_duplicate) {
-		::MessageBox(nullptr, "Rose Next is already running.", "Duplicate Instance", MB_OK);
-		return 0;
-	}
+    DuplicateAppLock app_lock;
+    if (app_lock.is_duplicate) {
+        ::MessageBox(nullptr, "Rose Next is already running.", "Duplicate Instance", MB_OK);
+        return 0;
+    }
 #endif
 
-	VHANDLE hVFS = OpenVFS( "data.idx", "mr" );
-	(CVFSManager::GetSingleton()).SetVFS( hVFS );
-	(CVFSManager::GetSingleton()).InitVFS( VFS_TRIGGER_VFS );	
+    VHANDLE hVFS = OpenVFS("data.idx", "mr");
+    (CVFSManager::GetSingleton()).SetVFS(hVFS);
+    (CVFSManager::GetSingleton()).InitVFS(VFS_TRIGGER_VFS);
 
-	GetLocalTime(	&g_GameDATA.m_SystemTime );	
+    GetLocalTime(&g_GameDATA.m_SystemTime);
 
-	g_pCApp = CApplication::Instance ();
-	g_pNet = CNetwork::Instance (hInstance);
-	g_pCRange = CRangeTBL::Instance ();
+    g_pCApp = CApplication::Instance();
+    g_pNet = CNetwork::Instance(hInstance);
+    g_pCRange = CRangeTBL::Instance();
 
-	if ( !g_pCRange->Load_TABLE ("3DDATA\\TERRAIN\\O_Range.TBL") ) {
-		g_pCApp->ErrorBOX ( "3DDATA\\TERRAIN\\O_Range.TBL file open error", CUtil::GetCurrentDir (), MB_OK);
-		return 0;
-	}	
+    if (!g_pCRange->Load_TABLE("3DDATA\\TERRAIN\\O_Range.TBL")) {
+        g_pCApp->ErrorBOX("3DDATA\\TERRAIN\\O_Range.TBL file open error",
+            CUtil::GetCurrentDir(),
+            MB_OK);
+        return 0;
+    }
 
-	if (!g_pCApp->ParseArgument(lpCmdLine)) {
-		return 0;
-	}
+    if (!g_pCApp->ParseArgument(lpCmdLine)) {
+        return 0;
+    }
 
-	g_TblResolution.Load2( "3DDATA\\STB\\RESOLUTION.STB",	false, false );
-	g_TblCamera.Load2( "3DDATA\\STB\\LIST_CAMERA.STB" ,false, false );
+    g_TblResolution.Load2("3DDATA\\STB\\RESOLUTION.STB", false, false);
+    g_TblCamera.Load2("3DDATA\\STB\\LIST_CAMERA.STB", false, false);
 
-	g_ClientStorage.Load();
+    g_ClientStorage.Load();
 
-	t_OptionResolution Resolution = g_ClientStorage.GetResolution();
-	UINT iFullScreen = g_ClientStorage.GetVideoFullScreen();
+    t_OptionResolution Resolution = g_ClientStorage.GetResolution();
+    UINT iFullScreen = g_ClientStorage.GetVideoFullScreen();
 
-	g_pCApp->SetFullscreenMode( iFullScreen );
-	g_pCApp->CreateWND ("classCLIENT", CStr::Printf("%s", GameConfig::NAME), Resolution.iWidth, Resolution.iHeight,Resolution.iDepth, hInstance);
+    g_pCApp->SetFullscreenMode(iFullScreen);
+    g_pCApp->CreateWND("classCLIENT",
+        CStr::Printf("%s", GameConfig::NAME),
+        Resolution.iWidth,
+        Resolution.iHeight,
+        Resolution.iDepth,
+        hInstance);
 
-	g_pObjMGR = CObjectMANAGER::Instance ();
-	g_pCApp->ResetExitGame();
+    g_pObjMGR = CObjectMANAGER::Instance();
+    g_pCApp->ResetExitGame();
 
-	bool bDeviceInitialized = Init_DEVICE();
-	if ( bDeviceInitialized ) {
-		CGame::GetInstance().GameLoop();
-	}
+    bool bDeviceInitialized = Init_DEVICE();
+    if (bDeviceInitialized) {
+        CGame::GetInstance().GameLoop();
+    }
 
-	Free_DEVICE ();
+    Free_DEVICE();
 
-	g_TblCamera.Free();
-	g_TblResolution.Free();
+    g_TblCamera.Free();
+    g_TblResolution.Free();
 
-	g_pCApp->Destroy ();
-	g_pNet->Destroy ();
+    g_pCApp->Destroy();
+    g_pNet->Destroy();
 
-	g_pCRange->Destroy ();	
+    g_pCRange->Destroy();
 
-	return 0;
+    return 0;
 }

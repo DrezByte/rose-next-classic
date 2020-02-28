@@ -2,23 +2,18 @@
 
 #include ".\cteventclanskill.h"
 
-CTEventClanSkill::CTEventClanSkill(void)
-{
-	m_strString = std::string("ETClanSkill");
+CTEventClanSkill::CTEventClanSkill(void) {
+    m_strString = std::string("ETClanSkill");
 }
 
-CTEventClanSkill::~CTEventClanSkill(void)
-{
+CTEventClanSkill::~CTEventClanSkill(void) {}
 
+void
+CTEventClanSkill::SetIndex(int iIndex) {
+    m_iIndex = iIndex;
 }
 
-void	CTEventClanSkill::SetIndex( int iIndex )
-{
-	m_iIndex = iIndex;
+int
+CTEventClanSkill::GetIndex() {
+    return m_iIndex;
 }
-
-int		CTEventClanSkill::GetIndex()
-{
-	return m_iIndex;
-}
-
