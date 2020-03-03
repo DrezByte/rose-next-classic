@@ -15,8 +15,8 @@
         <ItemGroup>
             <Flatbuffer>
                 <Message>-- Compiling %(Filename)%(Extension)</Message>
-                <Command>$(SolutionDir)bin\$(Configuration)\thirdparty\flatc.exe --cpp -o $(GeneratedDir) %(Fullpath)</Command>
-                <Outputs>$(GeneratedDir)\%(Filename)_generated.h</Outputs>
+                <Command>$(SolutionDir)bin\$(Configuration)\thirdparty\flatc.exe --cpp -o %(Flatbuffer.OutDir) %(Fullpath)</Command>
+                <Outputs>%(Flatbuffer.OutDir)\%(Filename)_generated.h</Outputs>
             </Flatbuffer>
         </ItemGroup>
 
