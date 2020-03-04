@@ -74,7 +74,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_server;$(SolutionDir)src\lib_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_server;$(SolutionDir)src\lib_util;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -91,7 +91,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_server;$(SolutionDir)src\lib_util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_server;$(SolutionDir)src\lib_util;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

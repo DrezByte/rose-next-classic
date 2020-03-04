@@ -1,5 +1,8 @@
 #ifndef __PACKETHEADER_H
 #define __PACKETHEADER_H
+
+#include <cstdint>
+
 #pragma warning(disable : 4201)
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
@@ -13,6 +16,10 @@
 // Total 6 bytes..
 struct t_PACKETHEADER {
     union {
+        struct {
+            uint16_t size;
+            uint8_t* data;
+        };
         struct {
             short m_nSize;
             WORD m_wType;

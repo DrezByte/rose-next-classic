@@ -223,28 +223,10 @@ CLogin::SendLoginReq() {
     CTCommand* pCmd = new CTCmdExit;
     g_EUILobby.ShowMsgBox(STR_WAIT_LOGIN, CTMsgBox::BT_CANCEL, true, GetDialogType(), NULL, pCmd);
 
-    if (CGame::GetInstance().IsActiveRouteComboBox()) {
-        ///콤보 박스에서 현재 선택된 아이템의 value를 구해온다.
-        CWinCtrl* pComponent = Find(IID_COMBOBOX_ROUTE);
-        if (pComponent && pComponent->GetControlType() == CTRL_JCOMBOBOX) {
-            CJComboBox* pCombo = (CJComboBox*)pComponent;
-            if (const CTObject* pObj = pCombo->GetSelectedItem()) {
-                CTContainerItem* pItem = (CTContainerItem*)pObj;
-
-                std::string temp_id = m_strID;
-                temp_id.append(pItem->GetValue());
-                CGame::GetInstance().SetJapanPartnerString(pItem->GetValue());
-
-                g_pNet->Send_cli_LOGIN_REQ(temp_id, m_strPassword);
-
-                g_ClientStorage.SetJapanRoute(pCombo->GetSelectedItemIndex());
-                g_ClientStorage.SaveJapanRoute();
-            }
-        }
-    } else {
-        g_pNet->Send_cli_LOGIN_REQ(m_strID, m_strPassword);
-    }
+    // g_pNet->Send_cli_LOGIN_REQ(m_strID, m_strPassword);
+    g_pNet->send_login_req(m_strID, m_strPassword);
 }
+
 void
 CLogin::Hide() {
     CTDialog::Hide();

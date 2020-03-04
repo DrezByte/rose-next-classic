@@ -15,6 +15,8 @@
 #define CLIENTSOCKET_CONNECTED 0x001
 #define CLIENTSOCKET_CLOSING 0x002
 
+using namespace Rose::Network;
+
 struct t_PACKET {
     union {
         t_PACKETHEADER m_HEADER;
@@ -30,8 +32,11 @@ struct t_SendPACKET {
     };
 };
 
-//-------------------------------------------------------------------------------------------------
-// DWORD WINAPI ClientSOCKET_SendTHREAD (LPVOID lpParameter)
+CClientSOCKET::CClientSOCKET() :
+    sent_bytes(0) {
+    _Init();
+}
+
 unsigned __stdcall ClientSOCKET_SendTHREAD(void* lpParameter) {
     CClientSOCKET* pClientSocket = (CClientSOCKET*)lpParameter;
 
@@ -48,16 +53,15 @@ unsigned __stdcall ClientSOCKET_SendTHREAD(void* lpParameter) {
         pClientSocket->m_WaitPacketQ.Init();
         ::LeaveCriticalSection(&pClientSocket->m_csThread);
 
-        if (pClientSocket->m_bWritable && pClientSocket->m_SendPacketQ.GetNodeCount() > 0) {
+        if (!pClientSocket->m_bWritable) {
+            LOG_DEBUG("Failed to send packets. Writable == false");
+            continue;
+        }
+
+        if (pClientSocket->m_SendPacketQ.GetNodeCount() > 0 || !pClientSocket->send_packets.empty()) {
             if (!pClientSocket->Packet_Send()) {
             }
         }
-#ifdef _DEBUG
-        else
-            g_LOG.OutputString(LOG_DEBUG_,
-                " >>>>>>>> Send Failed[ %d Packet(s) ] :: Writable == false \n",
-                pClientSocket->m_SendPacketQ.GetNodeCount());
-#endif
     }
 
     pClientSocket->m_cStatus = CLIENTSOCKET_DISCONNECTED;
@@ -70,7 +74,7 @@ CClientSOCKET::_Init(void) {
     m_pRecvPacket = (t_PACKET*)new char[MAX_PACKET_SIZE];
     m_nPacketSize = 0;
     m_nRecvBytes = 0;
-    m_nSendBytes = 0;
+    this->sent_bytes = 0;
     m_bWritable = false;
     //	m_bRecvBlocking= false;
     m_hThread = NULL;
@@ -194,15 +198,6 @@ CClientSOCKET::OnReceive(int nErrorCode) {
     }
 
     Packet_Recv(dwBytes);
-
-    /*
-    if ( dwBytes != 0 || nErrorCode != 0 ) {
-        if ( !nErrorCode )
-            Packet_Recv ();
-    } else {
-        this->m_bRecvBlocking = true;
-    }
-    */
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -361,8 +356,8 @@ CClientSOCKET::Packet_Send(void) {
     while (m_SendPacketQ.GetNodeCount() > 0) {
         pNode = m_SendPacketQ.GetHeadNode();
 
-        iRetValue = this->Send((char*)pNode->DATA->m_pDATA + m_nSendBytes,
-            pNode->DATA->m_wSize - m_nSendBytes,
+        iRetValue = this->Send((char*)pNode->DATA->m_pDATA + this->sent_bytes,
+            pNode->DATA->m_wSize - this->sent_bytes,
             0);
         if (iRetValue == SOCKET_ERROR) {
             int WSAErr = WSAGetLastError();
@@ -378,8 +373,8 @@ CClientSOCKET::Packet_Send(void) {
             return true;
         }
 
-        m_nSendBytes += iRetValue;
-        if (m_nSendBytes == pNode->DATA->m_wSize) {
+        this->sent_bytes += iRetValue;
+        if (this->sent_bytes == pNode->DATA->m_wSize) {
             classDLLNODE<t_SendPACKET*>* pDelNode;
 
             pDelNode = pNode;
@@ -388,7 +383,31 @@ CClientSOCKET::Packet_Send(void) {
             delete pDelNode->DATA;
             m_SendPacketQ.DeleteNFree(pDelNode);
 
-            m_nSendBytes = 0;
+            this->sent_bytes = 0;
+        }
+    }
+
+    // New packet queue implementation
+    std::lock_guard<std::mutex> lock(this->send_lock);
+    while (!this->send_packets.empty()) {
+        const Packet& p = this->send_packets.front();
+
+        const int result = this->Send(p.buffer.data() + this->sent_bytes, p.buffer.size() - this->sent_bytes);
+        if (result == SOCKET_ERROR) {
+            const int wsa_error = ::WSAGetLastError();
+            if (wsa_error != WSAEWOULDBLOCK) {
+                Socket_Error("Error sending a packet");
+                return false;
+            }
+
+            m_bWritable = false;
+            return true;
+        }
+
+        this->sent_bytes += result;
+        if (result == p.buffer.size()) {
+            this->send_packets.pop();
+            this->sent_bytes = 0;
         }
     }
 
@@ -464,4 +483,16 @@ CClientSOCKET::Close() {
     CRawSOCKET::Close();
 }
 
-//-------------------------------------------------------------------------------------------------
+void
+CClientSOCKET::add_send_packet(const Packet& p)
+{
+    std::lock_guard<std::mutex> lock(this->send_lock);
+    this->send_packets.push(p);
+    ::SetEvent(m_hThreadEvent);
+}
+
+void CClientSOCKET::add_receive_packet(const Packet& p)
+{
+    std::lock_guard<std::mutex> lock(this->receive_lock);
+    this->receive_packets.push(p);
+}

@@ -1,12 +1,14 @@
-/*
-    $Header: /7HeartsOnline/Client/Util/CClientSOCKET.h 3     04-11-05 12:14a Icarus $
-*/
 #ifndef __CClientSOCKET_H
 #define __CClientSOCKET_H
+
 #include "..\Util\DLLIST.h"
 #include "CRawSOCKET.h"
 #include "PacketHEADER.h"
-//-------------------------------------------------------------------------------------------------
+
+#include "rose/network/packet.h"
+
+#include <queue>
+#include <mutex>
 
 struct t_PACKET;
 struct t_SendPACKET;
@@ -20,7 +22,6 @@ private:
     short m_nRecvBytes;
     short m_nPacketSize;
 
-    short m_nSendBytes;
     bool m_bWritable;
 
     CRITICAL_SECTION m_csThread;
@@ -47,7 +48,7 @@ protected:
 public:
     classDLLNODE<CClientSOCKET*>* m_pNode;
 
-    CClientSOCKET() { _Init(); }
+    CClientSOCKET();
     virtual ~CClientSOCKET() { _Free(); }
 
     void SetSendEvent() { ::SetEvent(m_hThreadEvent); }
@@ -69,6 +70,17 @@ public:
     void Packet_Register2RecvQ(t_PACKET* pRegPacket);
     void Packet_Register2SendQ(t_PACKET* pRegPacket);
     bool Peek_Packet(t_PACKET* pPacket, bool bRemoveFromQ = true);
+
+public:
+    std::queue<Rose::Network::Packet> send_packets;
+    std::queue<Rose::Network::Packet> receive_packets;
+    int sent_bytes;
+
+    void add_send_packet(const Rose::Network::Packet& p);
+    void add_receive_packet(const Rose::Network::Packet& p);
+private:
+    std::mutex send_lock;
+    std::mutex receive_lock;
 };
 
 //-------------------------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 #ifndef __STDAFX_H
 #define __STDAFX_H
+
 //-------------------------------------------------------------------------------------------------
 
 #define _WIN32_WINNT 0x0500
@@ -16,6 +17,7 @@
 
 #include <assert.h>
 #include <crtdbg.h>
+#include <cstdint>
 #include <iostream>
 #include <stdio.h>
 #include <tchar.h>

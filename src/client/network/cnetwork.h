@@ -1,29 +1,32 @@
-/*
-    $Header: /Client/Network/CNetwork.h 14    05-05-24 2:46p Gioend $
-*/
-#ifndef __CNETWORK_H
-#define __CNETWORK_H
+#ifndef CNETWORK_H
+#define CNETWORK_H
+
 #include "NET_Prototype.h"
 #include "../util/CClientSOCKET.h"
 #include "Object.h"
 #include "RecvPACKET.h"
 #include "SendPACKET.h"
-//-------------------------------------------------------------------------------------------------
+
+#include "rose/network/packet.h"
 
 enum { NS_NULL = 0, NS_CON_TO_LSV, NS_DIS_FORM_LSV, NS_CON_TO_WSV };
 
+
 class CNetwork: public CRecvPACKET, public CSendPACKET {
+public:
+    enum class Server {
+        Login,
+        World,
+        Game,
+    };
+
 private:
-    bool bAllInONE; /// 월드/존서버가 같은 서버냐?
+    bool bAllInONE;
     void Send_PACKET(t_PACKET* pSendPacket, bool bSendToWorld = false) {
-#ifdef __VIRTUAL_SERVER
-        m_ZoneSOCKET.Packet_Register2RecvQ(pSendPacket);
-#else
         if (bSendToWorld || bAllInONE)
             m_WorldSOCKET.Packet_Register2SendQ(pSendPacket);
         else
             m_ZoneSOCKET.Packet_Register2SendQ(pSendPacket);
-#endif
     }
 
     short m_nProcLEVEL;
@@ -40,28 +43,23 @@ private:
     void MoveZoneServer();
 
 public:
-#ifdef __VIRTUAL_SERVER
-    CClientSOCKET m_SOCKET;
-#else
     CClientSOCKET m_WorldSOCKET;
     CClientSOCKET m_ZoneSOCKET;
-#endif
-    bool m_bWarping; // 존 워프 중인가...
+
+    bool m_bWarping;
 
     static CNetwork* Instance(HINSTANCE hInstance);
     void Destroy();
 
     bool ConnectToServer(std::string& ip, WORD wTcpPORT, short nProcLEVEL = 0);
     void DisconnectFromServer(short nProcLEVEL = 0);
-    // 박 지호
+
     void Send_AuthMsg(void);
 
-    // Playing packet ..
-    //	void Send_Damage (int iServerObjectIndex, short nDamage);
-    //	void Recv_Damage (t_PACKET *pPacket);
-
     void Proc();
+
+    void send_packet(const Rose::Network::Packet& packet, Server target = Server::Game);
+    void send_login_req(const std::string& username, const std::string& password);
 };
 extern CNetwork* g_pNet;
-//-------------------------------------------------------------------------------------------------
 #endif

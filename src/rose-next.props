@@ -3,12 +3,17 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <GeneratedDir>$(SolutionDir)build\$(Configuration)\$(ProjectName)\gen\</GeneratedDir>
+    <GeneratedDirCommon>$(SolutionDir)build\$(Configuration)\common\gen\</GeneratedDirCommon>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup />
   <ItemGroup>
     <BuildMacro Include="GeneratedDir">
       <Value>$(GeneratedDir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="GeneratedDirCommon">
+      <Value>$(GeneratedDirCommon)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
   </ItemGroup>

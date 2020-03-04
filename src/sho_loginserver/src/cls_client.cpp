@@ -8,13 +8,11 @@
 #include "CLS_Server.h"
 #include "CLS_SqlTHREAD.h"
 
-//#include "LS_Main.h"
+#include "rose/network/packet.h"
+#include "rose/network/packets/packet_data_generated.h"
 
-/*
-extern void WM_CloseSOCKET (TCustomWinSocket *pSocket, char *szMSG);
-extern void WM_ClientSendPacket ();
-extern void WM_ServerSendPacket ();
-*/
+
+using namespace Rose::Network;
 
 extern classListBLOCK<tagBlockDATA>* g_pListBlackIP;
 extern classListBLOCK<tagBlockDATA>* g_pListBlackACCOUNT;
@@ -253,12 +251,24 @@ char* s_szMasterMD5 = (char*)"9d3a76723b0a9f143b7708e1c5d9ccae";
 
 bool
 CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
-    /*
-        패킷 디코딩...
-        패킷 일련번호, 사이즈, CRC, CheckSUM등으로 적합패킷인지 판단.
-    */
-    //    LogString(LOG_DEBUG_, "        >> %d CLS_Client::HandlePACKET:: Type: 0x%x, Length: %d\n",
-    //    this->m_iSocketIDX, pPacket->m_wType, pPacket->m_nSize);
+    flatbuffers::Verifier verifier(&pPacket->m_pDATA[2], pPacket->size - 2);
+    bool valid = Packets::VerifyPacketDataBuffer(verifier);
+    if (valid) {
+        Packet p(&pPacket->m_pDATA[0], pPacket->size);
+
+        Packets::PacketType packet_type = p.packet_data()->data_type();
+        switch (packet_type) {
+            case Packets::PacketType::PacketType_LoginRequest: {
+                this->recv_login_req(p);
+                break;
+            }
+            default: {
+                LOG_WARN("Received unknown packet type %d", packet_type);
+                break;
+            }
+        }
+    }
+
     short nOffset;
 
     switch (m_nProcSTEP) {
@@ -429,6 +439,21 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
         pBlackIP->m_dwBlockSECOND / 60);
 
     return false;
+}
+
+bool
+CLS_Client::recv_login_req(Packet& p) {
+    const Packets::LoginRequest* req = p.packet_data()->data_as_LoginRequest();
+
+    // TODO: Temporary work around until SQL thread and other areas are refactored
+    // to support Packet.
+    t_PACKET packet;
+    packet.type = CLI_LOGIN_REQ;
+    packet.size = sizeof(cli_LOGIN_REQ);
+    std::copy(req->password()->begin(), req->password()->end(), &packet.m_cli_LOGIN_REQ.m_MD5Password[0]);
+    Packet_AppendString(&packet, const_cast<char*>(req->username()->c_str()));
+
+    return g_pThreadSQL->Add_SqlPACKET(this->m_iSocketIDX, NULL, &packet);
 }
 
 //-------------------------------------------------------------------------------------------------

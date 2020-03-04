@@ -11,6 +11,11 @@
 #include "../gameproc/LiveCheck.h"
 
 #include "system/cgamestate.h"
+#include "util/classmd5.h"
+
+#include "rose/network/packet.h"
+#include "rose/network/packets/packet_data_generated.h"
+#include "rose/network/packets/login_req_generated.h"
 
 #define PACKET_SEED 0x6648495
 
@@ -25,6 +30,8 @@ CNetwork* CNetwork::m_pInstance = NULL;
 void	(*fpCMDProc )	(t_unit *pUnit);
 typedef	unsigned int UINT;
 */
+
+using namespace Rose::Network;
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
@@ -737,4 +744,47 @@ CNetwork::Send_AuthMsg(void) {
     m_pSendPacket->m_HEADER.m_wType = CLI_CHECK_AUTH;
     m_pSendPacket->m_HEADER.m_nSize = sizeof(cli_CHECK_AUTH);
     Send_PACKET(m_pSendPacket);
+}
+
+void
+CNetwork::send_packet(const Packet& packet, Server target) {
+    if (target == Server::World || target == Server::Login || bAllInONE) {
+        m_WorldSOCKET.add_send_packet(packet);
+    }  else {
+        m_ZoneSOCKET.add_send_packet(packet);
+    }
+}
+
+void
+CNetwork::send_login_req(const std::string& username, const std::string& password) {
+    if (username.empty()) {
+        return;
+    }
+
+    for (const char& c : username) {
+        if (c == '\'' || c == '\"') {
+            return;
+        }
+    }
+
+    unsigned char encoded_password[32] = {};
+    GetMD5(encoded_password, reinterpret_cast<unsigned char*>(const_cast<char*>(password.c_str())), password.size());
+
+    flatbuffers::FlatBufferBuilder builder;
+    const auto username_string = builder.CreateString(username);
+    const auto password_string = builder.CreateString(reinterpret_cast<char*>(encoded_password));
+
+    Packets::LoginRequestBuilder req(builder);
+    req.add_username(username_string);
+    req.add_password(password_string);
+    const auto login_request = req.Finish();
+
+    Packets::PacketDataBuilder pd(builder);
+    pd.add_data_type(Packets::PacketType::PacketType_LoginRequest);
+    pd.add_data(login_request.Union());
+    builder.Finish(pd.Finish());
+
+    Packet p(builder);
+    this->send_packet(p, Server::Login);
+    return;
 }

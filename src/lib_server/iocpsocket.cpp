@@ -325,22 +325,19 @@ iocpSOCKET::Send_Complete(tagIO_DATA* pSendDATA) {
 //-------------------------------------------------------------------------------------------------
 bool
 iocpSOCKET::Recv_Done(tagIO_DATA* pRecvDATA) {
-    // 바로 처리하는 함수...
-    short nTotalPacketLEN;
 
     t_PACKETHEADER* pPacket = (t_PACKETHEADER*)&pRecvDATA->packet.bytes;
     do {
-        nTotalPacketLEN = pPacket->m_nSize;
-        if (!nTotalPacketLEN) {
-            // 패킷이 변조되어 왔다.
-            // 헤킹인가 ???
-            g_LOG.CS_ODS(0xffff,
-                "*** ERROR: Decode recv packet body, IP[ %s ]\n",
-                this->m_IP.Get());
+        short nTotalPacketLEN = pPacket->m_nSize;
+        if (pPacket->m_nSize > pRecvDATA->bytes) {
+            LOG_WARN("Invalid packet: size > bytes read. [%s].", this->m_IP.Get());
             this->Free_RecvIODATA(pRecvDATA);
+            return false;
+        }
 
-            // 블랙 리스트에 ip 등록...
-
+        if (pPacket->m_nSize == 0) {
+            LOG_WARN("Invalid packet: size == 0. [%s].", this->m_IP.Get());
+            this->Free_RecvIODATA(pRecvDATA);
             return false;
         }
 

@@ -131,20 +131,6 @@ CLS_SqlTHREAD::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
             }
             break;
 
-        case BKD_SERVER_MAKEACCO: {
-            if (1) {
-            }
-            break;
-        }
-
-        case BKD_SERVER_MODACCO: {
-            break;
-        }
-            /*
-                    case GSV_LOGOUT :
-                        Proc_gsv_LOGOUT( pSqlPACKET );
-                        break;
-            */
         default:
             g_LOG.CS_ODS(0xffff,
                 "Undefined sql packet Type: %x, Size: %d \n",

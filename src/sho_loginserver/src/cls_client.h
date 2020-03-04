@@ -12,7 +12,12 @@
 //-------------------------------------------------------------------------------------------------
 #define __VIEW_ACCOUNT
 
+#include "rose/network/packet.h"
+
 class CLS_Client: public iocpSOCKET {
+public:
+    bool recv_login_req(Rose::Network::Packet& p);
+
 private:
     bool Recv_cli_ACCEPT_REQ();
     bool Recv_cli_LOGIN_REQ(t_PACKET* pPacket);
