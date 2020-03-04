@@ -78,12 +78,12 @@ CGameStateLoginVirtual::AcceptedConnectLoginSvr() {
     const std::string japan_partner_string = CGame::GetInstance().GetJapanPartnerString();
 
     if (japan_partner_string.empty()) {
-        g_pNet->Send_cli_LOGIN_REQ(g_GameDATA.username, g_GameDATA.password);
+        g_pNet->send_login_req(g_GameDATA.username, g_GameDATA.password);
     } else {
         std::string temp_id;
         temp_id = (char*)g_GameDATA.username.c_str();
         temp_id.append(japan_partner_string.c_str());
-        g_pNet->Send_cli_LOGIN_REQ(temp_id, g_GameDATA.password);
+        g_pNet->send_login_req(temp_id, g_GameDATA.password);
     }
 }
 

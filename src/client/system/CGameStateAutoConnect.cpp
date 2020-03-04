@@ -100,7 +100,7 @@ CGameStateAutoConnect::ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lPara
 void
 CGameStateAutoConnect::on_loginserver_connected() {
     this->messages.push_back("Connected to login server.");
-    g_pNet->Send_cli_LOGIN_REQ(g_GameDATA.username, g_GameDATA.password);
+    g_pNet->send_login_req(g_GameDATA.username, g_GameDATA.password);
 }
 
 void
@@ -135,7 +135,7 @@ CGameStateAutoConnect::on_login_failed(int code) {
             return;
         }
 
-        g_pNet->Send_cli_LOGIN_REQ(g_GameDATA.username, g_GameDATA.password);
+        g_pNet->send_login_req(g_GameDATA.username, g_GameDATA.password);
         return;
     }
 

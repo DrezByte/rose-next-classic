@@ -22,7 +22,6 @@ public:
 
     void Send_cli_HEADER(WORD wType, bool bSendToWorld);
 
-    void Send_cli_LOGIN_REQ(const std::string& username, const std::string& password);
     void Send_cli_LOGOUT_REQ();
     void Send_cli_LOGOUT_CANCEL();
 

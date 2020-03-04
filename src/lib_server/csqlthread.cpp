@@ -184,25 +184,3 @@ CSqlTHREAD::Proc_QuerySTRING() {
     }
     return true;
 }
-
-//-------------------------------------------------------------------------------------------------
-/*
-bool CSqlTHREAD::Run_SqlPACKET( tagQueryDATA *pSqlPACKET )
-{
-    switch( pSqlPACKET->m_pPacket->m_HEADER.m_wType ) {
-        case CLI_LOGIN_REQ :
-            Proc_CLI_LOGIN_REQ( &pSqlNODE->DATA );
-            break;
-        case CLI_SELECT_CHAR :
-        case CLI_CREATE_CHAR :
-        case CLI_DELETE_CHAR :
-            break;
-
-        default :
-            g_LOG.CS_ODS( 0xffff, "Undefined sql packet Type: %x, Size: %d \n",
-                pSqlPACKET->m_pPacket->m_HEADER.m_wType,
-                pSqlPACKET->m_pPacket->m_HEADER.m_nSize);
-    }
-}
-*/
-//-------------------------------------------------------------------------------------------------

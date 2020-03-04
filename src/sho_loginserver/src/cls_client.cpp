@@ -73,13 +73,6 @@ CLS_Client::Recv_cli_ACCEPT_REQ() {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-bool
-CLS_Client::Recv_cli_LOGIN_REQ(t_PACKET* pPacket) {
-    return g_pThreadSQL->Add_SqlPACKET(this->m_iSocketIDX, NULL, pPacket);
-}
-
-//-------------------------------------------------------------------------------------------------
 bool
 CLS_Client::Recv_cli_CHANNEL_LIST_REQ(t_PACKET* pPacket) {
     CLS_Server* pServer =
@@ -259,8 +252,12 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
         Packets::PacketType packet_type = p.packet_data()->data_type();
         switch (packet_type) {
             case Packets::PacketType::PacketType_LoginRequest: {
-                this->recv_login_req(p);
-                break;
+                // TODO: Check client is not already logged in?
+                if (this->recv_login_req(p)) {
+                    this->m_nProcSTEP = CLIENT_STEP_LOGIN_REQ;
+                    return true;
+                }
+                return false;
             }
             default: {
                 LOG_WARN("Received unknown packet type %d", packet_type);
@@ -368,13 +365,6 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
                     // (t_PACKET*)pPacket );
                     return true;
                 }
-
-                case CLI_LOGIN_REQ:
-                    if (Recv_cli_LOGIN_REQ((t_PACKET*)pPacket)) {
-                        m_nProcSTEP = CLIENT_STEP_LOGIN_REQ;
-                        return true;
-                    }
-                    return false;
             }
             return true;
         case CLIENT_STEP_LOGIN_REQ: // 마구 클릭한 경우...

@@ -110,9 +110,6 @@ private:
 
     short Recv_cli_RELAY_REPLY(t_PACKET* pPacket);
 
-    // bool Recv_cli_LOGIN_REQ( t_PACKET *pPacket );
-    // int	Recv_cli_LOGOUT_REQ ();
-
     bool Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket);
 
     bool Recv_cli_CREATE_CHAR(t_PACKET* pPacket);

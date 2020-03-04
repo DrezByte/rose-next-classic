@@ -222,8 +222,6 @@ void
 CLogin::SendLoginReq() {
     CTCommand* pCmd = new CTCmdExit;
     g_EUILobby.ShowMsgBox(STR_WAIT_LOGIN, CTMsgBox::BT_CANCEL, true, GetDialogType(), NULL, pCmd);
-
-    // g_pNet->Send_cli_LOGIN_REQ(m_strID, m_strPassword);
     g_pNet->send_login_req(m_strID, m_strPassword);
 }
 

@@ -172,7 +172,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>Ndebug;WIN32;_LIB;__SERVER;__USE_CHEAT;_PA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -214,7 +214,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\LIB_Server;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_debug;WIN32;_LIB;__SERVER;__USE_CHEAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

@@ -767,12 +767,11 @@ CNetwork::send_login_req(const std::string& username, const std::string& passwor
         }
     }
 
-    unsigned char encoded_password[32] = {};
-    GetMD5(encoded_password, reinterpret_cast<unsigned char*>(const_cast<char*>(password.c_str())), password.size());
+    GetMD5(this->m_pMD5Buff, reinterpret_cast<unsigned char*>(const_cast<char*>(password.c_str())), password.size());
 
     flatbuffers::FlatBufferBuilder builder;
     const auto username_string = builder.CreateString(username);
-    const auto password_string = builder.CreateString(reinterpret_cast<char*>(encoded_password));
+    const auto password_string = builder.CreateString(reinterpret_cast<char*>(m_pMD5Buff));
 
     Packets::LoginRequestBuilder req(builder);
     req.add_username(username_string);

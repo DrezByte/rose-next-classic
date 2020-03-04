@@ -16,11 +16,12 @@
 
 class CLS_Client: public iocpSOCKET {
 public:
+    // New handlers
     bool recv_login_req(Rose::Network::Packet& p);
 
 private:
+    // Legacy handlers
     bool Recv_cli_ACCEPT_REQ();
-    bool Recv_cli_LOGIN_REQ(t_PACKET* pPacket);
     bool Recv_cli_CHANNEL_LIST_REQ(t_PACKET* pPacket);
     bool Recv_cli_SELECT_SERVER(t_PACKET* pPacket);
 

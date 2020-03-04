@@ -86,29 +86,6 @@ CSendPACKET::Send_cli_HEADER(WORD wType, bool bSendToWorld) {
     this->Send_PACKET(m_pSendPacket, bSendToWorld);
 }
 
-//-------------------------------------------------------------------------------------------------
-void
-CSendPACKET::Send_cli_LOGIN_REQ(const std::string& username, const std::string& password) {
-    if (username.empty()) {
-        return;
-    }
-
-    for (const char& c: username) {
-        if (c == '\'' || c == '\"') {
-            return;
-        }
-    }
-    m_pSendPacket->m_HEADER.m_wType = CLI_LOGIN_REQ;
-    m_pSendPacket->m_HEADER.m_nSize = sizeof(cli_LOGIN_REQ);
-
-    GetMD5(m_pMD5Buff, (unsigned char*)password.c_str(), password.size());
-    ::CopyMemory(m_pSendPacket->m_cli_LOGIN_REQ.m_MD5Password, m_pMD5Buff, 32);
-    Packet_AppendString(m_pSendPacket, (char*)username.c_str());
-
-    this->Send_PACKET(m_pSendPacket, true);
-}
-
-//-------------------------------------------------------------------------------------------------
 void
 CSendPACKET::Send_cli_SELECT_SERVER(int iServerID, int iChannelNo) {
 #ifdef __VIRTUAL_SERVER

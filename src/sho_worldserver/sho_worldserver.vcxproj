@@ -100,7 +100,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -120,7 +120,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_server;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
