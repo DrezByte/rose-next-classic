@@ -21,8 +21,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "src\client\client
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_util", "src\lib_util\lib_util.vcxproj", "{B4DDE42E-8878-441E-87AE-62B2F0E5A9CF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{862A7536-0465-45D1-89DF-576AB2D865D6} = {862A7536-0465-45D1-89DF-576AB2D865D6}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_server", "src\lib_server\lib_server.vcxproj", "{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{862A7536-0465-45D1-89DF-576AB2D865D6} = {862A7536-0465-45D1-89DF-576AB2D865D6}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_gameserver", "src\sho_gameserver\sho_gameserver.vcxproj", "{782AF9C9-40B2-4844-BE58-D73710823F16}"
 	ProjectSection(ProjectDependencies) = postProject
