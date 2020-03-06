@@ -3,6 +3,12 @@
 
 #include "classTIME.h"
 
+namespace Rose {
+namespace Common {
+class DatabaseConfig;
+}
+}
+
 class SHO_LS {
 public:
     int m_iClientListenPortNO;
@@ -50,6 +56,8 @@ public:
         return m_pInstance;
     }
     void Destroy() { SAFE_DELETE(m_pInstance); }
+
+    bool connect_database(const Rose::Common::DatabaseConfig& config);
 };
 
 extern DWORD GetServerBuildNO();

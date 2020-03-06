@@ -38,19 +38,15 @@ The `client` project can be run from within Visual Studio to debug the executabl
 it looks in the `game/` directory for the runtime game assets
 
 ### Connecting to servers
-Run `trose.exe @TRIGGER_SOFT _server <IP>` to connect to a server at a specific IP Address
+Run `trose.exe --server <IP>` to connect to a server at a specific IP Address
 
 ## Server
 ### Database
 - Install SQL Server
-- Enabled TCP/IP connection is SQL Server Configuration manager and ensure that the database is listening on the default port of `1433`
-- Create 4 new databases `seven_ORA`, `SHO`, `SHO_LOG` and `SHO_MALL` with default settings
-- Created 2 names user logins: `seven` and `sho`
-    - User `seven` is required and the password is hardcoded into the login server. Set the password to: `tpqmsgkcm` or update the password in the login server lib (`sho_ls_lib/sho_ls_lib.cpp`)
-    - User `sho` can have any password (recommended: `sho` password for dev)
-- Run the 4 scripts from the `database/` directory (`seven_ora.sql`, `sho.sql`, `sho_log.sql`, `sho_mall.sql`)
-- Enable `SQL Server and Windows Authentication` on your sql server (`Properties->Security`)
-- Create 4 ODBC connections for each database using the `sho` user credentials. Ensure you are using the native client drivers.
+- Create 2 new databases `SHO` and `SHO_LOG` with default settings
+- Created a named user logins: (default is username `seven` and password `tpqmsgkcm` but this can be overriden in `server.toml`)
+- Run the 2 scripts from the `database/` directory (`sho.sql` and `sho_log.sql`)
+- Create 2 ODBC connections for each database using windows authentication.
     - See the `scripts/setup_odbc.cmd` for a convient way to setup the odbc connections
 
 ### Configuration
@@ -60,7 +56,7 @@ folder called `data/` at the same level as the executable.
 
 ##### Development
 - Run the `scripts/server_data.bat` script
-- Update the server configuration file (`server.json`) to point to the data folder, e.g.
+- Update the server configuration file (`server.toml`) to point to the data folder, e.g.
 
 ```toml
 [worldserver]

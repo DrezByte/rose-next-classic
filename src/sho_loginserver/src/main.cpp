@@ -50,6 +50,9 @@ main() {
     LOG_INFO("Initializing the server");
     g_instance = SHO_LS::InitInstance(console_handle);
 
+    LOG_INFO("Starting the database connection.");
+    g_instance->connect_database(config.database);
+
     LOG_INFO("Starting the server socket");
     g_instance->StartServerSOCKET(console_window,
         (char*)config.database.ip.c_str(),
@@ -57,7 +60,7 @@ main() {
         0,
         false);
 
-    LOG_INFO("Initializing the client socket");
+    LOG_INFO("Starting the client socket");
     g_instance->StartClientSOCKET(config.loginserver.port,
         0,
         (byte*)config.loginserver.password.c_str());

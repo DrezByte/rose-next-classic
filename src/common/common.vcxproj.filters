@@ -43,6 +43,7 @@
     <ClCompile Include="src\goddess_effect.cpp">
       <Filter>status_effect</Filter>
     </ClCompile>
+    <ClCompile Include="src\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Flatbuffer Include="..\common-lib\include\rose\network\packets\login_rep.fbs">

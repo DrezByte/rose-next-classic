@@ -25,6 +25,7 @@
   <ItemGroup>
     <ClCompile Include="src\goddess_effect.cpp" />
     <ClCompile Include="src\log.cpp" />
+    <ClCompile Include="src\util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Flatbuffer Include="..\common-lib\include\rose\network\packets\login_rep.fbs">

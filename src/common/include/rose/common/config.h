@@ -2,10 +2,10 @@
 #define CONFIG_H
 #pragma once
 
-#include <string>
-
 #include "rose/common/common_interface.h"
 #include "rose/common/util.h"
+
+#include <string>
 
 namespace Rose {
 namespace Common {

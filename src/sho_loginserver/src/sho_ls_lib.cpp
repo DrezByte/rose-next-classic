@@ -10,6 +10,10 @@
 #include "blockLIST.h"
 #include "csocketwnd.h"
 
+#include "rose/common/config.h"
+
+using namespace Rose::Common;
+
 #define PACKET_SEED 0x6648495
 
 SHO_LS* SHO_LS::m_pInstance = NULL;
@@ -118,31 +122,7 @@ SHO_LS::SystemINIT(HINSTANCE hInstance) {
     m_iClientListenPortNO = 0;
     m_iServerListenPortNO = 0;
 
-#define WM_GUMSOCK_MSG (WM_SOCKETWND_MSG + 0)
     CSocketWND* pSockWND = CSocketWND::InitInstance(hInstance, 1);
-
-#if defined(USE_MSSQL)
-    g_LOG.CS_ODS(0xffff, "MS-SQL version \n");
-    g_LOG.CS_ODS(0xffff, "MS-SQL version \n");
-    g_LOG.CS_ODS(0xffff, "MS-SQL version \n");
-    g_LOG.CS_ODS(0xffff, "MS-SQL version \n");
-    g_LOG.CS_ODS(0xffff, "MS-SQL version \n");
-    g_LOG.CS_ODS(0xffff, "MS-SQL version \n");
-#elif defined(USE_ORACLE_DB)
-    g_LOG.CS_ODS(0xffff, "ORACLE version \n");
-    g_LOG.CS_ODS(0xffff, "ORACLE version \n");
-    g_LOG.CS_ODS(0xffff, "ORACLE version \n");
-    g_LOG.CS_ODS(0xffff, "ORACLE version \n");
-    g_LOG.CS_ODS(0xffff, "ORACLE version \n");
-    g_LOG.CS_ODS(0xffff, "ORACLE version \n");
-#else
-    g_LOG.CS_ODS(0xffff, "My SQL version \n");
-    g_LOG.CS_ODS(0xffff, "My SQL version \n");
-    g_LOG.CS_ODS(0xffff, "My SQL version \n");
-    g_LOG.CS_ODS(0xffff, "My SQL version \n");
-    g_LOG.CS_ODS(0xffff, "My SQL version \n");
-    g_LOG.CS_ODS(0xffff, "My SQL version \n");
-#endif
 }
 
 SHO_LS::~SHO_LS() {
@@ -200,46 +180,12 @@ SHO_LS::StartServerSOCKET(HWND hMainWND,
     int iServerListenPort,
     DWORD dwLoginRight,
     bool bShowOnlyWS) {
-    if (m_iServerListenPortNO)
+
+    if (m_iServerListenPortNO) {
         return false;
-
-    m_bShowOnlyWS = bShowOnlyWS;
-    if (NULL == g_pThreadSQL) {
-#ifndef USE_ORACLE_DB
-        char* szDBName = "SHO";
-        char* szDBUser = "icarus";
-        char* szPassword = "1111";
-#else
-        char* szDBName = (char*)"SEVEN_ORA";
-        char* szDBUser = (char*)"seven";
-        char* szPassword = (char*)"tpqmsgkcm";
-#endif
-
-        g_pThreadSQL = CLS_SqlTHREAD::Instance();
-
-#ifndef USE_ORACLE_DB
-        if (!g_pThreadSQL->Connect(USE_MY_SQL,
-                (char*)szDBServerIP,
-                szDBUser,
-                szPassword,
-                szDBName,
-                32,
-                1024 * 8)) {
-#else
-        if (!g_pThreadSQL
-                 ->Connect(USE_ODBC, szDBServerIP, szDBUser, szPassword, szDBName, 32, 1024 * 4)) {
-#endif
-            g_LOG.CS_ODS(0xffff, "sql connect failed ...");
-            g_pThreadSQL->Destroy();
-            g_pThreadSQL = NULL;
-            return false;
-        }
-
-        g_pThreadSQL->Resume();
-        g_pThreadSQL->m_bCheckLogIN = true; // CheckBoxLogIN->Checked;
-        g_pThreadSQL->m_dwCheckRIGHT = dwLoginRight; // StrToInt( EditLogInLevel->Text );
     }
 
+    m_bShowOnlyWS = bShowOnlyWS;
     g_dwStartTIME = classTIME::GetCurrentAbsSecond();
 
     m_iServerListenPortNO = iServerListenPort;
@@ -287,4 +233,33 @@ SHO_LS::SetLimitUserCNT(int iLimitUserCNT) {
         g_pListCLIENT->SetLimitUserCNT(iLimitUserCNT);
 }
 
-//-------------------------------------------------------------------------------------------------
+bool
+SHO_LS::connect_database(const DatabaseConfig& db_config) {
+    if (!g_pThreadSQL) {
+        g_pThreadSQL = CLS_SqlTHREAD::Instance();
+
+        char* ip = (char*)db_config.ip.c_str();
+        char* username = (char*)db_config.username.c_str();
+        char* password = (char*)db_config.password.c_str();
+        char* name = (char*)db_config.name.c_str();
+
+        if (!g_pThreadSQL->Connect(USE_ODBC,
+                ip,
+                username,
+                password,
+                name,
+                32,
+                1024 * 4)) {
+
+            LOG_ERROR("Failed to connect to the databases: %s@%s(%s)", username, name, ip);
+
+            g_pThreadSQL->Destroy();
+            g_pThreadSQL = NULL;
+            return false;
+        }
+
+        g_pThreadSQL->Resume();
+        g_pThreadSQL->m_bCheckLogIN = true;
+        g_pThreadSQL->m_dwCheckRIGHT = 0;
+    }
+}
