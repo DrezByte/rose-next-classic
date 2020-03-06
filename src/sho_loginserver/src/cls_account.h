@@ -1,10 +1,5 @@
-#ifndef __CLS_ACCOUNT_H
-#define __CLS_ACCOUNT_H
-//-------------------------------------------------------------------------------------------------
+#pragma once
 
-// 접속 소켓 관리...
-// 접속 유저 관리...
-// 월드서버 소켓 관리...
 class CLS_Server;
 
 class CLS_Account {
@@ -33,7 +28,7 @@ public:
     void Init();
 };
 
-class CLS_AccountLIST // : public CDataPOOL< CLS_Account >
+class CLS_AccountLIST
 {
 private:
     static CDataPOOL<CLS_Account>* m_pAccountPOOL;
@@ -57,9 +52,6 @@ public:
         return pCAccount;
     }
     void Mem_DEL(CLS_Account* pCAccount) {
-        // LogString (LOG_NORMAL, "   $$$ [%s] deleted in %s UsedCnt: %d \n",
-        // pCAccount->m_Account.Get(), m_pAccountPOOL->GetPoolNAME(), m_pAccountPOOL->GetUsedCNT()-1
-        // );
         m_pAccountPOOL->Pool_Free(pCAccount);
     }
 
@@ -79,8 +71,6 @@ public:
         DWORD dwLSID;
         m_csListACCOUNT.Lock();
         do {
-            // classTIME::InitStartTime() 호출후 현재까지 경과된 1/100 초를 구한다.
-            // 문제 !!! 로그인 서버 리셋후 월드서에서 집계된 계정과 충돌날수 있다네...
             dwLSID = m_Timer.GetPassAbsMilliSecond();
         } while (m_dwLastLSID == dwLSID);
         m_dwLastLSID = dwLSID;
@@ -90,9 +80,5 @@ public:
     }
 };
 
-extern CLS_AccountLIST* g_pListJOIN; // HASHKEY = CStr::GetHASH( szAccount )
-extern CLS_AccountLIST* g_pListWAIT; // HASHKEY = dwLoginServerSocketID
-extern CLS_AccountLIST* g_pListBKDR;
-
-//-------------------------------------------------------------------------------------------------
-#endif
+extern CLS_AccountLIST* g_pListJOIN;
+extern CLS_AccountLIST* g_pListWAIT;

@@ -1,11 +1,12 @@
-﻿#ifndef __SHO_LS_LIB_H
-#define __SHO_LS_LIB_H
+﻿#pragma once
 
-#include "classTIME.h"
+// #include "classTIME.h"
+
+class CTimer;
 
 namespace Rose {
 namespace Common {
-class DatabaseConfig;
+struct DatabaseConfig;
 }
 }
 
@@ -62,6 +63,3 @@ public:
 
 extern DWORD GetServerBuildNO();
 extern DWORD GetServerStartTIME();
-
-//-------------------------------------------------------------------------------------------------
-#endif

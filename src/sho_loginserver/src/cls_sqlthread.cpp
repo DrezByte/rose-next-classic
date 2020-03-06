@@ -7,7 +7,6 @@
 #include "CLS_SqlTHREAD.h"
 #include "blockLIST.h"
 
-extern classListBLOCK<tagBlockDATA>* g_pListBlackACCOUNT;
 
 IMPLEMENT_INSTANCE(CLS_SqlTHREAD)
 
@@ -32,13 +31,6 @@ CLS_SqlTHREAD::Add_SqlPACKET(DWORD dwSocketID, char* szAccount, t_PACKET* pPacke
     char* szID;
     short nOffset = sizeof(cli_LOGIN_REQ);
     szID = Packet_GetStringPtr(pPacket, nOffset);
-
-    t_HASHKEY HashKEY = CStr::GetHASH(szID);
-    tagBlockDATA* pBlockID = g_pListBlackACCOUNT->Search(HashKEY, szID, true);
-    if (pBlockID) {
-        g_pListBlackACCOUNT->Update(pBlockID, 0, 0);
-        return false;
-    }
 
     return CSqlTHREAD::Add_SqlPACKET(dwSocketID,
         szAccount,

@@ -17,7 +17,6 @@
 #include "rose/network/packets/packet_data_generated.h"
 #include "rose/network/packets/login_req_generated.h"
 
-#define PACKET_SEED 0x6648495
 
 CNetwork* g_pNet;
 

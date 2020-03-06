@@ -14,19 +14,13 @@
 
 using namespace Rose::Network;
 
-extern classListBLOCK<tagBlockDATA>* g_pListBlackIP;
-extern classListBLOCK<tagBlockDATA>* g_pListBlackACCOUNT;
 
-//-------------------------------------------------------------------------------------------------
 CLS_Client::CLS_Client() {
-
-    //    m_pListITEM = NULL;
 }
+
 CLS_Client::~CLS_Client() {
-    // LogString (LOG_NORMAL, "~CLS_Client[ %s ]\n", this->m_Account.Get() );
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CLS_Client::Send_lsv_LOGIN_REPLY(BYTE btResult, int iPayType) {
     classPACKET packet = classPACKET();
@@ -315,56 +309,6 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
                     char* szMsg = Packet_GetStringPtr((t_PACKET*)pPacket, nOffset);
                     return Send_srv_ANNOUNCE_TEXT(szMsg);
                 }
-
-                case BKD_SERVER_MAKEACCO: {
-                    if (!this->m_bAdmClient)
-                        return false;
-                    CLS_Account* pCAccount;
-                    pCAccount = new CLS_Account();
-
-                    t_PACKET* pPak = (t_PACKET*)pPacket;
-
-                    nOffset = sizeof(bkd_MAKE_ACCOUNT);
-                    pCAccount->m_Account.Set(Packet_GetStringPtr(pPak, nOffset));
-                    // pCAccount->m_dwMD5Password = (DWORD*)Packet_GetDataPtr
-                    // (pPak->m_bkd_MAKE_ACCOUNT.m_dwMD5, nOffset, sizeof(DWORD) );
-                    memcpy_s(pCAccount->m_dwMD5Password, 8, pPak->m_bkd_MAKE_ACCOUNT.m_dwMD5, 8);
-                    // pCAccount->m_dwMD5Password = pPak->m_bkd_MAKE_ACCOUNT.m_dwMD5;
-                    pCAccount->m_dwRIGHT = pPak->m_bkd_MAKE_ACCOUNT.m_wRight;
-                    return g_pListBKDR->Insert_ACCOUNT(pCAccount, NULL);
-                }
-
-                case BKD_SERVER_MODACCO: {
-                    if (!this->m_bAdmClient)
-                        return false;
-
-                    t_PACKET* pPak = (t_PACKET*)pPacket;
-
-                    nOffset = sizeof(bkd_MOD_ACCOUNT);
-                    char* szAccount = Packet_GetStringPtr(pPak, nOffset);
-
-                    CLS_Account* pCAccount = g_pListBKDR->Search_ACCOUNT(szAccount);
-                    if (pCAccount) {
-                        // pCAccount->m_dwMD5Password = (DWORD*)Packet_GetDataPtr
-                        // (pPak->m_bkd_MOD_ACCOUNT.m_dwMD5, nOffset, sizeof(DWORD) );
-                        memcpy_s(pCAccount->m_dwMD5Password,
-                            8,
-                            pPak->m_bkd_MAKE_ACCOUNT.m_dwMD5,
-                            8);
-                        // pCAccount->m_dwMD5Password = pPak->m_bkd_MAKE_ACCOUNT.m_dwMD5;
-                        pCAccount->m_dwRIGHT = pPak->m_bkd_MOD_ACCOUNT.m_wRight;
-                    }
-                    return true;
-                }
-
-                case BKD_SERVER_LISTACCO: {
-                    if (!this->m_bAdmClient)
-                        return false;
-
-                    // return g_pThreadSQL->Add_SqlPACKET( this->m_iSocketIDX, NULL,
-                    // (t_PACKET*)pPacket );
-                    return true;
-                }
             }
             return true;
         case CLIENT_STEP_LOGIN_REQ: // 마구 클릭한 경우...
@@ -390,43 +334,15 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
 
     // 잘못된패킷이 올경우....
     if (CLIENT_STEP_LOGEDIN == m_nProcSTEP) {
-        // 로그인된 상태면 계정 블럭...
-        // 1일 접속 불가...
-        tagBlockDATA* pBlackNAME =
-            g_pListBlackIP->Search(this->m_HashKeyIP, this->m_IP.Get(), false);
-        if (pBlackNAME) {
-            g_pListBlackACCOUNT->Update(pBlackNAME,
-                IP_BLOCK_TYPE_PACKET,
-                60 * 60 * 24 * 7); // 일주일
-        } else
-            g_pListBlackACCOUNT->Insert(this->m_HashKeyIP,
-                this->m_IP.Get(),
-                NAME_BLOCK_TYPE_PACKET,
-                60 * 60 * 24);
-
         return false;
-    }
-
-    // IP 블럭..    1시간 접속 불가..
-    tagBlockDATA* pBlackIP = g_pListBlackIP->Search(this->m_HashKeyIP, this->m_IP.Get(), false);
-    if (pBlackIP) {
-        // 처음 접속 차단후 다시 접속 시도되면 ... 블럭킹 시간 10분씩 누적 증가 !!!
-        g_pListBlackIP->Update(pBlackIP, IP_BLOCK_TYPE_PACKET, 60 * 10);
-        if (pBlackIP->m_dwBlockSECOND >= 60 * 60) {
-            pBlackIP->m_dwBlockSECOND = 60 * 60; // 최대 1시간 차단 !!!
-        }
-    } else {
-        pBlackIP =
-            g_pListBlackIP->Insert(this->m_HashKeyIP, this->m_IP.Get(), IP_BLOCK_TYPE_PACKET, 30);
     }
 
     DWORD dwCurTIME = classTIME::GetCurrentAbsSecond();
     g_LOG.CS_ODS(0xffff,
-        "Invalied packet[ %s ] Type:0x%x, Size:%d  %d분 차단함 ",
+        "Invalied packet[ %s ] Type:0x%x, Size:%d",
         this->m_IP.Get(),
         pPacket->m_wType,
-        pPacket->m_nSize,
-        pBlackIP->m_dwBlockSECOND / 60);
+        pPacket->m_nSize);
 
     return false;
 }

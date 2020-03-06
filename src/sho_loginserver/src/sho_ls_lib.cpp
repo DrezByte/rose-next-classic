@@ -14,25 +14,16 @@
 
 using namespace Rose::Common;
 
-#define PACKET_SEED 0x6648495
-
 SHO_LS* SHO_LS::m_pInstance = NULL;
 
-CLS_AccountLIST* g_pListJOIN = NULL; // HASHKEY = CStr::GetHASH( szAccount )
-CLS_AccountLIST* g_pListWAIT = NULL; // HASHKEY = dwLoginServerSocketID
-CLS_AccountLIST* g_pListBKDR = NULL;
+CLS_AccountLIST* g_pListJOIN = NULL;
+CLS_AccountLIST* g_pListWAIT = NULL;
 
 CLS_SqlTHREAD* g_pThreadSQL = NULL;
 
 CLS_ListCLIENT* g_pListCLIENT;
 CLS_ListSERVER* g_pListSERVER;
 
-classListBLOCK<tagBlockDATA>* g_pListBlackIP = NULL;
-classListBLOCK<tagBlockDATA>* g_pListBlackACCOUNT = NULL;
-
-classListBLOCK<tagBlockDATA>* g_pListServerIP = NULL;
-
-//-------------------------------------------------------------------------------------------------
 
 #define DEF_CLIENT_POOL_SIZE 8192 // µ¿½Ã Á¢¼Ó ´ë±â ¼ÒÄÏ
 #define INC_CLIENT_POOL_SIZE 1024
@@ -63,42 +54,20 @@ LS_TimerProc(HWND hwnd /* handle to window */,
     }
 }
 
-//-------------------------------------------------------------------------------------------------
 #include "../sho_ls.ver"
 DWORD
 GetServerBuildNO() {
     return BUILD_NUM;
 }
 DWORD g_dwStartTIME = 0;
+
 DWORD
 GetServerStartTIME() {
     return g_dwStartTIME;
 }
 
-SHO_LS::SHO_LS() {
+SHO_LS::SHO_LS(): m_iClientListenPortNO(0), m_iServerListenPortNO(0) {
     m_pTIMER = NULL;
-}
-
-void
-LoadBlockIP() {
-    FILE* fp;
-    fopen_s(&fp, "IP_BLOCK.txt", "rt");
-
-    if (!fp)
-        return;
-
-    int iRet;
-    char szFromIP[64], szToIP[64];
-    do {
-        iRet = fscanf_s(fp, "%s %s", szFromIP, szToIP);
-        if (2 == iRet) {
-            // printf("%s --> %s \n", szFromIP, szToIP );
-            g_pListCLIENT->Add_RefuseIP(szFromIP, szToIP);
-        }
-
-    } while (iRet != EOF);
-
-    fclose(fp);
 }
 
 void
@@ -110,14 +79,8 @@ SHO_LS::SystemINIT(HINSTANCE hInstance) {
     g_pListCLIENT = new CLS_ListCLIENT(DEF_CLIENT_POOL_SIZE, INC_CLIENT_POOL_SIZE);
     g_pListSERVER = new CLS_ListSERVER(DEF_SERVER_POOL_SIZE, INC_SERVER_POOL_SIZE);
 
-    LoadBlockIP();
-
-    g_pListBlackIP = new classListBLOCK<tagBlockDATA>(DEF_BLACK_IP_HASHTABLE_SIZE);
-    g_pListBlackACCOUNT = new classListBLOCK<tagBlockDATA>(DEF_BLACK_NAME_HASHTABLE_SIZE);
-
     g_pListJOIN = new CLS_AccountLIST((char*)"JOIN", JOIN_HASH_TABLE_SIZE);
     g_pListWAIT = new CLS_AccountLIST((char*)"WAIT", WAIT_HASH_TABLE_SIZE);
-    g_pListBKDR = new CLS_AccountLIST((char*)"", WAIT_HASH_TABLE_SIZE);
 
     m_iClientListenPortNO = 0;
     m_iServerListenPortNO = 0;
@@ -135,10 +98,6 @@ SHO_LS::~SHO_LS() {
 
     SAFE_DELETE(g_pListJOIN);
     SAFE_DELETE(g_pListWAIT);
-    SAFE_DELETE(g_pListBKDR);
-
-    SAFE_DELETE(g_pListBlackACCOUNT);
-    SAFE_DELETE(g_pListBlackIP);
 
     SAFE_DELETE(g_pListCLIENT);
     SAFE_DELETE(g_pListSERVER);
@@ -149,7 +108,6 @@ SHO_LS::~SHO_LS() {
     CPoolSENDIO::Destroy();
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 SHO_LS::StartClientSOCKET(int iClientListenPort, int iLimitUserCNT, BYTE btMD5[32]) {
     if (m_iClientListenPortNO)
@@ -160,7 +118,7 @@ SHO_LS::StartClientSOCKET(int iClientListenPort, int iLimitUserCNT, BYTE btMD5[3
     m_iClientListenPortNO = iClientListenPort;
     g_pListCLIENT->Active(m_iClientListenPortNO,
         65535,
-        3 * 60); // µ¿½Ã Á¢¼Ó ¼ÒÄÏ °¹¼ö 65535. Á¢¼ÓÀ¯Áö Ã¼Å© 3ºÐ
+        3 * 60);
     this->SetLimitUserCNT(iLimitUserCNT);
 
     return true;
@@ -262,4 +220,5 @@ SHO_LS::connect_database(const DatabaseConfig& db_config) {
         g_pThreadSQL->m_bCheckLogIN = true;
         g_pThreadSQL->m_dwCheckRIGHT = 0;
     }
+    return true;
 }
