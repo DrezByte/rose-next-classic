@@ -31,14 +31,23 @@ CtrlHandler(DWORD fdwCtrlType) {
 }
 
 int
-main() {
+main(int argc, char** argv) {
     HWND console_window = GetConsoleWindow();
     HINSTANCE console_handle = GetModuleHandle(nullptr);
     SetConsoleTitle("ROSE Next - World Server");
 
+    // Parse args
+    auto args = Rose::Util::parse_args(argc, argv);
+
+    std::string config_path = get_exe_dir().append("server.toml");
+    auto config_path_arg = args.find("--config");
+    if (config_path_arg != args.end()) {
+        config_path = config_path_arg->second;
+    }
+
     // Load Config
     Rose::Common::ServerConfig config;
-    bool config_loaded = config.load(get_exe_dir().append("server.toml"), "ROSE");
+    bool config_loaded = config.load(config_path, "ROSE");
 
     // Initialize the logger
     Rose::Common::logger_init(config.worldserver.log_path.c_str(), config.worldserver.log_level);

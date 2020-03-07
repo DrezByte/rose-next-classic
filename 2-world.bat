@@ -1,1 +1,1 @@
-.\bin\debug\sho_worldserver.exe
+.\bin\debug\sho_worldserver.exe --config %~dp0server/server.toml

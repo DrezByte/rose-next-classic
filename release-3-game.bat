@@ -1,1 +1,1 @@
-.\bin\release\sho_gameserver.exe
+.\bin\release\sho_gameserver.exe --config %~dp0server/server.toml

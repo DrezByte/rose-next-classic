@@ -83,6 +83,7 @@ public:
         this->toml = toml_load(path.c_str());
 
         if (!this->toml) {
+
             // TODO: Save a default toml
             return false;
         }
