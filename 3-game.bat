@@ -1,1 +1,0 @@
-.\bin\debug\sho_gameserver.exe --config %~dp0server/server.toml

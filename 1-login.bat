@@ -1,1 +1,0 @@
-.\bin\debug\sho_loginserver.exe --config %~dp0server/server.toml

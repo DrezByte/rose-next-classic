@@ -16,7 +16,7 @@ It's recommended to set the toolchain override for the entire `src/` directory u
 
 ```
 cd src/
-rustup rustup override set stable-i686-pc-windows-msvc
+rustup override set stable-i686-pc-windows-msvc
 rustup show
 ```
 
@@ -26,6 +26,8 @@ projects by compiling the `rose-next.sln` solution.
 
 #### Rust
 - Change into the src directory `cd src/`
+- Install the 32-bit msvc toolchain `rustup toolchain install  stable-i686-pc-windows-msvc`
+- Set the toolchain override `rustup override set stable-i686-pc-windows-msvc`
 - Build all project `cargo build` and `cargo build --release`
 
 ### C++
@@ -56,6 +58,7 @@ folder called `data/` at the same level as the executable.
 
 ##### Development
 - Run the `scripts/server_data.bat` script
+- Run the `scripts/generate_launchers.cmd` script for convenience scripts
 - Update the server configuration file (`server.toml`) to point to the data folder, e.g.
 
 ```toml
@@ -75,7 +78,7 @@ Insert a row into `dbo.UserInfo`, the following fields are required:
 - `Right` - The user permissions (0 - cant login, 1 - default, 768 - full admin)
 
 ### Start
-After building everything launch `1-login.bat` then `2-world.bat` then `3-game.bat` and finally `local.bat`
+After building everything launch `1-login.bat` then `2-world.bat` then `3-game.bat` and finally `client.bat`
 
 ### Config file
 The servers have default values but can optionally read their values from a `server.toml` file in the

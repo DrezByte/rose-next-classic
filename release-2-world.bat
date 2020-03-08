@@ -1,1 +1,0 @@
-.\bin\release\sho_worldserver.exe --config %~dp0server/server.toml
