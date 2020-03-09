@@ -74,13 +74,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_server;$(SolutionDir)src\lib_util;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>common.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;common-server.lib;lib_util.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -91,7 +91,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_server;$(SolutionDir)src\lib_util;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -99,7 +99,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>common.lib;lib_util.lib;lib_server.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>common.lib;common-server.lib;lib_util.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

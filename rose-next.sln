@@ -25,7 +25,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_util", "src\lib_util\li
 		{862A7536-0465-45D1-89DF-576AB2D865D6} = {862A7536-0465-45D1-89DF-576AB2D865D6}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib_server", "src\lib_server\lib_server.vcxproj", "{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common-server", "src\common-server\common-server.vcxproj", "{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{862A7536-0465-45D1-89DF-576AB2D865D6} = {862A7536-0465-45D1-89DF-576AB2D865D6}
 	EndProjectSection
