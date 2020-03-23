@@ -98,7 +98,7 @@ void zz_os::initialize ()
 		g_get_ticks_ptr = zz_os::get_ticks_rdtsc;
 		counter_string = "rdtsc";
 	}
-	else if (false/*init_qpc()*/) { // try qpc and initialize
+	else if (init_qpc()) { // try qpc and initialize
 		g_counter_type = TIMER_QPC;
 		g_get_ticks_ptr = zz_os::get_ticks_qpc;
 		counter_string = "qpc";
