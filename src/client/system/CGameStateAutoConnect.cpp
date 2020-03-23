@@ -4,6 +4,7 @@
 
 #include "cgame.h"
 #include "CGameStateAutoConnect.h"
+#include "interface/externalui/externaluilobby.h"
 
 #include "Network/cnetwork.h"
 
@@ -63,6 +64,8 @@ CGameStateAutoConnect::Update(bool bLostFocus) {
 
 int
 CGameStateAutoConnect::Enter(int previousState) {
+    g_EUILobby.InitEUIManager();
+
     this->messages.clear();
     this->messages.push_back("Started auto connect.");
 

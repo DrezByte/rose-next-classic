@@ -132,7 +132,9 @@ CExternalUILobby::CloseWaitAvataListDlg() {
 bool
 CExternalUILobby::CreateAvataListDlg() {
     //	CreateSelectAvataDlg();
-    m_pCurrDialog->Hide();
+    if(m_pCurrDialog) {
+        m_pCurrDialog->Hide();
+    }
     m_pCurrDialog = (CTDialog*)m_EUIManager.GetEUI(EUI_SELECT_AVATA);
     m_pCurrDialog->Show();
     return true;
