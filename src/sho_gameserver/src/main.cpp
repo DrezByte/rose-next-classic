@@ -15,6 +15,13 @@
 
 CLIB_GameSRV* g_instance;
 
+int shutdown(int exit_code=0) {
+    LOG_INFO("Shutting down...");
+    g_instance->Shutdown();
+    g_instance->Destroy();
+    return exit_code;
+}
+
 BOOL WINAPI
 CtrlHandler(DWORD fdwCtrlType) {
     switch (fdwCtrlType) {
@@ -24,12 +31,7 @@ CtrlHandler(DWORD fdwCtrlType) {
         case CTRL_BREAK_EVENT:
         case CTRL_LOGOFF_EVENT:
         case CTRL_SHUTDOWN_EVENT:
-            std::cout << "Shutting down..." << std::endl;
-            g_instance->Shutdown();
-            g_instance->Destroy();
-            std::cout << "Press enter to quit..." << std::endl;
-            std::cin.get();
-
+            return shutdown(1);
         default:
             return FALSE;
     }

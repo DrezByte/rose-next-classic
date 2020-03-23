@@ -4,6 +4,12 @@
 #include "classSTR.h"
 #include "classtime.h"
 
+namespace Rose {
+namespace Common {
+struct DatabaseConfig;
+}
+}
+
 class STBDATA;
 class SHO_WS {
 private:
@@ -51,12 +57,8 @@ private:
         int iDescCol);
 
 public:
-    bool ConnectDB(char* szDBServerIP,
-        char* szDBName,
-        char* szDBUser,
-        char* szDBPassword,
-        char* szLogDBUser,
-        char* szLogDBPw);
+    bool connect_database(Rose::Common::DatabaseConfig& config);
+
     bool Start(HWND hMainWND,
         char* szLoginServerIP,
         int iLoginServerPort,

@@ -886,15 +886,18 @@ CLIB_GameSRV::ConnectSERVER(char* szDBServerIP,
     }
     g_pThreadSQL->Resume();
 
-    CStrVAR stLogODBC;
-    stLogODBC.Set("SHO_LOG");
+    std::string log_db = szDBName;
+    if (log_db.back() == '\0') {
+        log_db.pop_back();
+    }
+    log_db += "_log";
 
     g_pThreadLOG = new GS_CThreadLOG;
     if (!g_pThreadLOG->Connect(USE_ODBC,
             szDBServerIP,
             m_LogUser.Get(),
             m_LogPW.Get(),
-            stLogODBC.Get(),
+            (char*)log_db.c_str(),
             32,
             1024 * 8)) {
         return false;

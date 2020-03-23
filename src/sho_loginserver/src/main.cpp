@@ -9,6 +9,14 @@
 
 SHO_LS* g_instance;
 
+int shutdown(int exit_code=0) {
+    LOG_INFO("Shutting down...");
+    g_instance->CloseClientSOCKET();
+    g_instance->Shutdown();
+    g_instance->Destroy();
+    return exit_code;
+}
+
 BOOL WINAPI
 CtrlHandler(DWORD fdwCtrlType) {
     switch (fdwCtrlType) {
@@ -18,12 +26,7 @@ CtrlHandler(DWORD fdwCtrlType) {
         case CTRL_BREAK_EVENT:
         case CTRL_LOGOFF_EVENT:
         case CTRL_SHUTDOWN_EVENT:
-            LOG_INFO("Shutting down...");
-            g_instance->CloseClientSOCKET();
-            g_instance->Shutdown();
-            g_instance->Destroy();
-            return true;
-
+            return shutdown(1);
         default:
             return FALSE;
     }
@@ -60,7 +63,10 @@ main(int argc, char** argv) {
     g_instance = SHO_LS::InitInstance(console_handle);
 
     LOG_INFO("Starting the database connection.");
-    g_instance->connect_database(config.database);
+    bool db_connected = g_instance->connect_database(config.database);
+    if (!db_connected) {
+        return shutdown(1);
+    }
 
     LOG_INFO("Starting the server socket");
     g_instance->StartServerSOCKET(console_window,

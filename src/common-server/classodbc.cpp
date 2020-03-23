@@ -277,8 +277,8 @@ classODBC::Connect(char* szDSN, char* szUserName, char* szPassword) {
             SQLGetDiagRec(SQL_HANDLE_DBC, m_hDBC1, 1, state, &err_code, err_message, 256, NULL
 
             );
-        g_LOG.CS_ODS(0xffff, "SQLConnect() failed with error state: %s", (char*)state);
-        g_LOG.CS_ODS(0xffff, (char*)err_message);
+        LOG_ERROR("SQLConnect() failed with error state: %s (DSN: %s)", (char*)state, szDSN);
+        LOG_ERROR((char*)err_message);
         return false;
     }
     m_RetCode = ::SQLAllocHandle(SQL_HANDLE_STMT, m_hDBC1, &m_hSTMT1);

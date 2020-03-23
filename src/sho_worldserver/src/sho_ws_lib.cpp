@@ -15,7 +15,9 @@
 #include "CThreadMSGR.h"
 #include "IO_Skill.h"
 
-//-------------------------------------------------------------------------------------------------
+#include "rose/common/config.h"
+
+using namespace Rose::Common;
 
 STBDATA g_TblHAIR;
 STBDATA g_TblFACE;
@@ -202,48 +204,47 @@ SHO_WS::~SHO_WS() {
 // 3. 사용자 접속 허용..
 // 4. 로그인 서버 접속
 bool
-SHO_WS::ConnectDB(char* szDBServerIP,
-    char* szDBName,
-    char* szDBUser,
-    char* szDBPassword,
-    char* szLogDBUser,
-    char* szLogDBPw) {
+SHO_WS::connect_database(DatabaseConfig& config) {
     if (NULL == this->GetInstance())
         return false;
 
-    m_DBServerIP.Set(szDBServerIP);
-    m_DBName.Set(szDBName);
-    m_DBUser.Set(szDBUser);
-    m_DBPassword.Set(szDBPassword);
+    char* ip = (char*)config.ip.c_str();
+    char* name = (char*)config.name.c_str();
+    char* username = (char*)config.username.c_str();
+    char* password = (char*)config.password.c_str();
 
-    if ('?' == szLogDBUser[0]) {
-        m_LogDBUser.Set(szDBUser);
-        m_LogDBPassword.Set(szDBPassword);
-    } else {
-        m_LogDBUser.Set(szLogDBUser);
-        m_LogDBPassword.Set(szLogDBPw);
+    std::string log_db = config.name;
+    if (log_db.back() == '\0') {
+        log_db.pop_back();
     }
+    log_db += "_log";
+
+    m_DBServerIP.Set(ip);
+    m_DBName.Set(name);
+    m_DBUser.Set(username);
+    m_DBPassword.Set(password);
+
+    m_LogDBUser.Set(name);
+    m_LogDBPassword.Set(password);
 
     g_pThreadSQL = new CWS_ThreadSQL; // suspend 모드로 시작됨.
     if (!g_pThreadSQL->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
-            (char*)szDBServerIP,
-            szDBUser,
-            szDBPassword,
-            szDBName,
+            ip,
+            username,
+            password,
+            name,
             32,
             1024 * 8)) {
         return false;
     }
     g_pThreadSQL->Resume();
 
-    CStrVAR stLogODBC;
-    stLogODBC.Set((char*)"SHO_LOG");
     g_pThreadLOG = new CThreadLOG;
     if (!g_pThreadLOG->Connect(USE_ODBC,
-            szDBServerIP,
+            ip,
             m_LogDBUser.Get(),
             m_LogDBPassword.Get(),
-            stLogODBC.Get(),
+            (char*)log_db.c_str(),
             32,
             1024 * 8)) {
         return false;
@@ -252,10 +253,10 @@ SHO_WS::ConnectDB(char* szDBServerIP,
 
     g_pThreadMSGR = new CThreadMSGR(16384, 1024);
     if (!g_pThreadMSGR->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
-            (char*)szDBServerIP,
-            szDBUser,
-            szDBPassword,
-            szDBName,
+            ip,
+            username,
+            password,
+            name,
             32,
             1024 * 8)) {
         return false;
@@ -264,10 +265,10 @@ SHO_WS::ConnectDB(char* szDBServerIP,
 
     g_pThreadGUILD = new CThreadGUILD(8192, 512);
     if (!g_pThreadGUILD->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
-            (char*)szDBServerIP,
-            szDBUser,
-            szDBPassword,
-            szDBName,
+            ip,
+            username,
+            password,
+            name,
             32,
             1024 * 8)) {
         return false;

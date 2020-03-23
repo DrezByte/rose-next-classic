@@ -10,6 +10,15 @@
 
 SHO_WS* g_instance;
 
+int shutdown(int exit_code=0) {
+    LOG_INFO("Shutting down...");
+    g_instance->Active(false);
+    g_instance->ShutdownCLI_SOCKET();
+    g_instance->Shutdown();
+    g_instance->Destroy();
+    return exit_code;
+}
+
 BOOL WINAPI
 CtrlHandler(DWORD fdwCtrlType) {
     switch (fdwCtrlType) {
@@ -19,12 +28,7 @@ CtrlHandler(DWORD fdwCtrlType) {
         case CTRL_BREAK_EVENT:
         case CTRL_LOGOFF_EVENT:
         case CTRL_SHUTDOWN_EVENT:
-            std::cout << "Shutting down..." << std::endl;
-            g_instance->Active(false);
-            g_instance->ShutdownCLI_SOCKET();
-            g_instance->Shutdown();
-            g_instance->Destroy();
-
+            return shutdown(1);
         default:
             return FALSE;
     }
@@ -63,13 +67,10 @@ main(int argc, char** argv) {
         config.worldserver.language);
 
     LOG_INFO("Connecting to the database");
-    g_instance->ConnectDB((char*)config.database.ip.c_str(),
-        (char*)config.database.name.c_str(),
-        (char*)config.database.username.c_str(),
-        (char*)config.database.password.c_str(),
-        (char*)config.database.username.c_str(), // Log DB User
-        (char*)config.database.password.c_str() // Log DB Password
-    );
+    bool db_connected = g_instance->connect_database(config.database);
+    if (!db_connected) {
+        return shutdown(1);
+    }
 
     LOG_INFO("Starting the server");
     g_instance->Start(console_window,
