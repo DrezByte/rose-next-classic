@@ -169,10 +169,7 @@ CGAMEDATA::auto_connect() {
 
 DWORD
 CGAMEDATA::GetTime() {
-    ::timeBeginPeriod(1);
     DWORD time = ::timeGetTime();
-    ::timeEndPeriod(1);
-
     return time;
 }
 
