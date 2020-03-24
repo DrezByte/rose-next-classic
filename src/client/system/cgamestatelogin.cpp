@@ -112,9 +112,6 @@ CGameStateLogin::Enter(int iPrevStateID) {
     //	g_pTerrain->SetLoadingMode( false );
     //	::setDelayedLoad( 2 );
 
-    int iOldSightRange = g_GameDATA.m_nSightRange;
-    g_GameDATA.m_nSightRange = 50;
-
     g_pCamera->Update();
     D3DVECTOR PosENZIN = g_pCamera->Get_Position();
     g_pTerrain->InitZONE(PosENZIN.x, PosENZIN.y);
@@ -124,8 +121,6 @@ CGameStateLogin::Enter(int iPrevStateID) {
     CSkyDOME::Init(g_GameDATA.m_hShader_sky, g_GameDATA.m_hLight, 0);
 
     //::setDelayedLoad( 1 );
-
-    g_GameDATA.m_nSightRange = iOldSightRange;
 
     if (g_GameDATA.m_is_NHN_JAPAN) {
         CTDialog* pDlg = g_EUILobby.GetEUI(EUI_LOGIN);

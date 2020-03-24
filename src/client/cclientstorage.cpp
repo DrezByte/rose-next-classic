@@ -323,7 +323,6 @@ CClientStorage::ApplyCameraOption(short i) {
             atof(CAMERA_ASPECT_RATIO(i)),
             CAMERA_NEAR_PLANE(i) * 100,
             CAMERA_FAR_PLANE(i) * 100);
-        g_GameDATA.m_nSightRange = CAMERA_MAX_RANGE(i) / 10;
     }
 }
 

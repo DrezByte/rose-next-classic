@@ -576,8 +576,6 @@ CGame::Load_DataNotUseThread() ///쓰레드를 사용해서 읽으면 안되는 Data를 Load하�
     ::doScript("scripts/load.lua");
 
     g_pCamera->Init(findNode("motion_camera"));
-    g_GameDATA.m_nSightRange = 30;
-    // g_ClientStorage.ApplyCameraOption( g_TblCamera.m_nDataCnt - 1 );
 
     g_GameDATA.m_hShader_nolit_skin = ::findNode("shader_nolit_skin");
     g_GameDATA.m_hShader_nolit = ::findNode("shader_nolit");

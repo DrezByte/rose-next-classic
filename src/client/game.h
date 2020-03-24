@@ -108,9 +108,6 @@ public:
     POINTS m_PosPATCH;
     CRITICAL_SECTION m_csNZIN;
 
-    /// 시야관련 데이터.
-    short m_nSightRange;
-
     /// 스태미너 데이터
     int m_iWorldStaminaVal;
     int AdjustAvatarStamina(int iGetExp);
