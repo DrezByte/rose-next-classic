@@ -97,9 +97,6 @@
     <ClInclude Include="src\zonesector.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\calculation.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\ceconomy.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
@@ -177,6 +174,9 @@
     </ClInclude>
     <ClInclude Include="src\status_effects.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\calculation.h">
+      <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -258,9 +258,6 @@
     <ClCompile Include="src\zonesector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\calculation.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\ceconomy.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -327,6 +324,9 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\status_effects.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\calculation.cpp">
+      <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
