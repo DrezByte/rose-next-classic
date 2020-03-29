@@ -184,6 +184,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\calculation.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CClientStorage.cpp" />
     <ClCompile Include="CommandFilter.cpp" />
@@ -498,7 +499,6 @@
     <ClCompile Include="Event\QF_SKILL.CPP" />
     <ClCompile Include="Event\QuestRewardQueue.cpp" />
     <ClCompile Include="BULLET.CPP" />
-    <ClCompile Include="Common\Calculation.cpp" />
     <ClCompile Include="Common\CEconomy.cpp" />
     <ClCompile Include="Common\CHotICON.cpp" />
     <ClCompile Include="Common\CInventory.cpp" />
@@ -537,7 +537,9 @@
     <ClCompile Include="Tutorial\TutorialEventUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\calculation.h" />
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h" />
+    <ClInclude Include="..\common\net_prototype.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CClientStorage.h" />
     <ClInclude Include="CommandFilter.h" />
@@ -868,7 +870,6 @@
     <ClInclude Include="Event\Quest_FUNC.h" />
     <ClInclude Include="Event\QuestRewardQueue.h" />
     <ClInclude Include="BULLET.H" />
-    <ClInclude Include="Common\Calculation.h" />
     <ClInclude Include="Common\CEconomy.h" />
     <ClInclude Include="Common\CHotICON.h" />
     <ClInclude Include="Common\CInventory.h" />
@@ -889,7 +890,6 @@
     <ClInclude Include="Game_FUNC.h" />
     <ClInclude Include="LUA_Func.h" />
     <ClInclude Include="Network\CNetwork.h" />
-    <ClInclude Include="..\Common\Net_Prototype.h" />
     <ClInclude Include="Network\RecvPACKET.h" />
     <ClInclude Include="Network\SendPACKET.h" />
     <ClInclude Include="Misc\GameUtil.h" />

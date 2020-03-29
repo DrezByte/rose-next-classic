@@ -3,7 +3,7 @@
 #include "IO_STB.h"
 #include "CUserDATA.h"
 #include "Object.h"
-#include "Calculation.h"
+#include "calculation.h"
 #include "../util/classTIME.h"
 
 #ifndef __SERVER

@@ -4,7 +4,7 @@
 #include "CQuest.h"
 #include "CInventory.h"
 #include "CHotICON.h"
-#include "Calculation.h"
+#include "calculation.h"
 #include "IO_STB.H"
 
 #include "rose/common/rosenext_config.h"

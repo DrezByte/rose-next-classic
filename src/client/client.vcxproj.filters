@@ -111,6 +111,9 @@
     <Filter Include="Scripts">
       <UniqueIdentifier>{a7ddc471-031f-4a62-ae0e-ec58676b339e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common Files">
+      <UniqueIdentifier>{1f9aea5a-7f58-4aa7-b757-8911578e1c35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCamera.cpp">
@@ -1034,9 +1037,6 @@
     <ClCompile Include="BULLET.CPP">
       <Filter>Source Files\BULLET</Filter>
     </ClCompile>
-    <ClCompile Include="Common\Calculation.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\CEconomy.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -1147,6 +1147,9 @@
     </ClCompile>
     <ClCompile Include="system\cgamestatelogin.cpp">
       <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\calculation.cpp">
+      <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2131,9 +2134,6 @@
     <ClInclude Include="BULLET.H">
       <Filter>Source Files\BULLET</Filter>
     </ClInclude>
-    <ClInclude Include="Common\Calculation.h">
-      <Filter>Source Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\CEconomy.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
@@ -2194,9 +2194,6 @@
     <ClInclude Include="Network\CNetwork.h">
       <Filter>Source Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Net_Prototype.h">
-      <Filter>Source Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="Network\RecvPACKET.h">
       <Filter>Source Files\Network</Filter>
     </ClInclude>
@@ -2247,6 +2244,12 @@
     </ClInclude>
     <ClInclude Include="system\CGameStateAutoConnect.h">
       <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\calculation.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\net_prototype.h">
+      <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

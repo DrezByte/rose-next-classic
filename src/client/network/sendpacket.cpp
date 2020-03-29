@@ -6,7 +6,7 @@
 #include "CNetwork.h"
 #include "..\util\classMD5.h"
 #include "Game.h"
-#include "..\common\Calculation.h"
+#include "calculation.h"
 #include "..\common\IO_AI.h"
 #include "Util/CCheat.h"
 #include "util/classTIME.h"

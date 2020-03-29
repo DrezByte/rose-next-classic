@@ -23,7 +23,7 @@
 #include "../GameCommon/Skill.h"
 #include "../Common/IO_STB.h"
 #include "../Common/IO_Quest.h"
-#include "../common/Calculation.h"
+#include "calculation.h"
 #include "../Util/CCheat.h"
 #include "../GameProc/CDayNNightProc.h"
 

@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "OBJECT.h"
 #include "Network\CNetwork.h"
-#include "common\Calculation.h"
+#include "calculation.h"
 #include "Game_FUNC.h"
 #include "ObjectActionProcessor.h"
 #include "CObjCART.h"

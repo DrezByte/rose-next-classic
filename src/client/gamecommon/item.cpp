@@ -17,7 +17,7 @@
 #include "../gamecommon/StringManager.h"
 #include "../gamedata/cstore.h"
 
-#include "../common/calculation.h"
+#include "calculation.h"
 #include "../common/io_pat.h"
 #include "../System/CGame.h"
 

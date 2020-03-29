@@ -9,7 +9,7 @@
 #include "IO_Event.h"
 #include "CViewMSG.h"
 #include "Network\CNetwork.h"
-#include "common\Calculation.h"
+#include "calculation.h"
 #include "Game_FUNC.h"
 #include "Interface/CUIMediator.h"
 #include "Interface/TypeResource.h"

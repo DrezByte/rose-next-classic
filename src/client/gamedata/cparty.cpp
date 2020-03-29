@@ -5,7 +5,7 @@
 #include "../interface/interfacetype.h"
 #include "../interface/dlgs/CMsgBox.h"
 #include "../interface/Command/CTCmdHotExec.h"
-#include "common/Calculation.h"
+#include "calculation.h"
 #include "../Network/CNetwork.h"
 //*-------------------------------------------------------------------------------------
 /// 문제 - 존서버별로 Object Server Index가 겹치는 경우

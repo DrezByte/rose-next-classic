@@ -42,7 +42,7 @@ public:
         int iZoneNO,
         int iDropRate,
         int iCharm);
-    static int Get_EXP(CObjCHAR* pAtkCHAR, CObjCHAR* pDefCHAR, int iGiveDamage);
+    static __int64 Get_EXP(CObjCHAR* pAtkCHAR, CObjCHAR* pDefCHAR, int iGiveDamage);
 
     static WORD Get_DAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT);
     static WORD Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHitCNT);
@@ -90,7 +90,7 @@ public:
         return ((iCurPartyLEV + 7) * (iCurPartyLEV + 10) * 5) + 200;
     }
 
-    static int Get_NeedRawEXP(int iLevel);
+    static __int64 Get_NeedRawEXP(int iLevel);
 };
 
 //-------------------------------------------------------------------------------------------------

@@ -21,7 +21,7 @@
 #include "../../GameData/CBank.h"
 
 #include "../../gamecommon/item.h"
-#include "../../common/calculation.h"
+#include "calculation.h"
 #include "../../System/CGame.h"
 #include "../../misc/gameutil.h"
 #include "UICommand.h"
