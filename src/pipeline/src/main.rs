@@ -177,12 +177,12 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                     continue;
                 }
 
-                let canonical_path = entry_path.canonicalize().unwrap();
-                file_list.push(canonical_path.clone());
-
                 match fs::metadata(&entry_path) {
                     Ok(m) => {
-                        file_metadata.insert(canonical_path, BakeFileMetadata::from(&m));
+                        let relative_path =
+                            entry_path.strip_prefix(&input_dir).unwrap().to_path_buf();
+                        file_metadata.insert(relative_path.clone(), BakeFileMetadata::from(&m));
+                        file_list.push(relative_path.clone());
                     }
                     Err(e) => {
                         println!(
@@ -194,6 +194,10 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                     }
                 }
             }
+        }
+    } else {
+        for p in cache.keys() {
+            file_list.push(p.strip_prefix(&input_dir).unwrap().to_path_buf());
         }
     }
 
@@ -208,9 +212,7 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
             continue;
         }
 
-        let command = args[0].to_lowercase();
         let file_glob = &args[1];
-
         match Glob::new(&file_glob) {
             Ok(g) => {
                 glob_builder.add(g);
@@ -224,27 +226,52 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
 
     let globs = glob_builder.build()?;
 
-    for filepath in file_list {
-        let rebake = match fs::metadata(&filepath) {
-            Ok(m) => should_rebake(&filepath, &BakeFileMetadata::from(&m), &mut cache),
+    'file_loop: for filepath in file_list {
+        let input_filepath = input_dir.join(&filepath);
+
+        let rebake = match fs::metadata(&input_filepath) {
+            Ok(m) => should_rebake(&input_filepath, &BakeFileMetadata::from(&m), &mut cache),
             Err(e) => {
-                println!("Error reading file metadata {}: {}", filepath.display(), e);
+                println!(
+                    "Error reading file metadata {}: {}",
+                    input_filepath.display(),
+                    e
+                );
                 false
             }
         };
 
-        if !rebake {
-            continue;
-        }
-
-        let command_indices = globs.matches(filepath);
+        let command_indices = globs.matches(&filepath);
         for command_index in command_indices.iter() {
             let command_index = *command_index;
             let args = &commands[command_index];
 
             let command = args[0].to_lowercase();
+            let output_filepath = match command.as_str() {
+                "copy" => output_dir.join(&filepath),
+                _ => PathBuf::new(),
+            };
+
+            if !rebake && output_filepath.exists() {
+                continue 'file_loop;
+            }
+
+            let output_filedir = output_filepath.parent().unwrap();
+            if let Err(e) = fs::create_dir_all(&output_filedir) {
+                eprintln!(
+                    "Error creating output dir {}: {}",
+                    output_filedir.display(),
+                    e
+                );
+                continue;
+            }
+
             match command.as_str() {
-                "copy" => {}
+                "copy" => {
+                    if let Err(e) = fs::copy(&input_filepath, &output_filepath) {
+                        eprintln!("Error copy file {}: {}", filepath.display(), e);
+                    }
+                }
                 "stb" => {}
                 "dds" => {}
                 _ => {} // Unrecognized command
