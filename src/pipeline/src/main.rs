@@ -1,10 +1,14 @@
 use std::collections::HashMap;
-use std::error::Error;
+use std::fmt;
 use std::fs;
 use std::fs::File;
 use std::io;
 use std::path::{Path, PathBuf};
+use std::process;
 use std::time;
+
+use roselib::files::STB;
+use roselib::io::RoseFile;
 
 use bincode;
 use clap::{App, Arg, ArgMatches, SubCommand};
@@ -22,6 +26,14 @@ enum PipelineError {
     Message(String),
 }
 
+impl fmt::Display for PipelineError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            PipelineError::Message(s) => write!(f, "{}", s),
+        }
+    }
+}
+
 impl From<io::Error> for PipelineError {
     fn from(e: io::Error) -> PipelineError {
         PipelineError::Message(format!("IO Error: {}", e))
@@ -31,6 +43,24 @@ impl From<io::Error> for PipelineError {
 impl From<globset::Error> for PipelineError {
     fn from(e: globset::Error) -> PipelineError {
         PipelineError::Message(format!("Glob Error: {}", e))
+    }
+}
+
+impl From<csv::Error> for PipelineError {
+    fn from(e: csv::Error) -> PipelineError {
+        PipelineError::Message(format!("CSV Error: {}", e))
+    }
+}
+
+impl From<roselib::Error> for PipelineError {
+    fn from(e: roselib::Error) -> PipelineError {
+        PipelineError::Message(format!("RoseLib Error: {}", e))
+    }
+}
+
+impl From<std::str::Utf8Error> for PipelineError {
+    fn from(e: std::str::Utf8Error) -> PipelineError {
+        PipelineError::Message(format!("String Utf8 Error: {}", e))
     }
 }
 
@@ -229,6 +259,11 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
     'file_loop: for filepath in file_list {
         let input_filepath = input_dir.join(&filepath);
 
+        if !input_filepath.exists() {
+            let _ = cache.remove(&input_filepath);
+            continue;
+        }
+
         let rebake = match fs::metadata(&input_filepath) {
             Ok(m) => should_rebake(&input_filepath, &BakeFileMetadata::from(&m), &mut cache),
             Err(e) => {
@@ -249,6 +284,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
             let command = args[0].to_lowercase();
             let output_filepath = match command.as_str() {
                 "copy" => output_dir.join(&filepath),
+                "stb" => output_dir.join(&filepath).with_extension("stb"),
+                "dds" => output_dir.join(&filepath).with_extension("dds"),
                 _ => PathBuf::new(),
             };
 
@@ -268,12 +305,91 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
 
             match command.as_str() {
                 "copy" => {
+                    println!("Copying file {}", input_filepath.display());
                     if let Err(e) = fs::copy(&input_filepath, &output_filepath) {
                         eprintln!("Error copy file {}: {}", filepath.display(), e);
                     }
                 }
-                "stb" => {}
-                "dds" => {}
+                "stb" => {
+                    let convert = || -> Result<(), PipelineError> {
+                        let mut stb = STB::new();
+                        let mut reader = csv::Reader::from_path(&input_filepath)?;
+                        for header in reader.headers()? {
+                            stb.headers.push(header.to_string())
+                        }
+                        for record in reader.records() {
+                            let mut row = Vec::new();
+                            for field in record?.iter() {
+                                row.push(field.to_string());
+                            }
+                            stb.data.push(row);
+                        }
+                        stb.write_to_path(&output_filepath)?;
+                        Ok(())
+                    };
+
+                    println!("Converting to STB {}", input_filepath.display());
+                    if let Err(e) = convert() {
+                        eprintln!("Error converting stb {}: {}", &input_filepath.display(), e);
+                    }
+                }
+                "dds" => {
+                    let convert = || -> Result<(), PipelineError> {
+                        let out_dir = match &output_filepath
+                            .parent()
+                            .unwrap_or(output_dir.as_path())
+                            .to_str()
+                        {
+                            Some(d) => d.to_owned(),
+                            None => {
+                                return Err(PipelineError::Message(
+                                    "Failed to get output dir as string".to_string(),
+                                ))
+                            }
+                        };
+
+                        let in_file = match &input_filepath.to_str() {
+                            Some(d) => d.to_owned(),
+                            None => {
+                                return Err(PipelineError::Message(
+                                    "Failed to get input file as string".to_string(),
+                                ))
+                            }
+                        };
+
+                        println!("Converting to DDS {}", input_filepath.display());
+                        let res = process::Command::new("texconv.exe")
+                            .args(&["-y", "-nologo", "-f", "DXT5", "-o", &out_dir, &in_file])
+                            .output()?;
+
+                        if !res.status.success() {
+                            let mut error_string = String::from("texconv_failed");
+                            for stdres in &[&res.stdout, &res.stderr] {
+                                if !stdres.is_empty() {
+                                    error_string.push('\n');
+                                    error_string.push_str(&std::str::from_utf8(stdres)?);
+                                }
+                            }
+                            return Err(PipelineError::Message(error_string));
+                        }
+
+                        // Rename to lowercase DDS extension because Texconv defaults to upper
+                        fs::rename(
+                            output_filepath.with_extension("DDS"),
+                            output_filepath.with_extension("dds"),
+                        )?;
+
+                        Ok(())
+                    };
+
+                    if let Err(e) = convert() {
+                        eprintln!(
+                            "Error converting to dds {}: {}",
+                            &input_filepath.display(),
+                            e
+                        );
+                    }
+                }
                 _ => {} // Unrecognized command
             }
         }
