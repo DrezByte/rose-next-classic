@@ -359,7 +359,16 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
 
                         println!("Converting to DDS {}", input_filepath.display());
                         let res = process::Command::new("texconv.exe")
-                            .args(&["-y", "-nologo", "-f", "DXT5", "-o", &out_dir, &in_file])
+                            .args(&[
+                                "-y",
+                                "-nologo",
+                                "-sepalpha",
+                                "-f",
+                                "DXT5",
+                                "-o",
+                                &out_dir,
+                                &in_file,
+                            ])
                             .output()?;
 
                         if !res.status.success() {
