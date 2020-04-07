@@ -1,3 +1,5 @@
+* text eol=lf
+
 *.sql diff
 
 *.[Ll][Ii][Bb] filter=lfs diff=lfs merge=lfs -text
