@@ -5,7 +5,7 @@
 #include "lib_util.h"
 #include "sho_ws_lib.h"
 
-#include "rose/common/config.h"
+#include "rose/common/server_config.h"
 #include "rose/common/util.h"
 
 SHO_WS* g_instance;

@@ -47,7 +47,7 @@ typedef LPDIRECT3DVERTEXBUFFER9 LPD3DVERTEXBUFFER;
 // #pragma warning(default : 4786)
 #pragma warning(disable : 4651)
 
-#include "rose/common/rosenext_config.h"
+#include "rose/common/game_config.h"
 #include "rose/common/log.h"
 
 #include "interface/it_mgr.h"

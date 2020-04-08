@@ -2236,7 +2236,7 @@
     <ClInclude Include="util\string_util.h">
       <Filter>Source Files\Util</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\include\rose\common\rosenext_config.h">
+    <ClInclude Include="..\common\include\rose\common\game_config.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Interface\DLGs\console_dialog.h">

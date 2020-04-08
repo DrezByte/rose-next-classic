@@ -8,6 +8,6 @@
 #include <wchar.h>
 #include <windows.h>
 
-#include "rose/common/rosenext_config.h"
+#include "rose/common/game_config.h"
 
 #include "lib_gsmain.h"

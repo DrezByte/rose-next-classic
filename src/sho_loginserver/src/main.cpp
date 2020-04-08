@@ -4,7 +4,7 @@
 
 #include "sho_ls_lib.h"
 
-#include "rose/common/config.h"
+#include "rose/common/server_config.h"
 #include "rose/common/util.h"
 
 SHO_LS* g_instance;

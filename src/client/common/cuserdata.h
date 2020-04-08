@@ -7,7 +7,7 @@
 #include "calculation.h"
 #include "IO_STB.H"
 
-#include "rose/common/rosenext_config.h"
+#include "rose/common/game_config.h"
 
 #pragma warning(disable : 4201)
 //-------------------------------------------------------------------------------------------------

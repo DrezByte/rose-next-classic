@@ -10,7 +10,7 @@
 #include "lib_util.h"
 #include "LIB_gsMAIN.h"
 
-#include "rose/common/config.h"
+#include "rose/common/server_config.h"
 #include "rose/common/util.h"
 
 CLIB_GameSRV* g_instance;

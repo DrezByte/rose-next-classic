@@ -10,7 +10,7 @@
 #include "CHotICON.h"
 #include "Calculation.h"
 
-#include "rose/common/rosenext_config.h"
+#include "rose/common/game_config.h"
 
 #pragma warning(disable : 4201)
 //#define FRAROSE

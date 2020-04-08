@@ -10,7 +10,7 @@
 #include "blockLIST.h"
 #include "csocketwnd.h"
 
-#include "rose/common/config.h"
+#include "rose/common/server_config.h"
 
 using namespace Rose::Common;
 

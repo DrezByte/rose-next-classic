@@ -15,7 +15,7 @@
 #include "CThreadMSGR.h"
 #include "IO_Skill.h"
 
-#include "rose/common/config.h"
+#include "rose/common/server_config.h"
 
 using namespace Rose::Common;
 
