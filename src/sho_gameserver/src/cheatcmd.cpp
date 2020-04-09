@@ -676,60 +676,65 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
 short
 classUSER::Cheat_item(char* pArg1, char* pArg2, char* pArg3, char* pArg4) {
     if (B_Cheater()) {
-        int iItemTYPE = atoi(pArg1);
-        int iItemNO = atoi(pArg2);
+        int item_type = atoi(pArg1);
+        int item_id = atoi(pArg2);
 
-        if (iItemTYPE < 1 || iItemTYPE >= ITEM_TYPE_QUEST) {
-            if (iItemTYPE > ITEM_TYPE_QUEST && iItemTYPE <= ITEM_TYPE_RIDE_PART) {
-                ;
-            } else
-                return CHEAT_INVALID;
-        }
-        if (iItemNO >= g_pTblSTBs[iItemTYPE]->m_nDataCnt)
+        if (item_type < ITEM_TYPE_FACE_ITEM || item_type > ITEM_TYPE_RIDE_PART) {
+            this->Send_gsv_WHISPER("Server", "Invalid item type");
             return CHEAT_INVALID;
+        }
+
+        if (item_id <= 0 || item_id >= g_pTblSTBs[item_type]->m_nDataCnt) {
+            this->Send_gsv_WHISPER("Server", "Invalid item id");
+            return CHEAT_INVALID;
+        }
+
         int iDupCNT = atoi(pArg3);
 
-        tagITEM sITEM;
-        sITEM.Clear();
+        tagITEM item;
+        item.Clear();
+        item.m_cType = item_type;
 
-        sITEM.m_cType = iItemTYPE;
-        if (sITEM.m_cType > 0 && sITEM.m_cType < ITEM_TYPE_MONEY) {
-            sITEM.m_nItemNo = iItemNO;
+        if (item.m_cType > 0 && item.m_cType < ITEM_TYPE_MONEY) {
+            item.m_nItemNo = item_id;
 
-            if (sITEM.m_cType >= ITEM_TYPE_USE && sITEM.m_cType != ITEM_TYPE_RIDE_PART) {
-                if (ITEM_ICON_NO(iItemTYPE, iItemNO) <= 0)
+            if (item.m_cType >= ITEM_TYPE_USE && item.m_cType != ITEM_TYPE_RIDE_PART) {
+                if (ITEM_ICON_NO(item_type, item_id) <= 0) {
+                    this->Send_gsv_WHISPER("Server", "Invalid item: Invalid icon id");
                     return CHEAT_INVALID;
+                }
 
-                // 소모 기타...
-                if (iDupCNT > 100)
+                if (iDupCNT > 100) {
                     iDupCNT = 100;
-                else if (iDupCNT < 1)
+                } else if (iDupCNT < 1) {
                     iDupCNT = 1;
+                }
 
-                sITEM.m_uiQuantity = iDupCNT;
+                item.m_uiQuantity = iDupCNT;
             } else {
-                if (ITEM_ICON_NO(iItemTYPE, iItemNO) <= 0)
+                if (ITEM_ICON_NO(item_type, item_id) <= 0) {
+                    this->Send_gsv_WHISPER("Server", "Invalid item: Invalid icon id");
                     return CHEAT_INVALID;
+                }
 
-                // 장비 ...
-                sITEM.m_nLife = MAX_ITEM_LIFE;
-                sITEM.m_cDurability = ITEM_DURABITY(sITEM.m_cType, sITEM.m_nItemNo);
-                sITEM.m_nGEM_OP = iDupCNT % 301;
-                sITEM.m_bIsAppraisal = 1;
-                if (0 == sITEM.m_nGEM_OP) {
+                item.m_nLife = MAX_ITEM_LIFE;
+                item.m_cDurability = ITEM_DURABITY(item.m_cType, item.m_nItemNo);
+                item.m_nGEM_OP = iDupCNT % 301;
+                item.m_bIsAppraisal = 1;
+                if (0 == item.m_nGEM_OP) {
                     // 옵션이 없다..
-                    if (pArg4 && ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO())) {
+                    if (pArg4 && ITEM_RARE_TYPE(item.GetTYPE(), item.GetItemNO())) {
                         // 0이 아니면 소켓이 붙을수 있는 아이템이다..
                         if (atoi(pArg4))
-                            sITEM.m_bHasSocket = 1;
+                            item.m_bHasSocket = 1;
                     }
                 }
             }
 
-            short nInvIDX = this->Add_ITEM(sITEM);
+            short nInvIDX = this->Add_ITEM(item);
             if (nInvIDX >= 0) {
-                // nInvIDX == 0 or sITEM.m_cType == ITEM_TYPE_MONEY 이면 돈...
-                this->Send_gsv_SET_INV_ONLY((BYTE)nInvIDX, &sITEM);
+                this->Send_gsv_SET_INV_ONLY((BYTE)nInvIDX, &item);
+                this->Send_gsv_WHISPER("Server", "Spawning item.");
                 return CHEAT_PROCED;
             }
         }

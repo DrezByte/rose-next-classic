@@ -449,8 +449,11 @@ classUSER::Parse_CheatCODE(char* szCode) {
         if (!strcmpi(pToken, "/ITEM")) {
             pArg2 = pStrVAR->GetTokenNext(pDelimiters);
             pArg3 = pStrVAR->GetTokenNext(pDelimiters);
-            if (!pArg2 || !pArg3)
+            if (!pArg2 || !pArg3) {
+                this->Send_gsv_WHISPER("Server", "Usage: /item <type_id> <item_id> <quantity>");
+                this->Send_gsv_WHISPER("Server", "Usage: /item <type_id> <item_id> <stat_id> <socket>");
                 return CHEAT_INVALID;
+            }
             char* pArg4 = pStrVAR->GetTokenNext(pDelimiters);
             return Cheat_item(pArg1, pArg2, pArg3, pArg4);
         }
