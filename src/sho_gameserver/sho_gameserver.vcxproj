@@ -189,6 +189,7 @@
       <CompileAs>Default</CompileAs>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>Ndebug;%(PreprocessorDefinitions)</PreprocessorDefinitions>

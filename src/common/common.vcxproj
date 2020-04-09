@@ -153,6 +153,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <debugInformationFormat>ProgramDatabase</debugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
