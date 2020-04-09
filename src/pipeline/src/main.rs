@@ -11,7 +11,7 @@ use roselib::files::STB;
 use roselib::io::RoseFile;
 
 use bincode;
-use clap::{App, Arg, ArgMatches, SubCommand};
+use clap::{App, Arg, ArgMatches, SubCommand, crate_version};
 use globset;
 use globset::{Glob, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
@@ -198,6 +198,9 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
 
     let mut file_list = Vec::new();
     let mut file_metadata: HashMap<PathBuf, BakeFileMetadata> = HashMap::new();
+
+    // TODO: Temporary work-around until I find a better way to check if directory contents changed on windows
+    let walk_dir = true;
 
     if walk_dir {
         for entry in WalkDir::new(&input_dir).into_iter() {
@@ -410,7 +413,7 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
 }
 
 fn main() -> Result<(), PipelineError> {
-    let app = App::new("Rose Next Pipeline Tool").subcommand(
+    let app = App::new("Rose Next Pipeline Tool").version(crate_version!()).subcommand(
         SubCommand::with_name("bake")
             .about("Rose Next Asset Compiler")
             .arg(Arg::with_name(BAKE_INPUT_DIR).required(true))
