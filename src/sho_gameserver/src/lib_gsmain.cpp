@@ -630,7 +630,6 @@ CLIB_GameSRV::Load_BasicDATA() {
 
     g_TblWARP.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\WARP.STB"), true, false);
     g_TblZONE.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ZONE.STB"), true, false);
-    assert(g_TblZONE.m_nColCnt > 33);
 
     g_TblNPC.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NPC.STB"), true, false);
     //	assert( g_TblNPC.m_nColCnt > 43 );
@@ -698,7 +697,7 @@ CLIB_GameSRV::Load_BasicDATA() {
     g_pTblSTBs[ITEM_TYPE_QUEST] = &g_TblQUESTITEM;
     g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM.m_ItemDATA;
 
-    // 아이템 이름만 읽음 :: 이름 컬럼은 1, 3, 5 ... 설명 컬럼은 2, 4, 6 ...
+    /* RAM: Disabling translations since it relies on WSTB instead of STL
     this->TranslateNameWithDescKey(g_pTblSTBs[ITEM_TYPE_FACE_ITEM],
         "Language\\LIST_FACEITEM_s.STB",
         1 + 2 * m_iLangTYPE);
@@ -761,6 +760,7 @@ CLIB_GameSRV::Load_BasicDATA() {
         1 + 2 * m_iLangTYPE,
         ZONE_NAME_STR_COLUMN,
         ZONE_KEY_STR_COLOUM);
+        */
 
     //	CheckSTB_AllITEM ();
     CheckSTB_UseITEM();

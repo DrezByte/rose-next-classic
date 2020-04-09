@@ -16,6 +16,11 @@
 #include "IO_Quest.h"
 #include "ZoneLIST.h"
 
+#include "rose/common/util.h"
+
+#include <iomanip>
+#include <sstream>
+
 #define RET_FAILED false
 #define RET_OK true
 #define RET_SKIP_PROC 2
@@ -329,6 +334,38 @@ classUSER::Set_RevivePOS(int iXPos, int iYPos) {
 /// 치트 코트 구문 분석
 short
 classUSER::Parse_CheatCODE(char* szCode) {
+    // New cheat code handling
+    std::vector<std::string> tokens = Util::split_string_whitespace(szCode);
+    if (tokens.empty()) {
+        return CHEAT_INVALID;
+    }
+
+    std::string& command_name = tokens.at(0);
+    if (command_name.empty()) {
+        return CHEAT_INVALID;
+    }
+
+    command_name.erase(0, 1);
+    if (command_name == "maps") {
+        //std::string message("ID Name\n-------\n");
+        this->Send_gsv_WHISPER("Server", "| ID | Name |");
+        this->Send_gsv_WHISPER("Server", "-------------");
+        for (int zone_idx = 0; zone_idx < g_TblZONE.m_nDataCnt; ++zone_idx) {
+            const char* zone_name = ZONE_NAME(zone_idx);
+            if (!zone_name) {
+                continue;
+            }
+
+            std::stringstream message("| ");
+            message << std::setfill('0') << std::setw(2) << zone_idx << " | " << std::string(zone_name);
+
+            this->Send_gsv_WHISPER("Server", (char*)message.str().c_str());
+        }
+        return CHEAT_PROCED;
+    }
+
+    // End new cheat code handling
+
     short nProcMODE = 0;
 
     char *pToken, *pArg1, *pArg2, *pArg3;

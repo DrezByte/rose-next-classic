@@ -39,6 +39,7 @@
     <ClInclude Include="include\rose\common\server_config.h">
       <Filter>config</Filter>
     </ClInclude>
+    <ClInclude Include="include\rose\common\commands.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
