@@ -44,14 +44,100 @@ enum {
 #define BIT_TRADE_DONE 0x02 // 1 : 1 거래시
 #define BIT_TRADE_P_STORE 0x04 // 개인 상점 거래시..
 
+#define BANK_UNLOADED 0x00 // 적재 되지 않았다
+#define BANK_LOADED 0x01 // 적재 됐다
+#define BANK_CHANGED 0x02 // 은행 내용이 바뀌었다.
+
+#define LOGOUT_MODE_LEFT 0x01
+#define LOGOUT_MODE_WARP 0x02
+#define LOGOUT_MODE_CHARLIST 0x03
+#define LOGOUT_MODE_NET_ERROR 0x04
+
+#define MAX_USER_TITLE 50
+
 struct tagTradeITEM {
     short m_nInvIDX;
     tagITEM m_Item;
 };
 
-#define MAX_USER_TITLE 50
 
 class classUSER: public iocpSOCKET, public CObjAVT {
+public:
+    short m_nZoneNO;
+
+    DWORD m_dwLSID;
+    DWORD m_dwWSID;
+    DWORD m_dwDBID; // db에 저장된 값은 2147483647까지..
+    DWORD m_dwItemSN;
+
+    t_HASHKEY m_HashACCOUNT;
+    t_HASHKEY m_HashCHAR;
+    DWORD m_dwRIGHT;
+    DWORD m_dwPayFLAG;
+
+    //	short			m_nProcSTEP;
+    CStrVAR m_BankPASSWORD;
+
+    short m_nReviveZoneNO;
+    tPOINTF m_PosREVIVE;
+
+    BYTE m_btTradeBIT;
+    int m_iTradeUserIDX;
+    tagTradeITEM m_TradeITEM[MAX_TRADE_ITEM_SLOT]; // 거래시 상대방에게 건내줄 아이템
+    short m_nCreateItemEXP;
+    int m_iLastEventNpcIDX;
+
+    // PVP등에서 사용되는 임시 현재존 부활위치...
+    bool m_bSetImmediateRevivePOS;
+    tPOINTF m_PosImmediateRivive;
+
+    bool m_bKickOutFromGUMS;
+    BYTE m_btWishLogOutMODE;
+    DWORD m_dwTimeToLogOUT;
+    DWORD m_dwLastSkillActiveTIME;
+    DWORD m_dwLastSkillSpellTIME[MAX_LEARNED_SKILL_CNT];
+    // DWORD			m_dwLastSkillGroupSpeelTIME[ MAX_SKILL_RELOAD_TYPE ];
+    DWORD m_dwLastSkillGroupSpeelTIME[15];
+
+    char m_szUserTITLE[MAX_USER_TITLE + 1];
+    struct tagUserSTORE {
+        bool m_bActive;
+
+        BYTE m_btSellCNT; // 등록된 판매 품목 갯수
+        short m_nInvIDX[MAX_P_STORE_ITEM_SLOT]; // 판매시 팔려는 아이템의 인벤토리 위치.
+        tagITEM m_SellITEM[MAX_P_STORE_ITEM_SLOT]; // 판매, 구입 희망 아이템(갯수 포함)
+        DWORD m_dwSellPricePerEA[MAX_P_STORE_ITEM_SLOT]; // 1개당 희망 가격
+
+        BYTE m_btWishCNT; // 구입 희만 품목 갯수
+        BYTE m_btWishIDX[MAX_P_STORE_ITEM_SLOT]; // 구입 하려는 아이템의 슬롯 번호
+        tagITEM m_WishITEM[MAX_P_STORE_ITEM_SLOT]; // 구입 희망 아이템(갯수 포함)
+        DWORD m_dwWishPricePerEA[MAX_P_STORE_ITEM_SLOT]; // 1개당 희망 가격
+        BYTE m_btWishIdx2StoreIDX[MAX_P_STORE_ITEM_SLOT];
+    } m_STORE;
+
+
+    BYTE m_btBankData;
+
+    BYTE m_btShotTYPE;
+    tagITEM* m_pShotITEM;
+
+    BYTE m_btPlatinumCHAR;
+    BYTE m_btLogOutMODE;
+    DWORD m_dwBackUpTIME;
+    DWORD m_dwLoginTIME;
+    __int64 m_i64StartMoney;
+    int m_iClanCreateMoney;
+
+    bool m_bInAGIT;
+
+    CParty* m_pPartyBUFF;
+    short m_nPartyPOS;
+
+    DWORD m_dwCoolTIME[MAX_USEITEM_COOLTIME_TYPE];
+
+public:
+    classUSER();
+    virtual ~classUSER();
 
 private:
     CCriticalSection m_csSrvRECV;
@@ -477,94 +563,10 @@ public:
 
     char* Get_StoreTITLE() { return this->m_szUserTITLE; }
 
-    short m_nZoneNO;
-
-    DWORD m_dwLSID;
-    DWORD m_dwWSID;
-    DWORD m_dwDBID; // db에 저장된 값은 2147483647까지..
-    DWORD m_dwItemSN;
-
-    t_HASHKEY m_HashACCOUNT;
-    t_HASHKEY m_HashCHAR;
-    DWORD m_dwRIGHT;
-    DWORD m_dwPayFLAG;
-
-    //	short			m_nProcSTEP;
-    CStrVAR m_BankPASSWORD;
-
-    short m_nReviveZoneNO;
-    tPOINTF m_PosREVIVE;
-
-    BYTE m_btTradeBIT;
-    int m_iTradeUserIDX;
-    tagTradeITEM m_TradeITEM[MAX_TRADE_ITEM_SLOT]; // 거래시 상대방에게 건내줄 아이템
-    short m_nCreateItemEXP;
-    int m_iLastEventNpcIDX;
-
-    // PVP등에서 사용되는 임시 현재존 부활위치...
-    bool m_bSetImmediateRevivePOS;
-    tPOINTF m_PosImmediateRivive;
-
-    bool m_bKickOutFromGUMS;
-    BYTE m_btWishLogOutMODE;
-    DWORD m_dwTimeToLogOUT;
-    DWORD m_dwLastSkillActiveTIME;
-    DWORD m_dwLastSkillSpellTIME[MAX_LEARNED_SKILL_CNT];
-    // DWORD			m_dwLastSkillGroupSpeelTIME[ MAX_SKILL_RELOAD_TYPE ];
-    DWORD m_dwLastSkillGroupSpeelTIME[15];
-
-    char m_szUserTITLE[MAX_USER_TITLE + 1];
-    struct tagUserSTORE {
-        bool m_bActive;
-
-        BYTE m_btSellCNT; // 등록된 판매 품목 갯수
-        short m_nInvIDX[MAX_P_STORE_ITEM_SLOT]; // 판매시 팔려는 아이템의 인벤토리 위치.
-        tagITEM m_SellITEM[MAX_P_STORE_ITEM_SLOT]; // 판매, 구입 희망 아이템(갯수 포함)
-        DWORD m_dwSellPricePerEA[MAX_P_STORE_ITEM_SLOT]; // 1개당 희망 가격
-
-        BYTE m_btWishCNT; // 구입 희만 품목 갯수
-        BYTE m_btWishIDX[MAX_P_STORE_ITEM_SLOT]; // 구입 하려는 아이템의 슬롯 번호
-        tagITEM m_WishITEM[MAX_P_STORE_ITEM_SLOT]; // 구입 희망 아이템(갯수 포함)
-        DWORD m_dwWishPricePerEA[MAX_P_STORE_ITEM_SLOT]; // 1개당 희망 가격
-        BYTE m_btWishIdx2StoreIDX[MAX_P_STORE_ITEM_SLOT];
-    } m_STORE;
-
     bool Check_TradeITEM();
     void RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket);
     void AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
         classPACKET* pCPacket);
-
-#define BANK_UNLOADED 0x00 // 적재 되지 않았다
-#define BANK_LOADED 0x01 // 적재 됐다
-#define BANK_CHANGED 0x02 // 은행 내용이 바뀌었다.
-    BYTE m_btBankData;
-
-    BYTE m_btShotTYPE;
-    tagITEM* m_pShotITEM;
-
-#define LOGOUT_MODE_LEFT 0x01
-#define LOGOUT_MODE_WARP 0x02
-#define LOGOUT_MODE_CHARLIST 0x03
-#define LOGOUT_MODE_NET_ERROR 0x04
-
-    BYTE m_btPlatinumCHAR;
-    BYTE m_btLogOutMODE;
-    DWORD m_dwBackUpTIME;
-    DWORD m_dwLoginTIME;
-    __int64 m_i64StartMoney;
-    int m_iClanCreateMoney;
-
-    bool m_bInAGIT;
-
-    CParty* m_pPartyBUFF;
-#ifdef __USE_ARRAY_PARTY_USER
-    short m_nPartyPOS;
-#else
-    x // CDLList< tagPartyUSER >::tagNODE *m_pPartyNODE;
-#endif
-
-    classUSER();
-    virtual ~classUSER();
 
     inline bool SendPacket(classPACKET* pCPacket) { return this->Send_Start(*pCPacket); }
     bool SendPacketToPARTY(classPACKET* pCPacket) {
@@ -614,8 +616,6 @@ public:
 
         return true;
     }
-
-    DWORD m_dwCoolTIME[MAX_USEITEM_COOLTIME_TYPE];
 
     void InitUSER() {
         ::ZeroMemory(m_dwCoolTIME, sizeof(m_dwCoolTIME));
