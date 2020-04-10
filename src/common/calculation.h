@@ -16,6 +16,14 @@ class CObjCHAR;
 #endif
 class CObjMOB;
 
+enum class DropRule: int {
+    Default = 0,
+    AlwaysAppraisal = 3,
+    AlwaysSlotted = 4,
+};
+
+DropRule drop_rule_from_int(int i);
+
 //-------------------------------------------------------------------------------------------------
 class CUserDATA;
 /**

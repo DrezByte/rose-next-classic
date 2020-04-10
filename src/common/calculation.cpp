@@ -31,6 +31,18 @@ Get_WorldREWARD() {
 }
 #endif
 
+DropRule drop_rule_from_int(int i) {
+    if (i == 3) {
+        return DropRule::AlwaysAppraisal;
+    }
+    else if (i == 4) {
+        return DropRule::AlwaysSlotted;
+    }
+    else {
+        return DropRule::Default;
+    }
+}
+
 //-------------------------------------------------------------------------------------------------
 __int64
 CCal::Get_NeedRawEXP(int iLevel) {
@@ -131,30 +143,32 @@ CCal::Get_RewardVALUE(BYTE btEquation, int S_REWARD, CUserDATA* pUSER, short nDu
 
 //-------------------------------------------------------------------------------------------------
 bool
-CCal::Get_DropITEM(int iLevelDiff,
+CCal::Get_DropITEM(int level_difference,
     CObjMOB* pMobCHAR,
-    tagITEM& sITEM,
+    tagITEM& item,
     int iZoneNO,
     int iDropRate,
     int iCharm) {
-    int iDrop_VAR;
 
-    if (iLevelDiff < 0)
-        iLevelDiff = 0;
-    else if (iLevelDiff >= 10)
+    int iDrop_VAR = 0;
+
+    if (level_difference < 0) {
+        level_difference = 0;
+    } else if (level_difference >= 10) {
         return false;
+    }
 
-    if (iLevelDiff < 9)
+    if (level_difference < 9) {
         iDrop_VAR = (int)((::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO())
-                              - (1 + RANDOM(100)) - ((iLevelDiff + 16) * 3.5f) - 10 + iDropRate)
+            - (1 + RANDOM(100)) - ((level_difference + 16) * 3.5f) - 10 + iDropRate)
             * 0.38f); // * ( NPC_DROP_MONEY( pMobCHAR->Get_CharNO() ) + 30 ) / 130;
-    else
+    } else {
         iDrop_VAR = (int)((::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO())
-                              - (1 + RANDOM(100)) - ((iLevelDiff + 20) * 5.5f) - 10 + iDropRate)
+            - (1 + RANDOM(100)) - ((level_difference + 20) * 5.5f) - 10 + iDropRate)
             * 0.23f); // * ( NPC_DROP_MONEY( pMobCHAR->Get_CharNO() ) + 30 ) / 130;
+    }
 
     if (iDrop_VAR <= 0) {
-        // 드롭 확률 저조 !!! 생성안됨.
         return false;
     }
 
@@ -166,8 +180,8 @@ CCal::Get_DropITEM(int iLevelDiff,
         if (iMoney <= 0)
             return false;
 
-        sITEM.m_cType = ITEM_TYPE_MONEY;
-        sITEM.m_uiMoney = iMoney;
+        item.m_cType = ITEM_TYPE_MONEY;
+        item.m_uiMoney = iMoney;
 
         return true;
     }
@@ -200,48 +214,44 @@ CCal::Get_DropITEM(int iLevelDiff,
         }
     }
 
-    ::ZeroMemory(&sITEM, sizeof(sITEM));
-    sITEM.m_cType = (BYTE)(iDropITEM / 1000);
-    sITEM.m_nItemNo = iDropITEM % 1000;
+    ::ZeroMemory(&item, sizeof(item));
+    item.m_cType = (BYTE)(iDropITEM / 1000);
+    item.m_nItemNo = iDropITEM % 1000;
 
     int iTEMP;
-    if (sITEM.GetTYPE() >= ITEM_TYPE_ETC
-        && sITEM.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PART은 제외해야 함
-        sITEM.m_uiQuantity =
+    if (item.GetTYPE() >= ITEM_TYPE_ETC
+        && item.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PART은 제외해야 함
+        item.m_uiQuantity =
             1 + ((pMobCHAR->Get_LEVEL() + 10) / 9 + (1 + RANDOM(20)) + iDropRate) / (iDrop_VAR + 4);
 
-        if (sITEM.m_uiQuantity > 10)
-            sITEM.m_uiQuantity = 10;
-    } else if (sITEM.GetTYPE() >= ITEM_TYPE_USE
-        && sITEM.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PART은 제외해야 함
-        sITEM.m_uiQuantity = 1;
+        if (item.m_uiQuantity > 10)
+            item.m_uiQuantity = 10;
+    } else if (item.GetTYPE() >= ITEM_TYPE_USE
+        && item.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PART은 제외해야 함
+        item.m_uiQuantity = 1;
     } else {
-        ;
-        short nRareType = ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO());
+        short nRareType = ITEM_RARE_TYPE(item.GetTYPE(), item.GetItemNO());
         if (nRareType < 3) {
             nRareType = 0;
         }
 
-        switch (nRareType) {
-            case 3: // 대만 레어 아이템
-                sITEM.m_nGEM_OP = 100 + RANDOM(41);
-                LOG_INFO("Rarity 3: Item id %d, gem_op: %d", sITEM.m_nItemNo, sITEM.m_nGEM_OP );
+        const DropRule drop_rule = drop_rule_from_int(nRareType);
+        switch (drop_rule) {
+            case DropRule::AlwaysSlotted:
+                item.m_bHasSocket = 1;
                 break;
-            case 1: // 무조건
-                sITEM.m_bHasSocket = 1;
-                sITEM.m_bIsAppraisal = 1;
-                LOG_INFO("Rarity 1: Item id %d, gem_op: %d", sITEM.m_nItemNo, sITEM.m_nGEM_OP );
+            case DropRule::AlwaysAppraisal:
+                item.m_nGEM_OP = 100 + RANDOM(41);
                 break;
-            case 2: // 계산
-                if (ITEM_QUALITY(sITEM.GetTYPE(), sITEM.GetItemNO()) + 60 - RANDOM(400) > 0) {
-                    sITEM.m_bHasSocket = 1;
-                    sITEM.m_bIsAppraisal = 1;
-                    LOG_INFO("Rarity 2: Item id %d, gem_op: %d", sITEM.m_nItemNo, sITEM.m_nGEM_OP );
-                    break;
-                }
-            case 0: {
+            case DropRule::Default: {
                 iTEMP = 1 + RANDOM(100);
-                if (sITEM.GetTYPE() != ITEM_TYPE_JEWEL) {
+                if (item.GetTYPE() == ITEM_TYPE_WEAPON) {
+                    if (iTEMP <= 25) {
+                        item.m_bHasSocket = 1;
+                    }
+                }
+
+                if (item.GetTYPE() <= ITEM_TYPE_KNAPSACK) {
                     // 장비는 각 stb의 기본 품질 값을 설정.
                     int iITEM_OP = (int)(((pMobCHAR->Get_LEVEL() * 0.4f
                                               + (NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - 35) * 4
@@ -261,29 +271,29 @@ CCal::Get_DropITEM(int iLevelDiff,
                         } else { // 73-80
                             iOption = 73 + RANDOM(81 - 73);
                         }
-                        sITEM.m_nGEM_OP = iOption;
-                        sITEM.m_bIsAppraisal = 1;
+                        item.m_nGEM_OP = iOption;
+                        item.m_bIsAppraisal = 1;
                     }
                 }
-                LOG_INFO("Rarity 0: Type: %d, Item id %d, gem_op: %d", sITEM.m_cType, sITEM.m_nItemNo, sITEM.m_nGEM_OP );
                 break;
             }
         }
 
         // 내구도 결정
-        iTEMP = (int)(ITEM_DURABITY(sITEM.GetTYPE(), sITEM.GetItemNO())
+        iTEMP = (int)(ITEM_DURABITY(item.GetTYPE(), item.GetItemNO())
             * (pMobCHAR->Get_LEVEL() * 0.3f + NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) * 2 + 320)
             * 0.5f / (RANDOM(100) + 201));
         if (iTEMP > 100)
             iTEMP = 100;
-        sITEM.m_cDurability = iTEMP;
+        item.m_cDurability = iTEMP;
 
         // 수명 결정
         iTEMP = (int)((NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) + 200) * 80 / (31 + RANDOM(100)));
         if (iTEMP > MAX_ITEM_LIFE)
             iTEMP = MAX_ITEM_LIFE;
-        sITEM.m_nLife = iTEMP;
-        sITEM.m_cGrade = 0;
+
+        item.m_nLife = iTEMP;
+        item.m_cGrade = 0;
     }
     return true;
 }

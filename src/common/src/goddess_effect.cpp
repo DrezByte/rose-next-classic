@@ -1,6 +1,6 @@
-#include <algorithm>
-
 #include "rose/common/status_effect/goddess_effect.h"
+
+#include <algorithm>
 
 using namespace Rose::Common;
 
@@ -21,42 +21,42 @@ GoddessEffect::update(int level) {
     // min_int -> max_int).
     //
     // This formula was created by calculating the line that intersects (1, 15)
-    // and (130, 300) aka. (min_level, min_int) and (max_level, max_int)
-    float factor = ((2.21f * level) + 12.79f);
+    // and (100, 300) aka. (min_level, min_int) and (max_level, max_int)
+    const float simulated_int = ((2.87f * level) + 12.12f);
 
     // Convert our factor into the range (1,2) where maximum factor
     // doubles the scale of the effect. I.e. At max level the buffs are
     // twice as strong.
-    float scalar = (factor + 300.0f) / 315.0f;
+    const float scalar = (simulated_int + 300.0f) / 315.0f;
 
     auto get_index = [](int level, int upper) {
-        int bounded = std::min(level, upper) - 1;
+        const int bounded = std::min(level, upper) - 1;
         return bounded % 10;
     };
 
     if (level >= 1) {
-        int idx = std::min(level, 10) - 1;
-        float val = GODDESS_MOVE_VALS[idx] * scalar;
+        const int idx = std::min(level, 10) - 1;
+        const float val = GODDESS_MOVE_VALS[idx] * scalar;
         this->move_speed = static_cast<short>(val);
     }
     if (level >= 11) {
-        int idx = get_index(level, 20);
+        const int idx = get_index(level, 20);
         float val = GODDESS_ATTACK_VALS[idx] * scalar;
         this->attack_damage = static_cast<short>(val);
     }
     if (level >= 21) {
-        int idx = get_index(level, 30);
-        float val = GODDESS_HIT_VALS[idx] * scalar;
+        const int idx = get_index(level, 30);
+        const float val = GODDESS_HIT_VALS[idx] * scalar;
         this->hit = static_cast<short>(val);
     }
     if (level >= 31) {
-        int idx = get_index(level, 40);
-        float val = GODDESS_ASPEED_VALS[idx] * scalar;
+        const int idx = get_index(level, 40);
+        const float val = GODDESS_ASPEED_VALS[idx] * scalar;
         this->attack_speed = static_cast<short>(val);
     }
     if (level >= 41) {
-        int idx = get_index(level, 50);
-        float val = GODDESS_CRIT_VALS[idx] * scalar;
+        const int idx = get_index(level, 50);
+        const float val = GODDESS_CRIT_VALS[idx] * scalar;
         this->crit = static_cast<short>(val);
     }
 }
