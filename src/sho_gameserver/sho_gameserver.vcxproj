@@ -43,7 +43,6 @@
     <ClInclude Include="src\def_stb.h" />
     <ClInclude Include="src\etc_math.h" />
     <ClInclude Include="src\gs_listuser.h" />
-    <ClInclude Include="src\gs_objpool.h" />
     <ClInclude Include="src\gs_party.h" />
     <ClInclude Include="src\gs_socketasv.h" />
     <ClInclude Include="src\gs_socketlsv.h" />
@@ -96,7 +95,6 @@
     <ClCompile Include="src\common\io_stb.cpp" />
     <ClCompile Include="src\etc_math.cpp" />
     <ClCompile Include="src\gs_listuser.cpp" />
-    <ClCompile Include="src\gs_objpool.cpp" />
     <ClCompile Include="src\gs_party.cpp" />
     <ClCompile Include="src\gs_socketasv.cpp" />
     <ClCompile Include="src\gs_socketlsv.cpp" />

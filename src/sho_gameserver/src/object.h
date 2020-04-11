@@ -9,14 +9,7 @@
 #include "CObjITEM.h"
 #include "CObjEVENT.h"
 #include "GS_USER.h"
-//-------------------------------------------------------------------------------------------------
 
-/**
- * \ingroup SHO_GS_LIB
- * \class	CObjMNG
- * \author	wookSang.Jo
- * \brief	서버에 존제하는 모든 객체를 관리하는 클래스
- */
 class CObjMNG: public CSyncIdxARRAY<CGameOBJ*> {
 public:
     CObjMNG(int iMaxGameObject);
@@ -37,7 +30,5 @@ public:
 };
 extern CObjMNG* g_pObjMGR;
 
-#include "GS_ObjPOOL.h"
 
-//-------------------------------------------------------------------------------------------------
 #endif
