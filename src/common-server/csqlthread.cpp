@@ -1,10 +1,15 @@
 
 #include <windows.h>
-#include "classUTIL.h"
-#include "rose/common/log.h"
+
 #include "CSqlTHREAD.h"
 
-//-------------------------------------------------------------------------------------------------
+#include "classUTIL.h"
+
+#include "rose/common/log.h"
+#include "rose/network/packet.h"
+
+#include <queue>
+
 CSqlTHREAD::CSqlTHREAD(bool bCreateSuspended): classTHREAD(bCreateSuspended), m_CS(4000) {
     m_pEVENT = new classEVENT(NULL, false, false, NULL);
     m_pSQL = NULL;
@@ -16,38 +21,6 @@ CSqlTHREAD::~CSqlTHREAD() {
     SAFE_DELETE(m_pSQL);
 }
 
-//-------------------------------------------------------------------------------------------------
-/*
-void CSqlTHREAD::Execute ()
-{
-    classDLLNODE< tagQueryDATA > *pSqlNODE;
-
-    g_LOG.CS_ODS( 0xffff, ">>>> CSqlTHREAD::Execute() ThreadID: %d(0x%x)\n", this->ThreadID,
-this->ThreadID );
-
-    while( !this->Terminated ) {
-        m_pEVENT->WaitFor( INFINITE );
-
-        m_CS.Lock ();
-        m_RunPACKET.AppendNodeList( &m_AddPACKET );
-        m_AddPACKET.Init ();
-        m_pEVENT->ResetEvent ();
-        m_CS.Unlock ();
-
-        for( pSqlNODE = m_RunPACKET.GetHeadNode(); pSqlNODE; ) {
-            if ( Run_SqlPACKET( &pSqlNODE->DATA ) )
-                pSqlNODE = this->Del_SqlPACKET( pSqlNODE );
-            else
-                pSqlNODE = m_RunPACKET.GetNextNode ( pSqlNODE );
-        }
-    }
-
-    g_LOG.CS_ODS( 0xffff, "<<<< CSqlTHREAD::Execute() ThreadID: %d(0x%x)\n", this->ThreadID,
-this->ThreadID );
-}
-*/
-
-//-------------------------------------------------------------------------------------------------
 bool
 CSqlTHREAD::Connect(BYTE btSqlTYPE,
     char* szServerIP,
@@ -98,7 +71,6 @@ CSqlTHREAD::Free() {
     } while (!IsFinished());
 }
 
-//-------------------------------------------------------------------------------------------------
 CDLList<tagQueryDATA>::tagNODE*
 CSqlTHREAD::Del_SqlPACKET(CDLList<tagQueryDATA>::tagNODE* pDelNODE) {
     CDLList<tagQueryDATA>::tagNODE* pNextNODE;
@@ -111,7 +83,6 @@ CSqlTHREAD::Del_SqlPACKET(CDLList<tagQueryDATA>::tagNODE* pDelNODE) {
     return pNextNODE;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CSqlTHREAD::Add_SqlPACKET(int iTAG, char* szName, BYTE* pDATA, int iDataSize) {
     CDLList<tagQueryDATA>::tagNODE* pNewNODE;
@@ -141,6 +112,7 @@ CSqlTHREAD::Add_SqlPACKET(int iTAG, char* szName, BYTE* pDATA, int iDataSize) {
 
     return true;
 }
+
 bool
 CSqlTHREAD::Add_QueryString(char* szQuery) {
     CDLList<char*>::tagNODE* pNewNODE;
@@ -163,6 +135,7 @@ CSqlTHREAD::Add_QueryString(char* szQuery) {
 
     return true;
 }
+
 bool
 CSqlTHREAD::Proc_QuerySTRING() {
     this->m_CS.Lock();
@@ -183,4 +156,23 @@ CSqlTHREAD::Proc_QuerySTRING() {
             pNode = pNode->GetNext();
     }
     return true;
+}
+
+void
+CSqlTHREAD::tick() {
+    std::lock_guard<std::mutex> lock(this->queue_mutex);
+    while (!this->packet_queue.empty()) {
+        this->handle_queued_packet(this->packet_queue.front());
+        this->packet_queue.pop();
+    }
+}
+
+void
+CSqlTHREAD::queue_packet(int32_t socket_id,
+    const std::string& account_name,
+    const Rose::Network::Packet& p) {
+
+    const std::lock_guard<std::mutex> lock(this->queue_mutex);
+    this->packet_queue.push({ socket_id, account_name, p });
+    m_pEVENT->SetEvent();
 }

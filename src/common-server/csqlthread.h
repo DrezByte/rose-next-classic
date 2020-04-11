@@ -2,13 +2,16 @@
 #define __CSQLTHREAD_H
 #include "classSYNCOBJ.h"
 #include "classTHREAD.h"
-//#include "classMYSQL.h"
 #include "classODBC.h"
 #include "classSTR.h"
-// #include "DLLIST.h"
 #include "CDLList.h"
 #include "PacketHEADER.h"
-//-------------------------------------------------------------------------------------------------
+
+#include "rose/network/packet.h"
+
+#include <queue>
+#include <mutex>
+#include <string>
 
 struct tagQueryDATA {
     int m_iTAG;
@@ -23,9 +26,20 @@ struct tagQueryDATA {
 #define USE_MY_SQL 0x000
 #define USE_ODBC 0x001
 
+/// A network packet that needs to be processed by the sql thread
+struct QueuedPacket {
+    int32_t socket_id;
+    std::string account_name;
+    Rose::Network::Packet packet;
+};
+
+
 class CSqlTHREAD: public classTHREAD {
 public:
     classSQL* m_pSQL;
+
+    std::mutex queue_mutex;
+    std::queue<QueuedPacket> packet_queue;
 
 protected:
     classEVENT* m_pEVENT;
@@ -59,7 +73,11 @@ public:
 
     bool Add_SqlPACKET(int iTAG, char* szName, BYTE* pDATA, int iDataSize);
     bool Add_QueryString(char* szQuery);
+
+    void tick();
+    void queue_packet(int32_t socket_id, const std::string& account_name, const Rose::Network::Packet& p);
+
+    virtual void handle_queued_packet(QueuedPacket& p) {};
 };
 
-//-------------------------------------------------------------------------------------------------
 #endif

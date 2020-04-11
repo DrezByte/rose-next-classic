@@ -1,6 +1,7 @@
 #ifndef CLASS_ODBC_H
 #define CLASS_ODBC_H
 
+#include <string>
 #include <vector> // TODO: Remove this
 
 #include <sql.h>

@@ -70,14 +70,14 @@ CAcceptTHREAD::Init(int iTCPPort, int iKeepAliveSec) {
     m_ListenSocket = INVALID_SOCKET;
 
     if ((iRet = ::WSAStartup(MAKEWORD(2, 2), &wsaData)) != 0) {
-        ERROR("WSAStartup failed: %d", iRet);
+        LOG_ERROR("WSAStartup failed: %d", iRet);
         return false;
     }
 
     // Create a listening socket
     m_ListenSocket = ::WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
     if (m_ListenSocket == INVALID_SOCKET) {
-        ERROR("WSASocket() failed with error %d", WSAGetLastError());
+        LOG_ERROR("WSASocket() failed with error %d", WSAGetLastError());
         return false;
     }
 
@@ -89,7 +89,7 @@ CAcceptTHREAD::Init(int iTCPPort, int iKeepAliveSec) {
 
     iRet = ::bind(m_ListenSocket, (SOCKADDR*)&sSockAddr, sizeof(SOCKADDR_IN));
     if (iRet == SOCKET_ERROR) {
-        ERROR("bind failed with error :: %d", WSAGetLastError());
+        LOG_ERROR("bind failed with error :: %d", WSAGetLastError());
         return false;
     }
     /*
@@ -142,7 +142,7 @@ CAcceptTHREAD::Init(int iTCPPort, int iKeepAliveSec) {
     iRet = ::listen(m_ListenSocket, 5);
     if (iRet == SOCKET_ERROR) {
         m_ListenSocket = INVALID_SOCKET;
-        ERROR("listen() failed with error %d", WSAGetLastError());
+        LOG_ERROR("listen() failed with error %d", WSAGetLastError());
         return false;
     }
 
