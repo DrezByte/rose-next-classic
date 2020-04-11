@@ -141,6 +141,8 @@ fn should_rebake(path: &Path, metadata: &BakeFileMetadata, cache: &mut BakeCache
 }
 
 fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
+    println!("Starting bake process.");
+
     let config_name = matches.value_of(BAKE_CONFIG_NAME).unwrap();
 
     let input_dir = PathBuf::from(matches.value_of(BAKE_INPUT_DIR).unwrap());
@@ -169,6 +171,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
     let pipeline_dir = input_dir.join(".pipeline");
     let cache_file_path = pipeline_dir.join("bake");
 
+    println!("Loading cache file {}", cache_file_path.display());
+
     let mut cache = match get_bake_cache(&cache_file_path) {
         Ok(c) => c,
         Err(e) => {
@@ -179,6 +183,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
             )))
         }
     };
+
+    println!("Reading config file {}", config_path.display());
 
     let raw_config = fs::read_to_string(&config_path)?;
     let lines = raw_config
@@ -191,7 +197,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
         fs::create_dir_all(&output_dir)?;
     }
 
-    let walk_dir = match fs::metadata(&input_dir) {
+    // TODO: Temporarily unused
+    let _walk_dir = match fs::metadata(&input_dir) {
         Ok(m) => should_rebake(&input_dir, &BakeFileMetadata::from(&m), &mut cache),
         Err(_) => true,
     };
@@ -203,6 +210,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
     let walk_dir = true;
 
     if walk_dir {
+        println!("Scanning input directory {}", input_dir.display());
+
         for entry in WalkDir::new(&input_dir).into_iter() {
             if let Ok(ent) = entry {
                 let entry_path = ent.into_path();
@@ -237,6 +246,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
     let mut glob_builder = GlobSetBuilder::new();
     let mut commands: Vec<Vec<String>> = Vec::new();
 
+    println!("Preparing process commands.");
+
     for (line_number, line) in lines.enumerate() {
         let line_number = line_number + 1;
 
@@ -258,6 +269,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
     }
 
     let globs = glob_builder.build()?;
+
+    println!("Executing commands.");
 
     'file_loop: for filepath in file_list {
         let input_filepath = input_dir.join(&filepath);
@@ -406,6 +419,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
             }
         }
     }
+
+    println!("Finished. Caching results.");
 
     let _ = save_bake_cache(cache_file_path.as_path(), &cache);
 
