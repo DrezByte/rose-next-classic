@@ -12,13 +12,11 @@
 
 CSqlTHREAD::CSqlTHREAD(bool bCreateSuspended): classTHREAD(bCreateSuspended), m_CS(4000) {
     m_pEVENT = new classEVENT(NULL, false, false, NULL);
-    m_pSQL = NULL;
 }
 CSqlTHREAD::~CSqlTHREAD() {
     this->Free();
 
     SAFE_DELETE(m_pEVENT);
-    SAFE_DELETE(m_pSQL);
 }
 
 bool
@@ -29,34 +27,23 @@ CSqlTHREAD::Connect(BYTE btSqlTYPE,
     char* szDBName,
     short nBindParamCNT,
     WORD wQueryBufferLEN) {
-    SAFE_DELETE(m_pSQL);
 
-    char* szDNSorIP;
-    switch (btSqlTYPE) {
-        case USE_ODBC: {
-            classODBC* pODBC = new classODBC(nBindParamCNT, wQueryBufferLEN);
-            if (!pODBC->ReigsterDsnIfNone(szDBName, szDBName, szServerIP, szUser))
-                return false;
-
-            m_pSQL = pODBC;
-            szDNSorIP = szDBName;
-            break;
-        }
-            // case USE_MY_SQL :
-            //	m_pSQL = new classMYSQL(nBindParamCNT, wQueryBufferLEN);
-            //	szDNSorIP = szServerIP;
-            //	break;
-    }
-    if (!m_pSQL)
-        return false;
-
-    if (!m_pSQL->Connect(szDNSorIP, szUser, szPassword)) {
-        SAFE_DELETE(m_pSQL);
+    this->db = std::make_unique<classODBC>(nBindParamCNT, wQueryBufferLEN);
+    if (!this->db) {
         return false;
     }
-    if (!m_pSQL->SelectDB(szDBName)) {
-        m_pSQL->Disconnect();
-        SAFE_DELETE(m_pSQL);
+
+    if (!this->db->ReigsterDsnIfNone(szDBName, szDBName, szServerIP, szUser)) {
+        return false;
+    }
+
+    char* szDNSorIP = szDBName;
+    if (!this->db->Connect(szDNSorIP, szUser, szPassword)) {
+        return false;
+    }
+
+    if (!this->db->SelectDB(szDBName)) {
+        this->db->Disconnect();
         return false;
     }
 
@@ -146,7 +133,7 @@ CSqlTHREAD::Proc_QuerySTRING() {
     CDLList<char*>::tagNODE *pNode, *pDel;
     pNode = m_RunQUERY.GetHeadNode();
     while (pNode) {
-        if (this->m_pSQL->ExecSQLBuffer(pNode->m_VALUE)) {
+        if (this->db->ExecSQLBuffer(pNode->m_VALUE)) {
             pDel = pNode;
             pNode = pNode->GetNext();
 

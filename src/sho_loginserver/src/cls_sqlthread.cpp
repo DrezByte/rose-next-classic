@@ -170,26 +170,27 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
 
     const char* query = "SELECT [Right], MD5Password, LastConnect, BlockStart, BlockEnd, Gender, "
                         "MailIsConfirm FROM UserInfo WHERE Account = \'%s\'";
-    if (!this->m_pSQL->QuerySQL((char*)query, szAccount)) {
-        LOG_ERROR("Query ERROR:: %s \n", m_pSQL->GetERROR());
+
+    if (!this->db->QuerySQL((char*)query, szAccount)) {
+        LOG_ERROR("Query ERROR:: %s \n", this->db->GetERROR());
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG, RESULT_LOGIN_REPLY_FAILED);
         return false;
     }
 
-    if (!this->m_pSQL->GetNextRECORD()) {
+    if (!this->db->GetNextRECORD()) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
             RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
         return false;
     }
 
-    int32_t dwRIGHT = (DWORD)this->m_pSQL->GetInteger(LGNTBL_RIGHT);
+    int32_t dwRIGHT = (DWORD)this->db->GetInteger(LGNTBL_RIGHT);
     if (this->m_bCheckLogIN && dwRIGHT < this->m_dwCheckRIGHT) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
             RESULT_LOGIN_REPLY_NO_RIGHT_TO_CONNECT);
         return false;
     }
 
-    DWORD* pMD5Pass = (DWORD*)this->m_pSQL->GetDataPTR(LGNTBL_PASSWORD);
+    DWORD* pMD5Pass = (DWORD*)this->db->GetDataPTR(LGNTBL_PASSWORD);
     for (short nI = 0; nI < 8; nI++) {
         if (pPacket->m_cli_LOGIN_REQ.m_dwMD5[nI] != pMD5Pass[nI]) {
             // 비번 틀리다.
@@ -219,9 +220,9 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    DWORD dwBlockSTART = this->m_pSQL->GetInteger(LGNTBL_BLOCK_START); // block start
+    DWORD dwBlockSTART = this->db->GetInteger(LGNTBL_BLOCK_START); // block start
     if (dwBlockSTART) {
-        DWORD dwBlockEND = (DWORD)(this->m_pSQL->GetInteger(LGNTBL_BLOCK_END)); // block end
+        DWORD dwBlockEND = (DWORD)(this->db->GetInteger(LGNTBL_BLOCK_END)); // block end
         if (0 == dwBlockEND || dwBlockEND > dwCurTIME) {
             // 영구 블럭 또는 아직 블럭이 풀리지 않았다...
             g_pListCLIENT->Send_lsv_LOGIN_REPLY(pSqlPACKET->m_iTAG,
@@ -230,7 +231,7 @@ CLS_SqlTHREAD::Proc_cli_LOGIN_REQ(tagQueryDATA* pSqlPACKET) {
         }
     }
 
-    this->m_pSQL->GetInteger(LGNTBL_GENDER); // gender
+    this->db->GetInteger(LGNTBL_GENDER); // gender
 
 #define RIGHT_NG 0x00100 // 일반 GM
 #define RIGHT_MG 0x00200 // 마스타 GM
@@ -252,7 +253,7 @@ __SKIP_AUTH__:
         }
         pClient->Set_ACCOUNT(szAccount, pPacket->m_cli_LOGIN_REQ.m_dwMD5);
 
-        pClient->m_dwLastLoginTIME = (DWORD)this->m_pSQL->GetInteger(LGNTBL_LAST_CONNECT);
+        pClient->m_dwLastLoginTIME = (DWORD)this->db->GetInteger(LGNTBL_LAST_CONNECT);
 
 #if !defined(USE_ORACLE_DB) || defined(USE_MSSQL)
         ::FillMemory(pClient->m_pJuMinNO, 8, '7');

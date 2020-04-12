@@ -36,7 +36,7 @@ struct QueuedPacket {
 
 class CSqlTHREAD: public classTHREAD {
 public:
-    classSQL* m_pSQL;
+    std::unique_ptr<classODBC> db;
 
     std::mutex queue_mutex;
     std::queue<QueuedPacket> packet_queue;

@@ -204,45 +204,45 @@ GS_CThreadSQL::Sql_TEST() {
 
     "{ ? = CALL dbo.spGetImage;1 (?) }"
     */
-    ::SQLCloseCursor(((classODBC*)this->m_pSQL)->m_hSTMT1);
+    ::SQLCloseCursor(this->db->m_hSTMT1);
 
     long lReturn = -1;
     SDWORD cbParm1 = SQL_NTS;
-    if (!((classODBC*)this->m_pSQL)->SetParam_long(1, lReturn, cbParm1)) {
-        g_LOG.CS_ODS(LOG_NORMAL, "shit~~~~~ %s \n", m_pSQL->GetERROR());
+    if (!this->db->SetParam_long(1, lReturn, cbParm1)) {
+        g_LOG.CS_ODS(LOG_NORMAL, "shit~~~~~ %s \n", this->db->GetERROR());
     }
-    //	this->m_pSQL->BindPARAM( 1, (BYTE*)pCharName,			strlen(pCharName)		);
+    //	this->db->BindPARAM( 1, (BYTE*)pCharName,			strlen(pCharName)		);
 
-    //	if ( this->m_pSQL->MakeQuery("{call sho_test( ? ) }" ) < 0 ) {
-    if (!this->m_pSQL->QuerySQL("{?=call sho_test( \'%s\' ) }", pCharName)) {
-        //	if ( this->m_pSQL->ExecSQL("{ call sho_test( %s ) }", pCharName ) < 0 ) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", m_pSQL->GetERROR());
+    //	if ( this->db->MakeQuery("{call sho_test( ? ) }" ) < 0 ) {
+    if (!this->db->QuerySQL("{?=call sho_test( \'%s\' ) }", pCharName)) {
+        //	if ( this->db->ExecSQL("{ call sho_test( %s ) }", pCharName ) < 0 ) {
+        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR());
     }
 
     /*
-        while( this->m_pSQL->GetNextRECORD() ) {
-            g_LOG.CS_ODS(LOG_NORMAL, "%d  call result:: %s, %s \n", lReturn, m_pSQL->GetStrPTR(0),
-       m_pSQL->GetStrPTR(1) );
+        while( this->db->GetNextRECORD() ) {
+            g_LOG.CS_ODS(LOG_NORMAL, "%d  call result:: %s, %s \n", lReturn, this->db->GetStrPTR(0),
+       this->db->GetStrPTR(1) );
         }
     */
-    ::SQLMoreResults(((classODBC*)this->m_pSQL)->m_hSTMT1); // != SQL_NO_DATA
+    ::SQLMoreResults(this->db->m_hSTMT1); // != SQL_NO_DATA
 
     int iii = lReturn;
 
     g_LOG.CS_ODS(LOG_NORMAL, "RESULT:: %d   \n", lReturn);
 
     /*
-        this->m_pSQL->MakeQuery("UPDATE tblGS_AVATAR SET dwDelTIME=",
+        this->db->MakeQuery("UPDATE tblGS_AVATAR SET dwDelTIME=",
                                                         MQ_PARAM_INT,   dwCurAbsSEC,
                     MQ_PARAM_ADDSTR, "WHERE txtNAME=",	MQ_PARAM_STR,	pCharName,	MQ_PARAM_END);
-        if ( this->m_pSQL->ExecSQLBuffer() < 0 ) {
+        if ( this->db->ExecSQLBuffer() < 0 ) {
             // 고치기 실패 !!!
-            g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", m_pSQL->GetERROR() );
+            g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR() );
             return true;
         }
     */
 
-    if (this->m_pSQL->GetRecordCNT() != 1) {
+    if (this->db->GetRecordCNT() != 1) {
         // 고칠 레코드가 없다.
     }
 
@@ -448,26 +448,26 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
                       "binWishLIST=?, btLEVEL=?, intMoney=?, intJOB=?, dwRegTIME=?, "
                       "dwPartyIDX=?, dwItemSN=? WHERE txtNAME=?");
 
-    this->db()->bind_binary(1, (uint8_t*)&this->m_sBE, sizeof(tagBasicETC));
-    this->db()->bind_binary(2, (uint8_t*)&pUSER->m_BasicINFO, sizeof(tagBasicINFO));
-    this->db()->bind_binary(3, (uint8_t*)&pUSER->m_BasicAbility, sizeof(tagBasicAbility));
-    this->db()->bind_binary(4, (uint8_t*)&pUSER->m_GrowAbility, sizeof(tagGrowAbility));
-    this->db()->bind_binary(5, (uint8_t*)&pUSER->m_Skills, sizeof(tagSkillAbility));
-    this->db()->bind_binary(6, (uint8_t*)&pUSER->m_Inventory, sizeof(CInventory));
-    this->db()->bind_binary(7, (uint8_t*)&pUSER->m_Quests, sizeof(tagQuestData));
-    this->db()->bind_binary(8, (uint8_t*)&pUSER->m_HotICONS, sizeof(CHotICONS));
-    this->db()->bind_binary(9, (uint8_t*)&pUSER->m_WishLIST, sizeof(tagWishLIST));
-    this->db()->bind_int16(10, pUSER->m_GrowAbility.m_nLevel);
-    this->db()->bind_int64(11, pUSER->GetCur_MONEY());
-    this->db()->bind_int16(12, pUSER->m_BasicINFO.m_nClass);
-    this->db()->bind_int32(13, this->m_dwCurTIME);
-    this->db()->bind_int32(14, pUSER->GetPARTY() ? pUSER->m_pPartyBUFF->m_wPartyWSID : 0);
-    this->db()->bind_int32(15, pUSER->m_dwItemSN);
-    this->db()->bind_string(16, pUSER->Get_RNAME(), pUSER->m_RName.Length());
+    this->db->bind_binary(1, (uint8_t*)&this->m_sBE, sizeof(tagBasicETC));
+    this->db->bind_binary(2, (uint8_t*)&pUSER->m_BasicINFO, sizeof(tagBasicINFO));
+    this->db->bind_binary(3, (uint8_t*)&pUSER->m_BasicAbility, sizeof(tagBasicAbility));
+    this->db->bind_binary(4, (uint8_t*)&pUSER->m_GrowAbility, sizeof(tagGrowAbility));
+    this->db->bind_binary(5, (uint8_t*)&pUSER->m_Skills, sizeof(tagSkillAbility));
+    this->db->bind_binary(6, (uint8_t*)&pUSER->m_Inventory, sizeof(CInventory));
+    this->db->bind_binary(7, (uint8_t*)&pUSER->m_Quests, sizeof(tagQuestData));
+    this->db->bind_binary(8, (uint8_t*)&pUSER->m_HotICONS, sizeof(CHotICONS));
+    this->db->bind_binary(9, (uint8_t*)&pUSER->m_WishLIST, sizeof(tagWishLIST));
+    this->db->bind_int16(10, pUSER->m_GrowAbility.m_nLevel);
+    this->db->bind_int64(11, pUSER->GetCur_MONEY());
+    this->db->bind_int16(12, pUSER->m_BasicINFO.m_nClass);
+    this->db->bind_int32(13, this->m_dwCurTIME);
+    this->db->bind_int32(14, pUSER->GetPARTY() ? pUSER->m_pPartyBUFF->m_wPartyWSID : 0);
+    this->db->bind_int32(15, pUSER->m_dwItemSN);
+    this->db->bind_string(16, pUSER->Get_RNAME(), pUSER->m_RName.Length());
 
-    if (!this->db()->execute(query)) {
+    if (!this->db->execute(query)) {
         LOG_ERROR("failed to update charactacter. Character: (%s)", pUSER->Get_RNAME());
-        for (const std::string& msg: this->db()->get_error_messages()) {
+        for (const std::string& msg: this->db->get_error_messages()) {
             LOG_WARN(msg.c_str());
         }
         return false;
@@ -481,12 +481,12 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
     }
 
     // Update bank data
-    this->db()->bind_binary(1, (uint8_t*)&pUSER->m_Bank, sizeof(tagBankData));
-    this->db()->bind_string(2, pUSER->Get_ACCOUNT(), pUSER->Get_AccountLEN());
+    this->db->bind_binary(1, (uint8_t*)&pUSER->m_Bank, sizeof(tagBankData));
+    this->db->bind_string(2, pUSER->Get_ACCOUNT(), pUSER->Get_AccountLEN());
 
-    if (!this->db()->execute("UPDATE tblGS_BANK SET blobITEMS=? WHERE txtACCOUNT=?")) {
+    if (!this->db->execute("UPDATE tblGS_BANK SET blobITEMS=? WHERE txtACCOUNT=?")) {
         LOG_ERROR("Failed to update storage. Account: %s", pUSER->Get_NAME());
-        for (const std::string& msg: this->db()->get_error_messages()) {
+        for (const std::string& msg: this->db->get_error_messages()) {
             LOG_WARN(msg.c_str());
         }
         return false;
@@ -505,18 +505,18 @@ bool __fastcall GS_CThreadSQL::ConvertBasicETC() {
 
         while( true )
         {
-            this->m_pSQL->MakeQuery( "SELECT TOP 1 intCharID, binBasicE FROM tblGS_AVATAR WHERE
+            this->db->MakeQuery( "SELECT TOP 1 intCharID, binBasicE FROM tblGS_AVATAR WHERE
        intDataVER=0 ", //and txtACCOUNT=\'icarus3\'", MQ_PARAM_END); if (
-       !this->m_pSQL->QuerySQLBuffer() ) { g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n",
-       m_pSQL->GetERROR() ); return false;
+       !this->db->QuerySQLBuffer() ) { g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n",
+       this->db->GetERROR() ); return false;
             }
 
-            if ( !this->m_pSQL->GetNextRECORD() ) {
+            if ( !this->db->GetNextRECORD() ) {
                 return false;
             }
 
-            iCharID = this->m_pSQL->GetInteger( 0 );
-            pOldBE = (tagBasicETC3*)this->m_pSQL->GetDataPTR( 1 );
+            iCharID = this->db->GetInteger( 0 );
+            pOldBE = (tagBasicETC3*)this->db->GetDataPTR( 1 );
 
             assert( iCharID && pOldBE );
 
@@ -537,17 +537,17 @@ bool __fastcall GS_CThreadSQL::ConvertBasicETC() {
                 sNewBE.m_RideITEM[ nI ].m_nItemNo = pOldBE->m_nRideItemIDX[ nI ];
             }
 
-            this->m_pSQL->BindPARAM( 1, (BYTE*)&sNewBE,		sizeof( tagBasicETC )	);
-            this->m_pSQL->MakeQuery( "UPDATE tblGS_AVATAR SET binBasicE=",
+            this->db->BindPARAM( 1, (BYTE*)&sNewBE,		sizeof( tagBasicETC )	);
+            this->db->MakeQuery( "UPDATE tblGS_AVATAR SET binBasicE=",
                                                             MQ_PARAM_BINDIDX,	1,
                         MQ_PARAM_ADDSTR, ",intDataVER=",	MQ_PARAM_INT,		1,
                         MQ_PARAM_ADDSTR, "WHERE intCharID=",MQ_PARAM_INT,	iCharID,
                                                             MQ_PARAM_END );
-            if ( this->m_pSQL->ExecSQLBuffer() < 0 ) {
+            if ( this->db->ExecSQLBuffer() < 0 ) {
                 // 고치기 실패 !!!
                 // log ...
                 g_LOG.CS_ODS(LOG_NORMAL, "SQL Exec ERROR:: UPDATE binBasicE: %d, \n", iCharID,
-       m_pSQL->GetERROR() ); } else iRecCNT ++;
+       this->db->GetERROR() ); } else iRecCNT ++;
         }
 
         g_LOG.CS_ODS(LOG_NORMAL, "Complete ConvertBasicETC, %d records\n", iRecCNT);
@@ -560,16 +560,16 @@ void
 GS_CThreadSQL::Clear_LoginTABLE() {
     //	GS_LogIN테이블에서 현재서버 ip인 레코드 모두 삭제...
     if (0 == ::Get_ServerLangTYPE()) {
-        if (this->m_pSQL->ExecSQL("DELETE FROM tblGS_LogIN;") < 1) {
+        if (this->db->ExecSQL("DELETE FROM tblGS_LogIN;") < 1) {
             // 오류 또는 만들어진것이 없다.
-            g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR in Clear_LoginTABLE:: %s \n", m_pSQL->GetERROR());
+            g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR in Clear_LoginTABLE:: %s \n", this->db->GetERROR());
         }
     }
 }
 void
 GS_CThreadSQL::Add_LoginACCOUNT(char* szAccount) {
     if (0 == ::Get_ServerLangTYPE()) {
-        if (this->m_pSQL->ExecSQL(
+        if (this->db->ExecSQL(
                 "INSERT tblGS_LogIN (txtACCOUNT, txtServerIP) VALUES(\'%s\',\'%s\');",
                 szAccount,
                 CLIB_GameSRV::GetInstance()->GetServerIP())
@@ -578,20 +578,20 @@ GS_CThreadSQL::Add_LoginACCOUNT(char* szAccount) {
             g_LOG.CS_ODS(LOG_NORMAL,
                 "Exec ERROR in Add_LoginACCOUNT(%s):: %s \n",
                 szAccount,
-                m_pSQL->GetERROR());
+                this->db->GetERROR());
         }
     }
 }
 void
 GS_CThreadSQL::Sub_LoginACCOUNT(char* szAccount) {
     if (0 == ::Get_ServerLangTYPE() && NULL != szAccount) {
-        if (this->m_pSQL->ExecSQL("DELETE FROM tblGS_LogIN WHERE txtACCOUNT=\'%s\';", szAccount)
+        if (this->db->ExecSQL("DELETE FROM tblGS_LogIN WHERE txtACCOUNT=\'%s\';", szAccount)
             < 1) {
             // 오류 또는 만들어진것이 없다.
             g_LOG.CS_ODS(LOG_NORMAL,
                 "Exec ERROR in Sub_LoginACCOUNT(%s):: %s \n",
                 szAccount,
-                m_pSQL->GetERROR());
+                this->db->GetERROR());
         }
     }
 }
@@ -790,14 +790,14 @@ struct tagDelCHAR {
 };
 bool
 GS_CThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
-    if (!this->m_pSQL->QuerySQL("{call ws_GetCharLIST(\'%s\')}", pSqlPACKET->m_Name.Get())) {
+    if (!this->db->QuerySQL("{call ws_GetCharLIST(\'%s\')}", pSqlPACKET->m_Name.Get())) {
         /*
-            this->m_pSQL->MakeQuery( "SELECT txtNAME, binBasicE, binBasicI, binGrowA, dwDelTIME FROM
+            this->db->MakeQuery( "SELECT txtNAME, binBasicE, binBasicI, binGrowA, dwDelTIME FROM
            tblGS_AVATAR WHERE txtACCOUNT=", MQ_PARAM_STR, pSqlPACKET->m_Name.Get(), MQ_PARAM_END);
-            if ( !this->m_pSQL->QuerySQLBuffer() ) {
+            if ( !this->db->QuerySQLBuffer() ) {
         */
         // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }
 
@@ -809,7 +809,7 @@ GS_CThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
     pCPacket->m_HEADER.m_nSize = sizeof(wsv_CHAR_LIST);
     pCPacket->m_wsv_CHAR_LIST.m_btCharCNT = 0;
 
-    if (this->m_pSQL->GetNextRECORD()) {
+    if (this->db->GetNextRECORD()) {
         tagBasicINFO* pBI;
         tagBasicETC* pBE;
         tagGrowAbility* pGA;
@@ -822,9 +822,9 @@ GS_CThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
         CSLList<tagDelCHAR>::tagNODE* pNode;
         DWORD dwDelSEC, dwCurAbsSEC = this->m_dwCurTIME;
         do {
-            if (this->m_pSQL->GetStrPTR(0)) {
-                szCharName = this->m_pSQL->GetStrPTR(0);
-                dwDelSEC = this->m_pSQL->GetInteger(4);
+            if (this->db->GetStrPTR(0)) {
+                szCharName = this->db->GetStrPTR(0);
+                dwDelSEC = this->db->GetInteger(4);
                 if (dwDelSEC && dwCurAbsSEC >= dwDelSEC) {
                     // 삭제...
                     // pNode = new CSLList< CStrVAR >::tagNODE;
@@ -840,11 +840,11 @@ GS_CThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
 
                     pCPacket->AppendString(szCharName);
 
-                    pBE = (tagBasicETC*)this->m_pSQL->GetDataPTR(1);
-                    pBI = (tagBasicINFO*)this->m_pSQL->GetDataPTR(2);
-                    pGA = (tagGrowAbility*)this->m_pSQL->GetDataPTR(3);
+                    pBE = (tagBasicETC*)this->db->GetDataPTR(1);
+                    pBI = (tagBasicINFO*)this->db->GetDataPTR(2);
+                    pGA = (tagGrowAbility*)this->db->GetDataPTR(3);
 #ifdef __KCHS_BATTLECART__
-                    short nDataVER = this->m_pSQL->GetInteger16(5);
+                    short nDataVER = this->db->GetInteger16(5);
 #endif
                     sCHAR.m_btCharRACE = pBE->m_btCharRACE;
                     sCHAR.m_nJOB = pBI->m_nClass;
@@ -866,39 +866,39 @@ GS_CThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
                     pCPacket->m_wsv_CHAR_LIST.m_btCharCNT++;
                 }
             }
-        } while (this->m_pSQL->GetNextRECORD() && ++nC < MAX_CHAR_PER_USER);
+        } while (this->db->GetNextRECORD() && ++nC < MAX_CHAR_PER_USER);
 
         g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
 
         // pNode = DelList.GetHeadNode ();
         // while( pNode ) {
-        //	if ( this->m_pSQL->ExecSQL("DELETE FROM tblGS_AVATAR WHERE txtNAME=\'%s\'",
+        //	if ( this->db->ExecSQL("DELETE FROM tblGS_AVATAR WHERE txtNAME=\'%s\'",
         // pNode->m_VALUE.Get() ) < 1 ) {
         //		// 오류 또는 삭제된것이 없다.
         //		g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR(DELETE_CHAR:%s):: %s \n", pNode->m_VALUE.Get(),
-        // m_pSQL->GetERROR() );
+        // this->db->GetERROR() );
         //	}
         //	DelList.DeleteHeadNFree ();
         //	pNode = DelList.GetHeadNode ();
         //} ;
         pNode = DelList.GetHeadNode();
         while (pNode) {
-            // if ( this->m_pSQL->ExecSQL("DELETE FROM tblGS_AVATAR WHERE txtNAME=\'%s\'",
+            // if ( this->db->ExecSQL("DELETE FROM tblGS_AVATAR WHERE txtNAME=\'%s\'",
             // pNode->m_VALUE.m_Name.Get() ) < 1 ) {
             //	// 오류 또는 삭제된것이 없다.
             //	g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR(DELETE_CHAR:%s):: %s \n",
-            // pNode->m_VALUE.m_Name.Get(), m_pSQL->GetERROR() );
+            // pNode->m_VALUE.m_Name.Get(), this->db->GetERROR() );
             //}
 
             long iResultSP = -99;
             SDWORD cbSize1 = SQL_NTS;
-            this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
+            this->db->SetParam_long(1, iResultSP, cbSize1);
 
 #define SP_DeleteCHAR "{?=call ws_CharDELETE(\'%s\')}"
-            if (this->m_pSQL->QuerySQL(SP_DeleteCHAR, pNode->m_VALUE.m_Name.Get())) {
-                while (this->m_pSQL->GetMoreRESULT()) {
-                    if (this->m_pSQL->BindRESULT()) {
-                        if (this->m_pSQL->GetNextRECORD()) {
+            if (this->db->QuerySQL(SP_DeleteCHAR, pNode->m_VALUE.m_Name.Get())) {
+                while (this->db->GetMoreRESULT()) {
+                    if (this->db->BindRESULT()) {
+                        if (this->db->GetNextRECORD()) {
                             ;
                         }
                     }
@@ -909,14 +909,14 @@ GS_CThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
                         "SP Return ERROR Code:%d (ws_DeleteCHAR:%s):: %s \n",
                         iResultSP,
                         pNode->m_VALUE.m_Name.Get(),
-                        m_pSQL->GetERROR());
+                        this->db->GetERROR());
                 }
             } else {
                 // 삭제 실패.;
                 g_LOG.CS_ODS(LOG_NORMAL,
                     "Exec ERROR(ws_DeleteCHAR:%s):: %s \n",
                     pNode->m_VALUE.m_Name.Get(),
-                    m_pSQL->GetERROR());
+                    this->db->GetERROR());
             }
 
             DelList.DeleteHeadNFree();
@@ -950,18 +950,18 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     }
 
     // "SELECT * FROM tblGS_AVATAR WHERE txtNAME='xxxx';"
-    if (!this->m_pSQL->QuerySQL("{call gs_SelectCHAR(\'%s\')}", pCharName)) {
+    if (!this->db->QuerySQL("{call gs_SelectCHAR(\'%s\')}", pCharName)) {
         /*
-            this->m_pSQL->MakeQuery( "SELECT * FROM tblGS_AVATAR WHERE txtNAME=",
+            this->db->MakeQuery( "SELECT * FROM tblGS_AVATAR WHERE txtNAME=",
                                     MQ_PARAM_STR, pCharName,
                                     MQ_PARAM_END);
-            if ( !this->m_pSQL->QuerySQLBuffer() ) {
+            if ( !this->db->QuerySQLBuffer() ) {
         //*/
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }
 
-    if (!this->m_pSQL->GetNextRECORD()) {
+    if (!this->db->GetNextRECORD()) {
         // 케릭터 없다.
         g_LOG.CS_ODS(LOG_NORMAL, "Char[ %s ] not found ...\n", pCharName);
         return false;
@@ -973,18 +973,18 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         classPACKET* pCPacket = Packet_AllocNLock();
         if (pCPacket) {
             // 정상 처리...
-            // Get_ACCOUNT == this->m_pSQL->GetStrPTR( Account ) ???
+            // Get_ACCOUNT == this->db->GetStrPTR( Account ) ???
 #ifdef __KCHS_BATTLECART__
-            short nDataVER = this->m_pSQL->GetInteger16(AVTTBL_DATA_VER);
+            short nDataVER = this->db->GetInteger16(AVTTBL_DATA_VER);
 #endif
-            pUSER->m_dwDBID = this->m_pSQL->GetInteger(AVTTBL_CHARID);
+            pUSER->m_dwDBID = this->db->GetInteger(AVTTBL_CHARID);
 
             pUSER->Set_NAME(pCharName);
             pUSER->Set_RNAME(pCharName);
             g_pUserLIST->Add_CHAR(pUSER);
 
             tagBasicETC* pBE;
-            pBE = (tagBasicETC*)this->m_pSQL->GetDataPTR(AVTTBL_BASIC_ETC);
+            pBE = (tagBasicETC*)this->db->GetDataPTR(AVTTBL_BASIC_ETC);
 
             pUSER->m_nCharRACE = pBE->m_btCharRACE;
 #ifdef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
@@ -1062,24 +1062,24 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 #endif
 
             BYTE* pDATA;
-            pDATA = this->m_pSQL->GetDataPTR(AVTTBL_BASIC_INFO);
+            pDATA = this->db->GetDataPTR(AVTTBL_BASIC_INFO);
             ::CopyMemory(&pUSER->m_BasicINFO, pDATA, sizeof(tagBasicINFO));
 
-            pDATA = this->m_pSQL->GetDataPTR(AVTTBL_BASIC_ABILITY);
+            pDATA = this->db->GetDataPTR(AVTTBL_BASIC_ABILITY);
             ::CopyMemory(&pUSER->m_BasicAbility, pDATA, sizeof(tagBasicAbility));
 
-            pDATA = this->m_pSQL->GetDataPTR(AVTTBL_GROW_ABILITY);
+            pDATA = this->db->GetDataPTR(AVTTBL_GROW_ABILITY);
             ::CopyMemory(&pUSER->m_GrowAbility, pDATA, sizeof(tagGrowAbility));
 #ifdef __KCHS_BATTLECART__
             if (pUSER->GetCur_PatHP() > PAT_COOLTIME) // 이렇다는 얘기는 0 - 1 한 잘못 된 데이터
                 pUSER->SetCur_PatHP(0);
 #endif
             // skill
-            pDATA = this->m_pSQL->GetDataPTR(AVTTBL_SKILL_ABILITY);
+            pDATA = this->db->GetDataPTR(AVTTBL_SKILL_ABILITY);
             ::CopyMemory(&pUSER->m_Skills, pDATA, sizeof(tagSkillAbility));
 
             // quest
-            pDATA = this->m_pSQL->GetDataPTR(AVTTBL_QUEST);
+            pDATA = this->db->GetDataPTR(AVTTBL_QUEST);
             if (pDATA) {
                 ::CopyMemory(&pUSER->m_Quests, pDATA, sizeof(tagQuestData));
                 pUSER->m_Quests.CheckExpiredTIME();
@@ -1087,11 +1087,11 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
                 pUSER->m_Quests.Init();
 
             // inventory...
-            pDATA = this->m_pSQL->GetDataPTR(AVTTBL_INVENTORY);
+            pDATA = this->db->GetDataPTR(AVTTBL_INVENTORY);
             ::CopyMemory(&pUSER->m_Inventory, pDATA, sizeof(CInventory));
 
             // wish list
-            pDATA = this->m_pSQL->GetDataPTR(AVTTBL_WISHLIST);
+            pDATA = this->db->GetDataPTR(AVTTBL_WISHLIST);
             if (pDATA)
                 ::CopyMemory(&pUSER->m_WishLIST, pDATA, sizeof(tagWishLIST));
             else
@@ -1144,7 +1144,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
                 }
             }
 
-            pDATA = this->m_pSQL->GetDataPTR(AVTTBL_HOTICON);
+            pDATA = this->db->GetDataPTR(AVTTBL_HOTICON);
             if (pDATA)
                 ::CopyMemory(&pUSER->m_HotICONS, pDATA, sizeof(CHotICONS));
             else
@@ -1154,11 +1154,11 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
             DWORD dwPassMIN, dwDisMIN;
             /*
-            dwPassMIN = (DWORD) this->m_pSQL->GetInteger( AVTTBL_RIGHT );
+            dwPassMIN = (DWORD) this->db->GetInteger( AVTTBL_RIGHT );
             if ( dwPassMIN >= pUSER->m_dwRIGHT )
                 pUSER->m_dwRIGHT = dwPassMIN;
             */
-            dwDisMIN = (DWORD)this->m_pSQL->GetInteger(AVTTBL_REG_TIME);
+            dwDisMIN = (DWORD)this->db->GetInteger(AVTTBL_REG_TIME);
             if (this->m_dwCurTIME > dwDisMIN) {
                 dwPassMIN = (DWORD)((this->m_dwCurTIME - dwDisMIN) / 60);
                 // if ( dwPassMIN >= ( MAX_STAMINA / 17 ) ) {
@@ -1229,7 +1229,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
                 pUSER->Send_gsv_INVENTORYnQUEST_DATA();
 
                 // 파티번호가 있냐...
-                unsigned int iPartyIDX = (unsigned int)this->m_pSQL->GetInteger(AVTTBL_PARTY_IDX);
+                unsigned int iPartyIDX = (unsigned int)this->db->GetInteger(AVTTBL_PARTY_IDX);
                 if (iPartyIDX
                     && dwPassMIN < 7) { // 튕기고 5분안에 재접이면(서번6분), 클라이언트에서 파장이
                                         // 5분되면 자동 강퇴요청 해야됨
@@ -1237,7 +1237,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
                 }
 
                 // 아이템 시리얼번호 초기값 갱신...
-                DWORD dwDBItemSN = this->m_pSQL->GetInteger(AVTTBL_ITEM_SN);
+                DWORD dwDBItemSN = this->db->GetInteger(AVTTBL_ITEM_SN);
                 if (this->m_dwCurTIME >= dwDBItemSN)
                     pUSER->m_dwItemSN = this->m_dwCurTIME;
                 else
@@ -1314,33 +1314,33 @@ GS_CThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
     }
 
     // "SELECT * FROM tblGS_AVATAR WHERE Name='xxxx';"
-    this->m_pSQL->MakeQuery("SELECT intCharID FROM tblGS_AVATAR WHERE txtNAME=",
+    this->db->MakeQuery("SELECT intCharID FROM tblGS_AVATAR WHERE txtNAME=",
         MQ_PARAM_STR,
         pCharName,
         MQ_PARAM_END);
-    if (!this->m_pSQL->QuerySQLBuffer()) {
+    if (!this->db->QuerySQLBuffer()) {
         // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }
 
-    if (m_pSQL->GetNextRECORD()) {
+    if (this->db->GetNextRECORD()) {
         // 이미 만들어져 있는 이름이다.
         g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_DUP_NAME);
         return true;
     }
 
-    this->m_pSQL->MakeQuery("SELECT Count(*) FROM tblGS_AVATAR WHERE txtACCOUNT=",
+    this->db->MakeQuery("SELECT Count(*) FROM tblGS_AVATAR WHERE txtACCOUNT=",
         MQ_PARAM_STR,
         pSqlPACKET->m_Name.Get(),
         MQ_PARAM_END);
-    if (!this->m_pSQL->QuerySQLBuffer()) {
+    if (!this->db->QuerySQLBuffer()) {
         // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }
 
-    if (m_pSQL->GetNextRECORD() && m_pSQL->GetInteger(0) >= MAX_CHAR_PER_USER) {
+    if (this->db->GetNextRECORD() && this->db->GetInteger(0) >= MAX_CHAR_PER_USER) {
         // 더이상 못만든다.
         g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_NO_MORE_SLOT);
         return true;
@@ -1370,20 +1370,20 @@ GS_CThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
     m_pDefaultBE[nDefRACE].m_PartITEM[BODY_PART_FACE].m_nItemNo = m_sBI.m_cFaceIDX;
     m_pDefaultBE[nDefRACE].m_PartITEM[BODY_PART_HAIR].m_nItemNo = m_sBI.m_cHairIDX;
 
-    this->m_pSQL->BindPARAM(1, (BYTE*)&m_pDefaultBE[nDefRACE], sizeof(tagBasicETC));
-    this->m_pSQL->BindPARAM(2, (BYTE*)&m_sBI, sizeof(m_sBI));
-    this->m_pSQL->BindPARAM(3, (BYTE*)&m_pDefaultBA[nDefRACE], sizeof(tagBasicAbility));
-    this->m_pSQL->BindPARAM(4, (BYTE*)&m_sGB, sizeof(tagGrowAbility));
-    this->m_pSQL->BindPARAM(5, (BYTE*)&m_sSA, sizeof(m_sSA));
-    this->m_pSQL->BindPARAM(6, (BYTE*)&m_pDefaultINV[nDefRACE], sizeof(CInventory));
-    this->m_pSQL->BindPARAM(7, (BYTE*)&m_sQD, sizeof(m_sQD));
-    this->m_pSQL->BindPARAM(8, (BYTE*)&m_HotICON, sizeof(m_HotICON));
+    this->db->BindPARAM(1, (BYTE*)&m_pDefaultBE[nDefRACE], sizeof(tagBasicETC));
+    this->db->BindPARAM(2, (BYTE*)&m_sBI, sizeof(m_sBI));
+    this->db->BindPARAM(3, (BYTE*)&m_pDefaultBA[nDefRACE], sizeof(tagBasicAbility));
+    this->db->BindPARAM(4, (BYTE*)&m_sGB, sizeof(tagGrowAbility));
+    this->db->BindPARAM(5, (BYTE*)&m_sSA, sizeof(m_sSA));
+    this->db->BindPARAM(6, (BYTE*)&m_pDefaultINV[nDefRACE], sizeof(CInventory));
+    this->db->BindPARAM(7, (BYTE*)&m_sQD, sizeof(m_sQD));
+    this->db->BindPARAM(8, (BYTE*)&m_HotICON, sizeof(m_HotICON));
 
     // "INSERT tblGS_AVATAR (Account, Name, ZoneNO, BasicINFO) VALUSE( xxx, xxx, xxx, xxx );"
 #ifdef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
     // short nNewDataVER = DATA_VER_2;
-    // this->m_pSQL->BindPARAM( 9, (BYTE*)&nNewDataVER,				sizeof(short) );
-    this->m_pSQL->MakeQuery(
+    // this->db->BindPARAM( 9, (BYTE*)&nNewDataVER,				sizeof(short) );
+    this->db->MakeQuery(
         "INSERT tblGS_AVATAR (txtACCOUNT, txtNAME, intDataVER, binBasicE, binBasicI, binBasicA, "
         "binGrowA, binSkillA, blobINV, blobQUEST, binHotICON ) VALUES(",
         MQ_PARAM_STR,
@@ -1432,7 +1432,7 @@ GS_CThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
         ");",
         MQ_PARAM_END);
 #else
-    this->m_pSQL->MakeQuery(
+    this->db->MakeQuery(
         "INSERT tblGS_AVATAR (txtACCOUNT, txtNAME, binBasicE, binBasicI, binBasicA, binGrowA, "
         "binSkillA, blobINV, blobQUEST, binHotICON) VALUES(",
         MQ_PARAM_STR,
@@ -1477,9 +1477,9 @@ GS_CThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
         ");",
         MQ_PARAM_END);
 #endif
-    if (this->m_pSQL->ExecSQLBuffer() < 1) {
+    if (this->db->ExecSQLBuffer() < 1) {
         // 오류 또는 만들어진것이 없다.
-        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR());
 
         g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED);
         return true;
@@ -1517,10 +1517,10 @@ GS_CThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
         dwReaminSEC = DELETE_CHAR_WAIT_TIME;
     }
 
-    if (this->m_pSQL->QuerySQL("{call ws_ClanCharGET(\'%s\')}", pCharName)) {
-        if (this->m_pSQL->GetNextRECORD()) {
+    if (this->db->QuerySQL("{call ws_ClanCharGET(\'%s\')}", pCharName)) {
+        if (this->db->GetNextRECORD()) {
             // 클랜 있다.
-            int iClanPOS = this->m_pSQL->GetInteger(2);
+            int iClanPOS = this->db->GetInteger(2);
             if (iClanPOS >= GPOS_MASTER) {
                 classUSER* pFindUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
                 classPACKET* pCPacket = Packet_AllocNLock();
@@ -1539,22 +1539,22 @@ GS_CThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
         }
     }
 
-    if (this->m_pSQL->ExecSQL(
+    if (this->db->ExecSQL(
             "UPDATE tblGS_AVATAR SET dwDelTIME=%u WHERE txtACCOUNT=\'%s\' AND txtNAME=\'%s\'",
             dwCurAbsSEC,
             pSqlPACKET->m_Name.Get(),
             pCharName)
         < 1) {
         // 오류 또는 삭제된것이 없다.
-        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR());
     }
     /*
-    this->m_pSQL->MakeQuery("DELETE FROM tblGS_AVATAR WHERE txtACCOUNT=",
+    this->db->MakeQuery("DELETE FROM tblGS_AVATAR WHERE txtACCOUNT=",
                                                     MQ_PARAM_STR,	pSqlPACKET->m_Name.Get(),	//
     account MQ_PARAM_ADDSTR,	" AND txtNAME=",	MQ_PARAM_STR,	pCharName, MQ_PARAM_END ); if (
-    this->m_pSQL->ExecSQLBuffer() < 1 ) {
+    this->db->ExecSQLBuffer() < 1 ) {
         // 오류 또는 삭제된것이 없다.
-        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", m_pSQL->GetERROR() );
+        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR() );
         return true;
     }
     */
@@ -1594,7 +1594,7 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
             short nOffset = sizeof(cli_BANK_LIST_REQ);
             char* szPassWD = Packet_GetStringPtr(pPacket, nOffset);
             if (szPassWD
-                && this->m_pSQL->ExecSQL(
+                && this->db->ExecSQL(
                        "UPDATE tblGS_AVATAR SET txtPASSWORD=\'%s\' WHERE txtACCOUNT=\'%s\'",
                        szPassWD,
                        pSqlPACKET->m_Name.Get())
@@ -1605,7 +1605,7 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
                 }
             }
         } else {
-            if (this->m_pSQL->ExecSQL(
+            if (this->db->ExecSQL(
                     "UPDATE tblGS_AVATAR SET txtPASSWORD=NULL WHERE txtACCOUNT=\'%s\'",
                     pSqlPACKET->m_Name.Get())
                 < 1) {
@@ -1618,25 +1618,25 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
         return true;
     }
 
-    if (!this->m_pSQL->QuerySQL("{call gs_SelectBANK(\'%s\')}", pSqlPACKET->m_Name.Get())) {
+    if (!this->db->QuerySQL("{call gs_SelectBANK(\'%s\')}", pSqlPACKET->m_Name.Get())) {
         /*
-            this->m_pSQL->MakeQuery( "SELECT * FROM tblGS_BANK WHERE txtACCOUNT=",
+            this->db->MakeQuery( "SELECT * FROM tblGS_BANK WHERE txtACCOUNT=",
                                     MQ_PARAM_STR, pSqlPACKET->m_Name.Get(),
                                     MQ_PARAM_END);
-            if ( !this->m_pSQL->QuerySQLBuffer() ) {
+            if ( !this->db->QuerySQLBuffer() ) {
         */
         // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }
 
-    if (!this->m_pSQL->GetNextRECORD()) {
+    if (!this->db->GetNextRECORD()) {
         // LogString(LOG_NORMAL, "Create [ %s ] bank...\n", pSqlPACKET->m_Name.Get() );
 
-        this->m_pSQL->BindPARAM(1, (BYTE*)&this->m_sEmptyBANK, sizeof(tagBankData));
+        this->db->BindPARAM(1, (BYTE*)&this->m_sEmptyBANK, sizeof(tagBankData));
 
         // "INSERT tblGS_AVATAR (Account, Name, ZoneNO, BasicINFO) VALUSE( xxx, xxx, xxx, xxx );"
-        this->m_pSQL->MakeQuery("INSERT tblGS_BANK (txtACCOUNT, blobITEMS) VALUES(",
+        this->db->MakeQuery("INSERT tblGS_BANK (txtACCOUNT, blobITEMS) VALUES(",
             MQ_PARAM_STR,
             pSqlPACKET->m_Name.Get(),
             MQ_PARAM_ADDSTR,
@@ -1646,12 +1646,12 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
             MQ_PARAM_ADDSTR,
             ");",
             MQ_PARAM_END);
-        if (this->m_pSQL->ExecSQLBuffer() < 1) {
+        if (this->db->ExecSQLBuffer() < 1) {
             // 만들기 실패 !!!
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: INSERT Bank:%s : %s \n",
                 pSqlPACKET->m_Name.Get(),
-                m_pSQL->GetERROR());
+                this->db->GetERROR());
             return true;
         }
 
@@ -1667,12 +1667,12 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
         return false;
 
     BYTE* pDATA;
-    pDATA = this->m_pSQL->GetDataPTR(BANKTBL_ITEMS);
+    pDATA = this->db->GetDataPTR(BANKTBL_ITEMS);
     if (pDATA) {
         ::CopyMemory(&pUSER->m_Bank, pDATA, sizeof(tagBankData));
 
         char* szPassword;
-        szPassword = this->m_pSQL->GetStrPTR(BANKTLB_PASSWORD);
+        szPassword = this->db->GetStrPTR(BANKTLB_PASSWORD);
         if (szPassword) {
             // 비밀번호 체크..
             pUSER->m_BankPASSWORD.Set(szPassword);
@@ -1687,10 +1687,10 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
             }
         }
 
-        int iRewardMoney = this->m_pSQL->GetInteger(BANKTBL_REWARD);
+        int iRewardMoney = this->db->GetInteger(BANKTBL_REWARD);
         if (iRewardMoney) {
             // 보상금이 있다...
-            this->m_pSQL->MakeQuery("UPDATE tblGS_BANK SET intREWARD=",
+            this->db->MakeQuery("UPDATE tblGS_BANK SET intREWARD=",
                 MQ_PARAM_INT,
                 0,
                 MQ_PARAM_ADDSTR,
@@ -1698,12 +1698,12 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
                 MQ_PARAM_STR,
                 pUSER->Get_ACCOUNT(),
                 MQ_PARAM_END);
-            if (this->m_pSQL->ExecSQLBuffer() < 0) {
+            if (this->db->ExecSQLBuffer() < 0) {
                 // 고치기 실패 !!!
                 g_LOG.CS_ODS(LOG_NORMAL,
                     "SQL Exec ERROR:: UPDATE Bank money :%s %s \n",
                     pUSER->Get_ACCOUNT(),
-                    m_pSQL->GetERROR());
+                    this->db->GetERROR());
             } else {
                 // 상금 더함.
                 pUSER->Add_MoneyNSend(iRewardMoney, GSV_REWARD_MONEY);
@@ -1730,20 +1730,20 @@ GS_CThreadSQL::Proc_LOAD_ZONE_DATA(int iZoneNO) {
 
     m_TmpSTR.Printf(ZONE_VAR_ECONOMY, CLIB_GameSRV::GetInstance()->GetServerName(), iZoneNO);
 
-    this->m_pSQL->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
+    this->db->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
         MQ_PARAM_STR,
         m_TmpSTR.Get(),
         MQ_PARAM_END);
-    if (!this->m_pSQL->QuerySQLBuffer()) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+    if (!this->db->QuerySQLBuffer()) {
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }
 
-    if (!this->m_pSQL->GetNextRECORD()) {
+    if (!this->db->GetNextRECORD()) {
         // insert !!!
-        this->m_pSQL->BindPARAM(1, pZONE->m_Economy.m_pEconomy, sizeof(tagECONOMY));
+        this->db->BindPARAM(1, pZONE->m_Economy.m_pEconomy, sizeof(tagECONOMY));
 
-        this->m_pSQL->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
+        this->db->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
             MQ_PARAM_STR,
             m_TmpSTR.Get(),
             MQ_PARAM_ADDSTR,
@@ -1757,15 +1757,15 @@ GS_CThreadSQL::Proc_LOAD_ZONE_DATA(int iZoneNO) {
             MQ_PARAM_ADDSTR,
             ");",
             MQ_PARAM_END);
-        if (this->m_pSQL->ExecSQLBuffer() < 1) {
+        if (this->db->ExecSQLBuffer() < 1) {
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: INSERT %s : %s \n",
                 m_TmpSTR.Get(),
-                m_pSQL->GetERROR());
+                this->db->GetERROR());
             return true;
         }
     } else {
-        BYTE* pDATA = this->m_pSQL->GetDataPTR(WSVAR_TBL_BLOB);
+        BYTE* pDATA = this->db->GetDataPTR(WSVAR_TBL_BLOB);
 
         ::CopyMemory(pZONE->m_Economy.m_pEconomy, pDATA, sizeof(tagECONOMY));
     }
@@ -1781,9 +1781,9 @@ bool
 GS_CThreadSQL::Proc_SAVE_ZONE_DATA(int iZoneNO, sql_ZONE_DATA* pSqlZONE) {
     m_TmpSTR.Printf(ZONE_VAR_ECONOMY, CLIB_GameSRV::GetInstance()->GetServerName(), iZoneNO);
 
-    this->m_pSQL->BindPARAM(1, pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
+    this->db->BindPARAM(1, pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
 
-    this->m_pSQL->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
+    this->db->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
         MQ_PARAM_STR,
         g_pThreadLOG->GetCurDateTimeSTR(),
         MQ_PARAM_ADDSTR,
@@ -1795,12 +1795,12 @@ GS_CThreadSQL::Proc_SAVE_ZONE_DATA(int iZoneNO, sql_ZONE_DATA* pSqlZONE) {
         MQ_PARAM_STR,
         m_TmpSTR.Get(),
         MQ_PARAM_END);
-    if (this->m_pSQL->ExecSQLBuffer() < 0) {
+    if (this->db->ExecSQLBuffer() < 0) {
         // 고치기 실패 !!!
         g_LOG.CS_ODS(LOG_NORMAL,
             "SQL Exec ERROR:: UPDATE %s %s \n",
             m_TmpSTR.Get(),
-            m_pSQL->GetERROR());
+            this->db->GetERROR());
     }
 
     return true;
@@ -1816,21 +1816,21 @@ GS_CThreadSQL::Proc_LOAD_OBJVAR(tagQueryDATA* pSqlPACKET) {
         else
             m_TmpSTR.Printf( ZONE_VAR_EVENTOBJ, pSqlPACKET->m_Name.Get() );
     */
-    this->m_pSQL->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
+    this->db->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
         MQ_PARAM_STR,
         pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
         MQ_PARAM_END);
-    if (!this->m_pSQL->QuerySQLBuffer()) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
-        g_LOG.CS_ODS(LOG_NORMAL, "      %s\n", this->m_pSQL->GetQueryBuffPTR());
+    if (!this->db->QuerySQLBuffer()) {
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "      %s\n", this->db->GetQueryBuffPTR());
         return false;
     }
 
-    if (!this->m_pSQL->GetNextRECORD()) {
+    if (!this->db->GetNextRECORD()) {
         // insert !!!
-        this->m_pSQL->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
+        this->db->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
 
-        this->m_pSQL->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
+        this->db->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
             MQ_PARAM_STR,
             pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
             MQ_PARAM_ADDSTR,
@@ -1844,15 +1844,15 @@ GS_CThreadSQL::Proc_LOAD_OBJVAR(tagQueryDATA* pSqlPACKET) {
             MQ_PARAM_ADDSTR,
             ");",
             MQ_PARAM_END);
-        if (this->m_pSQL->ExecSQLBuffer() < 1) {
+        if (this->db->ExecSQLBuffer() < 1) {
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: INSERT %s : %s \n",
                 pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
-                m_pSQL->GetERROR());
+                this->db->GetERROR());
             return true;
         }
     } else {
-        BYTE* pDATA = this->m_pSQL->GetDataPTR(WSVAR_TBL_BLOB);
+        BYTE* pDATA = this->db->GetDataPTR(WSVAR_TBL_BLOB);
 
         switch (pSqlZONE->m_btDataTYPE) {
             case SQL_ZONE_DATA_NPCOBJ_LOAD:
@@ -1876,9 +1876,9 @@ GS_CThreadSQL::Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET) {
         else
             m_TmpSTR.Printf( ZONE_VAR_EVENTOBJ, pSqlPACKET->m_Name.Get() );
     */
-    this->m_pSQL->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
+    this->db->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
 
-    this->m_pSQL->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
+    this->db->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
         MQ_PARAM_STR,
         g_pThreadLOG->GetCurDateTimeSTR(),
         MQ_PARAM_ADDSTR,
@@ -1890,12 +1890,12 @@ GS_CThreadSQL::Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET) {
         MQ_PARAM_STR,
         pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
         MQ_PARAM_END);
-    if (this->m_pSQL->ExecSQLBuffer() < 0) {
+    if (this->db->ExecSQLBuffer() < 0) {
         // 고치기 실패 !!!
         g_LOG.CS_ODS(LOG_NORMAL,
             "SQL Exec ERROR:: UPDATE %s %s \n",
             pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
-            m_pSQL->GetERROR());
+            this->db->GetERROR());
     }
 
     return true;
@@ -1904,21 +1904,21 @@ GS_CThreadSQL::Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET) {
 //-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN) {
-    //	this->m_pSQL->MakeQuery( "SELECT binDATA FROM tblWS_VAR WHERE txtNAME=",
-    this->m_pSQL->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
+    //	this->db->MakeQuery( "SELECT binDATA FROM tblWS_VAR WHERE txtNAME=",
+    this->db->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
         MQ_PARAM_STR,
         WORLD_VAR,
         MQ_PARAM_END);
-    if (!this->m_pSQL->QuerySQLBuffer()) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+    if (!this->db->QuerySQLBuffer()) {
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }
 
-    if (!this->m_pSQL->GetNextRECORD()) {
+    if (!this->db->GetNextRECORD()) {
         // insert !!!
-        this->m_pSQL->BindPARAM(1, pVarBUFF, nBuffLEN);
+        this->db->BindPARAM(1, pVarBUFF, nBuffLEN);
 
-        this->m_pSQL->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
+        this->db->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
             MQ_PARAM_STR,
             WORLD_VAR,
             MQ_PARAM_ADDSTR,
@@ -1932,15 +1932,15 @@ GS_CThreadSQL::Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN) {
             MQ_PARAM_ADDSTR,
             ");",
             MQ_PARAM_END);
-        if (this->m_pSQL->ExecSQLBuffer() < 1) {
+        if (this->db->ExecSQLBuffer() < 1) {
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: INSERT %s : %s \n",
                 WORLD_VAR,
-                m_pSQL->GetERROR());
+                this->db->GetERROR());
             return true;
         }
     } else {
-        BYTE* pDATA = this->m_pSQL->GetDataPTR(WSVAR_TBL_BLOB);
+        BYTE* pDATA = this->db->GetDataPTR(WSVAR_TBL_BLOB);
 
         ::CopyMemory(pVarBUFF, pDATA, nBuffLEN);
     }
@@ -1950,9 +1950,9 @@ GS_CThreadSQL::Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN) {
 
 bool
 GS_CThreadSQL::Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE) {
-    this->m_pSQL->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
+    this->db->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
 
-    this->m_pSQL->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
+    this->db->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
         MQ_PARAM_STR,
         g_pThreadLOG->GetCurDateTimeSTR(),
         MQ_PARAM_ADDSTR,
@@ -1964,9 +1964,9 @@ GS_CThreadSQL::Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE) {
         MQ_PARAM_STR,
         WORLD_VAR,
         MQ_PARAM_END);
-    if (this->m_pSQL->ExecSQLBuffer() < 0) {
+    if (this->db->ExecSQLBuffer() < 0) {
         // 고치기 실패 !!!
-        g_LOG.CS_ODS(LOG_NORMAL, "SQL Exec ERROR:: UPDATE %s %s \n", WORLD_VAR, m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "SQL Exec ERROR:: UPDATE %s %s \n", WORLD_VAR, this->db->GetERROR());
     }
 
     return true;
@@ -1979,29 +1979,29 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
     switch (pPacket->m_cli_MEMO.m_btTYPE) {
         case MEMO_REQ_RECEIVED_CNT: {
-            if (!this->m_pSQL->QuerySQL("SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
+            if (!this->db->QuerySQL("SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
                     pSqlPACKET->m_Name.Get())) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
                 return false;
             }
             g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG,
                 MEMO_REPLY_RECEIVED_CNT,
-                m_pSQL->GetInteger(0));
+                this->db->GetInteger(0));
             return true;
         }
 
         case MEMO_REQ_CONTENTS: {
             // 한번에 5개의 쪽지 읽음
-            if (!this->m_pSQL->QuerySQL("{call ws_GetMEMO(\'%s\')}", pSqlPACKET->m_Name.Get())) {
+            if (!this->db->QuerySQL("{call ws_GetMEMO(\'%s\')}", pSqlPACKET->m_Name.Get())) {
                 /*
-                if ( !this->m_pSQL->QuerySQL("SELECT TOP 5 dwDATE, txtFROM, txtMEMO FROM tblWS_MEMO
+                if ( !this->db->QuerySQL("SELECT TOP 5 dwDATE, txtFROM, txtMEMO FROM tblWS_MEMO
                 WHERE txtNAME=\'%s\' ORDER BY dwDATE ASC", pSqlPACKET->m_Name.Get() ) ) {
                 */
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
                 return false;
             }
             // EX: delete top 2 from `tblgs_error` where txtACCOUNT='gmsho004' order by dateREG ASC
-            if (this->m_pSQL->GetNextRECORD()) {
+            if (this->db->GetNextRECORD()) {
                 classPACKET* pCPacket = Packet_AllocNLock();
                 if (!pCPacket)
                     return false;
@@ -2015,9 +2015,9 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 int iMemoCNT = 0;
                 do {
                     iMemoCNT++;
-                    dwDate = (DWORD)this->m_pSQL->GetInteger(0);
-                    szFrom = this->m_pSQL->GetStrPTR(1);
-                    szMemo = this->m_pSQL->GetStrPTR(2, false);
+                    dwDate = (DWORD)this->db->GetInteger(0);
+                    szFrom = this->db->GetStrPTR(1);
+                    szMemo = this->db->GetStrPTR(2, false);
 
                     pDW = (DWORD*)(&pCPacket->m_pDATA[pCPacket->m_HEADER.m_nSize]);
                     pCPacket->m_HEADER.m_nSize += 4;
@@ -2038,7 +2038,7 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                         pCPacket->m_HEADER.m_nSize = sizeof(wsv_MEMO);
                         pCPacket->m_wsv_MEMO.m_btTYPE = MEMO_REPLY_CONTENTS;
                     }
-                } while (this->m_pSQL->GetNextRECORD());
+                } while (this->db->GetNextRECORD());
 
                 g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
                 Packet_ReleaseNUnlock(pCPacket);
@@ -2047,14 +2047,14 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 DELETE FROM tblWS_MEMO WHERE (intSN IN (SELECT TOP 2 intSN FROM tblWS_MEMO WHERE
                 txtNAME = 'navi' ORDER BY dwDATE ASC))
                 */
-                if (this->m_pSQL->ExecSQL(
+                if (this->db->ExecSQL(
                         "DELETE FROM tblWS_MEMO WHERE (intSN IN (SELECT TOP %d intSN FROM "
                         "tblWS_MEMO WHERE txtNAME=\'%s\' ORDER BY dwDATE ASC))",
                         iMemoCNT,
                         pSqlPACKET->m_Name.Get())
                     < 1) {
                     // 오류 또는 삭제된것이 없다.
-                    g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", m_pSQL->GetERROR());
+                    g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR());
                     return true;
                 }
             } // else 쪽지 없다.
@@ -2085,17 +2085,17 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
 #define OPTION_REFUSE_JJOKJI 0x00000001
             // 대상 케릭의 쪽지 수신 거부 여부...
-            if (!this->m_pSQL->QuerySQL("SELECT dwOPTION FROM tblGS_AVATAR WHERE txtNAME=\'%s\';",
+            if (!this->db->QuerySQL("SELECT dwOPTION FROM tblGS_AVATAR WHERE txtNAME=\'%s\';",
                     szTargetCHAR)) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
                 return false;
             }
-            if (!m_pSQL->GetNextRECORD()) {
+            if (!this->db->GetNextRECORD()) {
                 // 보낼 대상 케릭 없다.
                 g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_NOT_EXIST);
                 return true;
             }
-            if (m_pSQL->GetInteger(0) & OPTION_REFUSE_JJOKJI) {
+            if (this->db->GetInteger(0) & OPTION_REFUSE_JJOKJI) {
                 // 거부 상태
                 g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_REFUSED);
                 return true;
@@ -2103,12 +2103,12 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
 #define MAX_RECV_MEMO_CNT 50
             // 대상 케릭이 몇개의 보관된 쪽지가 있냐?
-            if (!this->m_pSQL->QuerySQL("SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
+            if (!this->db->QuerySQL("SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
                     szTargetCHAR)) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
                 return false;
             }
-            if (m_pSQL->GetNextRECORD() && m_pSQL->GetInteger(0) > MAX_RECV_MEMO_CNT) {
+            if (this->db->GetNextRECORD() && this->db->GetInteger(0) > MAX_RECV_MEMO_CNT) {
                 // MAX_RECV_MEMO_CNT 개 이상의 쪽지를 보유 하고 있다면...
                 g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_FULL_MEMO);
                 return true;
@@ -2116,7 +2116,7 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
             // 쪽지 저장..
             DWORD dwCurAbsSEC = classTIME::GetCurrentAbsSecond();
-            this->m_pSQL->MakeQuery("INSERT tblWS_MEMO (dwDATE, txtNAME, txtFROM, txtMEMO) VALUES(",
+            this->db->MakeQuery("INSERT tblWS_MEMO (dwDATE, txtNAME, txtFROM, txtMEMO) VALUES(",
                 MQ_PARAM_INT,
                 dwCurAbsSEC,
                 MQ_PARAM_ADDSTR,
@@ -2134,12 +2134,12 @@ GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 MQ_PARAM_ADDSTR,
                 ");",
                 MQ_PARAM_END);
-            if (this->m_pSQL->ExecSQLBuffer() < 1) {
+            if (this->db->ExecSQLBuffer() < 1) {
                 // 만들기 실패 !!!
                 g_LOG.CS_ODS(LOG_NORMAL,
                     "SQL Exec ERROR:: INSERT MEMO:%s : %s \n",
                     pSqlPACKET->m_Name.Get(),
-                    m_pSQL->GetERROR());
+                    this->db->GetERROR());
                 return true;
             }
 

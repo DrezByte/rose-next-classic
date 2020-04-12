@@ -27,18 +27,18 @@ CThreadMSGR::Check_FRIENDS() {
         BYTE *pLIST;
         while( true )
         {
-            if ( !this->m_pSQL->QuerySQL( "SELECT TOP 1 * FROM tblWS_FRIEND WHERE intCharID > %d
+            if ( !this->db->QuerySQL( "SELECT TOP 1 * FROM tblWS_FRIEND WHERE intCharID > %d
        ORDER BY intCharID ASC", iCharID ) ) { g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n",
-       m_pSQL->GetERROR() ); return;
+       this->db->GetERROR() ); return;
             }
 
-            if ( !this->m_pSQL->GetNextRECORD() )
+            if ( !this->db->GetNextRECORD() )
                 break;
 
             {
-                iCharID = this->m_pSQL->GetInteger( 0 );
-                iFriendCNT = this->m_pSQL->GetInteger( 1 );
-                pLIST = this->m_pSQL->GetDataPTR( 2 );
+                iCharID = this->db->GetInteger( 0 );
+                iFriendCNT = this->db->GetInteger( 1 );
+                pLIST = this->db->GetDataPTR( 2 );
 
                 char *pName;
                 tagFriend_H *pFrH;
@@ -54,10 +54,10 @@ CThreadMSGR::Check_FRIENDS() {
                     FR.m_Name.Set( pName );
 
                     // check name & dbid...
-                    if ( !this->m_pSQL->QuerySQL( "SELECT txtNAME FROM tblGS_AVATAR WHERE
+                    if ( !this->db->QuerySQL( "SELECT txtNAME FROM tblGS_AVATAR WHERE
        intCharID=%d", FR.m_dwDBID ) ) { g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n",
-       m_pSQL->GetERROR() ); } else if ( this->m_pSQL->GetNextRECORD() ) { pName =
-       this->m_pSQL->GetStrPTR( 0 ); if ( 0 == pFrH->m_dwDBID || pFrH->m_dwDBID > 31793 ) {
+       this->db->GetERROR() ); } else if ( this->db->GetNextRECORD() ) { pName =
+       this->db->GetStrPTR( 0 ); if ( 0 == pFrH->m_dwDBID || pFrH->m_dwDBID > 31793 ) {
                             LogString (0xffff, "Invalid DBID: %d, %s \n", FR.m_dwDBID,
        FR.m_Name.Get() ); } else if ( strcmpi(pName, FR.m_Name.Get() ) ) { LogString (0xffff, "Name
        mismatch %d, %s/%s \n", pFrH->m_dwDBID, pName, FR.m_Name.Get() );
@@ -250,10 +250,10 @@ CThreadMSGR::Run_MessengerPACKET(tagMSGR_CMD* pMsgCMD) {
 //-------------------------------------------------------------------------------------------------
 bool
 CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
-    if (!this->m_pSQL->QuerySQL("{call ws_GetFRIEND(%d)}", pCMD->m_dwDBID)) {
-        //	if ( !this->m_pSQL->QuerySQL( "SELECT intFriendCNT, blobFRIENDS FROM tblWS_FRIEND WHERE
+    if (!this->db->QuerySQL("{call ws_GetFRIEND(%d)}", pCMD->m_dwDBID)) {
+        //	if ( !this->db->QuerySQL( "SELECT intFriendCNT, blobFRIENDS FROM tblWS_FRIEND WHERE
         //intCharID=%d", pCMD->m_dwDBID ) ) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", m_pSQL->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }
 
@@ -267,21 +267,21 @@ CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
         return false;
 
     pMSGR->Init(pCMD->m_Name.Get(), pCMD->m_dwDBID, pCMD->m_iSocketIDX);
-    if (!this->m_pSQL->GetNextRECORD()) {
+    if (!this->db->GetNextRECORD()) {
         // insert !!!
-        if (this->m_pSQL->ExecSQL("INSERT tblWS_FRIEND ( intCharID ) VALUES(%d);", pCMD->m_dwDBID)
+        if (this->db->ExecSQL("INSERT tblWS_FRIEND ( intCharID ) VALUES(%d);", pCMD->m_dwDBID)
             < 1) {
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: INSERT %s friend : %s \n",
                 pCMD->m_Name.Get(),
-                m_pSQL->GetERROR());
+                this->db->GetERROR());
             this->FreeMEM(pMSGR);
             return true;
         }
     } else {
-        int iFriendCNT = this->m_pSQL->GetInteger(0);
+        int iFriendCNT = this->db->GetInteger(0);
         if (iFriendCNT > 0) {
-            BYTE* pDATA = this->m_pSQL->GetDataPTR(1);
+            BYTE* pDATA = this->db->GetDataPTR(1);
             pMSGR->MSGR_LogIN(iFriendCNT, pDATA);
         }
     }
@@ -302,8 +302,8 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
 
     if (pMSGR->MSGR_IsUPDATE()) {
         if (iFriendCNT > 0) {
-            this->m_pSQL->BindPARAM(1, this->m_pListBUFF, iBuffLEN);
-            this->m_pSQL->MakeQuery("UPDATE tblWS_FRIEND SET blobFRIENDS=",
+            this->db->BindPARAM(1, this->m_pListBUFF, iBuffLEN);
+            this->db->MakeQuery("UPDATE tblWS_FRIEND SET blobFRIENDS=",
                 MQ_PARAM_BINDIDX,
                 1,
                 MQ_PARAM_ADDSTR,
@@ -316,7 +316,7 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
                 pMSGR->Get_DBID(),
                 MQ_PARAM_END);
         } else {
-            this->m_pSQL->MakeQuery("UPDATE tblWS_FRIEND SET blobFRIENDS=NULL",
+            this->db->MakeQuery("UPDATE tblWS_FRIEND SET blobFRIENDS=NULL",
                 MQ_PARAM_ADDSTR,
                 ",intFriendCNT=",
                 MQ_PARAM_INT,
@@ -327,12 +327,12 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
                 pMSGR->Get_DBID(),
                 MQ_PARAM_END);
         }
-        if (this->m_pSQL->ExecSQLBuffer() < 0) {
+        if (this->db->ExecSQLBuffer() < 0) {
             // 고치기 실패 !!!
             g_LOG.CS_ODS(LOG_NORMAL,
                 "SQL Exec ERROR:: UPDATE messenger:%d %s \n",
                 pMSGR->Get_DBID(),
-                m_pSQL->GetERROR());
+                this->db->GetERROR());
         }
     }
 

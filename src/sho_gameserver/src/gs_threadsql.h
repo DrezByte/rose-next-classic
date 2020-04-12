@@ -146,8 +146,6 @@ public:
     int WaitUserCNT() { return m_AddUserLIST.GetNodeCount(); }
 
     bool UpdateUserRECORD(classUSER* pUSER);
-
-    classODBC* db() { return (classODBC*)this->m_pSQL; };
 };
 extern GS_CThreadSQL* g_pThreadSQL;
 

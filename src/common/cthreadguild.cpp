@@ -888,23 +888,23 @@ CThreadGUILD::Test_add(char* pGuildName, char* pGuildDesc) {
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    ((classODBC*)this->m_pSQL)->SetParam_long(1, iResultSP, cbSize1);
+    this->db->SetParam_long(1, iResultSP, cbSize1);
 
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanCREATE(\'%s\',\'%s\',%d,%d)}",
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanCREATE(\'%s\',\'%s\',%d,%d)}",
             pGuildName,
             pGuildDesc,
             1,
             2)) {
         DWORD dwClanID = 0;
-        while (this->m_pSQL->GetNextRECORD()) {
+        while (this->db->GetNextRECORD()) {
             // 기존 클랜 ID...
-            dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
+            dwClanID = (DWORD)this->db->GetInteger(0);
         }
-        while (this->m_pSQL->GetMoreRESULT()) {
-            if (this->m_pSQL->BindRESULT()) {
-                if (this->m_pSQL->GetNextRECORD()) {
+        while (this->db->GetMoreRESULT()) {
+            if (this->db->BindRESULT()) {
+                if (this->db->GetNextRECORD()) {
                     // 생성된 클랜 ID...
-                    dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
+                    dwClanID = (DWORD)this->db->GetInteger(0);
                 }
             }
         }
@@ -932,18 +932,18 @@ CThreadGUILD::Test_del(char* pGuildName) {
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanDELETE(\'%s\')}", pGuildName)) {
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanDELETE(\'%s\')}", pGuildName)) {
         DWORD dwClanID = 0;
-        while (this->m_pSQL->GetNextRECORD()) {
+        while (this->db->GetNextRECORD()) {
             // 성공...
-            dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
+            dwClanID = (DWORD)this->db->GetInteger(0);
         }
-        while (this->m_pSQL->GetMoreRESULT()) {
-            if (this->m_pSQL->BindRESULT()) {
-                if (this->m_pSQL->GetNextRECORD()) {
-                    // 성공... 생성된 ClanID = this->m_pSQL->GetInteger(0)
-                    dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
+        while (this->db->GetMoreRESULT()) {
+            if (this->db->BindRESULT()) {
+                if (this->db->GetNextRECORD()) {
+                    // 성공... 생성된 ClanID = this->db->GetInteger(0)
+                    dwClanID = (DWORD)this->db->GetInteger(0);
                 }
             }
         }
@@ -1472,25 +1472,25 @@ CThreadGUILD::Find_CLAN(DWORD dwClanID) {
 //-------------------------------------------------------------------------------------------------
 CClan*
 CThreadGUILD::Load_CLAN(DWORD dwClanID) {
-    if (this->m_pSQL->QuerySQL((char*)"{call ws_ClanSELECT(%d)}", dwClanID)) {
-        if (this->m_pSQL->GetNextRECORD()) {
-            // this->m_pSQL->GetInteger(0); cladID
-            char* pClanName = this->m_pSQL->GetStrPTR(1, false);
-            char* pClanDesc = this->m_pSQL->GetStrPTR(2, false);
-            WORD wMarkIdx1 = this->m_pSQL->GetInteger(3);
-            WORD wMarkIdx2 = this->m_pSQL->GetInteger(4);
-            short nClanLEV = this->m_pSQL->GetInteger(5);
-            int iClanSCORE = this->m_pSQL->GetInteger(6);
-            DWORD dwAlliedGRP = (DWORD)this->m_pSQL->GetInteger(7);
-            short nRate = this->m_pSQL->GetInteger(8);
-            __int64 biZuly = this->m_pSQL->GetInt64(9);
-            BYTE* pClanBIN = this->m_pSQL->GetDataPTR(10);
-            char* pClanMOTD = this->m_pSQL->GetStrPTR(11, false);
-            WORD wMarkCRC = this->m_pSQL->GetInteger(12);
-            short nMarkLen = this->m_pSQL->GetInteger(13);
-            BYTE* pClanMARK = this->m_pSQL->GetDataPTR(14);
+    if (this->db->QuerySQL((char*)"{call ws_ClanSELECT(%d)}", dwClanID)) {
+        if (this->db->GetNextRECORD()) {
+            // this->db->GetInteger(0); cladID
+            char* pClanName = this->db->GetStrPTR(1, false);
+            char* pClanDesc = this->db->GetStrPTR(2, false);
+            WORD wMarkIdx1 = this->db->GetInteger(3);
+            WORD wMarkIdx2 = this->db->GetInteger(4);
+            short nClanLEV = this->db->GetInteger(5);
+            int iClanSCORE = this->db->GetInteger(6);
+            DWORD dwAlliedGRP = (DWORD)this->db->GetInteger(7);
+            short nRate = this->db->GetInteger(8);
+            __int64 biZuly = this->db->GetInt64(9);
+            BYTE* pClanBIN = this->db->GetDataPTR(10);
+            char* pClanMOTD = this->db->GetStrPTR(11, false);
+            WORD wMarkCRC = this->db->GetInteger(12);
+            short nMarkLen = this->db->GetInteger(13);
+            BYTE* pClanMARK = this->db->GetDataPTR(14);
             sqlTIMESTAMP sTimeStamp;
-            this->m_pSQL->GetTimestamp(15, &sTimeStamp);
+            this->db->GetTimestamp(15, &sTimeStamp);
 
             CClan* pClan = m_Pools.Pool_Alloc();
             pClan->Init(pClanName,
@@ -1517,14 +1517,14 @@ CThreadGUILD::Load_CLAN(DWORD dwClanID) {
             pClan->m_RegTIME.m_btSec = sTimeStamp.m_btSec;
 
             // 모든 클랜멤버 얻기...
-            if (this->m_pSQL->QuerySQL((char*)"{call ws_ClanCharALL(%d)}", dwClanID)) {
+            if (this->db->QuerySQL((char*)"{call ws_ClanCharALL(%d)}", dwClanID)) {
                 int iClanPos;
                 CDLList<CClanUSER>::tagNODE* pNode;
                 char* pCharName;
-                while (this->m_pSQL->GetNextRECORD()) {
-                    pCharName = this->m_pSQL->GetStrPTR(0);
-                    iClanSCORE = this->m_pSQL->GetInteger(1);
-                    iClanPos = this->m_pSQL->GetInteger(2);
+                while (this->db->GetNextRECORD()) {
+                    pCharName = this->db->GetStrPTR(0);
+                    iClanSCORE = this->db->GetInteger(1);
+                    iClanPos = this->db->GetInteger(2);
 
                     pNode = pClan->m_ListUSER.AllocNAppend();
                     if (!pNode) {
@@ -1576,18 +1576,18 @@ CThreadGUILD::Query_CreateCLAN(int iSocketIDX, t_PACKET* pPacket) {
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanINSERT(\'%s\',\'%s\',%d,%d)}",
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanINSERT(\'%s\',\'%s\',%d,%d)}",
             pGuildName,
             pGuildDesc,
             pPacket->m_cli_CLAN_CREATE.m_wMarkIDX[0],
             pPacket->m_cli_CLAN_CREATE.m_wMarkIDX[1])) {
         DWORD dwClanID = 0;
-        while (this->m_pSQL->GetMoreRESULT()) {
-            if (this->m_pSQL->BindRESULT()) {
-                if (this->m_pSQL->GetNextRECORD()) {
-                    // 성공... 생성된 ClanID = this->m_pSQL->GetInteger(0)
-                    dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
+        while (this->db->GetMoreRESULT()) {
+            if (this->db->BindRESULT()) {
+                if (this->db->GetNextRECORD()) {
+                    // 성공... 생성된 ClanID = this->db->GetInteger(0)
+                    dwClanID = (DWORD)this->db->GetInteger(0);
                 }
             }
         }
@@ -1629,17 +1629,17 @@ CThreadGUILD::Query_DeleteCLAN(char* szClanName) {
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanDELETE(\'%s\')}", szClanName)) {
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanDELETE(\'%s\')}", szClanName)) {
         DWORD dwClanID = 0;
-        // while( this->m_pSQL->GetNextRECORD() ) {
+        // while( this->db->GetNextRECORD() ) {
         //	// 성공...
-        //	dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
+        //	dwClanID = (DWORD)this->db->GetInteger(0);
         //}
-        while (this->m_pSQL->GetMoreRESULT()) {
-            if (this->m_pSQL->BindRESULT()) {
-                if (this->m_pSQL->GetNextRECORD()) {
-                    dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
+        while (this->db->GetMoreRESULT()) {
+            if (this->db->BindRESULT()) {
+                if (this->db->GetNextRECORD()) {
+                    dwClanID = (DWORD)this->db->GetInteger(0);
                 }
             }
         }
@@ -1672,12 +1672,12 @@ CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClan
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanCharADD(\'%s\',%d,%d)}",
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanCharADD(\'%s\',%d,%d)}",
             szCharName,
             dwClanID,
             iClanPos)) {
-        while (this->m_pSQL->GetMoreRESULT()) {
+        while (this->db->GetMoreRESULT()) {
             ;
         }
         switch (iResultSP) {
@@ -1709,15 +1709,15 @@ CThreadGUILD::Query_DeleteClanMember(char* szCharName) {
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanCharDEL(\'%s\')}", szCharName)) {
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanCharDEL(\'%s\')}", szCharName)) {
         DWORD dwClanID = 0;
-        while (this->m_pSQL->GetNextRECORD()) {
-            dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
+        while (this->db->GetNextRECORD()) {
+            dwClanID = (DWORD)this->db->GetInteger(0);
         }
-        while (this->m_pSQL->GetMoreRESULT()) {
-            if (this->m_pSQL->BindRESULT()) {
-                if (this->m_pSQL->GetNextRECORD()) {
+        while (this->db->GetMoreRESULT()) {
+            if (this->db->BindRESULT()) {
+                if (this->db->GetNextRECORD()) {
                     assert(0);
                 }
             }
@@ -1743,12 +1743,12 @@ CThreadGUILD::Query_AdjustClanMember(char* szCharName, int iAdjContr, int iAdjPo
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanCharADJ(\'%s\',%d,%d)}",
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanCharADJ(\'%s\',%d,%d)}",
             szCharName,
             iAdjContr,
             iAdjPos)) {
-        while (this->m_pSQL->GetMoreRESULT()) {
+        while (this->db->GetMoreRESULT()) {
             ;
         }
         switch (iResultSP) {
@@ -1776,9 +1776,9 @@ CThreadGUILD::Query_UpdateClanMOTD(DWORD dwClanID, char* szMessage) {
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanMOTD(%d,\'%s\')}", dwClanID, szMessage)) {
-        while (this->m_pSQL->GetMoreRESULT()) {
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanMOTD(%d,\'%s\')}", dwClanID, szMessage)) {
+        while (this->db->GetMoreRESULT()) {
             ;
         }
         switch (iResultSP) {
@@ -1806,9 +1806,9 @@ CThreadGUILD::Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage) {
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanSLOGAN(%d,\'%s\')}", dwClanID, szMessage)) {
-        while (this->m_pSQL->GetMoreRESULT()) {
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanSLOGAN(%d,\'%s\')}", dwClanID, szMessage)) {
+        while (this->db->GetMoreRESULT()) {
             ;
         }
         switch (iResultSP) {
@@ -1832,11 +1832,11 @@ CThreadGUILD::Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage) {
 
 bool
 CThreadGUILD::Query_LoginClanMember(char* szCharName, int iSenderSockIDX) {
-    if (this->m_pSQL->QuerySQL((char*)"{call ws_ClanCharGET(\'%s\')}", szCharName)) {
-        if (this->m_pSQL->GetNextRECORD()) {
+    if (this->db->QuerySQL((char*)"{call ws_ClanCharGET(\'%s\')}", szCharName)) {
+        if (this->db->GetNextRECORD()) {
             // 클랜 있다.
-            DWORD dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
-            int iContribute = this->m_pSQL->GetInteger(1);
+            DWORD dwClanID = (DWORD)this->db->GetInteger(0);
+            int iContribute = this->db->GetInteger(1);
             CClan* pClan = this->Find_CLAN(dwClanID);
             if (NULL == pClan) {
                 // 클렌 로딩...
@@ -1860,20 +1860,20 @@ CThreadGUILD::Query_UpdateClanDATA(char* szField,
 
     int iAdjValue = pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanUPDATE(%d,\'%s\',%d)}",
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanUPDATE(%d,\'%s\',%d)}",
             pPacket->m_gsv_ADJ_CLAN_VAR.m_dwClanID,
             szField,
             pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue)) {
         int iResult;
         __int64 biResult;
-        while (this->m_pSQL->GetMoreRESULT()) {
-            if (this->m_pSQL->BindRESULT()) {
-                if (this->m_pSQL->GetNextRECORD()) {
+        while (this->db->GetMoreRESULT()) {
+            if (this->db->BindRESULT()) {
+                if (this->db->GetNextRECORD()) {
                     // 성공...
-                    // dwClanID = (DWORD)this->m_pSQL->GetInteger(0);
-                    iResult = this->m_pSQL->GetInteger(0);
-                    biResult = this->m_pSQL->GetInt64(0);
+                    // dwClanID = (DWORD)this->db->GetInteger(0);
+                    iResult = this->db->GetInteger(0);
+                    biResult = this->db->GetInt64(0);
                 }
             }
         }
@@ -1882,18 +1882,18 @@ CThreadGUILD::Query_UpdateClanDATA(char* szField,
             // success
             switch (pPacket->m_gsv_ADJ_CLAN_VAR.m_btVarType) {
                 case CLVAR_INC_LEV:
-                    // pClan->m_nClanLEVEL = iResult;//this->m_pSQL->GetInteger(0);
+                    // pClan->m_nClanLEVEL = iResult;//this->db->GetInteger(0);
                     if (iResult > MAX_CLAN_LEVEL)
                         iResult = MAX_CLAN_LEVEL;
                     pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue = iResult;
                     break;
                 case CLVAR_ADD_SCORE:
-                    // pClan->m_iClanSCORE = iResult;//this->m_pSQL->GetInteger(0);
+                    // pClan->m_iClanSCORE = iResult;//this->db->GetInteger(0);
                     pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue = iResult;
                     break;
                 case CLVAR_ADD_ZULY:
                     // bigint
-                    // pClan->m_biClanMONEY = biResult;//this->m_pSQL->GetInt64(0);
+                    // pClan->m_biClanMONEY = biResult;//this->db->GetInt64(0);
                     pPacket->m_gsv_ADJ_CLAN_VAR.m_biResult = biResult;
                     break;
             }
@@ -1928,11 +1928,11 @@ CThreadGUILD::Query_UpdateClanBINARY(DWORD dwClanID, BYTE* pDATA, unsigned int u
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    this->m_pSQL->BindPARAM(2, (BYTE*)pDATA, uiSize);
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    this->db->BindPARAM(2, (BYTE*)pDATA, uiSize);
 
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanBinUPDATE(%d,?)}", dwClanID)) {
-        while (this->m_pSQL->GetMoreRESULT()) {
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanBinUPDATE(%d,?)}", dwClanID)) {
+        while (this->db->GetMoreRESULT()) {
             ;
         }
         switch (iResultSP) {
@@ -1961,26 +1961,26 @@ CThreadGUILD::Query_UpdateClanMARK(CClan* pClan, WORD wMarkCRC, BYTE* pDATA, uns
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
-    this->m_pSQL->SetParam_long(1, iResultSP, cbSize1);
-    this->m_pSQL->BindPARAM(2, (BYTE*)pDATA, uiSize);
+    this->db->SetParam_long(1, iResultSP, cbSize1);
+    this->db->BindPARAM(2, (BYTE*)pDATA, uiSize);
 
     // 주의~~wMarkCRC로 될경우 디비에 smallint로 잡혀있어 32767 보다 클경우 디비 오류~~~
-    if (this->m_pSQL->QuerySQL((char*)"{?=call ws_ClanMarkUPDATE(%d,%d,%d,?)}",
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanMarkUPDATE(%d,%d,%d,?)}",
             pClan->m_dwClanID,
             (short)(wMarkCRC),
             uiSize)) {
-        while (this->m_pSQL->GetMoreRESULT()) {
+        while (this->db->GetMoreRESULT()) {
             ;
         }
         switch (iResultSP) {
             case 1: // 성공
                 g_LOG.CS_ODS(0xffff, "update clan mark : %d \n", pClan->m_dwClanID);
-                if (this->m_pSQL->QuerySQL(
+                if (this->db->QuerySQL(
                         (char*)"select dateMarkREG from tblWS_CLAN where intID=%d",
                         pClan->m_dwClanID)) {
-                    if (this->m_pSQL->GetNextRECORD()) {
+                    if (this->db->GetNextRECORD()) {
                         sqlTIMESTAMP sTimeStamp;
-                        this->m_pSQL->GetTimestamp(0, &sTimeStamp);
+                        this->db->GetTimestamp(0, &sTimeStamp);
 
                         pClan->m_RegTIME.m_wYear = sTimeStamp.m_wYear;
                         pClan->m_RegTIME.m_btMon = sTimeStamp.m_btMon;
