@@ -11,7 +11,7 @@ use roselib::files::STB;
 use roselib::io::RoseFile;
 
 use bincode;
-use clap::{App, Arg, ArgMatches, SubCommand, crate_version};
+use clap::{crate_version, App, Arg, ArgMatches, SubCommand};
 use globset;
 use globset::{Glob, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
@@ -121,19 +121,9 @@ fn save_bake_cache(cache_file_path: &Path, cache: &BakeCache) -> Result<(), Pipe
 }
 
 /// Checks if the path needs to be re-baked by comparing current file data
-/// to the value stored in the cache. Updates the cache with the new metadata.
-///
-/// Returns true if:
-/// - `path` does not exist
-/// - `path` is not in the cache
-/// - `metadata` does not match the metadata in `cache`
+/// to the value stored in the cache.
 fn should_rebake(path: &Path, metadata: &BakeFileMetadata, cache: &mut BakeCache) -> bool {
-    if !path.exists() {
-        return false;
-    }
-
-    let metadata = *metadata;
-    if let Some(cached_metadata) = cache.insert(path.to_path_buf(), metadata) {
+    if let Some(cached_metadata) = cache.get(path) {
         cached_metadata != metadata
     } else {
         true
@@ -141,7 +131,7 @@ fn should_rebake(path: &Path, metadata: &BakeFileMetadata, cache: &mut BakeCache
 }
 
 fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
-    println!("Starting bake process.");
+    println!("Starting bake process");
 
     let config_name = matches.value_of(BAKE_CONFIG_NAME).unwrap();
 
@@ -152,6 +142,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
             input_dir.to_str().unwrap()
         )));
     }
+
+    println!("Setting input dir to {}", input_dir.display());
 
     let config_path = input_dir.join(config_name);
     if !config_path.exists() {
@@ -167,6 +159,21 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
             config_path.to_str().unwrap()
         )));
     }
+
+    println!("Reading config file {}", config_path.display());
+
+    let raw_config = fs::read_to_string(&config_path)?;
+    let lines = raw_config
+        .split('\n')
+        .map(|line| line.trim().replace("\r", ""))
+        .filter(|line| !line.starts_with('#') && !line.is_empty());
+
+    let output_dir = PathBuf::from(matches.value_of(BAKE_OUTPUT_DIR).unwrap());
+    if !output_dir.exists() {
+        fs::create_dir_all(&output_dir)?;
+    }
+
+    println!("Setting output dir to {}", output_dir.display());
 
     let pipeline_dir = input_dir.join(".pipeline");
     let cache_file_path = pipeline_dir.join("bake");
@@ -184,69 +191,50 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
         }
     };
 
-    println!("Reading config file {}", config_path.display());
+    let mut file_list = Vec::new();
 
-    let raw_config = fs::read_to_string(&config_path)?;
-    let lines = raw_config
-        .split('\n')
-        .map(|line| line.trim().replace("\r", ""))
-        .filter(|line| !line.starts_with('#') && !line.is_empty());
+    println!("Scanning input directory {}", input_dir.display());
 
-    let output_dir = PathBuf::from(matches.value_of(BAKE_OUTPUT_DIR).unwrap());
-    if !output_dir.exists() {
-        fs::create_dir_all(&output_dir)?;
-    }
-
-    // TODO: Temporarily unused
-    let _walk_dir = match fs::metadata(&input_dir) {
-        Ok(m) => should_rebake(&input_dir, &BakeFileMetadata::from(&m), &mut cache),
-        Err(_) => true,
+    let is_hidden = |entry: &walkdir::DirEntry| -> bool {
+        entry
+            .file_name()
+            .to_str()
+            .map(|s| s.starts_with("."))
+            .unwrap_or(false)
     };
 
-    let mut file_list = Vec::new();
-    let mut file_metadata: HashMap<PathBuf, BakeFileMetadata> = HashMap::new();
-
-    // TODO: Temporary work-around until I find a better way to check if directory contents changed on windows
-    let walk_dir = true;
-
-    if walk_dir {
-        println!("Scanning input directory {}", input_dir.display());
-
-        for entry in WalkDir::new(&input_dir).into_iter() {
-            if let Ok(ent) = entry {
-                let entry_path = ent.into_path();
-                if !entry_path.is_file() {
-                    continue;
+    for entry in WalkDir::new(&input_dir)
+        .into_iter()
+        .filter_entry(|e| !is_hidden(e))
+    {
+        if let Ok(ent) = entry {
+            if !ent.file_type().is_file() {
+                continue;
+            }
+            let entry_path = ent.into_path();
+            match fs::metadata(&entry_path) {
+                Ok(_) => {
+                    let relative_path = entry_path.strip_prefix(&input_dir).unwrap().to_path_buf();
+                    file_list.push(relative_path.clone());
                 }
-
-                match fs::metadata(&entry_path) {
-                    Ok(m) => {
-                        let relative_path =
-                            entry_path.strip_prefix(&input_dir).unwrap().to_path_buf();
-                        file_metadata.insert(relative_path.clone(), BakeFileMetadata::from(&m));
-                        file_list.push(relative_path.clone());
-                    }
-                    Err(e) => {
-                        println!(
-                            "Error reading metadata for file {}: {}",
-                            entry_path.display(),
-                            e
-                        );
-                        continue;
-                    }
+                Err(e) => {
+                    println!(
+                        "Error reading metadata for file {}: {}",
+                        entry_path.display(),
+                        e
+                    );
+                    continue;
                 }
             }
         }
-    } else {
-        for p in cache.keys() {
-            file_list.push(p.strip_prefix(&input_dir).unwrap().to_path_buf());
-        }
     }
+
+    file_list.sort_unstable();
 
     let mut glob_builder = GlobSetBuilder::new();
     let mut commands: Vec<Vec<String>> = Vec::new();
 
-    println!("Preparing process commands.");
+    println!("Parsing command list");
 
     for (line_number, line) in lines.enumerate() {
         let line_number = line_number + 1;
@@ -270,18 +258,30 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
 
     let globs = glob_builder.build()?;
 
+    // Remove stale keys from cache
+    let cached_filepaths: Vec<PathBuf> = cache.keys().map(|p| p.to_path_buf()).collect();
+    for cached_filepath in cached_filepaths {
+        let full_filepath = input_dir.join(&cached_filepath);
+        if !full_filepath.exists()
+            || !globs.is_match(&cached_filepath)
+            || file_list.binary_search(&cached_filepath).is_err()
+        {
+            let _ = cache.remove(&cached_filepath);
+        }
+    }
+
     println!("Executing commands.");
 
-    'file_loop: for filepath in file_list {
-        let input_filepath = input_dir.join(&filepath);
+    'file_loop: for relative_filepath in file_list {
+        let input_filepath = input_dir.join(&relative_filepath);
 
         if !input_filepath.exists() {
-            let _ = cache.remove(&input_filepath);
+            let _ = cache.remove(&relative_filepath);
             continue;
         }
 
         let rebake = match fs::metadata(&input_filepath) {
-            Ok(m) => should_rebake(&input_filepath, &BakeFileMetadata::from(&m), &mut cache),
+            Ok(m) => should_rebake(&relative_filepath, &BakeFileMetadata::from(&m), &mut cache),
             Err(e) => {
                 println!(
                     "Error reading file metadata {}: {}",
@@ -292,16 +292,16 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
             }
         };
 
-        let command_indices = globs.matches(&filepath);
+        let command_indices = globs.matches(&relative_filepath);
         for command_index in command_indices.iter() {
             let command_index = *command_index;
             let args = &commands[command_index];
 
             let command = args[0].to_lowercase();
             let output_filepath = match command.as_str() {
-                "copy" => output_dir.join(&filepath),
-                "stb" => output_dir.join(&filepath).with_extension("stb"),
-                "dds" => output_dir.join(&filepath).with_extension("dds"),
+                "copy" => output_dir.join(&relative_filepath),
+                "stb" => output_dir.join(&relative_filepath).with_extension("stb"),
+                "dds" => output_dir.join(&relative_filepath).with_extension("dds"),
                 _ => PathBuf::new(),
             };
 
@@ -319,11 +319,14 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                 continue;
             }
 
-            match command.as_str() {
+            let command_executed = match command.as_str() {
                 "copy" => {
                     println!("Copying file {}", input_filepath.display());
                     if let Err(e) = fs::copy(&input_filepath, &output_filepath) {
-                        eprintln!("Error copy file {}: {}", filepath.display(), e);
+                        eprintln!("Error copying file {}: {}", input_filepath.display(), e);
+                        false
+                    } else {
+                        true
                     }
                 }
                 "stb" => {
@@ -347,6 +350,9 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                     println!("Converting to STB {}", input_filepath.display());
                     if let Err(e) = convert() {
                         eprintln!("Error converting stb {}: {}", &input_filepath.display(), e);
+                        false
+                    } else {
+                        true
                     }
                 }
                 "dds" => {
@@ -398,7 +404,7 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                             return Err(PipelineError::Message(error_string));
                         }
 
-                        // Rename to lowercase DDS extension because Texconv defaults to upper
+                        // Rename to lowercase DDS extension because `Texconv.exe` defaults to upper
                         fs::rename(
                             output_filepath.with_extension("DDS"),
                             output_filepath.with_extension("dds"),
@@ -413,9 +419,21 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                             &input_filepath.display(),
                             e
                         );
+                        false
+                    } else {
+                        true
                     }
                 }
-                _ => {} // Unrecognized command
+                _ => false, // Unrecognized command
+            };
+
+            if command_executed {
+                if let Ok(new_metadata) = fs::metadata(&input_filepath) {
+                    let _ = cache.insert(
+                        relative_filepath.clone(),
+                        BakeFileMetadata::from(&new_metadata),
+                    );
+                }
             }
         }
     }
@@ -428,20 +446,22 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
 }
 
 fn main() -> Result<(), PipelineError> {
-    let app = App::new("Rose Next Pipeline Tool").version(crate_version!()).subcommand(
-        SubCommand::with_name("bake")
-            .about("Rose Next Asset Compiler")
-            .arg(Arg::with_name(BAKE_INPUT_DIR).required(true))
-            .arg(Arg::with_name(BAKE_OUTPUT_DIR).required(true))
-            .arg(
-                Arg::with_name(BAKE_CONFIG_NAME)
-                    .short("c")
-                    .default_value("bake.manifest")
-                    .help("Name of the manifest file in the input directory")
-                    .required(true)
-                    .takes_value(true),
-            ),
-    );
+    let app = App::new("Rose Next Pipeline Tool")
+        .version(crate_version!())
+        .subcommand(
+            SubCommand::with_name("bake")
+                .about("Rose Next Asset Compiler")
+                .arg(Arg::with_name(BAKE_INPUT_DIR).required(true))
+                .arg(Arg::with_name(BAKE_OUTPUT_DIR).required(true))
+                .arg(
+                    Arg::with_name(BAKE_CONFIG_NAME)
+                        .short("c")
+                        .default_value("bake.manifest")
+                        .help("Name of the manifest file in the input directory")
+                        .required(true)
+                        .takes_value(true),
+                ),
+        );
     let mut help = Vec::new();
     app.write_help(&mut help).unwrap();
 
