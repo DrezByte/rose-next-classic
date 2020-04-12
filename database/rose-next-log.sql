@@ -1,34 +1,5 @@
-USE [master]
-GO
-/****** Object:  Database [SHO_LOG]    Script Date: 9/12/2019 2:23:49 PM ******/
-CREATE DATABASE [SHO_LOG];
-GO
-
-USE [SHO_LOG]
-GO
-/****** Object:  User [seven]    Script Date: 9/12/2019 2:23:49 PM ******/
-CREATE USER [seven] FOR LOGIN [seven] WITH DEFAULT_SCHEMA=[dbo]
-GO
-ALTER ROLE [db_owner] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_accessadmin] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_securityadmin] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_ddladmin] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_backupoperator] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_datareader] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_datawriter] ADD MEMBER [seven]
-GO
-/****** Object:  Table [dbo].[GS_ChangeAbility]    Script Date: 9/12/2019 2:23:49 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[GS_ChangeAbility](
+CREATE TABLE [dbo].[GS_ChangeAbility]
+(
 	[index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NULL,
 	[Account] [nvarchar](20) NOT NULL,
@@ -41,7 +12,7 @@ CREATE TABLE [dbo].[GS_ChangeAbility](
 	[Location] [varchar](24) NULL,
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
- CONSTRAINT [PK_GS_ChangeAbility] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_ChangeAbility] PRIMARY KEY CLUSTERED 
 (
 	[index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -52,13 +23,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_CharacterLog](
+CREATE TABLE [dbo].[GS_CharacterLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[AccountName] [nvarchar](20) NULL,
 	[CharName] [nvarchar](30) NULL,
 	[DelAdd] [tinyint] NULL,
- CONSTRAINT [PK_GS_CharacterLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_CharacterLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 95) ON [PRIMARY]
@@ -69,7 +41,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_CreateLog](
+CREATE TABLE [dbo].[GS_CreateLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[CharID] [int] NOT NULL,
@@ -85,7 +58,7 @@ CREATE TABLE [dbo].[GS_CreateLog](
 	[Location] [varchar](24) NULL,
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
- CONSTRAINT [PK_GS_CreateLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_CreateLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 95) ON [PRIMARY]
@@ -96,7 +69,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_DieLog](
+CREATE TABLE [dbo].[GS_DieLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[CharName] [varchar](32) NOT NULL,
@@ -107,7 +81,7 @@ CREATE TABLE [dbo].[GS_DieLog](
 	[PosX] [int] NULL,
 	[PosY] [int] NULL,
 	[ObjectName] [varchar](32) NULL,
- CONSTRAINT [PK_GS_DieLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_DieLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -118,7 +92,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_GemmingLog](
+CREATE TABLE [dbo].[GS_GemmingLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NULL,
 	[CharID] [int] NOT NULL,
@@ -132,7 +107,7 @@ CREATE TABLE [dbo].[GS_GemmingLog](
 	[Location] [varchar](24) NULL,
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
- CONSTRAINT [PK_GS_GemmingLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_GemmingLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 95) ON [PRIMARY]
@@ -143,7 +118,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_ItemLog](
+CREATE TABLE [dbo].[GS_ItemLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[Action] [int] NOT NULL,
@@ -164,7 +140,7 @@ CREATE TABLE [dbo].[GS_ItemLog](
 	[ObjCharName] [nvarchar](30) NULL,
 	[SbjIP] [varchar](15) NOT NULL,
 	[ObjIP] [varchar](15) NULL,
- CONSTRAINT [PK_GS_ItemLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_ItemLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 95) ON [PRIMARY]
@@ -175,7 +151,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_LevelUpLog](
+CREATE TABLE [dbo].[GS_LevelUpLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[CharID] [int] NOT NULL,
@@ -186,7 +163,7 @@ CREATE TABLE [dbo].[GS_LevelUpLog](
 	[Location] [varchar](24) NULL,
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
- CONSTRAINT [PK_GS_LevelUpLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_LevelUpLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 95) ON [PRIMARY]
@@ -197,7 +174,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_PeriodicCHARLog](
+CREATE TABLE [dbo].[GS_PeriodicCHARLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[CharName] [varchar](32) NOT NULL,
@@ -210,7 +188,7 @@ CREATE TABLE [dbo].[GS_PeriodicCHARLog](
 	[Location] [varchar](24) NULL,
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
- CONSTRAINT [PK_GS_PeriodicCHARLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_PeriodicCHARLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -221,14 +199,15 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_QuestLog](
+CREATE TABLE [dbo].[GS_QuestLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[CharID] [int] NOT NULL,
 	[CharName] [nvarchar](30) NOT NULL,
 	[QuestID] [int] NULL,
 	[QuestDo] [tinyint] NULL,
- CONSTRAINT [PK_GS_QuestLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_QuestLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 95) ON [PRIMARY]
@@ -239,7 +218,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_SkillLog](
+CREATE TABLE [dbo].[GS_SkillLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[CharID] [int] NOT NULL,
@@ -251,7 +231,7 @@ CREATE TABLE [dbo].[GS_SkillLog](
 	[Location] [varchar](24) NULL,
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
- CONSTRAINT [PK_GS_SkillLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_SkillLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 95) ON [PRIMARY]
@@ -262,7 +242,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_UnionLog](
+CREATE TABLE [dbo].[GS_UnionLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[iCharID] [int] NOT NULL,
@@ -275,7 +256,7 @@ CREATE TABLE [dbo].[GS_UnionLog](
 	[szLocation] [varchar](50) NULL,
 	[iLocX] [int] NULL,
 	[iLocY] [int] NULL,
- CONSTRAINT [PK_GS_UnionLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_UnionLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -286,7 +267,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[GS_UpgradeLog](
+CREATE TABLE [dbo].[GS_UpgradeLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[CharID] [int] NOT NULL,
@@ -298,7 +280,7 @@ CREATE TABLE [dbo].[GS_UpgradeLog](
 	[Location] [varchar](24) NULL,
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
- CONSTRAINT [PK_GS_UpgradeLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_GS_UpgradeLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 95) ON [PRIMARY]
@@ -309,13 +291,14 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[LS_LoginLog](
+CREATE TABLE [dbo].[LS_LoginLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[Login] [tinyint] NULL,
 	[AccountName] [nvarchar](30) NULL,
 	[LoginIP] [varchar](15) NULL,
- CONSTRAINT [PK_LS_LoginLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_LS_LoginLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -326,7 +309,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[tblGS_ERROR](
+CREATE TABLE [dbo].[tblGS_ERROR]
+(
 	[Index] [int] NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[txtIP] [varchar](15) NULL,
@@ -335,7 +319,7 @@ CREATE TABLE [dbo].[tblGS_ERROR](
 	[txtFILE] [char](255) NULL,
 	[intLINE] [int] NULL,
 	[txtDESC] [nvarchar](512) NULL,
- CONSTRAINT [PK_tblGS_ERROR] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_tblGS_ERROR] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -346,7 +330,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[tblGS_LOG](
+CREATE TABLE [dbo].[tblGS_LOG]
+(
 	[dateREG] [datetime] NOT NULL,
 	[txtSUBJECT] [nvarchar](50) NOT NULL,
 	[txtACTION] [varchar](30) NOT NULL,
@@ -365,14 +350,15 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[WS_CheatLog](
+CREATE TABLE [dbo].[WS_CheatLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[Account] [nvarchar](20) NOT NULL,
 	[CharName] [nvarchar](30) NOT NULL,
 	[ChannelNo] [tinyint] NULL,
 	[CheatCode] [nvarchar](55) NULL,
- CONSTRAINT [PK_WS_CheatLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_WS_CheatLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -383,7 +369,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[WS_ClanLog](
+CREATE TABLE [dbo].[WS_ClanLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[CharName] [nvarchar](32) NULL,
@@ -394,7 +381,7 @@ CREATE TABLE [dbo].[WS_ClanLog](
 	[Location] [varchar](24) NULL,
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
- CONSTRAINT [PK_WS_ClanLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_WS_ClanLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -405,7 +392,8 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[WS_LoginLog](
+CREATE TABLE [dbo].[WS_LoginLog]
+(
 	[Index] [int] IDENTITY(1,1) NOT NULL,
 	[dateREG] [datetime] NOT NULL,
 	[Login] [tinyint] NULL,
@@ -417,7 +405,7 @@ CREATE TABLE [dbo].[WS_LoginLog](
 	[LocX] [int] NULL,
 	[LocY] [int] NULL,
 	[LoginIP] [varchar](15) NULL,
- CONSTRAINT [PK_WS_LoginLog] PRIMARY KEY CLUSTERED 
+	CONSTRAINT [PK_WS_LoginLog] PRIMARY KEY CLUSTERED 
 (
 	[Index] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -479,22 +467,24 @@ GO
 
 
 
-CREATE PROCEDURE [dbo].[AddChangeAbility] 
-	@intCharID int , 
+CREATE PROCEDURE [dbo].[AddChangeAbility]
+	@intCharID int ,
 	@Account nvarchar( 20 ),
 	@CharName nvarchar(30),
 	@AbilityType smallint,
 	@UsedPoint smallint,
 	@IP char(15),
 	@Location varchar(30),
-	@LocX int , 
-	@LocY int 
+	@LocX int ,
+	@LocY int
 AS
 
-Insert GS_ChangeAbility ( Account, CharID, CharName, AbilityType, UsedPoint, BonusPoint, IP, 
+Insert GS_ChangeAbility
+	( Account, CharID, CharName, AbilityType, UsedPoint, BonusPoint, IP,
 
-Location, LocX, LocY ) 
-Values ( @Account, @intCharID, @CharName, @AbilityType, @UsedPoint, 0, @IP, @Location, @LocX, @LocY)
+	Location, LocX, LocY )
+Values
+	( @Account, @intCharID, @CharName, @AbilityType, @UsedPoint, 0, @IP, @Location, @LocX, @LocY)
 
 
 
@@ -516,11 +506,13 @@ Create Proc [dbo].[AddCharacterLog]
 	@DelAdd tinyint
 AS
 
-Insert Into GS_CharacterLog(
+Insert Into GS_CharacterLog
+	(
 	dateREG,
 	AccountName, CharName, DelAdd)
-Values (Default,
-	@AccountName, @CharName, @DelAdd)
+Values
+	(Default,
+		@AccountName, @CharName, @DelAdd)
 
 
 
@@ -536,14 +528,15 @@ GO
 
 
 
-CREATE PROCEDURE [dbo].[AddCheatLog] 
+CREATE PROCEDURE [dbo].[AddCheatLog]
 	@Account nvarchar(20),
 	@CharName nvarchar(30),
 	@ChannelNo tinyint,
 	@CheatCode nvarchar(55)
 AS
 
-Insert Into WS_CheatLog (Account, CharName, ChannelNo, CheatCode)
+Insert Into WS_CheatLog
+	(Account, CharName, ChannelNo, CheatCode)
 Values(@Account, @CharName, @ChannelNo, @CheatCode)
 
 
@@ -572,11 +565,13 @@ CREATE Proc [dbo].[AddClanLog]
 	@LocY int
 As
 
-	Insert Into WS_ClanLog (dateREG,
-		CharName,
-		ClanName, ClanLevel, Point, Success,
-		Location, LocX, LocY)
-	Values (Default,
+Insert Into WS_ClanLog
+	(dateREG,
+	CharName,
+	ClanName, ClanLevel, Point, Success,
+	Location, LocX, LocY)
+Values
+	(Default,
 		@CharName,
 		@ClanName, @ClanLevel, @Point, @Success,
 		@Location, @LocX, @LocY)
@@ -610,19 +605,21 @@ Create Proc [dbo].[AddCreateLog]
 	@LocY int
 AS
 
-Insert Into GS_CreateLog (
+Insert Into GS_CreateLog
+	(
 	dateREG,
 	CharID, CharName,
 	ItemID, ItemName,
 	Stuff1, Stuff2, Stuff3, Stuff4,
 	Making, Success,
 	Location, LocX, LocY)
-Values (	Default,
-	@CharID, @CharName,
-	@ItemID, @ItemName,
-	@Stuff1, @Stuff2, @Stuff3, @Stuff4,
-	@Making, @Success,
-	@Location, @LocX, @LocY )
+Values
+	( Default,
+		@CharID, @CharName,
+		@ItemID, @ItemName,
+		@Stuff1, @Stuff2, @Stuff3, @Stuff4,
+		@Making, @Success,
+		@Location, @LocX, @LocY )
 
 
 
@@ -649,12 +646,13 @@ CREATE Proc [dbo].[AddDieLog]
 	@ObjectName varchar(32)
 As
 
-	Insert Into GS_DieLog (dateREG,
-		CharName,
-		[Money], CharLevel, [Exp],
-		KillPos, PosX, PosY,
-		ObjectName)
-	Values(Default,
+Insert Into GS_DieLog
+	(dateREG,
+	CharName,
+	[Money], CharLevel, [Exp],
+	KillPos, PosX, PosY,
+	ObjectName)
+Values(Default,
 		@CharName,
 		@Money, @CharLevel, @Exp,
 		@KillPos, @PosX, @PosY,
@@ -687,17 +685,19 @@ CREATE Proc [dbo].[AddGemmingLog]
 	@LocY int
 AS
 
-Insert Into GS_GemmingLog (
+Insert Into GS_GemmingLog
+	(
 	dateREG,
 	CharID, CharName,
 	ItemID, ItemName, JewelID, JewelName,
 	Gemming, Success,
 	Location, LocX, LocY)
-Values (	Default,
-	@CharID, @CharName,
-	@ItemID, @ItemName, @JewelID, @JewelName,
-	@Gemming, @Success,
-	@Location, @LocX, @LocY)
+Values
+	( Default,
+		@CharID, @CharName,
+		@ItemID, @ItemName, @JewelID, @JewelName,
+		@Gemming, @Success,
+		@Location, @LocX, @LocY)
 
 
 
@@ -737,7 +737,8 @@ CREATE Proc [dbo].[AddItemLog]
 	@ObjIP varchar(15)
 AS
 
-Insert Into GS_ItemLog (
+Insert Into GS_ItemLog
+	(
 	dateREG,
 	[Action],
 	SbjAccount, SbjCharID, SbjCharName,
@@ -746,14 +747,15 @@ Insert Into GS_ItemLog (
 	Location, LocX, LocY,
 	ObjAccount, ObjCharID, ObjCharName,
 	SbjIP, ObjIP)
-Values (Default,
-	@Action,
-	@SbjAccount, @SbjCharID, @SbjCharName,
-	@ItemID, @ItemName, @ItemCount, @ItemSN,
-	@ItemOpt, @Money,
-	@Location, @LocX, @LocY,
-	@ObjAccount, @ObjCharID, @ObjCharName,
-	@SbjIP, @ObjIP)
+Values
+	(Default,
+		@Action,
+		@SbjAccount, @SbjCharID, @SbjCharName,
+		@ItemID, @ItemName, @ItemCount, @ItemSN,
+		@ItemOpt, @Money,
+		@Location, @LocX, @LocY,
+		@ObjAccount, @ObjCharID, @ObjCharName,
+		@SbjIP, @ObjIP)
 
 
 
@@ -781,15 +783,17 @@ Create Proc [dbo].[AddLevelUpLog]
 	@LocY int
 AS
 
-Insert Into GS_LevelUpLog (
+Insert Into GS_LevelUpLog
+	(
 	dateREG,
 	CharID, CharName,
 	toLevel, BPoint, SPoint,
 	Location, LocX, LocY)
-Values (Default,
-	@CharID, @CharName,
-	@toLevel, @BPoint, @SPoint,
-	@Location, @LocX, @LocY)
+Values
+	(Default,
+		@CharID, @CharName,
+		@toLevel, @BPoint, @SPoint,
+		@Location, @LocX, @LocY)
 
 
 
@@ -818,7 +822,8 @@ CREATE Proc [dbo].[AddLoginLog]
 	@LoginIP varchar(15)
 AS
 
-Insert Into WS_LoginLog(
+Insert Into WS_LoginLog
+	(
 	dateREG,
 	Login,
 	CharName,
@@ -826,13 +831,14 @@ Insert Into WS_LoginLog(
 	CharLevel, [Money],
 	Location, LocX, LocY,
 	LoginIP)
-Values (Default,
-	@Login,
-	@CharName, 
-	@Channel,
-	@CharLevel, @Money,
-	@Location, @LocX, @LocY,
-	@LoginIP)
+Values
+	(Default,
+		@Login,
+		@CharName,
+		@Channel,
+		@CharLevel, @Money,
+		@Location, @LocX, @LocY,
+		@LoginIP)
 
 
 
@@ -856,15 +862,17 @@ CREATE Proc [dbo].[AddLoginLog_LS]
 	@LoginIP varchar(15)
 AS
 
-Insert Into LS_LoginLog(
+Insert Into LS_LoginLog
+	(
 	dateREG,
 	Login,
 	AccountName,
 	LoginIP)
-Values (getdate(),
-	@Login,
-	@AccountName, 
-	@LoginIP)
+Values
+	(getdate(),
+		@Login,
+		@AccountName,
+		@LoginIP)
 GO
 /****** Object:  StoredProcedure [dbo].[AddPeriodicCHARLog]    Script Date: 9/12/2019 2:23:50 PM ******/
 SET ANSI_NULLS ON
@@ -891,12 +899,14 @@ Create Proc [dbo].[AddPeriodicCHARLog]
 	@LocY int
 As
 
-	Insert Into GS_PeriodicCHARLog(dateREG,
-		CharName,
-		Channel,
-		CharLevel, [Money], [Exp], BPoint, SPoint,
-		Location, LocX, LocY)
-	Values (Default,
+Insert Into GS_PeriodicCHARLog
+	(dateREG,
+	CharName,
+	Channel,
+	CharLevel, [Money], [Exp], BPoint, SPoint,
+	Location, LocX, LocY)
+Values
+	(Default,
 		@CharName,
 		@Channel,
 		@CharLevel, @Money, @Exp, @BPoint, @SPoint,
@@ -925,13 +935,15 @@ Create Proc [dbo].[AddQuestLog]
 	@QuestDo tinyint
 AS
 
-Insert Into GS_QuestLog(
+Insert Into GS_QuestLog
+	(
 	dateREG,
 	CharID, CharName,
 	QuestID, QuestDo)
-Values (Default,
-	@CharID, @CharName,
-	@QuestID, @QuestDo)
+Values
+	(Default,
+		@CharID, @CharName,
+		@QuestID, @QuestDo)
 
 
 
@@ -960,15 +972,17 @@ Create Proc [dbo].[AddSkillLog]
 	@LocY int
 AS
 
-Insert Into GS_SkillLog(
+Insert Into GS_SkillLog
+	(
 	dateREG,
 	CharID, CharName,
 	SkillID, SkillName, SkillLevel, SPoint,
 	Location, LocX, LocY)
-Values (Default,
-	@CharID, @CharName,
-	@SkillID, @SkillName, @SkillLevel, @SPoint,
-	@Location, @LocX, @LocY)
+Values
+	(Default,
+		@CharID, @CharName,
+		@SkillID, @SkillName, @SkillLevel, @SPoint,
+		@Location, @LocX, @LocY)
 
 
 
@@ -996,19 +1010,21 @@ CREATE Proc [dbo].[AddUnionLog]
 	@iLocY int
 AS
 
-Insert Into GS_UnionLog (
+Insert Into GS_UnionLog
+	(
 	dateREG,
 	iCharID, szCharName,
-	nAction, 
-	nCurUnion, iCurPoint, 
+	nAction,
+	nCurUnion, iCurPoint,
 	nAfterUnion, iAfterPoint,
 	szLocation, iLocX, iLocY)
-Values (Default,
-	@iCharID, @szCharName,
-	@nAction, 
-	@nCurUnion, @iCurPoint,
-	@nAfterUnion, @iAfterPoint,
-	@szLocation, @iLocX, @iLocY)
+Values
+	(Default,
+		@iCharID, @szCharName,
+		@nAction,
+		@nCurUnion, @iCurPoint,
+		@nAfterUnion, @iAfterPoint,
+		@szLocation, @iLocX, @iLocY)
 
 
 
@@ -1036,17 +1052,19 @@ Create Proc [dbo].[AddUpgradeLog]
 	@LocY int
 AS
 
-Insert Into GS_UpgradeLog(
+Insert Into GS_UpgradeLog
+	(
 	dateREG,
 	CharID, CharName,
 	ItemID, ItemName,
 	UpLevel, Success,
 	Location, LocX, LocY)
-Values  ( Default,
-	@CharID, @CharName,
-	@ItemID, @ItemName,
-	@UpLevel, @Success,
-	@Location, @LocX, @LocY)
+Values
+	( Default,
+		@CharID, @CharName,
+		@ItemID, @ItemName,
+		@UpLevel, @Success,
+		@Location, @LocX, @LocY)
 
 
 
@@ -1068,7 +1086,9 @@ CREATE PROCEDURE [dbo].[gs_DefLOG]
 	@szLOC	nvarchar(100),
 	@szITEM	nvarchar(200)
 AS
-	INSERT tblGS_LOG ( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM ) VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM )
+INSERT tblGS_LOG
+	( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM )
+VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM )
 
 
 
@@ -1098,7 +1118,9 @@ CREATE PROCEDURE [dbo].[gs_DescLOG]
 	@szITEM	nvarchar(200),
 	@szDESC	nvarchar(200)
 AS
-	INSERT tblGS_LOG ( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM,txtDESC ) VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szDESC )
+INSERT tblGS_LOG
+	( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM,txtDESC )
+VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szDESC )
 
 
 
@@ -1128,7 +1150,9 @@ CREATE PROCEDURE [dbo].[gs_LogInOut]
 	@szLOC	nvarchar(100),
 	@szITEM	nvarchar(200)
 AS
-	INSERT tblGS_LOG ( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT ) VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM,  @szOBJ )
+INSERT tblGS_LOG
+	( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT )
+VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szOBJ )
 
 
 
@@ -1157,7 +1181,9 @@ CREATE PROCEDURE [dbo].[gs_M_DefLOG]
 	@szLOC	nvarchar(100),
 	@szITEM	nvarchar(200)
 AS
-	INSERT tblGS_LOG ( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM ) VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM )
+INSERT tblGS_LOG
+	( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM )
+VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM )
 
 
 
@@ -1186,7 +1212,9 @@ CREATE PROCEDURE [dbo].[gs_M_DescLOG]
 	@szITEM	nvarchar(200),
 	@szDESC	nvarchar(200)
 AS
-	INSERT tblGS_LOG ( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM,txtDESC ) VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szDESC )
+INSERT tblGS_LOG
+	( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM,txtDESC )
+VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szDESC )
 
 
 
@@ -1215,7 +1243,9 @@ CREATE PROCEDURE [dbo].[gs_M_LogInOut]
 	@szLOC	nvarchar(100),
 	@szITEM	nvarchar(200)
 AS
-	INSERT tblGS_LOG ( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT ) VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM,  @szOBJ )
+INSERT tblGS_LOG
+	( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT )
+VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szOBJ )
 
 
 
@@ -1246,7 +1276,9 @@ CREATE PROCEDURE [dbo].[gs_M_ObjDescLOG]
 	@szOBJIP	nvarchar(40),
 	@szDESC	nvarchar(200)
 AS
-	INSERT tblGS_LOG ( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT, txtOBJIP, txtDESC ) VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM,  @szOBJ, @szOBJIP, @szDESC )
+INSERT tblGS_LOG
+	( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT, txtOBJIP, txtDESC )
+VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szOBJ, @szOBJIP, @szDESC )
 
 
 
@@ -1276,7 +1308,9 @@ CREATE PROCEDURE [dbo].[gs_M_ObjLOG]
 	@szOBJ	nvarchar(50),
 	@szOBJIP	nvarchar(40)
 AS
-	INSERT tblGS_LOG ( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT, txtOBJIP ) VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM,  @szOBJ, @szOBJIP )
+INSERT tblGS_LOG
+	( dateREG, intMoney, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT, txtOBJIP )
+VALUES( default, @iMoney, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szOBJ, @szOBJIP )
 
 
 
@@ -1307,7 +1341,9 @@ CREATE PROCEDURE [dbo].[gs_ObjDescLOG]
 	@szOBJIP	nvarchar(40),
 	@szDESC	nvarchar(200)
 AS
-	INSERT tblGS_LOG ( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT, txtOBJIP, txtDESC ) VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM,  @szOBJ, @szOBJIP, @szDESC )
+INSERT tblGS_LOG
+	( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT, txtOBJIP, txtDESC )
+VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szOBJ, @szOBJIP, @szDESC )
 
 
 
@@ -1338,7 +1374,9 @@ CREATE PROCEDURE [dbo].[gs_ObjLOG]
 	@szOBJ	nvarchar(50),
 	@szOBJIP	nvarchar(40)
 AS
-	INSERT tblGS_LOG ( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT, txtOBJIP ) VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM,  @szOBJ, @szOBJIP )
+INSERT tblGS_LOG
+	( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC, txtITEM, txtOBJECT, txtOBJIP )
+VALUES( default, @szSUB, @szSBJIP, @szACT, @szLOC, @szITEM, @szOBJ, @szOBJIP )
 
 
 
