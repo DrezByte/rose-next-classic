@@ -19,12 +19,21 @@
 #define MAX_ODBC_BIND_PARAMETER 64
 #define MAX_ODBC_QUERY_BUFFER 8192
 
+/// Maximum number of parameters that can be bound to one statement
+constexpr uint32_t MAX_BIND_PARAMS = 50;
+
 /// ODBC bind parameter data
-struct ParamData {
-    uint32_t index;
-    uint32_t size;
+struct BoundParamData {
+    SQLLEN size;
+    SQLLEN size_at_exec;
     std::vector<uint8_t> data;
-    int32_t size_at_exec;
+};
+
+/// ODBC bound column data
+struct BoundColumnData {
+    SQLSMALLINT c_type;
+    std::vector<uint8_t> data;
+    SQLINTEGER cb_data;
 };
 
 /// ODBC fetch result
@@ -85,14 +94,14 @@ public:
     SQLHSTMT m_hSTMT1;
 
     SQLSMALLINT m_nResultColCnt;
-    SQLINTEGER m_iResultRowCnt; // Update, Delete, Insert명령시 영향받은 레코드
-                                // 갯수를 구해온다
+    SQLINTEGER m_iResultRowCnt;
 
-    /// Maximum number of parameters that can be bound to one statement
-    const uint32_t MAX_BIND_PARAMS = 50;
 
-    /// Data for currently bound parameters
-    std::vector<ParamData> param_data;
+    /// Bound parameters for current statement
+    std::vector<BoundParamData> bound_param_data;
+
+    /// Currently bound columns for current rowset
+    std::vector<BoundColumnData> bound_column_data;
 
 public:
     RETCODE m_RetCode;
@@ -173,14 +182,11 @@ public:
     /// Execute a query
     bool execute(const std::string& query);
 
-    /// Get a row returned from the last query
-    FetchResult fetch();
+    /// Automatically binds all the columns in the result to a local buffer
+    bool auto_bind();
 
-    /// Gets the maximum or actual character length of a character string or binary column.
-    /// It is the maximum character length for a fixed-length data type, or the actual
-    /// character length for a variable-length data type. Its value always excludes
-    /// the null-termination byte that ends the character string.
-    int column_length(size_t idx);
+    /// Fetch the next row returned from the last query
+    FetchResult fetch();
 
     /// Get a columns value from the last row
     std::vector<uint8_t> get_binary(size_t col);

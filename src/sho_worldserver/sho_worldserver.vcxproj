@@ -103,6 +103,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)bin\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -122,6 +123,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

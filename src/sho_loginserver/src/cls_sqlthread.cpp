@@ -126,8 +126,16 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
         return false;
     }
 
-    if (this->db->fetch() != FetchResult::Ok) {
+    FetchResult fetch_result = this->db->fetch();
+    if (fetch_result == FetchResult::NoData) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
+        return false;
+    } else if (fetch_result == FetchResult::Error) {
+        LOG_ERROR("Failed to fetch account info for username: (%s)", req->username()->c_str());
+        for (const std::string& msg: this->db->get_error_messages()) {
+            LOG_WARN(msg.c_str());
+        }
+        g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_FAILED);
         return false;
     }
 

@@ -6,10 +6,14 @@
 #include <windows.h>
 
 #include "classODBC.h"
+
 #include "rose/common/log.h"
+#include "rose/common/util.h"
 
 #pragma comment(lib, "odbc32.lib")
 // #pragma	comment( lib, "odbccp32.lib" )
+
+using namespace Rose;
 
 classODBC::classODBC(short nBindParamCNT, WORD wQueryBufferLEN) {
     m_ErrMSG.Alloc(512);
@@ -29,7 +33,7 @@ classODBC::classODBC(short nBindParamCNT, WORD wQueryBufferLEN) {
     m_dwMaxQueryBuffSize = wQueryBufferLEN;
     m_pQueryBuff = new char[wQueryBufferLEN];
 
-    param_data.resize(MAX_BIND_PARAMS);
+    bound_param_data.resize(MAX_BIND_PARAMS);
 }
 classODBC::~classODBC() {
     delete[] m_pColumn;
@@ -989,23 +993,22 @@ classODBC::bind(uint32_t idx,
         return false;
     }
 
-    param_data[idx].index = idx;
-    param_data[idx].size = size;
-    param_data[idx].data = std::vector<uint8_t>(data, data + size);
-    param_data[idx].size_at_exec = SQL_LEN_DATA_AT_EXEC(size);
+    bound_param_data[idx].size = size;
+    bound_param_data[idx].data = std::vector<uint8_t>(data, data + size);
+    bound_param_data[idx].size_at_exec = SQL_LEN_DATA_AT_EXEC(size);
 
-    SQLPOINTER parameter_value = (SQLPOINTER)param_data[idx].data.data();
-    SQLLEN* strlen_or_indptr = (SQLLEN*)&param_data[idx].size;
+    SQLPOINTER parameter_value = bound_param_data[idx].data.data();
+    SQLLEN* strlen_or_indptr = &bound_param_data[idx].size;
 
-    SQLRETURN res = SQLBindParameter(this->m_hSTMT1,
+    const SQLRETURN res = SQLBindParameter(this->m_hSTMT1,
         idx,
         SQL_PARAM_INPUT,
         c_type,
         sql_type,
-        size, // ColumnSize
-        0, // DecimalDigits
+        size,
+        0,
         parameter_value,
-        size, // BufferLength
+        size,
         strlen_or_indptr);
 
     if (res != SQL_SUCCESS) {
@@ -1059,9 +1062,91 @@ classODBC::execute(const std::string& query) {
     return res == SQL_SUCCESS || res == SQL_NO_DATA;
 }
 
+bool
+classODBC::auto_bind() {
+    int16_t col_count;
+
+    SQLRETURN res = SQLNumResultCols(this->m_hSTMT1, &col_count);
+    if (res != SQL_SUCCESS) {
+        return false;
+    }
+
+    this->bound_column_data.clear();
+    this->bound_column_data.resize(col_count + 1);
+
+    for (int col_idx = 1; col_idx < col_count + 1; ++col_idx) {
+        SQLSMALLINT sql_type = 0;
+        SQLUINTEGER sql_size = 0;
+
+        BoundColumnData& bound_data = bound_column_data[col_idx];
+        res = SQLDescribeCol(this->m_hSTMT1,
+            col_idx,
+            nullptr,
+            0,
+            nullptr,
+            &sql_type,
+            &sql_size,
+            nullptr,
+            nullptr);
+
+        if (res != SQL_SUCCESS) {
+            return false;
+        }
+
+        switch (sql_type) {
+            case SQL_BIT:
+            case SQL_TINYINT:
+            case SQL_SMALLINT:
+            case SQL_INTEGER:
+            case SQL_BIGINT:
+                bound_data.c_type = SQL_C_SBIGINT;
+                break;
+            case SQL_CHAR:
+            case SQL_VARCHAR:
+                bound_data.c_type = SQL_C_CHAR;
+                break;
+            case SQL_DOUBLE:
+            case SQL_FLOAT:
+            case SQL_REAL:
+                bound_data.c_type = SQL_C_DOUBLE;
+                break;
+        };
+
+        /// ODBC drivers always append a null terminator to character types
+        if (bound_data.c_type == SQL_C_CHAR) {
+            bound_data.data.resize(sql_size + 1);
+        } else {
+            bound_data.data.resize(sql_size);
+        }
+
+        res = SQLBindCol(this->m_hSTMT1,
+            col_idx,
+            bound_data.c_type,
+            bound_data.data.data(),
+            bound_data.data.size(),
+            &bound_data.cb_data);
+
+        if (res != SQL_SUCCESS) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 FetchResult
 classODBC::fetch() {
-    const SQLRETURN res = SQLFetch(this->m_hSTMT1);
+    const bool bound = this->auto_bind();
+    if (!bound) {
+        return FetchResult::Error;
+    }
+
+    // Optimization: Currently we only fetch one row at a time using SQLFetch,
+    // this results in one call to the odbc driver per row. Ideally we should use
+    // a block cursor to fetch multiple rows in a single call. This would reduce
+    // the driver overhead for queries with many rows. See: `SQLFetchScroll`
+    // and `SQLSetStmtAttr with `SQL_ATTR_ROW_ARRAY_SIZE` to to a larger number.
+    SQLRETURN res = SQLFetch(this->m_hSTMT1);
     if (res == SQL_NO_DATA) {
         return FetchResult::NoData;
     }
@@ -1071,56 +1156,47 @@ classODBC::fetch() {
     return FetchResult::Error;
 }
 
-int
-classODBC::column_length(size_t idx) {
-    int res = 0;
-    SQLColAttribute(this->m_hSTMT1, idx, SQL_DESC_LENGTH, nullptr, 0, nullptr, &res);
-    return res;
-}
-
 std::vector<uint8_t>
 classODBC::get_binary(size_t col) {
-    const int size = this->column_length(col);
-    std::vector<uint8_t> res(size);
-    SQLGetData(this->m_hSTMT1, col, SQL_C_BINARY, res.data(), size, nullptr);
-    return res;
+    if (col > this->bound_column_data.size()) {
+        return {};
+    }
+    return this->bound_column_data[col].data;
 }
 
 int16_t
 classODBC::get_int16(size_t col) {
-    int16_t val = 0;
-    SQLGetData(this->m_hSTMT1, col, SQL_C_SSHORT, &val, 0, nullptr);
-    return val;
+    if (col > this->bound_column_data.size()) {
+        return 0;
+    }
+    return Util::from_bytes_le<int16_t>(this->bound_column_data[col].data);
 }
 
 int32_t
 classODBC::get_int32(size_t col) {
-    int32_t val = 0;
-    SQLGetData(this->m_hSTMT1, col, SQL_C_SLONG, &val, 0, nullptr);
-    return val;
+    if (col > this->bound_column_data.size()) {
+        return 0;
+    }
+    return Util::from_bytes_le<int32_t>(this->bound_column_data[col].data);
 }
 
 int64_t
 classODBC::get_int64(size_t col) {
-    int64_t val = 0;
-    SQLGetData(this->m_hSTMT1, col, SQL_C_SBIGINT, &val, 0, nullptr);
-    return val;
+    if (col > this->bound_column_data.size()) {
+        return 0;
+    }
+    return Util::from_bytes_le<int64_t>(this->bound_column_data[col].data);
 }
 
 std::string
 classODBC::get_string(size_t col) {
-    // `SQLGetData()` will always append a null terminator
-    const int size = this->column_length(col) + 1;
+    if (col > this->bound_column_data.size()) {
+        return "";
+    }
 
-    std::string res;
-    res.resize(size);
+    std::string res = Util::from_bytes_le<std::string>(this->bound_column_data[col].data);
 
-    SQLGetData(this->m_hSTMT1, col, SQL_C_CHAR, res.data(), size, nullptr);
-
-    // Sometimes `SQLGetData() appends a null terminator, othertimes our buffer is larger
-    // than the actual content size since `column_length()` returned the max capacity but
-    // the column type is variable sized. In both those cases we want to truncate the string
-    // to the character before first null terminator.
+    /// ODBC drivers always append a null terminator to character types
     const int null_pos = res.find('\0');
     if (null_pos != std::string::npos) {
         res.resize(null_pos);

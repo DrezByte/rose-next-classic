@@ -14,6 +14,7 @@ get_exe_dir() {
 }
 
 namespace Rose::Util {
+
 std::unordered_map<std::string, std::string>
 parse_args(int argc, char** argv) {
     std::unordered_map<std::string, std::string> res;
@@ -34,4 +35,5 @@ split_string_whitespace(const std::string& s) {
     return std::vector<std::string>{std::istream_iterator<std::string>{iss},
         std::istream_iterator<std::string>{}};
 }
+
 }; // namespace Rose::Util
