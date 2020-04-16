@@ -10,7 +10,8 @@
 
 SHO_WS* g_instance;
 
-int shutdown(int exit_code=0) {
+int
+shutdown(int exit_code = 0) {
     LOG_INFO("Shutting down...");
     g_instance->Active(false);
     g_instance->ShutdownCLI_SOCKET();

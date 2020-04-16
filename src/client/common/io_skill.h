@@ -193,7 +193,7 @@ enum enumSKILL_TAGER_FILTER {
 //	스킬 레렙업시 소모 비용 / 100
 //#define SKILL_DURATION_EFFECT( I )			g_SkillList.m_SkillDATA.m_ppDATA[ I ][ 66 ]		//
 //지속마법 효과 #define SKILL_DURATION_SOUND( I )			g_SkillList.m_SkillDATA.m_ppDATA[ I ][
-//67 ]		//	지속마법 효과음
+// 67 ]		//	지속마법 효과음
 
 /*
 #define	SA_SELF_STOP							0		// 스킬 적용후 정지

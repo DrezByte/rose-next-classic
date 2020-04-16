@@ -196,8 +196,8 @@ CQuestDlg::Update(POINT ptMouse) {
 
     //	if( pCtrl->IsInside(ptMouse.x, ptMouse.y ) )
     //	{
-    //		CToolTipMgr::GetInstance().RegUIInfo( (short)ptMouse.x, (short)ptMouse.y, GetDialogType(),
-    //pCtrl->GetControlID()); 		break;
+    //		CToolTipMgr::GetInstance().RegUIInfo( (short)ptMouse.x, (short)ptMouse.y,
+    //GetDialogType(), pCtrl->GetControlID()); 		break;
     //	}
     //}
 }

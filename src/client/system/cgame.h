@@ -215,7 +215,7 @@ private:
     void Load_NewVersionData();
     bool Load_BasicDATA();
     bool Load_BasicDATA2(); //시간이 많이 걸리는 Data Loading( CGameLoadSelectAvatarState에서
-                            //Loading 한다.)
+                            // Loading 한다.)
     bool Load_DataNotUseThread(); ///쓰레드를 사용해서 읽으면 안되는 Data를 Load하는 Method: 순서상
                                   ///제일먼저해야한다.
     void Free_BasicDATA();

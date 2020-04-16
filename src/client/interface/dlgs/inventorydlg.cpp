@@ -563,14 +563,16 @@ CInventoryDLG::MoveWindow(POINT ptMouse) {
 //	{
 //		for( iRealSlotIndex = 0; iRealSlotIndex < INVENTORY_PAGE_SIZE; ++iRealSlotIndex )
 //		{
-//			iRealInvenIndex   = MAX_EQUIP_IDX + ( iTypeIndex * INVENTORY_PAGE_SIZE ) + iRealSlotIndex
+//			iRealInvenIndex   = MAX_EQUIP_IDX + ( iTypeIndex * INVENTORY_PAGE_SIZE ) +
+//iRealSlotIndex
 //;
 //
 //			Item = m_pInventory->m_ItemPAGE[ iTypeIndex ][ iRealSlotIndex ];
 //
 //			if( !Item.IsEmpty() )
 //			{
-//				for( iVirtualSlotIndex = 0; iVirtualSlotIndex < INVENTORY_PAGE_SIZE; ++iVirtualSlotIndex
+//				for( iVirtualSlotIndex = 0; iVirtualSlotIndex < INVENTORY_PAGE_SIZE;
+//++iVirtualSlotIndex
 //)
 //				{
 //					InvenIcon = m_VirtualInventory[ iTypeIndex ][ iVirtualSlotIndex ];
@@ -587,13 +589,14 @@ CInventoryDLG::MoveWindow(POINT ptMouse) {
 //					if( iEmptySlotIdx >= 0 && iEmptySlotIdx < INVENTORY_PAGE_SIZE )
 //					{
 //						m_VirtualInventory[iTypeIndex][iEmptySlotIdx].SetInvenIdx( iRealInvenIndex
-//); 						ptDraw.x = m_sPosition.x + ITEM_START_POS_X + ( (iEmptySlotIdx%10) * ITEM_WIDTH ); 						ptDraw.y =
-//m_sPosition.y + ITEM_START_POS_Y + ( (iEmptySlotIdx/10) * ITEM_HEIGHT );
+//); 						ptDraw.x = m_sPosition.x + ITEM_START_POS_X + ( (iEmptySlotIdx%10) * ITEM_WIDTH );
+//ptDraw.y = m_sPosition.y + ITEM_START_POS_Y + ( (iEmptySlotIdx/10) * ITEM_HEIGHT );
 //						m_VirtualInventory[iTypeIndex][iEmptySlotIdx].SetPosition( ptDraw );
 //					}
 //					else
 //					{
-//						LogString( LOG_NORMAL, "Error Add Item to Virtual Inventory: Not Found Empty Slot"
+//						LogString( LOG_NORMAL, "Error Add Item to Virtual Inventory: Not Found Empty
+//Slot"
 //);
 //					}
 //				}

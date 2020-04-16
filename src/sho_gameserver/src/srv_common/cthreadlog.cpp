@@ -266,10 +266,9 @@ CThreadLOG::When_ws_CLAN(char* szName,
 //	{
 //		this->m_ItemSTR.Printf( "Account:%s[ %s ]", pSourAVT->Get_ACCOUNT(), szCode );
 //
-//		this->m_QuerySTR.Printf("INSERT tblGS_LOG ( dateREG, txtSUBJECT, txtSBJIP, txtACTION, txtLOC,
-//txtITEM ) VALUES( \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\' );", 				this->GetCurDateTimeSTR(),
-//				pSourAVT->Get_NAME(),
-//				pSourAVT->Get_IP(),
+//		this->m_QuerySTR.Printf("INSERT tblGS_LOG ( dateREG, txtSUBJECT, txtSBJIP, txtACTION,
+//txtLOC, txtITEM ) VALUES( \'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\' );",
+// this->GetCurDateTimeSTR(), 				pSourAVT->Get_NAME(), 				pSourAVT->Get_IP(),
 //
 //				"CheatCODE",
 //				this->GetLocationSTR( pSourAVT->m_nZoneNO, pSourAVT->m_PosCUR ),

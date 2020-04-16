@@ -562,15 +562,16 @@ GS_CThreadSQL::Clear_LoginTABLE() {
     if (0 == ::Get_ServerLangTYPE()) {
         if (this->db->ExecSQL("DELETE FROM tblGS_LogIN;") < 1) {
             // 오류 또는 만들어진것이 없다.
-            g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR in Clear_LoginTABLE:: %s \n", this->db->GetERROR());
+            g_LOG.CS_ODS(LOG_NORMAL,
+                "Exec ERROR in Clear_LoginTABLE:: %s \n",
+                this->db->GetERROR());
         }
     }
 }
 void
 GS_CThreadSQL::Add_LoginACCOUNT(char* szAccount) {
     if (0 == ::Get_ServerLangTYPE()) {
-        if (this->db->ExecSQL(
-                "INSERT tblGS_LogIN (txtACCOUNT, txtServerIP) VALUES(\'%s\',\'%s\');",
+        if (this->db->ExecSQL("INSERT tblGS_LogIN (txtACCOUNT, txtServerIP) VALUES(\'%s\',\'%s\');",
                 szAccount,
                 CLIB_GameSRV::GetInstance()->GetServerIP())
             < 1) {
@@ -585,8 +586,7 @@ GS_CThreadSQL::Add_LoginACCOUNT(char* szAccount) {
 void
 GS_CThreadSQL::Sub_LoginACCOUNT(char* szAccount) {
     if (0 == ::Get_ServerLangTYPE() && NULL != szAccount) {
-        if (this->db->ExecSQL("DELETE FROM tblGS_LogIN WHERE txtACCOUNT=\'%s\';", szAccount)
-            < 1) {
+        if (this->db->ExecSQL("DELETE FROM tblGS_LogIN WHERE txtACCOUNT=\'%s\';", szAccount) < 1) {
             // 오류 또는 만들어진것이 없다.
             g_LOG.CS_ODS(LOG_NORMAL,
                 "Exec ERROR in Sub_LoginACCOUNT(%s):: %s \n",
@@ -1966,7 +1966,10 @@ GS_CThreadSQL::Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE) {
         MQ_PARAM_END);
     if (this->db->ExecSQLBuffer() < 0) {
         // 고치기 실패 !!!
-        g_LOG.CS_ODS(LOG_NORMAL, "SQL Exec ERROR:: UPDATE %s %s \n", WORLD_VAR, this->db->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL,
+            "SQL Exec ERROR:: UPDATE %s %s \n",
+            WORLD_VAR,
+            this->db->GetERROR());
     }
 
     return true;

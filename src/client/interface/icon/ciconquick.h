@@ -5,7 +5,8 @@
 /**
  * 퀵바에 사용되는 Icon, 내부적으로 다른 아이콘을 가지고 있다.
  *
- * @Warning		항상 CIcon의 virtual method를 구현해주어야 한다.( 멤버로 가지고 있는 CIcon이 동작하도록
+ * @Warning		항상 CIcon의 virtual method를 구현해주어야 한다.( 멤버로 가지고 있는 CIcon이
+ * 동작하도록
  * )
  * @Author		최종진
  * @Date			2005/9/6

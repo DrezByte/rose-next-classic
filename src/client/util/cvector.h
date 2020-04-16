@@ -50,13 +50,15 @@ operator-(const CVec2& v1, const CVec2& v2) {
     return Vec;
 }
 
-inline const CVec2 operator*(const float fScale, const CVec2& v1) {
+inline const CVec2
+operator*(const float fScale, const CVec2& v1) {
     CVec2 Vec;
     Vec.x = fScale * v1.x;
     Vec.y = fScale * v1.y;
     return Vec;
 }
-inline const CVec2 operator*(const CVec2& v1, const float fScale) {
+inline const CVec2
+operator*(const CVec2& v1, const float fScale) {
     CVec2 Vec;
     Vec.x = v1.x * fScale;
     Vec.y = v1.y * fScale;
@@ -71,7 +73,8 @@ operator/(const CVec2& v1, const float fScale) {
     return Vec;
 }
 
-inline const CVec2 operator*(const CVec2& v1, const CVec2& v2) {
+inline const CVec2
+operator*(const CVec2& v1, const CVec2& v2) {
     CVec2 Vec;
     Vec.x = v1.x * v2.x;
     Vec.y = v1.y * v2.y;

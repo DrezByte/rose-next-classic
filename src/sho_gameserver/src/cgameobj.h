@@ -8,9 +8,9 @@
 
 #include "classPACKET.h"
 #include "CObjVAR.h"
-    //---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
-    class classUSER;
+class classUSER;
 class CZoneSECTOR;
 class CZoneTHREAD;
 

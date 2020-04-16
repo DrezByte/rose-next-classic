@@ -611,12 +611,13 @@ CTEditBox::OnChar(WPARAM wParam, LPARAM lParam) {
                 //{
                 //	const char* pCurrViewPos = &m_pszBuffer[ m_iViewPos ];
                 //	const char* pNextViewPos = CharNextExA(
-                //CTControlMgr::GetInstance()->GetCodePage(), pCurrViewPos, 0 ); 	if( pNextViewPos !=
-                //pCurrViewPos ) 		m_iViewPos += ( pNextViewPos - pCurrViewPos ) / sizeof( char );
+                // CTControlMgr::GetInstance()->GetCodePage(), pCurrViewPos, 0 ); 	if( pNextViewPos
+                // != pCurrViewPos ) 		m_iViewPos += ( pNextViewPos - pCurrViewPos ) / sizeof(
+                // char );
                 //}
 
                 //_RPT2( _CRT_WARN,"WM_CHAR: m_iViewPos %d, m_iPromptPos %d\n", m_iViewPos ,
-                //m_iPromptPos );
+                // m_iPromptPos );
             }
         } break;
     }

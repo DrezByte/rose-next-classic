@@ -347,7 +347,7 @@ classUSER::Parse_CheatCODE(char* szCode) {
 
     command_name.erase(0, 1);
     if (command_name == "maps") {
-        //std::string message("ID Name\n-------\n");
+        // std::string message("ID Name\n-------\n");
         this->Send_gsv_WHISPER("Server", "| ID | Name |");
         this->Send_gsv_WHISPER("Server", "-------------");
         for (int zone_idx = 0; zone_idx < g_TblZONE.m_nDataCnt; ++zone_idx) {
@@ -357,7 +357,8 @@ classUSER::Parse_CheatCODE(char* szCode) {
             }
 
             std::stringstream message("| ");
-            message << std::setfill('0') << std::setw(2) << zone_idx << " | " << std::string(zone_name);
+            message << std::setfill('0') << std::setw(2) << zone_idx << " | "
+                    << std::string(zone_name);
 
             this->Send_gsv_WHISPER("Server", (char*)message.str().c_str());
         }
@@ -451,7 +452,8 @@ classUSER::Parse_CheatCODE(char* szCode) {
             pArg3 = pStrVAR->GetTokenNext(pDelimiters);
             if (!pArg2 || !pArg3) {
                 this->Send_gsv_WHISPER("Server", "Usage: /item <type_id> <item_id> <quantity>");
-                this->Send_gsv_WHISPER("Server", "Usage: /item <type_id> <item_id> <stat_id> <socket>");
+                this->Send_gsv_WHISPER("Server",
+                    "Usage: /item <type_id> <item_id> <stat_id> <socket>");
                 return CHEAT_INVALID;
             }
             char* pArg4 = pStrVAR->GetTokenNext(pDelimiters);

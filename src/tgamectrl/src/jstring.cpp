@@ -30,8 +30,8 @@ CJString::AddString(const char* pszString, SIZE sizeString, int iFont, DWORD dwC
 
 //----------------------------------------------------------------------------------------
 /// @param y :  bTramsform == true 일경우에는 offset_y에 더하지 않는다.
-///				bTransform == false 일경우에는 라인간격으로도 사용된다.( 버그성 코드 - 추후 수정되어야 한다.
-///2005_6_14_23:55)
+///				bTransform == false 일경우에는 라인간격으로도 사용된다.( 버그성 코드 - 추후 수정되어야
+///한다. 2005_6_14_23:55)
 //----------------------------------------------------------------------------------------
 void
 CJString::Draw(int x, int y, bool bTransform, DWORD force_text_color) {

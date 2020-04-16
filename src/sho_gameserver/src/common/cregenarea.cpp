@@ -309,7 +309,7 @@ CRegenPOINT::Proc(DWORD dwCurTIME) {
     //#ifdef	_DEBUG
     //	if ( m_iLastCurTactics != m_iCurTactics ) {
     //		//AddMsgToChatWND(CStr::Printf (">>>> 전술포인트 변화: %d => %d", m_iLastCurTactics,
-    //m_iCurTactics ), g_dwBLUE ); 		m_iLastCurTactics = m_iCurTactics;
+    // m_iCurTactics ), g_dwBLUE ); 		m_iLastCurTactics = m_iCurTactics;
     //	}
     //#endif
 }

@@ -83,14 +83,15 @@ CClanSkillListItem::Draw() {
             //	{
             //		iUseValue = g_pAVATAR->Skill_ToUseAbilityVALUE( iSkillNo, i );
             //		pszBuf = CStr::Printf( "%s %d", CStringManager::GetSingleton().GetAbility(
-            //SKILL_USE_PROPERTY(iSkillNo,i) ), iUseValue );
+            // SKILL_USE_PROPERTY(iSkillNo,i) ), iUseValue );
 
-            //		if( g_pAVATAR->GetCur_AbilityValue(SKILL_USE_PROPERTY( iSkillNo, i)) >= iUseValue
+            //		if( g_pAVATAR->GetCur_AbilityValue(SKILL_USE_PROPERTY( iSkillNo, i)) >=
+            //iUseValue
             //)
             //			::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, ptDraw.x, ptDraw.y,
-            //g_dwGREEN ,pszBuf ); 		else
-            //			::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, ptDraw.x, ptDraw.y, g_dwRED
-            //,pszBuf );
+            // g_dwGREEN ,pszBuf ); 		else
+            //			::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, ptDraw.x, ptDraw.y,
+            //g_dwRED ,pszBuf );
 
             //		ptDraw.x += 50;
             //	}

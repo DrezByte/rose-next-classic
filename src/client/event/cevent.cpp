@@ -447,10 +447,13 @@ CEvent::Load(char* szFileName) {
     m_pLuaDATA = new char[m_iLuaDataLEN];
     // m_pLuaDATA[ m_iLuaDataLEN ] =0;
     SCRREAD(hf, m_pLuaDATA, m_iLuaDataLEN);
-    Decode(m_pLuaDATA, m_iLuaDataLEN, m_iLuaDataLEN, lFileSize); //_tell(hf) + 1 + m_iLuaDataLEN) ;
+    Decode(m_pLuaDATA,
+        m_iLuaDataLEN,
+        m_iLuaDataLEN,
+        lFileSize); //_tell(hf) + 1 + m_iLuaDataLEN) ;
     #ifdef _DEBUG
-        // m_pLuaDATA 길이가 길어서 -_-; LogString (LOG_DEBUG_, "%s \n", m_pLuaDATA);
-        //::OutputDebugString( m_pLuaDATA );
+                    // m_pLuaDATA 길이가 길어서 -_-; LogString (LOG_DEBUG_, "%s \n", m_pLuaDATA);
+                    //::OutputDebugString( m_pLuaDATA );
     #endif
 
     close(hf);
@@ -584,7 +587,8 @@ CEvent::ParseMESSAGE(char* szMSG) {
             sprintf(m_TempBuffer, "%s%s", m_TempBuffer, GF_getReviveZoneName());
         }
 
-        // else if(strcmp(pEnd, "") == 0)			{ sprintf (m_TempBuffer, "%s%d", m_TempBuffer, 0);
+        // else if(strcmp(pEnd, "") == 0)			{ sprintf (m_TempBuffer, "%s%d", m_TempBuffer,
+        // 0);
         // }
 
         pBegin = CStr::GetTokenNext("<");

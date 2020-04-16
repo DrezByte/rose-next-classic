@@ -15,7 +15,8 @@
 
 CLIB_GameSRV* g_instance;
 
-int shutdown(int exit_code=0) {
+int
+shutdown(int exit_code = 0) {
     LOG_INFO("Shutting down...");
     g_instance->Shutdown();
     g_instance->Destroy();

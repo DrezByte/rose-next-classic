@@ -115,7 +115,7 @@ CExternalUILobby::CreateWaitAvataListDlg() {
     //	CreateWaitAvataDlg();
     //	ShowWaitMsgBox();
     //	ShowMsgBox("아바타 리스트를 받습니다",CTMsgBox::BT_CANCEL, CTMsgBox::DT_MODAL, EUI_MAX,
-    //MSG_TYPE_WAIT );
+    // MSG_TYPE_WAIT );
     return true;
 }
 
@@ -132,7 +132,7 @@ CExternalUILobby::CloseWaitAvataListDlg() {
 bool
 CExternalUILobby::CreateAvataListDlg() {
     //	CreateSelectAvataDlg();
-    if(m_pCurrDialog) {
+    if (m_pCurrDialog) {
         m_pCurrDialog->Hide();
     }
     m_pCurrDialog = (CTDialog*)m_EUIManager.GetEUI(EUI_SELECT_AVATA);

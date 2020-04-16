@@ -30,9 +30,9 @@ const int DEFAULT_USE_SCROLL_DELAY = 3000;
 //	CUseItemDelay(void);
 //	~CUseItemDelay(void);
 //
-//	void				SetUseItemDelay( int iUseItemType, int iDelayTime ) { m_UseItemDelay[ iUseItemType ]
-//= iDelayTime; }
-//	int					GetUseItemDelay( int iUseItemType )					{ return m_UseItemDelay[ iUseItemType
+//	void				SetUseItemDelay( int iUseItemType, int iDelayTime ) { m_UseItemDelay[ iUseItemType
+//] = iDelayTime; } 	int					GetUseItemDelay( int iUseItemType )					{ return
+//m_UseItemDelay[ iUseItemType
 //]; }
 //
 //	void				Clear();

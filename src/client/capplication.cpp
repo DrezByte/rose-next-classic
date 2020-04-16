@@ -377,7 +377,7 @@ CApplication::ResizeWindowByClientSize(int& iClientWidth,
     //
     //	GetClientRect( m_hWND, &rRect ); // rRect.left = rRect.top = 0
     //	if (( (rRect.right - rRect.left) != iClientWidth) || ( (rRect.bottom-rRect.top) !=
-    //iClientHeight))
+    // iClientHeight))
     //	{
     //		int cx, cy;
     //		cx = iClientWidth + iClientWidth - ( rRect.right - rRect.left );
@@ -446,7 +446,7 @@ CApplication::CreateWND(char* szClassName,
             0, // (GetSystemMetrics (SM_CXSCREEN)-START_SCR_XLEN)/2,     // horizontal position of
                // window
             0, //(GetSystemMetrics (SM_CYSCREEN)-START_SCR_YLEN)/2,     // vertical position of
-               //window
+               // window
             nWidth, // window width
             nHeight, // window height
             NULL, // handle to parent or owner window

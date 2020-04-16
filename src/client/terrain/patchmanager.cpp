@@ -360,7 +360,7 @@ CPatchManager::ExecutePatchTpye() {
         if (m_ppSubPATCH[i]->m_PreDrawingType != m_ppSubPATCH[i]->m_DrawingType)
 
             ///::setTerrainBlockIndexOrder( m_ppSubPATCH[i]->GetVISIBLE(),
-            ///m_ppSubPATCH[i]->m_DrawingType );
+            /// m_ppSubPATCH[i]->m_DrawingType );
 
             m_ppSubPATCH[i]->m_PreDrawingType = m_ppSubPATCH[i]->m_DrawingType;
     }

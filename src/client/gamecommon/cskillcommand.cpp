@@ -127,7 +127,7 @@ CBasicCommand::Execute() {
                 g_pNet->Send_cli_SET_MOTION(SKILL_ANI_ACTION_TYPE(pSkill->GetSkillIndex()));
             /// else
             ///	AddMsgToChatWND( STR_ACTION_COMMAND_STOP_STATE_FAILED, g_dwRED,
-            ///CChatDLG::CHAT_TYPE_SYSTEM );
+            /// CChatDLG::CHAT_TYPE_SYSTEM );
         } break;
         case COMMON_COMMAND_AIR_JUMP: {
             /// ∆Í≈æΩ¬∏µÂø°º±.. ±›¡ˆ
@@ -138,7 +138,7 @@ CBasicCommand::Execute() {
                 g_pNet->Send_cli_SET_MOTION(SKILL_ANI_ACTION_TYPE(pSkill->GetSkillIndex()));
             /// else
             ///	AddMsgToChatWND( STR_ACTION_COMMAND_STOP_STATE_FAILED, g_dwRED,
-            ///CChatDLG::CHAT_TYPE_SYSTEM );
+            /// CChatDLG::CHAT_TYPE_SYSTEM );
         } break;
         /// ø¿≈‰ ≈∏∞Ÿ..
         case COMMON_COMMAND_AUTO_TARGET: {

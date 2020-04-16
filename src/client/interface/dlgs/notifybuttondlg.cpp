@@ -27,7 +27,7 @@ CNotifyButtonDlg::Process(unsigned uiMsg, WPARAM wParam, LPARAM lParam) {
                 // if( CTDialog* pDlg = g_itMGR.FindDlg( DLG_TYPE_NOTIFY ) )
                 //{
                 //	POINT pt = { (*iter)->GetPosition().x, (*iter)->GetPosition().y -
-                //pDlg->GetHeight() - 2 }; 	pDlg->MoveWindow( pt );
+                // pDlg->GetHeight() - 2 }; 	pDlg->MoveWindow( pt );
                 //}
 
                 CTutorialEventUtility::GetSingleton().ExecNotifyEvent((*iter)->GetControlID());

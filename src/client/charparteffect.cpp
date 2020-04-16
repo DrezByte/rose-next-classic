@@ -29,7 +29,8 @@ CCharPartEffect::CreatePartEffect(int iPartIndex) {
     //		/// POINT_LIGHT_CONTAINER 는 맥스에서 맥을 임포터 할때 라이트를 세팅하기 위한 포인터
     //이다. 		if( pCharPART->m_pDummyPoints[ nI ].m_nEffectType < POINT_LIGHT_CONTAINER )
     //		{
-    //			m_ppEFFECT[ nI ] = g_pEffectLIST->Add_EFFECT( pCharPART->m_pDummyPoints[ nI ].m_uiEftKEY
+    //			m_ppEFFECT[ nI ] = g_pEffectLIST->Add_EFFECT( pCharPART->m_pDummyPoints[ nI
+    //].m_uiEftKEY
     //);
 
     //			if ( m_ppEFFECT[ nI ] )
@@ -37,7 +38,8 @@ CCharPartEffect::CreatePartEffect(int iPartIndex) {
     //				m_ppEFFECT[ nI ]->Transform( pCharPART->m_pDummyPoints[ nI ].m_Transform );
     //				m_ppEFFECT[ nI ]->Rotation( pCharPART->m_pDummyPoints[ nI ].m_Rotate );
     //				m_ppEFFECT[ nI ]->Scale( pCharPART->m_pDummyPoints[ nI ].m_Scale );
-    //				m_ppEFFECT[ nI ]->LinkNODE( m_pHNODES[ pCharPART->m_pDummyPoints[ nI ].m_nParent ]
+    //				m_ppEFFECT[ nI ]->LinkNODE( m_pHNODES[ pCharPART->m_pDummyPoints[ nI ].m_nParent
+    //]
     //);
 
     //				/// 밤,낮에 좌우 받는 이펙트라면 밤,낮 매니져에 등록

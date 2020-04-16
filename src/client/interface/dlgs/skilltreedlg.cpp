@@ -213,7 +213,7 @@ CSkillTreeDlg::MakeIcon(int skillindex, int level, int level_limit) {
             return pIcon;
         } else if (pSkill
             && pSkill->GetSkillLevel() >= level) ///이미 배운 스킬이라면 SkillSlot의 CSkill로
-                                                 ///CIconSkill를 생성해서 리턴한다.
+                                                 /// CIconSkill를 생성해서 리턴한다.
             return new CIconSkill(pSkill->GetSkillSlot());
         else ///안배운 스킬이라면 CIconSkillDummy를 리턴한다.
             return new CIconSkillDummy(skillindex + level - 1);

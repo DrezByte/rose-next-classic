@@ -78,6 +78,7 @@ public:
 
     void add_send_packet(const Rose::Network::Packet& p);
     void add_receive_packet(const Rose::Network::Packet& p);
+
 private:
     std::mutex send_lock;
     std::mutex receive_lock;

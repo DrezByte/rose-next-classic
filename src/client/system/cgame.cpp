@@ -834,51 +834,51 @@ CGame::AddWndMsgQ(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
 // void CGame::LoadUserCursor()
 //{
 //	m_hCursor[ CURSOR_DEFAULT ]   = (HCURSOR)::LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_DEFAULT ) ); 	m_hDxCursor[ CURSOR_DEFAULT ] = loadCursor(
+// MAKEINTRESOURCE( IDC_CURSOR_DEFAULT ) ); 	m_hDxCursor[ CURSOR_DEFAULT ] = loadCursor(
 //"CURSOR_DEFAULT",m_hCursor[ CURSOR_DEFAULT] );
 //
 //	m_hCursor[ CURSOR_ATTACK ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_ATTACK ) ); 	m_hDxCursor[ CURSOR_ATTACK ] = loadCursor(
+// MAKEINTRESOURCE( IDC_CURSOR_ATTACK ) ); 	m_hDxCursor[ CURSOR_ATTACK ] = loadCursor(
 //"CURSOR_ATTACK", m_hCursor[ CURSOR_ATTACK] );
 //
 //	m_hCursor[ CURSOR_ITEM_INVEN ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_ITEM_INVEN ) ); 	m_hDxCursor[ CURSOR_ITEM_INVEN ] = loadCursor(
+// MAKEINTRESOURCE( IDC_CURSOR_ITEM_INVEN ) ); 	m_hDxCursor[ CURSOR_ITEM_INVEN ] = loadCursor(
 //"CURSOR_ITEM_INVEN", m_hCursor[ CURSOR_ITEM_INVEN ] );
 //
 //	m_hCursor[ CURSOR_ITEM_PICK ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_ITEM_PICK ) ); 	m_hDxCursor[ CURSOR_ITEM_PICK ] = loadCursor(
+// MAKEINTRESOURCE( IDC_CURSOR_ITEM_PICK ) ); 	m_hDxCursor[ CURSOR_ITEM_PICK ] = loadCursor(
 //"CURSOR_ITEM_PICK", m_hCursor[ CURSOR_ITEM_PICK ] );
 //
 //	m_hCursor[ CURSOR_LEFT ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_LEFT ) ); 	m_hDxCursor[ CURSOR_LEFT ] = loadCursor( "CURSOR_LEFT",
-//m_hCursor[ CURSOR_LEFT ] );
+// MAKEINTRESOURCE( IDC_CURSOR_LEFT ) ); 	m_hDxCursor[ CURSOR_LEFT ] = loadCursor( "CURSOR_LEFT",
+// m_hCursor[ CURSOR_LEFT ] );
 //
 //	m_hCursor[ CURSOR_RIGHT ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_RIGHT ) ); 	m_hDxCursor[ CURSOR_RIGHT ] = loadCursor( "CURSOR_RIFHT",
-//m_hCursor[ CURSOR_RIGHT ] );
+// MAKEINTRESOURCE( IDC_CURSOR_RIGHT ) ); 	m_hDxCursor[ CURSOR_RIGHT ] = loadCursor(
+// "CURSOR_RIFHT", m_hCursor[ CURSOR_RIGHT ] );
 //
 //	m_hCursor[ CURSOR_NPC ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_NPC ) ); 	m_hDxCursor[ CURSOR_NPC ] = loadCursor( "CURSOR_NPC",
-//m_hCursor[ CURSOR_NPC ]);
+// MAKEINTRESOURCE( IDC_CURSOR_NPC ) ); 	m_hDxCursor[ CURSOR_NPC ] = loadCursor( "CURSOR_NPC",
+// m_hCursor[ CURSOR_NPC ]);
 //
 //	m_hCursor[ CURSOR_USER ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_USER ) ); 	m_hDxCursor[ CURSOR_USER ] = loadCursor( "CURSOR_USER",
-//m_hCursor[ CURSOR_USER ] );
+// MAKEINTRESOURCE( IDC_CURSOR_USER ) ); 	m_hDxCursor[ CURSOR_USER ] = loadCursor( "CURSOR_USER",
+// m_hCursor[ CURSOR_USER ] );
 //
 //	m_hCursor[ CURSOR_WHEEL ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_WHEEL ) ); 	m_hDxCursor[ CURSOR_WHEEL ] = loadCursor( "CURSOR_WHEEL" ,
-//m_hCursor[ CURSOR_WHEEL ] );
+// MAKEINTRESOURCE( IDC_CURSOR_WHEEL ) ); 	m_hDxCursor[ CURSOR_WHEEL ] = loadCursor( "CURSOR_WHEEL"
+// , m_hCursor[ CURSOR_WHEEL ] );
 //
 //	m_hCursor[ CURSOR_NOUI ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_NOUI ) ); 	m_hDxCursor[ CURSOR_NOUI ] = loadCursor( "CURSOR_NOUI",
-//m_hCursor[ CURSOR_NOUI ] );
+// MAKEINTRESOURCE( IDC_CURSOR_NOUI ) ); 	m_hDxCursor[ CURSOR_NOUI ] = loadCursor( "CURSOR_NOUI",
+// m_hCursor[ CURSOR_NOUI ] );
 //
 //	m_hCursor[ CURSOR_REPAIR ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_CURSOR_REPAIR ) ); 	m_hDxCursor[ CURSOR_REPAIR ] =  loadCursor(
+// MAKEINTRESOURCE( IDC_CURSOR_REPAIR ) ); 	m_hDxCursor[ CURSOR_REPAIR ] =  loadCursor(
 //"CURSOR_REPAIR", m_hCursor[ CURSOR_REPAIR ] );
 //
 //	m_hCursor[ CURSOR_APPRAISAL ] = (HCURSOR)LoadCursor( CApplication::Instance()->GetHINS(),
-//MAKEINTRESOURCE( IDC_IDENTIFY ) ); 	m_hDxCursor[ CURSOR_APPRAISAL ] =  loadCursor(
+// MAKEINTRESOURCE( IDC_IDENTIFY ) ); 	m_hDxCursor[ CURSOR_APPRAISAL ] =  loadCursor(
 //"CURSOR_APPRAISAL", m_hCursor[ CURSOR_APPRAISAL ] );
 //
 //	m_bUseUserMouse = true;
@@ -1060,7 +1060,8 @@ CGame::CreateSelectedAvata() {
 
     //----------------------------------------------------------------------------------------------------
     /// 슬롯 정보 세팅 + CQuickDlg 의 슬롯 업데이트( Inventory와 Skill정보를 먼저 받아야 한다.)
-    ///::CopyMemory ( &g_pAVATAR->m_HotICONS,		&m_SelectedAvataInfo.m_HotICONS,			sizeof(CHotICONS)
+    ///::CopyMemory ( &g_pAVATAR->m_HotICONS,		&m_SelectedAvataInfo.m_HotICONS,
+    ///sizeof(CHotICONS)
     ///);
     //----------------------------------------------------------------------------------------------------
     (g_pAVATAR->GetHotIconSlot())->SetHotIcons(&m_SelectedAvataInfo.m_HotICONS);

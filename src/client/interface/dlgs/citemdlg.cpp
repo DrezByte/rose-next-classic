@@ -781,9 +781,9 @@ CItemDlg::ActionPerformed(CActionEvent* e) {
                                                 g_pNet->Send_cli_USE_ITEM_TO_REPAIR(
                                                     refGame.GetUsingRepairItemInvenIdx(),
                                                     pItemIcon->GetIndex());
-                                                //												CTCommand* pCmd = new
-                                                //CTCmdEndRepair; 												g_itMGR.AddTCommand( DLG_TYPE_MAX,
-                                                //pCmd );
+                                                //												CTCommand* pCmd =
+                                                //new CTCmdEndRepair;
+                                                // g_itMGR.AddTCommand( DLG_TYPE_MAX, pCmd );
                                                 return e->GetID();
                                                 break;
                                             }
@@ -791,9 +791,9 @@ CItemDlg::ActionPerformed(CActionEvent* e) {
                                                 g_pNet->Send_cli_REPAIR_FROM_NPC(
                                                     refGame.GetRepairNpcSvrIdx(),
                                                     pItemIcon->GetIndex());
-                                                //												CTCommand* pCmd = new
-                                                //CTCmdEndRepair; 												g_itMGR.AddTCommand( DLG_TYPE_MAX,
-                                                //pCmd );
+                                                //												CTCommand* pCmd =
+                                                //new CTCmdEndRepair;
+                                                // g_itMGR.AddTCommand( DLG_TYPE_MAX, pCmd );
                                                 return e->GetID();
                                                 break;
                                             }

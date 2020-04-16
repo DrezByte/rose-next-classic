@@ -46,9 +46,10 @@ CDamageEffect::Init() {
     // for( i = 0; i < MAX_DIGIT_EFFECT ; i++ )
     //{
     //	hMat = ::loadNullColormapMaterial( CStr::Printf ("DigitEffect_%d", i ),
-    //g_GameDATA.m_hShader_nolit, DIGIT_WIDTH * DIGIT_COUNT, DIGIT_HEIGHT);
+    // g_GameDATA.m_hShader_nolit, DIGIT_WIDTH * DIGIT_COUNT, DIGIT_HEIGHT);
     //	//hMat = ::loadColormapMaterial( CStr::Printf ("DigitEffect_%d", i ),
-    //g_GameDATA.m_hShader_nolit, "3DData\\Effect\\Special\\DigitNumber01.tga" ); 	if( hMat == NULL )
+    // g_GameDATA.m_hShader_nolit, "3DData\\Effect\\Special\\DigitNumber01.tga" ); 	if( hMat == NULL
+    // )
     //	{
     //		ClearAll();
     //		return false;
@@ -62,7 +63,7 @@ CDamageEffect::Init() {
     //	}
     //
     //	hAnimatable = ::loadAnimatable( CStr::Printf ("DigitNode_%d", i ), hMesh, m_hMotion, hMat,
-    //g_GameDATA.m_hShader_nolit ); 	if( hAnimatable == NULL )
+    // g_GameDATA.m_hShader_nolit ); 	if( hAnimatable == NULL )
     //	{
     //		ClearAll();
     //		return false;
@@ -113,7 +114,8 @@ CDamageEffect::Init() {
     //
     ///// Load digit number
     // m_DigitTex[ DIGIT_NORMAL ] = loadTextureWithPool (
-    // "3DData\\Effect\\Special\\DigitNumber01.dds", 													"3DData\\Effect\\Special\\DigitNumber01.dds", 													1,
+    // "3DData\\Effect\\Special\\DigitNumber01.dds",
+    // "3DData\\Effect\\Special\\DigitNumber01.dds", 1,
     //													0,
     //													2 );
     // if( m_DigitTex[ DIGIT_NORMAL ] == NULL )
@@ -126,7 +128,8 @@ CDamageEffect::Init() {
 
     ///// Load digit number
     // m_DigitTex[ DIGIT_ATTACKED ] = loadTextureWithPool (
-    // "3DData\\Effect\\Special\\DigitNumber02.dds", 													"3DData\\Effect\\Special\\DigitNumber02.dds", 													1,
+    // "3DData\\Effect\\Special\\DigitNumber02.dds",
+    // "3DData\\Effect\\Special\\DigitNumber02.dds", 1,
     //													0,
     //													2 );
     // if( m_DigitTex[ DIGIT_ATTACKED ] == NULL )

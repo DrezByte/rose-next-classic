@@ -166,19 +166,19 @@ CSkillListItem::Draw() {
             //	{
             //		iUseValue = g_pAVATAR->Skill_ToUseAbilityVALUE( iSkillNo, i );
             //		strUseAbility.append( CStr::Printf( "%s:%d",
-            //CStringManager::GetSingleton().GetAbility( SKILL_USE_PROPERTY(iSkillNo,i) ), iUseValue
-            //) ); 		strUseAbility.append("   ");
+            // CStringManager::GetSingleton().GetAbility( SKILL_USE_PROPERTY(iSkillNo,i) ),
+            // iUseValue ) ); 		strUseAbility.append("   ");
             //		//if( g_pAVATAR->GetCur_AbilityValue(SKILL_USE_PROPERTY( iSkillNo, i)) >=
-            //iUseValue )
+            // iUseValue )
             //		//{
             //		//	::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, ptDraw.x, ptDraw.y,
-            //g_dwGREEN ,pszBuf );
+            // g_dwGREEN ,pszBuf );
             //		//	sStrBuf.set_string( pszBuf, rtDraw, FONT_NORMAL );
             //		//}
             //		//else
             //		//{
             //		//	::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, ptDraw.x, ptDraw.y,
-            //g_dwRED ,pszBuf );
+            // g_dwRED ,pszBuf );
             //		//}
             //		//ptDraw.x += 50;
             //	}

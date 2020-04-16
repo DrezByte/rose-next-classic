@@ -427,8 +427,8 @@
     CStringManager::GetSingleton().GetString(384) /// 부품의 버전수치가 바디보다 높습니다
 #define STR_CLAN_LEVELUP CStringManager::GetSingleton().GetString(385)
 
-///#define STR_CANT_CASTING_STATE_CART					CStringManager::GetSingleton().GetString( 456 )			///
-///탑승중에는 시전할수 없습니다.
+///#define STR_CANT_CASTING_STATE_CART					CStringManager::GetSingleton().GetString( 456 )
+////// 탑승중에는 시전할수 없습니다.
 
 /// 386 ~ 407 : 능력속성이름
 
@@ -538,7 +538,8 @@
     CStringManager::GetSingleton().GetString(507) //더이상 레벨업이 되지 않습니다
 #define STR_CANT_REPAIR_DURABILITY_IS_ZERO \
     CStringManager::GetSingleton().GetString(508) //내구도가 없어서 수리가 불가능합니다
-//#define STR_INVALID_CHARACTER_NAME					CStringManager::GetSingleton().GetString( 509
+//#define STR_INVALID_CHARACTER_NAME					CStringManager::GetSingleton().GetString(
+//509
 //)//이름에 허용되지 않는 글자가 있습니다
 #define STR_LOGIN_REPLY_TOO_MANY_USER         \
     CStringManager::GetSingleton().GetString( \

@@ -59,7 +59,7 @@ CBankWindowDlg::Draw() {
     //"111111111111111111111111111111111111111111111111111111111111111" ); 	break; case
     // TYPE_WITHDRAW:
     //	::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, 5, 10, g_dwORANGE,
-    //STR_QUERY_BANK_WITHDRAW ); 	break; default:
+    // STR_QUERY_BANK_WITHDRAW ); 	break; default:
     //	::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, 5, 10, g_dwORANGE, "Invalid Type" );
     //	break;
     //}

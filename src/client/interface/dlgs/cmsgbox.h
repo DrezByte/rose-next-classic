@@ -28,7 +28,7 @@ public:
     void SetIcons(std::list<CIcon*>& Icons);
 
     ///중복되어서 열린 MsgBox들을 같은 Type별로 모두 닫고 싶을때 Type을 지정하고 OpenMsgBox에서 그
-    ///Type을 인자로 넘겨준다.
+    /// Type을 인자로 넘겨준다.
     enum {
         MSGTYPE_NONE,
         MSGTYPE_RECV_TRADE_REQ,

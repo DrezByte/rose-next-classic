@@ -66,7 +66,8 @@ enum class StatusEffectFlag : uint32_t {
     Clear = DecreaseLifetime | StoreMode | IntroChat,
 };
 
-inline constexpr StatusEffectFlag operator&(StatusEffectFlag x, StatusEffectFlag y) {
+inline constexpr StatusEffectFlag
+operator&(StatusEffectFlag x, StatusEffectFlag y) {
     return static_cast<StatusEffectFlag>(static_cast<uint64_t>(x) & static_cast<uint64_t>(y));
 }
 

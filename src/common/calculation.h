@@ -16,7 +16,7 @@ class CObjCHAR;
 #endif
 class CObjMOB;
 
-enum class DropRule: int {
+enum class DropRule : int {
     Default = 0,
     AlwaysAppraisal = 3,
     AlwaysSlotted = 4,

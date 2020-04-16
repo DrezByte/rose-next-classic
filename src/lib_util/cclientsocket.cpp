@@ -32,8 +32,7 @@ struct t_SendPACKET {
     };
 };
 
-CClientSOCKET::CClientSOCKET() :
-    sent_bytes(0) {
+CClientSOCKET::CClientSOCKET(): sent_bytes(0) {
     _Init();
 }
 
@@ -58,7 +57,8 @@ unsigned __stdcall ClientSOCKET_SendTHREAD(void* lpParameter) {
             continue;
         }
 
-        if (pClientSocket->m_SendPacketQ.GetNodeCount() > 0 || !pClientSocket->send_packets.empty()) {
+        if (pClientSocket->m_SendPacketQ.GetNodeCount() > 0
+            || !pClientSocket->send_packets.empty()) {
             if (!pClientSocket->Packet_Send()) {
             }
         }
@@ -392,7 +392,8 @@ CClientSOCKET::Packet_Send(void) {
     while (!this->send_packets.empty()) {
         const Packet& p = this->send_packets.front();
 
-        const int result = this->Send(p.buffer.data() + this->sent_bytes, p.buffer.size() - this->sent_bytes);
+        const int result =
+            this->Send(p.buffer.data() + this->sent_bytes, p.buffer.size() - this->sent_bytes);
         if (result == SOCKET_ERROR) {
             const int wsa_error = ::WSAGetLastError();
             if (wsa_error != WSAEWOULDBLOCK) {
@@ -484,15 +485,14 @@ CClientSOCKET::Close() {
 }
 
 void
-CClientSOCKET::add_send_packet(const Packet& p)
-{
+CClientSOCKET::add_send_packet(const Packet& p) {
     std::lock_guard<std::mutex> lock(this->send_lock);
     this->send_packets.push(p);
     ::SetEvent(m_hThreadEvent);
 }
 
-void CClientSOCKET::add_receive_packet(const Packet& p)
-{
+void
+CClientSOCKET::add_receive_packet(const Packet& p) {
     std::lock_guard<std::mutex> lock(this->receive_lock);
     this->receive_packets.push(p);
 }

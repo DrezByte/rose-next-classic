@@ -178,8 +178,9 @@ CParty::GetMemberCount() {
 //*----------------------------------------------------------------------
 bool
 CParty::IsPartyLeader() {
-    if (g_pAVATAR->GetUniqueTag() == m_dwLeaderObjectTAG) // g_pObjMGR->Get_ServerObjectIndex(g_pAVATAR->Get_INDEX())
-                                                          // == m_wLeaderObjSvrIdx )
+    if (g_pAVATAR->GetUniqueTag()
+        == m_dwLeaderObjectTAG) // g_pObjMGR->Get_ServerObjectIndex(g_pAVATAR->Get_INDEX())
+                                // == m_wLeaderObjSvrIdx )
         return true;
 
     return false;

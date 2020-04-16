@@ -160,10 +160,10 @@ CIconSkill::GetToolTip(CInfo& ToolTip, DWORD dwDialogType, DWORD dwType) {
                 break;
             }
             case SKILL_ACTION_IMMEDIATE: /// 3,				///< 근접 즉시 발동.( 즉시 모션 교체 )
-            case SKILL_ACTION_ENFORCE_WEAPON: /// 4,		///< 무기상태 변경( 강화, 효과 연출( 정령탄?
-                                              /// ) )
-            case SKILL_ACTION_ENFORCE_BULLET: /// 5,		///< 강화총알 변경 발사. ( 아이스 애로우..
-                                              /// 실제 화살이 변하는.. )
+            case SKILL_ACTION_ENFORCE_WEAPON: /// 4,		///< 무기상태 변경( 강화, 효과 연출(
+                                              /// 정령탄? ) )
+            case SKILL_ACTION_ENFORCE_BULLET: /// 5,		///< 강화총알 변경 발사. ( 아이스
+                                              /// 애로우.. 실제 화살이 변하는.. )
             {
                 AddSkillName(iSkillNo, ToolTip);
                 AddSkillTypeTarget(iSkillNo, ToolTip);
@@ -267,8 +267,8 @@ CIconSkill::GetToolTip(CInfo& ToolTip, DWORD dwDialogType, DWORD dwType) {
                 break;
             }
             case SKILL_ACTION_SELF_BOUND_DURATION: ///=8
-            case SKILL_ACTION_SELF_STATE_DURATION: /// = 12,		///< 자신에게 발동 지속 마법.( 캐스팅
-                                                   /// 유 ) 상태관련
+            case SKILL_ACTION_SELF_STATE_DURATION: /// = 12,		///< 자신에게 발동 지속 마법.(
+                                                   /// 캐스팅 유 ) 상태관련
             {
                 AddSkillName(iSkillNo, ToolTip);
 
@@ -338,8 +338,8 @@ CIconSkill::GetToolTip(CInfo& ToolTip, DWORD dwDialogType, DWORD dwType) {
 
                 break;
             }
-            case SKILL_ACTION_SELF_BOUND: /// = 10,			///< 자신에게 발동 바로 업 마법.( 캐스팅 유
-                                          /// ) 능력치
+            case SKILL_ACTION_SELF_BOUND: /// = 10,			///< 자신에게 발동 바로 업 마법.( 캐스팅
+                                          /// 유 ) 능력치
             {
                 AddSkillName(iSkillNo, ToolTip);
                 AddSkillTypeTarget(iSkillNo, ToolTip);
@@ -663,8 +663,8 @@ CIconSkill::AddSkillScope(int iSkillNo, CInfo& ToolTip) {
 //		{
 //			int iAbility = SKILL_INCREASE_ABILITY( iSkillNo, i );
 //			int iValue   = SKILL_INCREASE_ABILITY_VALUE( iSkillNo, i );
-//			pszBuf = CStr::Printf("[%s:%s %d] ",STR_EFFECT,CStringManager::GetSingleton().GetAbility(
-//iAbility ), iValue );
+//			pszBuf = CStr::Printf("[%s:%s %d]
+//",STR_EFFECT,CStringManager::GetSingleton().GetAbility( iAbility ), iValue );
 //
 //			ToolTip.AddString( pszBuf, g_dwBlueToolTip );
 //		}

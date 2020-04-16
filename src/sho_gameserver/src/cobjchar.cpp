@@ -224,7 +224,7 @@ CObjCHAR::Send_gsv_MOUSECMD(int iTargetObject) {
 bool
 CObjCHAR::Send_gsv_MOVE() {
     //	LogString( 0xffff, "Send_gsv_MOVE( %s:%.0f ) , (%.0f,%.0f) => (%.0f,%.0f) \n",
-    //this->Get_NAME(), m_fCurMoveSpeed, m_PosCUR.x, m_PosCUR.y, m_PosGOTO.x, m_PosGOTO.y);
+    // this->Get_NAME(), m_fCurMoveSpeed, m_PosCUR.x, m_PosCUR.y, m_PosGOTO.x, m_PosGOTO.y);
 
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)

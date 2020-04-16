@@ -262,8 +262,8 @@ CSlot::SetTooltipType(DWORD dwType) {
 //	{
 //		pItemIcon = (CIconItem*)pIcon;
 //		RECT rcDraw = { 40, 8, 125, 26 };
-//		drawFontf( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, &rcDraw ,D3DCOLOR_ARGB( 255,255,255,255 ),
-//DT_VCENTER | DT_RIGHT ,ITEM_NAME( ITEM_TYPE_RIDE_PART, pItemIcon->GetItemNo() ) );
+//		drawFontf( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, &rcDraw ,D3DCOLOR_ARGB( 255,255,255,255
+//), DT_VCENTER | DT_RIGHT ,ITEM_NAME( ITEM_TYPE_RIDE_PART, pItemIcon->GetItemNo() ) );
 //	}
 //}
 

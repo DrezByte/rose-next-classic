@@ -147,8 +147,8 @@ CUtil::Is_InternetConnected(void) {
     struct {
         DWORD m_dwFlag;
         char* m_szDesc;
-    } netSTATUS[] = {//		{	INTERNET_CONNECTION_CONFIGURED,	"Local system has a valid connection to
-                     //the Internet, but it may or may not be currently connected.    "	},
+    } netSTATUS[] = {//		{	INTERNET_CONNECTION_CONFIGURED,	"Local system has a valid connection
+                     //to the Internet, but it may or may not be currently connected.    "	},
         {INTERNET_CONNECTION_LAN,
             "Local system uses a local area network to connect to the Internet.    "},
         {INTERNET_CONNECTION_MODEM, "Local system uses a modem to connect to the Internet.    "},

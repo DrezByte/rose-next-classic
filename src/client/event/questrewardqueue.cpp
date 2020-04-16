@@ -79,8 +79,8 @@ CQuestRewardQueue::PushAddAbility(gsv_SET_ABILITY& sAddAbility) {
 //	{
 //		pInvITEM = &g_pAVATAR->m_Inventory.m_ItemLIST[ sInvITEM.m_btInvIDX ];
 //		szMsg = CStr::Printf("%s %d개를 보상 받았습니다.", ITEM_NAME( pSrvITEM->GetTYPE(),
-//pSrvITEM->GetItemNO() ), pSrvITEM->GetQuantity() - pInvITEM->GetQuantity() ); 	} else { 		szMsg =
-//CStr::Printf("%s을 보상 받았습니다.", ITEM_NAME( pSrvITEM->GetTYPE(), pSrvITEM->GetItemNO() ) );
+// pSrvITEM->GetItemNO() ), pSrvITEM->GetQuantity() - pInvITEM->GetQuantity() ); 	} else { 		szMsg
+// = CStr::Printf("%s을 보상 받았습니다.", ITEM_NAME( pSrvITEM->GetTYPE(), pSrvITEM->GetItemNO() ) );
 //	}
 //	g_itMGR.AppendChatMsg( szMsg, g_dwWHITE );
 //}

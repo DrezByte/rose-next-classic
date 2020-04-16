@@ -1893,7 +1893,7 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                                 // tagITEM *pITEM = &m_Inventory.m_ItemEQUIP[ EQUIP_IDX_WEAPON_R ];
                                 // if ( pITEM->GetHEADER() ) {
                                 //	this->m_nPassiveAttackSpeed = this->GetPassiveSkillAttackSpeed(
-                                //pITEM->GetItemNO() );
+                                // pITEM->GetItemNO() );
                                 //}
                                 btReturn |= 0x01;
                             }

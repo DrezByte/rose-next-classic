@@ -291,7 +291,7 @@ CObjAI::ProcSkillCastingLoop(CObjCHAR* pTarget) {
             {
                 if ((m_iWaitLoopCnt < 10)) {
                     if (!bCanActionActiveSkill()) //|| ( m_iWaitLoopCnt <
-                                                  //SKILL_ANI_CASTING_REPEAT_CNT( m_nActiveSkillIDX
+                                                  // SKILL_ANI_CASTING_REPEAT_CNT( m_nActiveSkillIDX
                                                   //) ) )
                     {
                         m_iWaitLoopCnt++;
@@ -1010,8 +1010,8 @@ CObjAI::SetCMD_Skill2OBJ(WORD wSrvDIST,
     // if( this->IsA( OBJ_USER ) )
     //{
     //	CObjSkill2ObjCommand* pObjCommand = (CObjSkill2ObjCommand*)g_CommandFilter.GetCommandObject(
-    //OBJECT_COMMAND_Skill2OBJ ); 	pObjCommand->SetCMD_Skill2OBJ( wSrvDIST, PosTO, iServerTarget,
-    //nSkillIDX );
+    // OBJECT_COMMAND_Skill2OBJ ); 	pObjCommand->SetCMD_Skill2OBJ( wSrvDIST, PosTO, iServerTarget,
+    // nSkillIDX );
 
     //	g_CommandFilter.SetPrevCommand( pObjCommand );
     //}
@@ -1110,7 +1110,7 @@ CObjAI::SetCMD_Skill2POS(const D3DVECTOR& PosGOTO, short nSkillIDX) {
     // if( this->IsA( OBJ_USER ) )
     //{
     //	CObjSkill2PosCommand* pObjCommand = (CObjSkill2PosCommand*)g_CommandFilter.GetCommandObject(
-    //OBJECT_COMMAND_Skill2POS ); 	pObjCommand->SetCMD_Skill2POS( PosGOTO, nSkillIDX );
+    // OBJECT_COMMAND_Skill2POS ); 	pObjCommand->SetCMD_Skill2POS( PosGOTO, nSkillIDX );
 
     //	g_CommandFilter.SetPrevCommand( pObjCommand );
     //}

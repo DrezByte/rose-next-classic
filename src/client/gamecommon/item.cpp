@@ -926,7 +926,8 @@ CItem::AddItemDefaultTopTextDefenceItem(tagITEM& sItem, CInfo& Info) {
     std::string stdTemp;
     // stdTemp.append( STR_ITEM_TYPE );
     // stdTemp.append( CStringManager::GetSingleton().GetItemType( ITEM_TYPE( sItem.GetTYPE(),
-    // sItem.GetItemNO() ) ) ); stdTemp.append( CStringManager::GetSingleton().GetAbility( AT_AVOID )
+    // sItem.GetItemNO() ) ) ); stdTemp.append( CStringManager::GetSingleton().GetAbility( AT_AVOID
+    // )
     // );
 
     if (sItem.GetTYPE() != ITEM_TYPE_RIDE_PART) {

@@ -1975,8 +1975,7 @@ CThreadGUILD::Query_UpdateClanMARK(CClan* pClan, WORD wMarkCRC, BYTE* pDATA, uns
         switch (iResultSP) {
             case 1: // ¼º°ø
                 g_LOG.CS_ODS(0xffff, "update clan mark : %d \n", pClan->m_dwClanID);
-                if (this->db->QuerySQL(
-                        (char*)"select dateMarkREG from tblWS_CLAN where intID=%d",
+                if (this->db->QuerySQL((char*)"select dateMarkREG from tblWS_CLAN where intID=%d",
                         pClan->m_dwClanID)) {
                     if (this->db->GetNextRECORD()) {
                         sqlTIMESTAMP sTimeStamp;

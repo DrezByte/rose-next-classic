@@ -422,8 +422,8 @@ public:
         return (GetPassiveSkillValue(AT_PSV_SAVE_MP) + m_iAddValue[AT_SAVE_MP]
             + (short)(m_iAddValue[AT_SAVE_MP] * GetPassiveSkillRate(AT_PSV_SAVE_MP) / 100.f));
     }
-    // int	  GetCur_DropRATE()			{	return  ( GetPassiveSkillValue( AT_PSV_DROP_RATE ) + m_iAddValue[
-    // AT_DROP_RATE ] );	}	// µå·Ó È®·ü
+    // int	  GetCur_DropRATE()			{	return  ( GetPassiveSkillValue( AT_PSV_DROP_RATE ) +
+    // m_iAddValue[ AT_DROP_RATE ] );	}	// µå·Ó È®·ü
     int GetCur_DropRATE() { return m_iDropRATE; } // µå·Ó È®·ü
     void Cal_DropRATE() // µå·Ó È®·ü
     {
@@ -560,14 +560,16 @@ public:
 
 #ifdef __SERVER
     short Add_CatchITEM(short nListRealNO,
-        tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM, m_Battle.m_nWEIGHT
+        tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
+                         //m_Battle.m_nWEIGHT
                          //);	}
     short Add_ITEM(tagITEM& sITEM) { return m_Inventory.AppendITEM(sITEM, m_Battle.m_nWEIGHT); }
     short Add_ITEM(short nListRealNO,
         tagITEM& sITEM); //				{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
-                         //m_Battle.m_nWEIGHT);		}
+                         // m_Battle.m_nWEIGHT);		}
     void Sub_ITEM(short nListRealNO,
-        tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM, m_Battle.m_nWEIGHT);
+        tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM,
+                         //m_Battle.m_nWEIGHT);
                          //}
     void Set_ITEM(short nListRealNO, tagITEM& sITEM);
     void ClearITEM(WORD wListRealNO) {
@@ -576,16 +578,18 @@ public:
     }
 #else
     virtual short Add_CatchITEM(short nListRealNO,
-        tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM, m_Battle.m_nWEIGHT
+        tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
+                         //m_Battle.m_nWEIGHT
                          //);	}
     virtual short Add_ITEM(tagITEM& sITEM) {
         return m_Inventory.AppendITEM(sITEM, m_Battle.m_nWEIGHT);
     }
     virtual short Add_ITEM(short nListRealNO,
         tagITEM& sITEM); //				{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
-                         //m_Battle.m_nWEIGHT);		}
+                         // m_Battle.m_nWEIGHT);		}
     virtual void Sub_ITEM(short nListRealNO,
-        tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM, m_Battle.m_nWEIGHT);
+        tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM,
+                         //m_Battle.m_nWEIGHT);
                          //}
     virtual void Set_ITEM(short nListRealNO, tagITEM& sITEM);
     virtual void ClearITEM(WORD wListRealNO) {

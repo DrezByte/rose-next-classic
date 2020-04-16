@@ -1361,7 +1361,7 @@ CObjCHAR_Collision::UpdateFootHeight_Avatar(void)
 
             // up
             //			distance = ::shootRayVec3( (*itnode), 0 /* furthest */, rayOriginUp,
-            //DIRECTION_UP );
+            // DIRECTION_UP );
             /*			if ( distance < m_fStature ) {
                             currentHeight = rayOriginUp.z + distance;
                             if ( currentHeight > m_vNext.z ) {

@@ -189,7 +189,7 @@ CTargetMenu::Update(POINT ptMouse) {
 
         if (pCtrl->IsInside(ptMouse.x, ptMouse.y)) {
             //			g_itMGR.DrawToolTip( (short)ptMouse.x, (short)ptMouse.y, GetDialogType(),
-            //pCtrl->GetControlID());
+            // pCtrl->GetControlID());
             break;
         }
     }

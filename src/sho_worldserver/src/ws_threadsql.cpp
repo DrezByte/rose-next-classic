@@ -516,7 +516,7 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
     // 케릭터의 소유자인지 판단...
     this->db->MakeQuery((char*)"SELECT txtACCOUNT, binBasicE, intCharID, intDataVER FROM "
-                                   "tblGS_AVATAR WHERE txtNAME=",
+                               "tblGS_AVATAR WHERE txtNAME=",
         MQ_PARAM_STR,
         pCharName,
         MQ_PARAM_END);
@@ -731,7 +731,7 @@ CWS_ThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
 
 #ifdef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
     this->db->MakeQuery("INSERT tblGS_AVATAR (txtACCOUNT, txtNAME, intDataVER, binBasicE, "
-                            "binBasicI, binBasicA, binGrowA, binSkillA, blobINV ) VALUES(",
+                        "binBasicI, binBasicA, binGrowA, binSkillA, blobINV ) VALUES(",
         MQ_PARAM_STR,
         pSqlPACKET->m_Name.Get(),
         MQ_PARAM_ADDSTR,
@@ -770,9 +770,8 @@ CWS_ThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
         ");",
         MQ_PARAM_END);
 #else
-    this->db->MakeQuery(
-        (char*)"INSERT tblGS_AVATAR (txtACCOUNT, txtNAME, binBasicE, binBasicI, "
-               "binBasicA, binGrowA, binSkillA, blobINV) VALUES(",
+    this->db->MakeQuery((char*)"INSERT tblGS_AVATAR (txtACCOUNT, txtNAME, binBasicE, binBasicI, "
+                               "binBasicA, binGrowA, binSkillA, blobINV) VALUES(",
         MQ_PARAM_STR,
         pSqlPACKET->m_Name.Get(),
         MQ_PARAM_ADDSTR,
@@ -896,7 +895,7 @@ CWS_ThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
     }
 
     if (this->db->ExecSQL((char*)"UPDATE tblGS_AVATAR SET dwDelTIME=%u WHERE txtACCOUNT=\'%s\' "
-                                     "AND txtNAME=\'%s\'",
+                                 "AND txtNAME=\'%s\'",
             dwCurAbsSEC,
             pSqlPACKET->m_Name.Get(),
             pCharName)
@@ -1007,7 +1006,10 @@ CWS_ThreadSQL::Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE) {
         MQ_PARAM_END);
     if (this->db->ExecSQLBuffer() < 0) {
         // 고치기 실패 !!!
-        g_LOG.CS_ODS(LOG_NORMAL, "SQL Exec ERROR:: UPDATE %s %s \n", WORLD_VAR, this->db->GetERROR());
+        g_LOG.CS_ODS(LOG_NORMAL,
+            "SQL Exec ERROR:: UPDATE %s %s \n",
+            WORLD_VAR,
+            this->db->GetERROR());
     }
 
     return true;
@@ -1020,8 +1022,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
     switch (pPacket->m_cli_MEMO.m_btTYPE) {
         case MEMO_REQ_RECEIVED_CNT: {
-            if (!this->db->QuerySQL(
-                    (char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
+            if (!this->db->QuerySQL((char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
                     pSqlPACKET->m_Name.Get())) {
                 g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
                 return false;
@@ -1034,9 +1035,8 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
         case MEMO_REQ_CONTENTS: {
             // 한번에 5개의 쪽지 읽음
-            if (!this->db->QuerySQL(
-                    (char*)"SELECT TOP 5 dwDATE, txtFROM, txtMEMO FROM tblWS_MEMO "
-                           "WHERE txtNAME=\'%s\' ORDER BY dwDATE ASC",
+            if (!this->db->QuerySQL((char*)"SELECT TOP 5 dwDATE, txtFROM, txtMEMO FROM tblWS_MEMO "
+                                           "WHERE txtNAME=\'%s\' ORDER BY dwDATE ASC",
                     pSqlPACKET->m_Name.Get())) {
                 g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
                 return false;
@@ -1084,7 +1084,9 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                         pSqlPACKET->m_Name.Get())
                     < 1) {
                     // 오류 또는 삭제된것이 없다.
-                    g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR(DELETE_MEMO):: %s \n", this->db->GetERROR());
+                    g_LOG.CS_ODS(LOG_NORMAL,
+                        "Exec ERROR(DELETE_MEMO):: %s \n",
+                        this->db->GetERROR());
                     return true;
                 }
             } // else 쪽지 없다.
@@ -1129,8 +1131,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
 #define MAX_RECV_MEMO_CNT 50
             // 대상 케릭이 몇개의 보관된 쪽지가 있냐?
-            if (!this->db->QuerySQL(
-                    (char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
+            if (!this->db->QuerySQL((char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
                     szTargetCHAR)) {
                 g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
                 return false;

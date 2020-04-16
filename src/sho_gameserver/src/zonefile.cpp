@@ -567,7 +567,7 @@ CZoneFILE::GetMapFILE(short nMapX, short nMapY) {
         return NULL;
 
     //	char *szMapFile = CStr::Printf ("%s%d_%d", m_ZoneDIR.Get(), nMapX,
-    //MAP_COUNT_PER_ZONE_AXIS-nMapY);
+    // MAP_COUNT_PER_ZONE_AXIS-nMapY);
     char* szMapFile =
         this->m_StrVAR.Printf("%s%d_%d", m_ZoneDIR.Get(), nMapX, MAP_COUNT_PER_ZONE_AXIS - nMapY);
     m_MapFileName.Set(szMapFile);

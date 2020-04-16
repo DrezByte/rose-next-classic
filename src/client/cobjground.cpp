@@ -178,7 +178,7 @@ CObjCNST::CObjCNST() {
 CObjCNST::~CObjCNST() {
     _ASSERT(this->m_nCnstIdx >= 0);
     //	LogString (LOG_DEBUG_, "CObjCNST::~CObjCNST ( %d ) %f, %f \n", this->m_nCnstIdx,
-    //this->m_PosCUR.x, this->m_PosCUR.y);
+    // this->m_PosCUR.x, this->m_PosCUR.y);
 }
 
 //-------------------------------------------------------------------------------------------------

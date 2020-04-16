@@ -58,8 +58,8 @@ CMemoViewDlg::Process(unsigned uiMsg, WPARAM wParam, LPARAM lParam) {
             switch (uiProcID) {
                 case IID_BTN_DELETE:
 
-                    // CSqliteDB::GetInstance().DeleteMemo( m_iID );				/// 클라이언트 DB에서
-                    // 삭제
+                    // CSqliteDB::GetInstance().DeleteMemo( m_iID );				/// 클라이언트
+                    // DB에서 삭제
 
                     if (CTDialog* pDlg = g_itMGR.FindDlg(DLG_TYPE_COMMUNITY)) {
                         CCommDlg* pCommDlg = (CCommDlg*)pDlg;

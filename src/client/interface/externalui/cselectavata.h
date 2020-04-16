@@ -13,8 +13,8 @@ struct t_PACKET;
  * - CGameDataCreateAvatar와 같은 부분을 처리하고 있다.
  *
  * @Warning		과금처리에 따라 4,5번째 슬롯의 캐릭터의 선택이 가능/불가능해진다.
- * @Todo			CGameDataCreateAvatar와 같이 정리해서 인터페이스와 데이타를 확연히 구분하던가 한군데(
- * CSelectAvata )로 합치는건?
+ * @Todo			CGameDataCreateAvatar와 같이 정리해서 인터페이스와 데이타를 확연히 구분하던가
+ * 한군데( CSelectAvata )로 합치는건?
  * @Author		최종진
  * @Date			2005/9/6
  */

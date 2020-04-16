@@ -31,14 +31,13 @@ Get_WorldREWARD() {
 }
 #endif
 
-DropRule drop_rule_from_int(int i) {
+DropRule
+drop_rule_from_int(int i) {
     if (i == 3) {
         return DropRule::AlwaysAppraisal;
-    }
-    else if (i == 4) {
+    } else if (i == 4) {
         return DropRule::AlwaysSlotted;
-    }
-    else {
+    } else {
         return DropRule::Default;
     }
 }
@@ -159,13 +158,15 @@ CCal::Get_DropITEM(int level_difference,
     }
 
     if (level_difference < 9) {
-        iDrop_VAR = (int)((::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO())
-            - (1 + RANDOM(100)) - ((level_difference + 16) * 3.5f) - 10 + iDropRate)
-            * 0.38f); // * ( NPC_DROP_MONEY( pMobCHAR->Get_CharNO() ) + 30 ) / 130;
+        iDrop_VAR =
+            (int)((::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - (1 + RANDOM(100))
+                      - ((level_difference + 16) * 3.5f) - 10 + iDropRate)
+                * 0.38f); // * ( NPC_DROP_MONEY( pMobCHAR->Get_CharNO() ) + 30 ) / 130;
     } else {
-        iDrop_VAR = (int)((::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO())
-            - (1 + RANDOM(100)) - ((level_difference + 20) * 5.5f) - 10 + iDropRate)
-            * 0.23f); // * ( NPC_DROP_MONEY( pMobCHAR->Get_CharNO() ) + 30 ) / 130;
+        iDrop_VAR =
+            (int)((::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - (1 + RANDOM(100))
+                      - ((level_difference + 20) * 5.5f) - 10 + iDropRate)
+                * 0.23f); // * ( NPC_DROP_MONEY( pMobCHAR->Get_CharNO() ) + 30 ) / 130;
     }
 
     if (iDrop_VAR <= 0) {

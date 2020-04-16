@@ -8,12 +8,6 @@
 #include <functional>
 #include "../Util/JResourceContainer.h"
 
-template<typename T>
-class LessThen_TableEntity: public std::binary_function<T, T, bool> {
-public:
-    bool operator()(T& lhs, const std::string& rhs) { return lhs < rhs; }
-};
-
 //-----------------------------------------------------------------------------------------------
 /// 지원 언어 타입
 //-----------------------------------------------------------------------------------------------

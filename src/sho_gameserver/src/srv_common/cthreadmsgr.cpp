@@ -252,7 +252,7 @@ bool
 CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
     if (!this->db->QuerySQL("{call ws_GetFRIEND(%d)}", pCMD->m_dwDBID)) {
         //	if ( !this->db->QuerySQL( "SELECT intFriendCNT, blobFRIENDS FROM tblWS_FRIEND WHERE
-        //intCharID=%d", pCMD->m_dwDBID ) ) {
+        // intCharID=%d", pCMD->m_dwDBID ) ) {
         g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
         return false;
     }

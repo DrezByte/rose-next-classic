@@ -9,9 +9,9 @@ protected:
 public:
     ~CTreePath(void);
     //	CTreePath(CTObject&  pSinglePath) ; ///Constructs a TreePath containing only a single
-    //element. 	CTreePath(CTObject&  Path[]);		///Constructs a path from an array of Objects,
-    //uniquely identifying the path from the root of the tree to a specific node, as returned by the
-    //tree's data model.
+    // element. 	CTreePath(CTObject&  Path[]);		///Constructs a path from an array of
+    // Objects, uniquely identifying the path from the root of the tree to a specific node, as
+    // returned by the tree's data model.
 
     bool equals(CTObject* pCtrl); /// Tests two TreePaths for equality by checking each element of
                                   /// the paths for equality.

@@ -670,8 +670,8 @@ public:
         return (GetPassiveSkillValue(AT_PSV_SAVE_MP) + m_iAddValue[AT_SAVE_MP]
             + (short)(m_iAddValue[AT_SAVE_MP] * GetPassiveSkillRate(AT_PSV_SAVE_MP) / 100.f));
     }
-    // int GetCur_DropRATE()			{	return  ( GetPassiveSkillValue( AT_PSV_DROP_RATE ) + m_iAddValue[
-    // AT_DROP_RATE ] );	}	// 드롭 확률
+    // int GetCur_DropRATE()			{	return  ( GetPassiveSkillValue( AT_PSV_DROP_RATE ) +
+    // m_iAddValue[ AT_DROP_RATE ] );	}	// 드롭 확률
     int GetCur_DropRATE() { return m_iDropRATE; } // 드롭 확률
     void Cal_DropRATE() // 드롭 확률
     {
@@ -688,7 +688,7 @@ public:
     }
     virtual void SetCur_JoHapPOINT(BYTE btUnionIDX,
         short nValue) = 0; //	{	if ( btUnionIDX >=1 ) this->m_GrowAbility.m_nJoHapPOINT[
-                           //btUnionIDX-1 ] = nValue;	}
+                           // btUnionIDX-1 ] = nValue;	}
     void AddCur_JoHapPOINT(BYTE btUnionIDX, short nValue) {
         if (btUnionIDX >= 1) {
             short nResult = this->m_GrowAbility.m_nJoHapPOINT[btUnionIDX - 1] + nValue;
@@ -758,7 +758,7 @@ public:
     void SetCur_FAME(char cValue) { this->m_BasicINFO.m_cFame = cValue; }
     virtual void SetCur_UNION(
         char cValue) = 0; //		{	if ( cValue >= 0 && cValue < MAX_UNION_COUNT )
-                          //this->m_BasicINFO.m_cUnion=cValue;	}
+                          // this->m_BasicINFO.m_cUnion=cValue;	}
     void SetCur_RANK(char cValue) { this->m_BasicINFO.m_cRank = cValue; }
 
     char GetCur_FACE() { return this->m_BasicINFO.m_cFaceIDX; }
@@ -819,14 +819,16 @@ public:
 
 #ifdef __SERVER
     short Add_CatchITEM(short nListRealNO,
-        tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM, m_Battle.m_nWEIGHT
+        tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
+                         //m_Battle.m_nWEIGHT
                          //);	}
     short Add_ITEM(tagITEM& sITEM) { return m_Inventory.AppendITEM(sITEM, m_Battle.m_nWEIGHT); }
     short Add_ITEM(short nListRealNO,
         tagITEM& sITEM); //				{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
-                         //m_Battle.m_nWEIGHT);		}
+                         // m_Battle.m_nWEIGHT);		}
     void Sub_ITEM(short nListRealNO,
-        tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM, m_Battle.m_nWEIGHT);
+        tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM,
+                         //m_Battle.m_nWEIGHT);
                          //}
     void Set_ITEM(short nListRealNO, tagITEM& sITEM);
     void ClearITEM(WORD wListRealNO) {
@@ -835,16 +837,18 @@ public:
     }
 #else
     virtual short Add_CatchITEM(short nListRealNO,
-        tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM, m_Battle.m_nWEIGHT
+        tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
+                         //m_Battle.m_nWEIGHT
                          //);	}
     virtual short Add_ITEM(tagITEM& sITEM) {
         return m_Inventory.AppendITEM(sITEM, m_Battle.m_nWEIGHT);
     }
     virtual short Add_ITEM(short nListRealNO,
         tagITEM& sITEM); //				{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
-                         //m_Battle.m_nWEIGHT);		}
+                         // m_Battle.m_nWEIGHT);		}
     virtual void Sub_ITEM(short nListRealNO,
-        tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM, m_Battle.m_nWEIGHT);
+        tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM,
+                         //m_Battle.m_nWEIGHT);
                          //}
     virtual void Set_ITEM(short nListRealNO, tagITEM& sITEM);
     virtual void ClearITEM(WORD wListRealNO) {
@@ -985,7 +989,7 @@ public:
     /// 패시브 스킬 관련 함수.
     void InitPassiveSkill(); /// 서버로 부터 스킬 데이타 받으면 한번 호출해야함...
     //	short GetPassiveSkillAttackSpeed()		{	return m_nPassiveAttackSpeed + m_iAddValue[
-    //AT_ATK_SPD ];	}
+    // AT_ATK_SPD ];	}
 
     short GetBuySkillVALUE() { return GetPassiveSkillValue(AT_PSV_BUYING); }
     short GetSellSkillVALUE() { return GetPassiveSkillValue(AT_PSV_SELLING); }

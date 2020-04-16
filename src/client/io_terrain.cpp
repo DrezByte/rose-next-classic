@@ -350,7 +350,7 @@ CQuadPatchManager::IntersectRayOnOff(aabbBox* box) {
     vMax[2] = box->z[1];
 
     return false; //::intersectRayAABB(vMin, vMax, m_RayPosition[0], m_RayPosition[1],
-                  //m_RayPosition[2], m_RayDirection[0], m_RayDirection[1], m_RayDirection[2]);
+                  // m_RayPosition[2], m_RayDirection[0], m_RayDirection[1], m_RayDirection[2]);
 }
 
 void

@@ -117,7 +117,7 @@ CClanDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
             if (hBmpFile == INVALID_HANDLE_VALUE) {
                 // DWORD dwErr = GetLastError();
                 //_RPTF1( _CRT_ASSERT,"CreateFile Error : Bmp File - Invalid_handle_value(%d)",
-                //dwErr );
+                // dwErr );
                 g_itMGR.OpenMsgBox(
                     CStr::Printf("%s %s", STR_CLANMARK_FILE_NOTFOUND, STR_CLANMARK_HELP_HOMEPAGE));
                 return;
@@ -401,9 +401,9 @@ CClanDlg::DrawInfomation() {
         ::drawFont(g_GameDATA.m_hFONT[FONT_NORMAL], true, 15, 248, g_dwBLACK, STR_CLAN_ALLYED);
         ::drawFont(g_GameDATA.m_hFONT[FONT_NORMAL], true, 88, 248, g_dwWHITE, Clan.GetAllyName(0));
         //		::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, 71,229, g_dwWHITE,
-        //Clan.GetAllyName(1) );
+        // Clan.GetAllyName(1) );
         //		::drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, 71,250, g_dwWHITE,
-        //Clan.GetAllyName(2) );
+        // Clan.GetAllyName(2) );
 
         DWORD dwColor = g_dwWHITE;
         if (CClan::GetInstance().GetClass() <= CClan::CLAN_PENALTY)

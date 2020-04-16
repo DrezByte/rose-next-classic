@@ -554,13 +554,13 @@ CObjCHAR::ActionSkill(int iActionIDX) {
             //		if ( pCastingEFT )
             //		{
             //			if( SKILL_HIT_EFFECT_LINKED_POINT( this->m_nActiveSkillIDX ) ==
-            //INVALID_DUMMY_POINT_NUM )
+            // INVALID_DUMMY_POINT_NUM )
             //			{
             //				pCastingEFT->LinkNODE ( pTarget->GetZMODEL() );
             //			}else
             //			{
-            //				pTarget->LinkDummy( pCastingEFT->GetZNODE(), SKILL_HIT_EFFECT_LINKED_POINT(
-            //this->m_nActiveSkillIDX ) );
+            //				pTarget->LinkDummy( pCastingEFT->GetZNODE(),
+            //SKILL_HIT_EFFECT_LINKED_POINT( this->m_nActiveSkillIDX ) );
             //			}
 
             //			pCastingEFT->SetParentCHAR( pTarget );

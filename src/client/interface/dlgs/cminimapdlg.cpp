@@ -544,7 +544,7 @@ CMinimapDLG::DrawAVTPosition() {
                 //	npcMarkInfo.strName			= pCharOBJ->Get_NAME();
 
                 //	m_listNpcMarkInfo.insert( std::map<int, NpcMarkInfo>::value_type(
-                //pCharOBJ->Get_CharNO(), npcMarkInfo ));
+                // pCharOBJ->Get_CharNO(), npcMarkInfo ));
                 //}
                 break;
             }

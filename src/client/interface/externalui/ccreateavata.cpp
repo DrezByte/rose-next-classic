@@ -112,7 +112,7 @@ CCreateAvata::RecvCreateAvata(t_PACKET* recvPacket) {
             break;
         // case RESULT_CREATE_CHAR_ILLEGAL_NAME:
         //	g_EUILobby.ShowMsgBox(STR_INVALID_CHARACTER_NAME, CTMsgBox::BT_OK, true,
-        //GetDialogType());
+        // GetDialogType());
         default:
             g_EUILobby.ShowMsgBox(STR_FAIL_MAKE_NEW_CHARACTER, CMsgBox::BT_OK, true, 0);
             break;

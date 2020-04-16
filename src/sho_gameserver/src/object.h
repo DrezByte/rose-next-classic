@@ -30,5 +30,4 @@ public:
 };
 extern CObjMNG* g_pObjMGR;
 
-
 #endif

@@ -256,7 +256,7 @@ CExchange::AddMyItem(CItem* pItem, int iQuantity) {
     //			pExchangeDlg->m_MySlots[i].m_sItem.m_iQuantity += m_iNumber;
     //			pExchangeDlg->SetMeReadyState( false );
     //			g_pNet->Send_cli_TRADE_P2P_ITEM( (char)i, m_ExchangeItem.m_nInvenIdx,
-    //pExchangeDlg->m_MySlots[i].m_sItem.m_iQuantity ); 			return true;
+    // pExchangeDlg->m_MySlots[i].m_sItem.m_iQuantity ); 			return true;
     //		}
     //	}
 
@@ -268,7 +268,7 @@ CExchange::AddMyItem(CItem* pItem, int iQuantity) {
     //			pExchangeDlg->m_MySlots[i]  = m_ExchangeItem;
     //			pExchangeDlg->SetMeReadyState( false );
     //			g_pNet->Send_cli_TRADE_P2P_ITEM( (char)i, m_ExchangeItem.m_nInvenIdx,
-    //m_ExchangeItem.m_iQuantity ); 			break;
+    // m_ExchangeItem.m_iQuantity ); 			break;
     //		}
     //	}
     //}

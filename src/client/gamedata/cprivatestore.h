@@ -17,8 +17,8 @@ struct t_PACKET;
  * - 판매물품이 팔렸거나, 매입물품이 구입이 완료되었을 경우를 고려하자
  * - 판매물품이 팔렸다면 판매리스트에서 빼고 매입물품이 구입된다면 개수에 따라서 매입리스트에서
  *뺀다.
- *		-- CTEventItem : EID_DEL_ITEM,EID_CHANGE_ITEM를 처리하고 CItemSlot에 Observer로 Open시에 등록,
- *Close시에 해제한다.
+ *		-- CTEventItem : EID_DEL_ITEM,EID_CHANGE_ITEM를 처리하고 CItemSlot에 Observer로 Open시에
+ *등록, Close시에 해제한다.
  * - 리스트에 있는 아이템의 개수가 주는 경우와 없어지는 경우에 대해서도 생각해보자
  *
  * - 개인상점을 자신이 열때와 이용할때를 구분해야 한다.( Data or UI ?)

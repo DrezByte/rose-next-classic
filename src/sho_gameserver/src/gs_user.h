@@ -60,7 +60,6 @@ struct tagTradeITEM {
     tagITEM m_Item;
 };
 
-
 class classUSER: public iocpSOCKET, public CObjAVT {
 public:
     short m_nZoneNO;
@@ -114,7 +113,6 @@ public:
         DWORD m_dwWishPricePerEA[MAX_P_STORE_ITEM_SLOT]; // 1°³´ç Èñ¸Á °¡°Ý
         BYTE m_btWishIdx2StoreIDX[MAX_P_STORE_ITEM_SLOT];
     } m_STORE;
-
 
     BYTE m_btBankData;
 

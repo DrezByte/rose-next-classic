@@ -207,8 +207,8 @@ CEncryptDecrypt::EncryptDataLoad(char* filename) {
         pos = ftell(encryptData);
         if (pos < MAXSTRING) {
             //			char temp1[MAXSTRING];
-            //			sprintf(temp1, "Size of file which try to read is smaller then MAXSTRING %d .",
-            //MAXSTRING); 			MessageBox(NULL, temp1, "에러", MB_OK);
+            //			sprintf(temp1, "Size of file which try to read is smaller then MAXSTRING %d
+            //.", MAXSTRING); 			MessageBox(NULL, temp1, "에러", MB_OK);
             return s_Key;
         }
 

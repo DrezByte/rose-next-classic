@@ -620,7 +620,7 @@ CInventory::GetEmptyInvenSlotCount(t_InvTYPE InvType) {
 ////				break;
 //			{
 //				if( m_ItemLIST[ InvenIndex ].GetQuantity() + TempItem.GetQuantity() <=
-//MAX_DUP_ITEM_QUANTITY )
+// MAX_DUP_ITEM_QUANTITY )
 //				{
 //					m_ItemLIST[ InvenIndex ].m_uiQuantity += TempItem.GetQuantity();
 //					ZeroMemory( &TempItem, sizeof( tagITEM ) );
@@ -629,7 +629,8 @@ CInventory::GetEmptyInvenSlotCount(t_InvTYPE InvType) {
 //				else
 //				{
 //					TempItem.m_uiQuantity -= MAX_DUP_ITEM_QUANTITY - m_ItemLIST[
-//InvenIndex].GetQuantity(); 					m_ItemLIST[ InvenIndex ].m_uiQuantity = MAX_DUP_ITEM_QUANTITY;
+// InvenIndex].GetQuantity(); 					m_ItemLIST[ InvenIndex ].m_uiQuantity =
+// MAX_DUP_ITEM_QUANTITY;
 //				}
 //			}
 //		}
@@ -674,8 +675,8 @@ CInventory::GetEmptyInvenSlotCount(t_InvTYPE InvType) {
 //	for (short nI=0; nI<INVENTORY_PAGE_SIZE; nI++)
 //	{
 //		if( m_ItemPAGE[ InvTYPE ][ nI ].IsEqual( Item.GetTYPE(), Item.GetItemNO() ) && m_ItemPAGE[
-//InvTYPE ][ nI ].GetQuantity() < MAX_DUP_ITEM_QUANTITY ) 			return MAX_EQUIP_IDX + ( InvTYPE *
-//INVENTORY_PAGE_SIZE ) + nI;
+// InvTYPE ][ nI ].GetQuantity() < MAX_DUP_ITEM_QUANTITY ) 			return MAX_EQUIP_IDX + ( InvTYPE
+// * INVENTORY_PAGE_SIZE ) + nI;
 //	}
 //	return -1;
 //}

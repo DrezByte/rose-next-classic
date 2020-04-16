@@ -34,7 +34,7 @@ public:
 
     short GetCur_PartITEM(short nPartIdx) { return GetPartITEM(nPartIdx); }
     //	void	SetCur_PartITEM	(short nPartIdx, short nItemNo)		{	this->SetPartITEM(nPartIdx,
-    //nItemNo);	}
+    // nItemNo);	}
     void SetCur_PartITEM(short nPartIdx, tagITEM& sITEM) { this->SetPartITEM(nPartIdx, sITEM); }
 
     int GetCur_R_WEAPON() { return this->Get_R_WEAPON(); }
@@ -62,10 +62,10 @@ public:
 
     void SetCur_TeamNO(int iTeamNO) { m_iTeamNO = iTeamNO; }
     void SetCur_UNION(char cValue); //	{	if ( cValue >= 0 && cValue < MAX_UNION_COUNT )
-                                    //this->m_BasicINFO.m_cUnion=cValue;	}
+                                    // this->m_BasicINFO.m_cUnion=cValue;	}
     void SetCur_JoHapPOINT(BYTE btUnionIDX,
         short nValue); //	{	if ( btUnionIDX >=1 ) this->m_GrowAbility.m_nJoHapPOINT[
-                       //btUnionIDX-1 ] = nValue;	}
+                       // btUnionIDX-1 ] = nValue;	}
 
     void AddCur_EXP(int iExp) { this->Add_EXP(iExp); }
     void UpdateCur_Ability() { this->UpdateAbility(); }

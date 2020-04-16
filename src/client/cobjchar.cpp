@@ -828,7 +828,7 @@ CObjCHAR::Add_EFFECT(CMODEL<CCharPART>* pCharPART,
 /// @param  t_HASHKEY HashEffectFILE  이펙트파일의 해쉬키
 /// @brief  : 캐릭터에 붙는 효과( 모델제작상 캐릭터 툴에서 제작된)를 추가
 ///	@bug    : 내부에서 Add_EFFECT( CMODEL<CCharPART> *pCharPART, short nPartIDX, short nPointIDX,
-///t_HASHKEY HashEffectFILE, bool bLinkNODE ) 함수 호출
+/// t_HASHKEY HashEffectFILE, bool bLinkNODE ) 함수 호출
 //--------------------------------------------------------------------------------
 
 void
@@ -1279,7 +1279,8 @@ CObjCHAR::Apply_DAMAGE(CObjCHAR* pAtkOBJ, WORD wDamage) {
             //	{
             //		/// 파티 퀘스트냐 ?
             //		if ( CParty::GetInstance().IsPartyMember(
-            //g_pObjMGR->Get_ServerObjectIndex(pAtkOBJ->Get_INDEX()) ) || 			( pAtkOBJ->IsA( OBJ_USER )
+            // g_pObjMGR->Get_ServerObjectIndex(pAtkOBJ->Get_INDEX()) ) || 			( pAtkOBJ->IsA(
+            // OBJ_USER )
             //&& g_itMGR.IsDlgOpened( DLG_TYPE_PARTY ) ) )
             //		{
             //			/// 나의 파티 멤버인가, 죽인 케릭이 자신이고 자신이 파티중이냐 ???
@@ -4139,7 +4140,7 @@ CObjMOB::~CObjMOB() {
     }
     */
     //	LogString (LOG_DEBUG_, "   CObjMOB::~CObjMOB ( charNo:%d, %s ), Obj:%d  \n", m_nCharIdx,
-    //Get_NAME(), m_nIndex );
+    // Get_NAME(), m_nIndex );
 }
 
 //--------------------------------------------------------------------------------
@@ -5058,7 +5059,7 @@ CObjAVT::Proc() {
 
         if (m_dwElapsedTime > iRecoverStateCheckTime) {
             //_RPT3( _CRT_WARN,"Update Recover HP/MP ElapsedTime:%d, CheckTime:%d, CurrTime:%d \n",
-            //m_dwElapsedTime, iRecoverStateCheckTime, timeGetTime() );
+            // m_dwElapsedTime, iRecoverStateCheckTime, timeGetTime() );
             switch (Get_COMMAND()) {
                 case CMD_SIT:
                     this->RecoverHP(iRecoverStateSitOnGround);

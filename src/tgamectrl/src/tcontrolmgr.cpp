@@ -386,7 +386,8 @@ CTControlMgr::MakeMsgBoxByXML(char* szIDD, CTMsgBox* pBase) {
 /// 주의)
 ///		1. 이 operation안에서 Initialize와 CoUninitialize를 사용하면 return시 에러발생
 ///			:	IXMLDOMNodePtr이 스마트 포인터여서 생긴 문제였음. scope를 벗어날때 삭제되기 때문에
-///발생함. 				IXMLDoMNode(raw pointer)로 수정하여 문제 해결함 => 다시 문제 발생 :이름 못 가져옴
+///발생함. 				IXMLDoMNode(raw pointer)로 수정하여 문제 해결함 => 다시 문제 발생 :이름 못
+///가져옴
 //////////////////////////////////////////////////////////////////////////////////////
 bool
 CTControlMgr::MakeDialogByXML(const char* IDD, CTDialog* pBase) {

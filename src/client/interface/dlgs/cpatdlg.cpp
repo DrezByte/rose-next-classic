@@ -100,9 +100,9 @@ CPatDlg::~CPatDlg(void) {
 //{
 //	//CTDialog::MoveWindow( pt );
 //	//for_each( m_listEquipSlot.begin(), m_listEquipSlot.end(), bind2nd(
-//mem_fun_ref(&CSlot::MoveWindow), pt ));
+// mem_fun_ref(&CSlot::MoveWindow), pt ));
 //	//for_each( m_listInvenSlot.begin(), m_listInvenSlot.end(), bind2nd(
-//mem_fun_ref(&CSlot::MoveWindow), pt ));
+// mem_fun_ref(&CSlot::MoveWindow), pt ));
 //}
 //
 // void	CPatDlg::Draw()
@@ -120,8 +120,8 @@ CPatDlg::~CPatDlg(void) {
 //	CTDialog::Update( ptMouse );
 //
 //	for_each( m_listEquipSlot.begin(), m_listEquipSlot.end(), bind2nd( mem_fun_ref(&CSlot::Update),
-//ptMouse )); 	for_each( m_listInvenSlot.begin(), m_listInvenSlot.end(), bind2nd(
-//mem_fun_ref(&CSlot::Update), ptMouse ));
+// ptMouse )); 	for_each( m_listInvenSlot.begin(), m_listInvenSlot.end(), bind2nd(
+// mem_fun_ref(&CSlot::Update), ptMouse ));
 //}
 //
 // unsigned	CPatDlg::Process( UINT uiMsg, WPARAM wParam, LPARAM lParam )

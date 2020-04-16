@@ -322,7 +322,8 @@ CUpgrade::ComputeSuccessProb() {
     float fMatQuality = (float)ITEM_QUALITY(MaterialItem.GetTYPE(), MaterialItem.GetItemNO());
     float fWorldProd = Get_WorldPROD();
 
-    //	float fDividend		= (fGrade + 1) * (fGrade + 2) * (fGrade * 5 + fItemQuality + 260) * 37200
+    //	float fDividend		= (fGrade + 1) * (fGrade + 2) * (fGrade * 5 + fItemQuality + 260) *
+    //37200
     //* 0.18f ; 	float fDivisor		= fMatQuality * ( fDuration + 200 ) * ( fWorldProd + 10 );
 
     float fDividend = 800 / 320 * (fMatQuality * (fDuration + 180) * (fWorldProd + 10));

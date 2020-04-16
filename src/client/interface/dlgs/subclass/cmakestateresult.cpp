@@ -248,7 +248,7 @@ CMakeStateResult::Init() {
             m_bWaitState = true;
             CTCmdChangeState* pCmd = new CTCmdChangeState(CMakeDLG::STATE_NORMAL);
             //			g_itMGR.OpenMsgBox("",CMsgBox::BT_OK, CMsgBox::TDS_MODAL,
-            //m_pParent->GetControlID(), pCmd, NULL );
+            // m_pParent->GetControlID(), pCmd, NULL );
             break;
         }
     }

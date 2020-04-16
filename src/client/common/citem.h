@@ -28,8 +28,8 @@
 #pragma pack(push, 1)
 struct tagPartITEM {
     unsigned int m_nItemNo : 10; // 0~1023	아아템 번호(ITEM_ID)		(0 ~ 999)
-    unsigned int
-        m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션 번호(m_bHasSocket==0)
+    unsigned int m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션
+                                // 번호(m_bHasSocket==0)
     unsigned int m_bHasSocket : 1; // 0~1		보석 소켓 여부
     unsigned int m_cGrade : 4; // 0~15		등급						(0~9)
 };

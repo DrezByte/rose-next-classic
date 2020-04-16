@@ -28,10 +28,10 @@ public:
     } ///< 다른 객체와 중복되지 않는 유일한 값을 구한다.( 일반적으로 슬롯 인덱스 )
     //	virtual int		 Get_ObjTYPE() = 0{ *(int*)0 = 10; }					///< 객체의 타입을
     //얻는다.
-    //	virtual bool	 Is_SameTYPE(int iType) = 0{ *(int*)0 = 10; }			///< 객체의 타입이 iType가
-    //같은가?
-    //	virtual bool	 Is_AVATAR() = 0{ *(int*)0 = 10; }						///< 객체의 타입이 아바타
-    //인가?
+    //	virtual bool	 Is_SameTYPE(int iType) = 0{ *(int*)0 = 10; }			///< 객체의 타입이
+    //iType가 같은가?
+    //	virtual bool	 Is_AVATAR() = 0{ *(int*)0 = 10; }						///< 객체의 타입이
+    //아바타 인가?
 
     virtual int Get_PercentHP() = 0 { *(int*)0 = 10; }
     virtual int Get_HP() = 0 { *(int*)0 = 10; } ///< 객체의 생명력을 구한다.

@@ -54,7 +54,7 @@ CTargetManager::Draw() {
     //		return;
 
     //	CObjCHAR *pObj = (CObjCHAR*)g_pObjMGR->Get_CharOBJ( g_UserInputSystem.GetCurrentTarget(),
-    //true );
+    // true );
     //	/// 유효하지 않은 타겟이다.. 마우스 컴맨드 초기화
     //	if( pObj == NULL )
     //	{
@@ -82,8 +82,8 @@ CTargetManager::Draw() {
     //			int iWidthGuage		= 116;
 
     //			g_DrawImpl.Draw( PosSCR.x - iWidthBackImage / 2, PosSCR.y - NAMEBOX_HEIGHT / 2 + 4,
-    //PosSCR.z, IMAGE_RES_UI, CResourceMgr::GetInstance()->GetImageNID(
-    //IMAGE_RES_UI,"ID_GUAGE_BLACK_SMALL" ));
+    // PosSCR.z, IMAGE_RES_UI, CResourceMgr::GetInstance()->GetImageNID(
+    // IMAGE_RES_UI,"ID_GUAGE_BLACK_SMALL" ));
     //
     //			int iHP = g_pAVATAR->Get_HP();
     //			if ( iHP < 0 )
@@ -92,8 +92,8 @@ CTargetManager::Draw() {
     //			int iWidth = iWidthGuage * g_pAVATAR->Get_PercentHP() / 100;
 
     //			g_DrawImpl.Draw( PosSCR.x - iWidthGuage / 2 , PosSCR.y - NAMEBOX_HEIGHT / 2 + 4 ,
-    //PosSCR.z, iWidth, IMAGE_RES_UI, CResourceMgr::GetInstance()->GetImageNID(
-    //IMAGE_RES_UI,"ID_GUAGE_RED_SMALL" ));
+    // PosSCR.z, iWidth, IMAGE_RES_UI, CResourceMgr::GetInstance()->GetImageNID(
+    // IMAGE_RES_UI,"ID_GUAGE_RED_SMALL" ));
     //		}
     //	}
     //}

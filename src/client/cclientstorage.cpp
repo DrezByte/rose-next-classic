@@ -142,7 +142,7 @@ CClientStorage::Load() {
 void
 CClientStorage::LoadAvatarData() {
     //	GetPrivateProfileStruct( m_strAvatarName.c_str(),"INVENTORY", m_VirtualInventory, sizeof(
-    //m_VirtualInventory ), g_szIniFileName );
+    // m_VirtualInventory ), g_szIniFileName );
 }
 void
 CClientStorage::SaveJapanRoute() {
@@ -231,7 +231,7 @@ CClientStorage::Save() {
     ///->
 
     //	WritePrivateProfileStruct(m_strAvatarName.c_str(),"INVENTORY", m_VirtualInventory, sizeof(
-    //m_VirtualInventory ),g_szIniFileName );
+    // m_VirtualInventory ),g_szIniFileName );
 
     m_DialogPos[DLG_TYPE_MAX].nPosX =
         -999; ///끝까지 모든 Dialog들의 위치가 저장되어 있는가를 판단하기 위한 값

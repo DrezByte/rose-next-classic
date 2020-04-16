@@ -1148,15 +1148,19 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
                         return true;
                     break;
                 case CLVAR_ADD_SCORE:
-                    if (!this->Query_UpdateClanDATA("intPOINT", pGuildCMD->m_pPacket)) // CLVAR_ADD_SCORE,
-                                                                                       // pGuildCMD->m_pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue
-                                                                                       // ) )
+                    if (!this->Query_UpdateClanDATA("intPOINT",
+                            pGuildCMD
+                                ->m_pPacket)) // CLVAR_ADD_SCORE,
+                                              // pGuildCMD->m_pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue
+                                              // ) )
                         return true;
                     break;
                 case CLVAR_ADD_ZULY:
-                    if (!this->Query_UpdateClanDATA("intMONEY", pGuildCMD->m_pPacket)) // CLVAR_ADD_ZULY,
-                                                                                       // pGuildCMD->m_pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue
-                                                                                       // ) )
+                    if (!this->Query_UpdateClanDATA("intMONEY",
+                            pGuildCMD
+                                ->m_pPacket)) // CLVAR_ADD_ZULY,
+                                              // pGuildCMD->m_pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue
+                                              // ) )
                         return true;
                     break;
             }
