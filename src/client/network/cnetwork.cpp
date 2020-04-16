@@ -17,7 +17,6 @@
 #include "rose/network/packets/packet_data_generated.h"
 #include "rose/network/packets/login_req_generated.h"
 
-
 CNetwork* g_pNet;
 
 CNetwork* CNetwork::m_pInstance = NULL;
@@ -749,7 +748,7 @@ void
 CNetwork::send_packet(const Packet& packet, Server target) {
     if (target == Server::World || target == Server::Login || bAllInONE) {
         m_WorldSOCKET.add_send_packet(packet);
-    }  else {
+    } else {
         m_ZoneSOCKET.add_send_packet(packet);
     }
 }
@@ -760,17 +759,19 @@ CNetwork::send_login_req(const std::string& username, const std::string& passwor
         return;
     }
 
-    for (const char& c : username) {
+    for (const char& c: username) {
         if (c == '\'' || c == '\"') {
             return;
         }
     }
 
-    GetMD5(this->m_pMD5Buff, reinterpret_cast<unsigned char*>(const_cast<char*>(password.c_str())), password.size());
+    GetMD5(this->m_pMD5Buff,
+        reinterpret_cast<unsigned char*>(const_cast<char*>(password.c_str())),
+        password.size());
 
     flatbuffers::FlatBufferBuilder builder;
     const auto username_string = builder.CreateString(username);
-    const auto password_string = builder.CreateString(reinterpret_cast<char*>(m_pMD5Buff));
+    const auto password_string = builder.CreateString(reinterpret_cast<char*>(m_pMD5Buff), 32);
 
     Packets::LoginRequestBuilder req(builder);
     req.add_username(username_string);

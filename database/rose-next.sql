@@ -1,80 +1,14 @@
-USE [master]
-GO
-/****** Object:  Database [SHO]    Script Date: 9/12/2019 2:20:43 PM ******/
-CREATE DATABASE [SHO]
-GO
-
-USE [SHO]
-GO
-/****** Object:  User [seven]    Script Date: 9/12/2019 2:20:43 PM ******/
-CREATE USER [seven] FOR LOGIN [seven] WITH DEFAULT_SCHEMA=[dbo]
-GO
-ALTER ROLE [db_owner] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_accessadmin] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_securityadmin] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_ddladmin] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_backupoperator] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_datareader] ADD MEMBER [seven]
-GO
-ALTER ROLE [db_datawriter] ADD MEMBER [seven]
-GO
-
-CREATE TABLE [dbo].[UserInfo]
+CREATE TABLE [dbo].[account]
 (
-	[Account] [nvarchar](50) NOT NULL,
-	[Address] [nvarchar](50) NULL,
-	[AID] [int] NULL,
-	[AllowBeta] [int] NULL,
-	[AscPassWord] [nvarchar](50) NULL,
-	[Birthday] [datetime] NULL,
-	[BlockEnd] [datetime] NULL,
-	[BlockEnd_Web] [datetime] NULL,
-	[BlockStart] [datetime] NULL,
-	[BlockStart_Web] [datetime] NULL,
-	[City] [nvarchar](50) NULL,
-	[Email] [nvarchar](50) NULL,
-	[FirstName] [nvarchar](50) NULL,
-	[Gen] [nvarchar](50) NULL,
-	[Gender] [nvarchar](50) NULL,
-	[Jumin] [nvarchar](50) NULL,
-	[LastConnect] [nvarchar](50) NULL,
-	[LastName] [nvarchar](50) NULL,
-	[MailIsConfirm] [bit] NULL,
-	[MailOpt] [bit] NULL,
-	[MD5PassWord] [nvarchar](50) NULL,
-	[MiddleName] [nvarchar](50) NULL,
-	[MortherLName] [nvarchar](50) NULL,
-	[Nation] [nvarchar](50) NULL,
-	[NickName] [nvarchar](50) NULL,
-	[RegDate] [datetime] NULL,
-	[Right] [int] NULL,
-	[States] [nvarchar](50) NULL,
-	[Tel] [nvarchar](50) NULL,
-	[ZipCode] [nvarchar](50) NULL,
-	[realname] [nvarchar](50) NULL,
-	[USER_CP] [nvarchar](50) NULL,
-	[name] [nvarchar](50) NULL,
-	[memberinfo] [int] NOT NULL,
-	[Mod] [nvarchar](50) NULL,
-	[hint] [nvarchar](50) NULL,
-	[answer] [nvarchar](50) NULL,
-	[job] [nvarchar](50) NULL,
-	[BlockReason] [nvarchar](100) NULL,
-	[birthyear] [datetime] NULL,
-	[MotherLName] [nvarchar](50) NULL,
-	[BlockGM] [varchar](30) NULL,
-	CONSTRAINT [PK_UserInfo] PRIMARY KEY CLUSTERED 
-(
-	[Account] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-ALTER TABLE [dbo].[UserInfo] ADD  CONSTRAINT [DF_UserInfo_memberinfo]  DEFAULT ((0)) FOR [memberinfo]
+	[id] int NOT NULL IDENTITY(1,1),
+	[username] varchar(50) NOT NULL,
+	[password] char(32) NOT NULL,
+	[access_level] int NOT NULL CONSTRAINT DF_account_access_level DEFAULT(0),
+	[email] varchar(100) NOT NULL,
+	[created] datetime NOT NULL CONSTRAINT DF_account_created DEFAULT GETUTCDATE(),
+	[last_connected] datetime,
+	CONSTRAINT [PK_account_id] PRIMARY KEY (id),
+);
 GO
 
 /****** Object:  Table [dbo].[tblGS_AVATAR]    Script Date: 9/12/2019 2:20:43 PM ******/

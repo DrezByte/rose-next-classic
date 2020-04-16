@@ -33,7 +33,6 @@ struct QueuedPacket {
     Rose::Network::Packet packet;
 };
 
-
 class CSqlTHREAD: public classTHREAD {
 public:
     std::unique_ptr<classODBC> db;
@@ -75,9 +74,11 @@ public:
     bool Add_QueryString(char* szQuery);
 
     void tick();
-    void queue_packet(int32_t socket_id, const std::string& account_name, const Rose::Network::Packet& p);
+    void queue_packet(int32_t socket_id,
+        const std::string& account_name,
+        const Rose::Network::Packet& p);
 
-    virtual void handle_queued_packet(QueuedPacket& p) {};
+    virtual void handle_queued_packet(QueuedPacket& p){};
 };
 
 #endif

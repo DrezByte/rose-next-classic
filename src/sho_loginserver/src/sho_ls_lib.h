@@ -8,7 +8,7 @@ namespace Rose {
 namespace Common {
 struct DatabaseConfig;
 }
-}
+} // namespace Rose
 
 class SHO_LS {
 public:

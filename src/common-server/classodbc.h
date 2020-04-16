@@ -1,8 +1,7 @@
-#ifndef CLASS_ODBC_H
-#define CLASS_ODBC_H
+#pragma once
 
 #include <string>
-#include <vector> // TODO: Remove this
+#include <vector>
 
 #include <sql.h>
 #include <sqlext.h>
@@ -20,11 +19,19 @@
 #define MAX_ODBC_BIND_PARAMETER 64
 #define MAX_ODBC_QUERY_BUFFER 8192
 
+/// ODBC bind parameter data
 struct ParamData {
     uint32_t index;
     uint32_t size;
     std::vector<uint8_t> data;
     int32_t size_at_exec;
+};
+
+/// ODBC fetch result
+enum class FetchResult {
+    Ok,
+    NoData,
+    Error,
 };
 
 struct tagODBCCOL {
@@ -154,53 +161,38 @@ public:
     bool SetParam_wstring(short nParamIDX, char* szStr);
     bool SetParam_long(short nParamIDX, long& lOutResult, long& cbLen);
 
-    // Bind parameters
+    /// Bind parameters
     bool bind(uint32_t idx, uint8_t* data, uint32_t size, SQLSMALLINT c_type, SQLSMALLINT sql_type);
     bool bind_binary(size_t idx, uint8_t* blob, uint32_t size);
     bool bind_int16(size_t idx, int16_t i);
     bool bind_int32(size_t idx, int32_t i);
     bool bind_int64(size_t idx, int64_t i);
+    bool bind_string(size_t idx, const char* data, size_t size);
     bool bind_string(size_t idx, const std::string& data);
-    bool bind_string(size_t idx, const char* data, uint32_t size);
 
-    // Execute a query
+    /// Execute a query
     bool execute(const std::string& query);
+
+    /// Get a row returned from the last query
+    FetchResult fetch();
+
+    /// Gets the maximum or actual character length of a character string or binary column.
+    /// It is the maximum character length for a fixed-length data type, or the actual
+    /// character length for a variable-length data type. Its value always excludes
+    /// the null-termination byte that ends the character string.
+    int column_length(size_t idx);
+
+    /// Get a columns value from the last row
+    std::vector<uint8_t> get_binary(size_t col);
+    int16_t get_int16(size_t col);
+    int32_t get_int32(size_t col);
+    int64_t get_int64(size_t col);
+    std::string get_string(size_t col);
+
+    // TODO: Checked versions?
+    // e.g. bool get_binary_checked(size_t col, std::vector<uint8_t>& val);
 
     // Get a list of error message strings
     std::vector<std::string> get_error_messages(SQLHANDLE handle, SQLSMALLINT type);
     std::vector<std::string> get_error_messages(SQLSMALLINT type = SQL_HANDLE_STMT);
 };
-
-/*
-        // Example ...
-        classODBC COdbc;
-
-        if ( COdbc.Connect ("TriggerNET", "icarus", "xxxx") )
-                LOG_INFO("ODBC Connected ...");
-        else
-                LOG_INFO("ODBC Connect failed");
-
-        if ( COdbc.Query ("select * from tblUSER") ) {
-                while ( COdbc.Fetch () != SQL_NO_DATA ) {
-                        short nI, nLen;
-                        char  aa[ 10 ];
-
-                        for (nI=0; nI<COdbc.GetColCnt(); nI++) {
-                                nLen = COdbc.GetStrLen (nI);
-
-                                OutputDebugString ( itoa(nLen, aa, 10) );
-                                OutputDebugString ( ":");
-
-                                if ( COdbc.GetStrPtr(nI) != NULL )
-                                        OutputDebugString ( COdbc.GetStrPtr(nI)
-   ); else OutputDebugString ( "NULL" );
-
-                                OutputDebugString ("   ");
-                        }
-                        OutputDebugString("\n");
-                }
-        }
-*/
-
-//-------------------------------------------------------------------------------------------------
-#endif // CLASS_ODBC_H

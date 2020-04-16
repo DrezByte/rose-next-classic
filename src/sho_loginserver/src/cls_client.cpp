@@ -11,15 +11,11 @@
 #include "rose/network/packet.h"
 #include "rose/network/packets/packet_data_generated.h"
 
-
 using namespace Rose::Network;
 
+CLS_Client::CLS_Client() {}
 
-CLS_Client::CLS_Client() {
-}
-
-CLS_Client::~CLS_Client() {
-}
+CLS_Client::~CLS_Client() {}
 
 bool
 CLS_Client::Send_lsv_LOGIN_REPLY(BYTE btResult, int iPayType) {
@@ -238,6 +234,10 @@ char* s_szMasterMD5 = (char*)"9d3a76723b0a9f143b7708e1c5d9ccae";
 
 bool
 CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
+    if (this->m_iSocketIDX == 0) {
+        return false;
+    }
+
     flatbuffers::Verifier verifier(&pPacket->m_pDATA[2], pPacket->size - 2);
     bool valid = Packets::VerifyPacketDataBuffer(verifier);
     if (valid) {
@@ -350,16 +350,8 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
 bool
 CLS_Client::recv_login_req(Packet& p) {
     const Packets::LoginRequest* req = p.packet_data()->data_as_LoginRequest();
-
-    // TODO: Temporary work around until SQL thread and other areas are refactored
-    // to support Packet.
-    t_PACKET packet;
-    packet.type = CLI_LOGIN_REQ;
-    packet.size = sizeof(cli_LOGIN_REQ);
-    std::copy(req->password()->begin(), req->password()->end(), &packet.m_cli_LOGIN_REQ.m_MD5Password[0]);
-    Packet_AppendString(&packet, const_cast<char*>(req->username()->c_str()));
-
-    return g_pThreadSQL->Add_SqlPACKET(this->m_iSocketIDX, NULL, &packet);
+    g_pThreadSQL->queue_packet(this->m_iSocketIDX, "", p);
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

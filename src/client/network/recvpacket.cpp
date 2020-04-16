@@ -660,7 +660,7 @@ CRecvPACKET::Recv_gsv_JOIN_ZONE() {
     }
 
     //	CLiveCheck::GetSingleton().ResetTime();		// 2004.11.11, icarus:
-    //SRV_JOIN_SERVER_REPLY받았을 때로 이동..
+    // SRV_JOIN_SERVER_REPLY받았을 때로 이동..
 
     g_GameDATA.m_iReceivedAvatarEXP = g_pAVATAR->Get_EXP();
 
@@ -759,8 +759,8 @@ CRecvPACKET::Recv_gsv_SELECT_CHAR() {
     refGame.m_strAvataName = std::string((szName == NULL) ? "NULL" : szName);
 
     //	::CopyMemory( refGame.m_SelectedAvataInfo.m_nPartItemIDX,
-    //m_pRecvPacket->m_gsv_SELECT_CHAR.m_nPartItemIDX, sizeof(
-    //refGame.m_SelectedAvataInfo.m_nPartItemIDX ) );
+    // m_pRecvPacket->m_gsv_SELECT_CHAR.m_nPartItemIDX, sizeof(
+    // refGame.m_SelectedAvataInfo.m_nPartItemIDX ) );
     ::CopyMemory(refGame.m_SelectedAvataInfo.m_PartITEM,
         m_pRecvPacket->m_gsv_SELECT_CHAR.m_PartITEM,
         sizeof(refGame.m_SelectedAvataInfo.m_PartITEM));
@@ -1031,10 +1031,10 @@ CRecvPACKET::Recv_tag_ADD_CHAR(short nCliObjIDX, tag_ADD_CHAR* tagAddChar) {
     //	tPOINTF		m_PosTO;
     //	WORD		m_wCommand;
     //	WORD		m_wTargetOBJ;
-    //	BYTE		m_btMoveMODE;					// 0:걷기, 1:뛰기, 2:내 승용아이템에 타고있다, 3:
-    //m_wTargetOBJ의 승용아이템에 타고있다. 	int			m_iHP; #ifdef	__APPLY_04_10_15_TEAMNO 	int
-    //m_iTeamNO;						//	char m_cTeamNO => int로 변경 04.10.15 수정... #else 	char
-    //m_cTeamNO; #endif 	DWORD		m_dwStatusFALG; } ;
+    //	BYTE		m_btMoveMODE;					// 0:걷기, 1:뛰기, 2:내 승용아이템에 타고있다,
+    //3: m_wTargetOBJ의 승용아이템에 타고있다. 	int			m_iHP; #ifdef __APPLY_04_10_15_TEAMNO
+    // int m_iTeamNO;						//	char m_cTeamNO => int로 변경 04.10.15 수정... #else
+    // char m_cTeamNO; #endif 	DWORD		m_dwStatusFALG; } ;
 
     CObjCHAR* pSourCHAR = g_pObjMGR->Get_CharOBJ(nCliObjIDX, false);
     if (pSourCHAR) {
@@ -1820,7 +1820,7 @@ CRecvPACKET::Recv_gsv_DAMAGE() {
     //		pPartyDlg->MemberDead( m_pRecvPacket->m_gsv_DAMAGE.m_wDefObjIDX );
     //	else
     //		pPartyDlg->MemberDamaged(
-    //m_pRecvPacket->m_gsv_DAMAGE.m_wDefObjIDX,m_pRecvPacket->m_gsv_DAMAGE.m_Damage.m_wDamage );
+    // m_pRecvPacket->m_gsv_DAMAGE.m_wDefObjIDX,m_pRecvPacket->m_gsv_DAMAGE.m_Damage.m_wDamage );
     //}
 
     if (NULL == pDefOBJ)
@@ -1828,8 +1828,10 @@ CRecvPACKET::Recv_gsv_DAMAGE() {
 
     // if( pAtkOBJ ) {
     //	LogString (LOG_NORMAL, "damage: %x,  %s(%f, %f) => %s(%f, %f) \n",
-    //m_pRecvPacket->m_gsv_DAMAGE.m_Damage.m_wDamage, 						pAtkOBJ->Get_NAME(), pAtkOBJ->m_PosCUR.x,
-    //pAtkOBJ->m_PosCUR.y, 						pDefOBJ->Get_NAME(), pDefOBJ->m_PosCUR.x, pDefOBJ->m_PosCUR.y );
+    // m_pRecvPacket->m_gsv_DAMAGE.m_Damage.m_wDamage, 						pAtkOBJ->Get_NAME(),
+    // pAtkOBJ->m_PosCUR.x,
+    // pAtkOBJ->m_PosCUR.y, 						pDefOBJ->Get_NAME(), pDefOBJ->m_PosCUR.x, pDefOBJ->m_PosCUR.y
+    // );
     //}
 
     if (pAtkOBJ) {
@@ -1903,8 +1905,8 @@ CRecvPACKET::Recv_gsv_DAMAGE() {
         //----------------------------------------------------------------------------------------------------
         /// @param
         /// @brief Damage 등록..
-        ///			Pet Mode 일 경우에는 Pet 의 인덱스를 넣는다.( 서버는 탑승자만 존재하므로 탑승자로
-        ///Attacker 가 날라온다. )
+        ///			Pet Mode 일 경우에는 Pet 의 인덱스를 넣는다.( 서버는 탑승자만 존재하므로
+        ///탑승자로 Attacker 가 날라온다. )
         //----------------------------------------------------------------------------------------------------
         /// Pet 탑승중일때는
         if (pAtkOBJ->GetPetMode() >= 0) {
@@ -2283,8 +2285,8 @@ CRecvPACKET::Recv_gsv_SET_INV_ONLY() {
 /// 아이템을 사용했다.
 ///아이템이 사용되었을때 서버로부터 받는 패킷: 2004/4/29:nAvy
 /// 1. 내가 쓴경우 ( 한번 사용에 1~2번 온다 )
-///		1) 뒤에 인벤토리 인덱스가 붙은경우는 소모성 아이템의 갯수를 빼기 위하여 받은값이다 . 이때 다른
-///유저에게 알려주기 위한 BroadCast에 내가 포함되어 한번더 올수 있다. 		2) 만약 아이템이 다
+///		1) 뒤에 인벤토리 인덱스가 붙은경우는 소모성 아이템의 갯수를 빼기 위하여 받은값이다 . 이때
+///다른 유저에게 알려주기 위한 BroadCast에 내가 포함되어 한번더 올수 있다. 		2) 만약 아이템이 다
 ///사용되었을경우에는 인벤토리 인덱스가 붙은 패킷을 오지 않고 gsv_SET_INV_ONLY가 오게 된다.
 /// 2. 다른 캐릭터가 쓴경우( 오직 1번만 온다 )
 ///     1) 효과와
@@ -4476,8 +4478,8 @@ CRecvPACKET::Recv_gsv_CRAFT_ITEM_REPLY() {
     // BYTE			m_btOutCNT;			// 변경된 아이템 갯수
     // tag_SET_INVITEM	m_sInvITEM[ 0 ];	// 변경된 갯수 만큼 들어 있다...
     //									// 예외) CRAFT_UPGRADE_SUCCESS, CRAFT_UPGRADE_FAILED 일경우
-    //									// m_sInvITEM[ m_btOutCNT-1 ].m_uiQuantity에 성공도 계산된값이
-    //들어있음 } ;
+    //									// m_sInvITEM[ m_btOutCNT-1 ].m_uiQuantity에 성공도
+    //계산된값이 들어있음 } ;
 
     switch (m_pRecvPacket->m_gsv_CRAFT_ITEM_REPLY.m_btRESULT) {
         case CRAFT_GEMMING_SUCCESS: //	0x01

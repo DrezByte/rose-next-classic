@@ -1041,8 +1041,13 @@ classODBC::bind_int64(size_t idx, int64_t i) {
 }
 
 bool
-classODBC::bind_string(uint32_t idx, const char* data, size_t size) {
+classODBC::bind_string(size_t idx, const char* data, size_t size) {
     return this->bind(idx, (uint8_t*)data, size, SQL_C_CHAR, SQL_VARCHAR);
+}
+
+bool
+classODBC::bind_string(size_t idx, const std::string& s) {
+    return this->bind_string(idx, s.c_str(), s.size());
 }
 
 bool
@@ -1052,6 +1057,76 @@ classODBC::execute(const std::string& query) {
     res = SQLExecDirect(this->m_hSTMT1, (SQLCHAR*)query.c_str(), query.size());
 
     return res == SQL_SUCCESS || res == SQL_NO_DATA;
+}
+
+FetchResult
+classODBC::fetch() {
+    const SQLRETURN res = SQLFetch(this->m_hSTMT1);
+    if (res == SQL_NO_DATA) {
+        return FetchResult::NoData;
+    }
+    if (res == SQL_SUCCESS) {
+        return FetchResult::Ok;
+    }
+    return FetchResult::Error;
+}
+
+int
+classODBC::column_length(size_t idx) {
+    int res = 0;
+    SQLColAttribute(this->m_hSTMT1, idx, SQL_DESC_LENGTH, nullptr, 0, nullptr, &res);
+    return res;
+}
+
+std::vector<uint8_t>
+classODBC::get_binary(size_t col) {
+    const int size = this->column_length(col);
+    std::vector<uint8_t> res(size);
+    SQLGetData(this->m_hSTMT1, col, SQL_C_BINARY, res.data(), size, nullptr);
+    return res;
+}
+
+int16_t
+classODBC::get_int16(size_t col) {
+    int16_t val = 0;
+    SQLGetData(this->m_hSTMT1, col, SQL_C_SSHORT, &val, 0, nullptr);
+    return val;
+}
+
+int32_t
+classODBC::get_int32(size_t col) {
+    int32_t val = 0;
+    SQLGetData(this->m_hSTMT1, col, SQL_C_SLONG, &val, 0, nullptr);
+    return val;
+}
+
+int64_t
+classODBC::get_int64(size_t col) {
+    int64_t val = 0;
+    SQLGetData(this->m_hSTMT1, col, SQL_C_SBIGINT, &val, 0, nullptr);
+    return val;
+}
+
+std::string
+classODBC::get_string(size_t col) {
+    // `SQLGetData()` will always append a null terminator
+    const int size = this->column_length(col) + 1;
+
+    std::string res;
+    res.resize(size);
+
+    SQLGetData(this->m_hSTMT1, col, SQL_C_CHAR, res.data(), size, nullptr);
+
+    // Sometimes `SQLGetData() appends a null terminator, othertimes our buffer is larger
+    // than the actual content size since `column_length()` returned the max capacity but
+    // the column type is variable sized. In both those cases we want to truncate the string
+    // to the character before first null terminator.
+    const int null_pos = res.find('\0');
+    if (null_pos != std::string::npos) {
+        res.resize(null_pos);
+    }
+    res.shrink_to_fit();
+    return res;
 }
 
 std::vector<std::string>

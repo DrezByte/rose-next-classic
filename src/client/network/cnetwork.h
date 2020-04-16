@@ -11,7 +11,6 @@
 
 enum { NS_NULL = 0, NS_CON_TO_LSV, NS_DIS_FORM_LSV, NS_CON_TO_WSV };
 
-
 class CNetwork: public CRecvPACKET, public CSendPACKET {
 public:
     enum class Server {

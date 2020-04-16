@@ -28,8 +28,7 @@ public:
     void Init();
 };
 
-class CLS_AccountLIST
-{
+class CLS_AccountLIST {
 private:
     static CDataPOOL<CLS_Account>* m_pAccountPOOL;
     static classTIME m_Timer;
@@ -51,9 +50,7 @@ public:
             pCAccount->Init();
         return pCAccount;
     }
-    void Mem_DEL(CLS_Account* pCAccount) {
-        m_pAccountPOOL->Pool_Free(pCAccount);
-    }
+    void Mem_DEL(CLS_Account* pCAccount) { m_pAccountPOOL->Pool_Free(pCAccount); }
 
     int GetLSIDCount() { return m_pHTLSID->GetCount(); }
     int GetAcntCount() { return m_pHTAcnt->GetCount(); }

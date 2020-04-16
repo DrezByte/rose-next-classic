@@ -24,7 +24,6 @@ CLS_SqlTHREAD* g_pThreadSQL = NULL;
 CLS_ListCLIENT* g_pListCLIENT;
 CLS_ListSERVER* g_pListSERVER;
 
-
 #define DEF_CLIENT_POOL_SIZE 8192 // µ¿½Ã Á¢¼Ó ´ë±â ¼ÒÄÏ
 #define INC_CLIENT_POOL_SIZE 1024
 
@@ -116,9 +115,7 @@ SHO_LS::StartClientSOCKET(int iClientListenPort, int iLimitUserCNT, BYTE btMD5[3
     ::CopyMemory(m_btMD5, btMD5, 32);
 
     m_iClientListenPortNO = iClientListenPort;
-    g_pListCLIENT->Active(m_iClientListenPortNO,
-        65535,
-        3 * 60);
+    g_pListCLIENT->Active(m_iClientListenPortNO, 65535, 3 * 60);
     this->SetLimitUserCNT(iLimitUserCNT);
 
     return true;
@@ -182,7 +179,7 @@ SHO_LS::Send_ANNOUNCE(void* pServer, char* szAnnounceMsg) {
 void
 SHO_LS::SetLoginRIGHT(DWORD dwLoginRight) {
     if (g_pThreadSQL)
-        g_pThreadSQL->m_dwCheckRIGHT = dwLoginRight;
+        g_pThreadSQL->minimum_access_level = dwLoginRight;
 }
 
 void
@@ -201,13 +198,7 @@ SHO_LS::connect_database(const DatabaseConfig& db_config) {
         char* password = (char*)db_config.password.c_str();
         char* name = (char*)db_config.name.c_str();
 
-        if (!g_pThreadSQL->Connect(USE_ODBC,
-                ip,
-                username,
-                password,
-                name,
-                32,
-                1024 * 4)) {
+        if (!g_pThreadSQL->Connect(USE_ODBC, ip, username, password, name, 32, 1024 * 4)) {
 
             LOG_ERROR("Failed to connect to the databases: %s@%s(%s)", username, name, ip);
 
@@ -217,8 +208,6 @@ SHO_LS::connect_database(const DatabaseConfig& db_config) {
         }
 
         g_pThreadSQL->Resume();
-        g_pThreadSQL->m_bCheckLogIN = true;
-        g_pThreadSQL->m_dwCheckRIGHT = 0;
     }
     return true;
 }
