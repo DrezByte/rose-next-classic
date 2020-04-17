@@ -3,7 +3,9 @@
 #include <iomanip>
 #include <sstream>
 
+#include "rose/common/commands.h"
 #include "rose/common/status_effect/status_effect.h"
+#include "rose/common/util.h"
 
 #include "LIB_gsMAIN.h"
 #include "GS_USER.h"
@@ -11,9 +13,70 @@
 #include "GS_ListUSER.h"
 #include "IO_Quest.h"
 #include "GS_SocketLSV.h"
+#include "GS_ThreadSQL.h"
 
 using namespace Rose;
 using namespace Rose::Common;
+
+// clang-format off
+#define REGISTER_COMMAND(ID, FUNC) {commands[ID].name, {FUNC, commands[ID]}}
+
+bool
+help(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+    if (!user) {
+        return false;
+    }
+    return user->send_server_whisper("HELP MAN, HELP!");
+}
+
+bool
+maps(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+    if (!user) {
+        return false;
+    }
+
+    user->send_server_whisper("| ID | Name |");
+    user->send_server_whisper("-------------");
+
+    for (int zone_idx = 0; zone_idx < g_TblZONE.m_nDataCnt; ++zone_idx) {
+        const char* zone_name = ZONE_NAME(zone_idx);
+        if (!zone_name) {
+            continue;
+        }
+
+        std::stringstream message("| ");
+        message << std::setfill('0') << std::setw(2) << zone_idx << " | "
+                << std::string(zone_name);
+
+        user->send_server_whisper(message.str());
+    }
+    return true;
+}
+
+bool
+rates(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+    if (!user) {
+        return false;
+    }
+
+    user->send_server_whisper("Drop: " + std::to_string(Get_WorldDROP()));
+    user->send_server_whisper("Money: " + std::to_string(Get_WorldDROP_M()));
+    user->send_server_whisper("Exp: " + std::to_string(Get_WorldEXP()));
+    user->send_server_whisper("Craft: " + std::to_string(Get_WorldPROD()));
+    user->send_server_whisper("Prices: " + std::to_string(Get_WorldRATE()));
+    user->send_server_whisper("Reward: " + std::to_string(Get_WorldREWARD()));
+    user->send_server_whisper("Stamina: " + std::to_string(Get_WorldSTAMINA()));
+
+    return true;
+}
+
+using CommandFunction = std::function<bool(classUSER*, CommandInfo, std::vector<std::string>&)>;
+static const std::unordered_map<std::string, std::tuple<CommandFunction, CommandInfo>>
+    command_registry = {
+        REGISTER_COMMAND(Command::HELP, help),
+        REGISTER_COMMAND(Command::MAPS, maps),
+        REGISTER_COMMAND(Command::RATES, rates),
+    };
 
 char* l_szAbility[] = {"STR",
     "DEX",
@@ -1093,4 +1156,328 @@ classUSER::Cheat_speed(char* pArg1) {
     Send_gsv_SPEED_CHANGED(false);
 
     return CHEAT_PROCED;
+}
+
+short
+classUSER::Parse_CheatCODE(char* szCode) {
+    // New cheat code handling
+    std::vector<std::string> tokens = Util::split_string_whitespace(szCode);
+    if (tokens.empty()) {
+        return CHEAT_INVALID;
+    }
+
+    std::string& command_name = tokens.at(0);
+    if (command_name.empty()) {
+        return CHEAT_INVALID;
+    }
+
+    if (command_name.front() == '/') {
+        command_name.erase(0, 1);
+    }
+
+    auto registered_command = command_registry.find(command_name);
+    if (registered_command != command_registry.end()) {
+        CommandFunction command_func = std::get<0>(registered_command->second);
+        CommandInfo info = std::get<1>(registered_command->second);
+
+        if (command_func(this, info, tokens)) {
+            return CHEAT_PROCED;
+        } else {
+            return CHEAT_INVALID;
+        }
+    }
+
+    // End new cheat code handling
+
+    short nProcMODE = 0;
+
+    char *pToken, *pArg1, *pArg2, *pArg3;
+    char* pDelimiters = " ";
+
+    CStrVAR* pStrVAR = this->GetZONE()->GetStrVAR();
+
+    pToken = pStrVAR->GetTokenFirst(szCode, pDelimiters);
+    pArg1 = pStrVAR->GetTokenNext(pDelimiters);
+    if (NULL == pToken)
+        return CHEAT_INVALID;
+
+    if (pArg1) {
+#ifdef __NEW_LOG
+        if (!strcmpi(pToken, "/logtest")) {
+            return 1;
+        }
+#endif
+
+        if (!strcmpi(pToken, "/pay")) {
+            int iPayType = atoi(pArg1);
+            if (iPayType > 0 && iPayType <= BILLING_MSG_PAY_IQ) {
+                this->Send_gsv_BILLING_MESSAGE(iPayType, "200512312400");
+            }
+        }
+        if (!strcmpi(pToken, "/team")) {
+            int iTeamNo = atoi(pArg1);
+            if (iTeamNo >= 0) {
+                this->m_iTeamNO = iTeamNo;
+            }
+        }
+        if (!strcmpi(pToken, "/where")) {
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters); // account
+            return Cheat_where(pStrVAR, pArg1, pArg2, szCode);
+        }
+        if (!strcmpi(pToken, "/account")) {
+            return Cheat_account(pArg1, szCode);
+        }
+        if (!strcmpi(pToken, "/move")) {
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters); // account
+            return Cheat_move(pArg1, pArg2, szCode);
+        }
+        // 맵이동..
+        if (!strcmpi(pToken, "/mm")) {
+            // pArg1 // zone no
+            short nZoneNO = atoi(pArg1);
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters); // x pos
+            pArg3 = pStrVAR->GetTokenNext(pDelimiters); // y pos
+            if (pArg2 && pArg3) {
+                return Cheat_mm(nZoneNO, pArg2, pArg3);
+            }
+        }
+        if (!strcmpi(pToken, "/NPC")) {
+            // pArg1 == npc no
+            int iNpcIDX = atoi(pArg1);
+            if (iNpcIDX) {
+                CObjNPC* pNPC = g_pZoneLIST->Get_LocalNPC(iNpcIDX);
+                if (pNPC) {
+                    pArg2 = pStrVAR->GetTokenNext(pDelimiters); // move, call, var
+                    pArg3 = pStrVAR->GetTokenNext(pDelimiters); // event id, var idx
+                    char* pArg4 = pStrVAR->GetTokenNext(pDelimiters); // var value
+                    return Cheat_npc(pStrVAR, pNPC, iNpcIDX, pArg2, pArg3, pArg4);
+                }
+            }
+            return CHEAT_INVALID;
+        }
+
+        if (!strcmpi(pToken, "/ADD")) {
+            // 포인트 상승 치트코드...
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters);
+            pArg3 = pStrVAR->GetTokenNext(pDelimiters);
+            return Cheat_add(pArg1, pArg2, pArg3, szCode);
+        }
+        if (!strcmpi(pToken, "/DEL")) {
+            // 포인트 상승 치트코드...
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters);
+            pArg3 = pStrVAR->GetTokenNext(pDelimiters);
+            nProcMODE = Cheat_del(pStrVAR, pArg1, pArg2, pArg3);
+        }
+        // 아이템 관련 치트코드...
+        if (!strcmpi(pToken, "/ITEM")) {
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters);
+            pArg3 = pStrVAR->GetTokenNext(pDelimiters);
+            if (!pArg2 || !pArg3) {
+                this->Send_gsv_WHISPER("Server", "Usage: /item <type_id> <item_id> <quantity>");
+                this->Send_gsv_WHISPER("Server",
+                    "Usage: /item <type_id> <item_id> <stat_id> <socket>");
+                return CHEAT_INVALID;
+            }
+            char* pArg4 = pStrVAR->GetTokenNext(pDelimiters);
+            return Cheat_item(pArg1, pArg2, pArg3, pArg4);
+        }
+
+        if (!strcmpi(pToken, "/GET")) {
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters); // account
+            return Cheat_get(pStrVAR, pArg1, pArg2, szCode);
+        }
+    } else {
+        if (!strcmpi(pToken, "/respawn")) {
+            // 저장된 부활장소에서 살아나기..
+            this->Recv_cli_REVIVE_REQ(REVIVE_TYPE_SAVE_POS);
+            return CHEAT_NOLOG;
+        }
+    }
+
+    if (C_Cheater()) {
+        if (pArg1) {
+            if (!strcmpi(pToken, "/nc")) {
+                // 서버 전체 공지
+                g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT(&szCode[4], this->Get_NAME());
+                return CHEAT_PROCED;
+            } else if (!strcmpi(pToken, "/nz")) {
+                // 현재 맵 공지
+                g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT(this->GetZONE()->Get_ZoneNO(),
+                    &szCode[4],
+                    this->Get_NAME());
+                return CHEAT_PROCED;
+            }
+
+            // 몹 소환
+            if (!strcmpi(pToken, "/mon")) {
+                // pArg1 Mob IDX
+                pArg2 = pStrVAR->GetTokenNext(pDelimiters); // mob cnt
+                if (pArg2) {
+                    return Cheat_mon(pArg1, pArg2);
+                }
+            }
+
+            // 몹 삭제
+            if (!strcmpi(pToken, "/damage")) {
+                // pArg1 Distance
+                // pArg2 Damage
+                // pArg3 DamageType
+                pArg2 = pStrVAR->GetTokenNext(pDelimiters);
+                if (pArg2) {
+                    pArg3 = pStrVAR->GetTokenNext(pDelimiters);
+                    return Cheat_damage(pArg1, pArg2, pArg3);
+                }
+            }
+        } else { // !pArg1
+            // 무적 치트코드
+            if (!strcmpi(pToken, "/invincible") && (GM_Cheater() || TWGM_Cheater())) {
+                m_IngSTATUS.ToggleSubFLAG(FLAG_CHEAT_INVINCIBLE);
+                this->Send_gsv_WHISPER("SERVER",
+                    this->m_IngSTATUS.IsSubSET(FLAG_CHEAT_INVINCIBLE) ? "Invincible Mode"
+                                                                      : "Normal Mode");
+                return CHEAT_NOLOG;
+            } else if (!strcmpi(pToken, "/dead")) {
+                this->Set_HP(10);
+                this->SetCMD_ATTACK(this->Get_INDEX());
+                return CHEAT_NOLOG;
+            }
+        }
+    }
+
+    if (C_Cheater() || TWGM_Cheater()) {
+        if (pArg1) {
+            if (!strcmpi(pToken, "/na")) {
+                g_pSockLSV->Send_gsv_CHEAT_REQ(this, this->m_dwWSID, 0, szCode);
+            } else if (!strcmpi(pToken, "/call")) {
+                if (this->GetZONE()) {
+                    pArg2 = pStrVAR->GetTokenNext(pDelimiters); // account
+                    return Cheat_call(pArg1, pArg2, szCode);
+                }
+
+                return CHEAT_NOLOG;
+            } else if (!strcmpi(pToken, "/out")) {
+                // 강제 접속 종료...
+                pArg2 = pStrVAR->GetTokenNext(pDelimiters); // account
+                return Cheat_out(pArg1, pArg2, szCode);
+            } else if (!strcmpi(pToken, "/shut")) {
+                // 말하기 금지...
+                pArg2 = pStrVAR->GetTokenNext(pDelimiters); // block time
+                pArg3 = pStrVAR->GetTokenNext(pDelimiters); // account
+                return Cheat_shut(pArg1, pArg2, pArg3, szCode);
+            }
+        }
+    }
+
+    if (TWGM_Cheater()) {
+        if (pArg1) {
+            if (!strcmpi(pToken, "/speed")) {
+                // 말하기 금지...
+                return Cheat_speed(pArg1);
+            } else
+                // 몹 소환
+                if (!strcmpi(pToken, "/mon2")) {
+                // pArg1 Mob IDX
+                char* pArg2 = pStrVAR->GetTokenNext(pDelimiters); // X
+                char* pArg3 = pStrVAR->GetTokenNext(pDelimiters); // Y
+                char* pArg4 = pStrVAR->GetTokenNext(pDelimiters); // 마리수 , pArg1 : 몬스터 인덱스
+                if (pArg2 && pArg3 && pArg4) {
+                    return Cheat_mon2(pArg1, pArg2, pArg3, pArg4);
+                }
+            }
+        }
+
+        if (!strcmpi(pToken, "/HIDE")) {
+            this->m_IngSTATUS.ToggleSubFLAG(FLAG_SUB_HIDE);
+            DWORD dwFlag = this->m_IngSTATUS.m_dwSubStatusFLAG;
+            Send_gsv_CHARSTATE_CHANGE(dwFlag);
+            return CHEAT_NOLOG;
+        }
+    }
+
+    if (pArg1) {
+        // 퀘스트 체크...
+        if (!strcmpi(pToken, "/QUEST")) {
+            if (!strcmpi(pArg1, "all")) {
+                g_QuestList.CheckAllQuest(this);
+                return CHEAT_NOLOG;
+            }
+            return Cheat_quest(pStrVAR, pArg1);
+        }
+
+        // 능력치 상승 치트코드...
+        if (!strcmpi(pToken, "/FULL") && B_Cheater()) {
+            if (!strcmpi(pArg1, "HP")) {
+                this->Set_HP(this->Get_MaxHP());
+                nProcMODE = CHEAT_SEND;
+            } else if (!strcmpi(pArg1, "MP")) {
+                this->Set_MP(this->Get_MaxMP());
+                nProcMODE = CHEAT_SEND;
+            }
+        } else if (!strcmpi(pToken, "/SET")) {
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters);
+            if (pArg2) {
+                classUSER* pUSER = NULL;
+                pArg3 = pStrVAR->GetTokenNext(pDelimiters); // 대상.
+                if (pArg3) {
+                    pUSER = g_pUserLIST->Find_CHAR(pArg3);
+                }
+                nProcMODE = Cheat_set(pUSER, pArg1, pArg2, pArg3);
+            } else
+                return CHEAT_INVALID;
+        }
+        if (!strcmpi(pToken, "/TOGGLE")) {
+            return Cheat_toggle(pStrVAR, pArg1);
+        }
+        if (!strcmpi(pToken, "/kill_all") && B_Cheater()) {
+            this->GetZONE()->Kill_AllMOB(this);
+            return CHEAT_NOLOG;
+        }
+        if (!strcmpi(pToken, "/RESET") && A_Cheater()) {
+            if (!strcmpi(pArg1, "QUEST")) {
+                pStrVAR->Printf("Reset quest result: %d", g_QuestList.LoadQuestTable());
+                this->Send_gsv_WHISPER("SERVER", pStrVAR->Get());
+            } else if (!strcmpi(pArg1, "REGEN")) {
+                this->GetZONE()->Reset_REGEN();
+                pStrVAR->Printf("Zone %d Reset regen point", this->GetZONE()->Get_ZoneNO());
+                this->Send_gsv_WHISPER("SERVER", pStrVAR->Get());
+            }
+            return CHEAT_NOLOG;
+        } else if (!strcmpi(pToken, "/REGEN") && A_Cheater()) {
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters);
+            return Cheat_regen(pStrVAR, pArg1, pArg2);
+        } else if (!strcmpi(pToken, "/HIDE") && C_Cheater()) {
+            this->m_IngSTATUS.ToggleSubFLAG(FLAG_SUB_HIDE);
+            return CHEAT_NOLOG;
+        }
+    } else {
+        if (!strcmpi(pToken, "/revive")) {
+            // 현재 존의 부활장소에서..
+            this->Recv_cli_REVIVE_REQ(REVIVE_TYPE_REVIVE_POS);
+            return CHEAT_NOLOG;
+        } else if (!strcmpi(pToken, "/alive")) {
+            // 현재 존의 부활장소에서..
+            this->Set_HP(this->GetCur_MaxHP());
+            this->Recv_cli_REVIVE_REQ(REVIVE_TYPE_CURRENT_POS);
+            return CHEAT_NOLOG;
+        } else if (!strcmpi(pToken, "/SAVE")) {
+            g_pThreadSQL->Add_BackUpUSER(this);
+            return CHEAT_NOLOG;
+        }
+    }
+
+    if (CHEAT_SEND == nProcMODE) {
+        classPACKET* pCPacket = Packet_AllocNLock();
+
+        pCPacket->m_HEADER.m_wType = GSV_CHEAT_CODE;
+        pCPacket->m_HEADER.m_nSize = sizeof(gsv_CHEAT_CODE);
+        pCPacket->m_gsv_CHEAT_CODE.m_wObjectIDX = this->Get_INDEX();
+        pCPacket->AppendString(szCode);
+
+        this->SendPacket(pCPacket);
+
+        Packet_ReleaseNUnlock(pCPacket);
+        return CHEAT_SEND;
+    }
+
+    return CHEAT_INVALID;
 }

@@ -137,6 +137,8 @@ public:
     classUSER();
     virtual ~classUSER();
 
+    bool send_server_whisper(const std::string& message);
+
 private:
     CCriticalSection m_csSrvRECV;
     CSLList<t_PACKET*> m_SrvRecvQ;
