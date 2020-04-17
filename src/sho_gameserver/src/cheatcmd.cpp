@@ -1180,6 +1180,11 @@ classUSER::Parse_CheatCODE(char* szCode) {
         CommandFunction command_func = std::get<0>(registered_command->second);
         CommandInfo info = std::get<1>(registered_command->second);
 
+        if(this->m_dwRIGHT < info.level) {
+            this->send_server_whisper("You don't have permission to use this command.");
+            return CHEAT_INVALID;
+        }
+
         if (command_func(this, info, tokens)) {
             return CHEAT_PROCED;
         } else {
