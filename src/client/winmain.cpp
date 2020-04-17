@@ -96,7 +96,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmd
 #ifndef _DEBUG
     DuplicateAppLock app_lock;
     if (app_lock.is_duplicate) {
-        ::MessageBox(nullptr, "Rose Next is already running.", "Duplicate Instance", MB_OK);
+        ::MessageBox(nullptr, "ROSE Next is already running.", "Duplicate Instance", MB_OK);
         return 0;
     }
 #endif
