@@ -12,6 +12,9 @@ class CMessenger;
 #define IS_HACKING(pUSER, fn) pUSER->IsHacking(fn, __FILE__, __LINE__)
 
 class CWS_Client: public iocpSOCKET {
+public:
+    bool recv_char_create_req(Rose::Network::Packet& p);
+
 private:
     //----------------------- virtual function inherit from iocpSOCKET
     int m_iRecvSeqNO;
@@ -128,7 +131,6 @@ public:
     bool Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket);
     bool Recv_cli_CHAR_LIST(t_PACKET* pPacket);
     bool Recv_cli_SELECT_CHAR(t_PACKET* pPacket);
-    bool Recv_cli_CREATE_CHAR(t_PACKET* pPacket);
     bool Recv_cli_DELETE_CHAR(t_PACKET* pPacket);
     bool Recv_cli_JOIN_ZONE(t_PACKET* pPacket);
 
@@ -277,6 +279,8 @@ public:
         this->Pool_Free(pClient);
     }
     void ClosedClientSOCKET(iocpSOCKET* pSOCKET);
+
+    CWS_Client* find_client(size_t socket_id);
 };
 extern CWS_ListCLIENT* g_pUserLIST;
 

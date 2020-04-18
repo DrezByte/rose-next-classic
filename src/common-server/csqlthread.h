@@ -29,7 +29,6 @@ struct tagQueryDATA {
 /// A network packet that needs to be processed by the sql thread
 struct QueuedPacket {
     int32_t socket_id;
-    std::string account_name;
     Rose::Network::Packet packet;
 };
 
@@ -75,7 +74,6 @@ public:
 
     void tick();
     void queue_packet(int32_t socket_id,
-        const std::string& account_name,
         const Rose::Network::Packet& p);
 
     virtual void handle_queued_packet(QueuedPacket& p){};

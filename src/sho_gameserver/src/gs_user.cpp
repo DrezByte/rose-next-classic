@@ -1976,13 +1976,6 @@ classUSER::Recv_cli_SELECT_CHAR(t_PACKET* pPacket,
 }
 
 //-------------------------------------------------------------------------------------------------
-/// 케릭터 생성 요청처리 :: 개인 서버에서만 사용됨
-bool
-classUSER::Recv_cli_CREATE_CHAR(t_PACKET* pPacket) {
-    return g_pThreadSQL->Add_SqlPacketWithACCOUNT(this, pPacket);
-}
-
-//-------------------------------------------------------------------------------------------------
 /// 케릭터 삭제 요청처리 :: 개인 서버에서만 사용됨
 bool
 classUSER::Recv_cli_DELETE_CHAR(t_PACKET* pPacket) {

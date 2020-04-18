@@ -69,6 +69,11 @@ struct tagSqlUSER {
 };
 
 class CWS_ThreadSQL: public CSqlTHREAD {
+public:
+    void handle_queued_packet(QueuedPacket& p);
+
+    bool handle_char_create_req(QueuedPacket& p);
+
 private:
     bool __fastcall ConvertBasicETC();
 
@@ -92,7 +97,6 @@ private:
 
     bool Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET);
-    bool Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET);
 
     bool Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE);

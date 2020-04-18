@@ -68,7 +68,6 @@
 #define CLI_CHAR_LIST 0x0712
 #define WSV_CHAR_LIST 0x0712
 
-#define CLI_CREATE_CHAR 0x0713
 #define WSV_CREATE_CHAR 0x0713
 
 #define CLI_DELETE_CHAR 0x0714
@@ -625,15 +624,6 @@ struct wsv_CHAR_LIST: public t_PACKETHEADER {
     */
 };
 
-struct cli_CREATE_CHAR: public t_PACKETHEADER {
-    BYTE m_btCharRACE;
-    char m_cBoneSTONE;
-    char m_cHairIDX;
-    char m_cFaceIDX;
-    char m_cWeaponTYPE;
-    short m_nZoneNO;
-    // char szCharName[]
-};
 struct wsv_CREATE_CHAR: public t_PACKETHEADER {
     BYTE m_btResult;
     BYTE m_btIsPlatinumCHAR;
@@ -2556,7 +2546,6 @@ struct t_PACKET {
         cli_CHAR_LIST m_cli_CHAR_LIST;
         wsv_CHAR_LIST m_wsv_CHAR_LIST;
 
-        cli_CREATE_CHAR m_cli_CREATE_CHAR;
         wsv_CREATE_CHAR m_wsv_CREATE_CHAR;
 
         cli_DELETE_CHAR m_cli_DELETE_CHAR;

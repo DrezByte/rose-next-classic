@@ -7,6 +7,13 @@
 #include "WS_ThreadSQL.h"
 #include "WS_ZoneLIST.h"
 
+#include "rose/common/game_config.h"
+#include "rose/common/game_types.h"
+
+using namespace Rose;
+using namespace Rose::Common;
+using namespace Rose::Network;
+
 #ifdef __EUROPE // Oct. 6 2005 추가 (권형근)
     #define MAX_CHAR_PER_USER 3
 #else
@@ -248,6 +255,8 @@ CWS_ThreadSQL::Execute() {
             else
                 pSqlNODE = m_RunPACKET.GetNextNode(pSqlNODE);
         }
+
+        this->tick();
     }
 
     int iCnt = m_AddPACKET.GetNodeCount();
@@ -284,10 +293,6 @@ CWS_ThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
 
         case CLI_SELECT_CHAR:
             Proc_cli_SELECT_CHAR(pSqlPACKET);
-            break;
-
-        case CLI_CREATE_CHAR:
-            Proc_cli_CREATE_CHAR(pSqlPACKET);
             break;
 
         case CLI_DELETE_CHAR:
@@ -580,254 +585,6 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     } // else 접속 끊겼다.
 
     return false;
-}
-
-#define MAX_BEGINNER_POS 5
-tPOINTF s_BeginnerPOS[MAX_BEGINNER_POS] = {{530500, 539500},
-    {568700, 520222},
-    {568000, 473400},
-    {512100, 469900},
-    {499900, 515600}};
-
-#define BEGINNER_ZONE 20
-#define ADVENTURE_ZONE 22
-
-bool
-CWS_ThreadSQL::Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET) {
-    t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
-
-    short nOffset = sizeof(cli_CREATE_CHAR), nOutStrLen;
-    char* pCharName = Packet_GetStringPtr(pPacket, nOffset, nOutStrLen);
-    if (NULL == pCharName || nOutStrLen < 4) {
-        // 클라이언트 버그로 엄청긴 이름이 전달되어 오는 경우있다.
-        g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED);
-        return false;
-    }
-
-    if (nOutStrLen > MAX_AVATAR_NAME) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Proc_cli_CREATE_CHAR:: CharName == '%s'\n", pCharName);
-        g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED);
-        return false;
-    }
-
-    {
-        bool m_Injected = false;
-        for (int i = 0; i < strlen(pCharName); i++) {
-            if (!m_Injected) {
-                if (pCharName[i] == '\'') {
-                    if (pCharName[i + 1] == ';') {
-                        g_LOG.CS_ODS(LOG_NORMAL,
-                            "Proc_cli_CREATE_CHAR: 713 SQL injection recv'd and filtered\n");
-                        m_Injected = true;
-                        pCharName[i] = '\0';
-                    }
-                }
-            } else {
-                pCharName[i] = 0x00;
-            }
-        }
-    }
-
-    if (pPacket->m_cli_CREATE_CHAR.m_btCharRACE >= m_nDefaultDataCNT) {
-        g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED);
-        return false;
-    }
-
-    short nDefRACE = pPacket->m_cli_CREATE_CHAR.m_btCharRACE;
-    short nZoneIDX = AVATAR_ZONE(nDefRACE);
-    /*
-        if ( !g_ZoneLIST.IsActive( nZoneIDX ) ) {
-            g_LOG.CS_ODS(LOG_NORMAL, "Proc_cli_CREATE_CHAR:: Invalid Zone %d, Race: %d \n",
-       m_pDefaultBE[ nDefRACE ].m_nZoneNO, nDefRACE ); g_pUserLIST->Send_wsv_CREATE_CHAR(
-       pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED ); return true;
-        }
-    */
-    // "SELECT * FROM tblGS_AVATAR WHERE Name='xxxx';"
-    this->db->MakeQuery((char*)"SELECT intCharID FROM tblGS_AVATAR WHERE txtNAME=",
-        MQ_PARAM_STR,
-        pCharName,
-        MQ_PARAM_END);
-    if (!this->db->QuerySQLBuffer()) {
-        // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-        g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED);
-        return false;
-    }
-
-    if (this->db->GetNextRECORD()) {
-        // 이미 만들어져 있는 이름이다.
-        g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_DUP_NAME);
-        return true;
-    }
-
-    this->db->MakeQuery((char*)"SELECT Count(*) FROM tblGS_AVATAR WHERE txtACCOUNT=",
-        MQ_PARAM_STR,
-        pSqlPACKET->m_Name.Get(),
-        MQ_PARAM_END);
-    if (!this->db->QuerySQLBuffer()) {
-        // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-        g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED);
-        return false;
-    }
-    BYTE btCharSlotNO = 0;
-    if (this->db->GetNextRECORD()) {
-        int iTotalCharCnt = this->db->GetInteger(0);
-        CWS_Client* pFindUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-        if (pFindUSER) {
-            int iNormalCharCnt = iTotalCharCnt - pFindUSER->m_nPlatinumCharCNT;
-            if (pFindUSER->m_dwPayFLAG & PLAY_FLAG_EXTRA_CHAR) {
-                // 최대 5개
-                if (iTotalCharCnt >= 2 + MAX_CREATE_CHAR_PER_USER) { // 최대 5개
-                    // 더이상 못만든다.
-                    g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG,
-                        RESULT_CREATE_CHAR_NO_MORE_SLOT);
-                    return true;
-                }
-                if (iNormalCharCnt >= MAX_CREATE_CHAR_PER_USER) {
-                    // 플레티넘 케릭으로 생성
-                    btCharSlotNO = (BYTE)iNormalCharCnt;
-                } // else 노말 케릭으루 생성...
-            } else if (iNormalCharCnt >= MAX_CREATE_CHAR_PER_USER) { // 최대 3개
-                // 더이상 못만든다.
-                g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG,
-                    RESULT_CREATE_CHAR_NO_MORE_SLOT);
-                return true;
-            }
-        } else
-            return true;
-    }
-
-    WORD wPosBeginner = 0;
-
-    // 만들자 !!!
-    m_pDefaultBE[nDefRACE].m_btCharSlotNO = btCharSlotNO;
-    m_pDefaultBE[nDefRACE].m_btCharRACE = (BYTE)nDefRACE;
-
-    m_pDefaultBE[nDefRACE].m_nZoneNO = BEGINNER_ZONE;
-    // m_pDefaultBE[ nDefRACE ].m_PosSTART   = g_ZoneLIST.Get_StartPOS( nZoneIDX );
-    m_pDefaultBE[nDefRACE].m_PosSTART = s_BeginnerPOS[wPosBeginner];
-
-    // 초기 부활장소 지정...
-    short nDefReviveZoneNO = BEGINNER_ZONE;
-
-    m_pDefaultBE[nDefRACE].m_nReviveZoneNO = nDefReviveZoneNO;
-    m_pDefaultBE[nDefRACE].m_PosREVIVE = g_ZoneLIST.Get_StartRevivePOS(nDefReviveZoneNO);
-
-    // 사용자 선택에의해 변화되는 값들...
-    m_sBI.Init(pPacket->m_cli_CREATE_CHAR.m_cBoneSTONE,
-        pPacket->m_cli_CREATE_CHAR.m_cFaceIDX,
-        pPacket->m_cli_CREATE_CHAR.m_cHairIDX);
-
-    m_pDefaultBE[nDefRACE].m_PartITEM[BODY_PART_FACE].m_nItemNo = m_sBI.m_cFaceIDX;
-    m_pDefaultBE[nDefRACE].m_PartITEM[BODY_PART_HAIR].m_nItemNo = m_sBI.m_cHairIDX;
-
-    this->db->BindPARAM(1, (BYTE*)&m_pDefaultBE[nDefRACE], sizeof(tagBasicETC));
-    this->db->BindPARAM(2, (BYTE*)&m_sBI, sizeof(m_sBI));
-    this->db->BindPARAM(3, (BYTE*)&m_pDefaultBA[nDefRACE], sizeof(tagBasicAbility));
-    this->db->BindPARAM(4, (BYTE*)&m_sGA, sizeof(m_sGA));
-    this->db->BindPARAM(5, (BYTE*)&m_sSA, sizeof(m_sSA));
-    this->db->BindPARAM(6, (BYTE*)&m_pDefaultINV[nDefRACE], sizeof(CInventory));
-
-#ifdef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
-    this->db->MakeQuery("INSERT tblGS_AVATAR (txtACCOUNT, txtNAME, intDataVER, binBasicE, "
-                        "binBasicI, binBasicA, binGrowA, binSkillA, blobINV ) VALUES(",
-        MQ_PARAM_STR,
-        pSqlPACKET->m_Name.Get(),
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_STR,
-        pCharName,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_INT16,
-        DATA_VER_2,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        1,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        2,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        3,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        4,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        5,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        6,
-        MQ_PARAM_ADDSTR,
-        ");",
-        MQ_PARAM_END);
-#else
-    this->db->MakeQuery((char*)"INSERT tblGS_AVATAR (txtACCOUNT, txtNAME, binBasicE, binBasicI, "
-                               "binBasicA, binGrowA, binSkillA, blobINV) VALUES(",
-        MQ_PARAM_STR,
-        pSqlPACKET->m_Name.Get(),
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_STR,
-        pCharName,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        1,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        2,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        3,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        4,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        5,
-        MQ_PARAM_ADDSTR,
-        ",",
-        MQ_PARAM_BINDIDX,
-        6,
-        MQ_PARAM_ADDSTR,
-        ");",
-        MQ_PARAM_END);
-#endif
-    if (this->db->ExecSQLBuffer() < 1) {
-        // 오류 또는 만들어진것이 없다.
-        g_LOG.CS_ODS(LOG_NORMAL,
-            "Exec ERROR(CREATE_CHAR:%s):: %s \n",
-            pCharName,
-            this->db->GetERROR());
-        g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_FAILED);
-        return true;
-    }
-
-    // 만들어 졌다..
-    CWS_Client* pFindUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-    if (pFindUSER) {
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_CharacterLOG(pFindUSER, pCharName, NEWLOG_NEW_CHAR);
-#else
-        g_pThreadLOG->When_CreateCHAR(pFindUSER, pCharName);
-#endif
-        g_pUserLIST->Send_wsv_CREATE_CHAR(pSqlPACKET->m_iTAG, RESULT_CREATE_CHAR_OK, btCharSlotNO);
-    }
-
-    return true;
 }
 
 bool
@@ -1180,4 +937,132 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
+void
+CWS_ThreadSQL::handle_queued_packet(QueuedPacket& p) {
+    Packets::PacketType packet_type = p.packet.packet_data()->data_type();
+    switch (packet_type) {
+        case Packets::PacketType::PacketType_CharacterCreateRequest: {
+            this->handle_char_create_req(p);
+            break;
+        }
+    }
+}
+
+bool
+CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
+    const Packets::CharacterCreateRequest* req =
+        p.packet.packet_data()->data_as_CharacterCreateRequest();
+
+    bool name_valid =
+        req->name()->size() > 3 && req->name()->size() <= GameConfig::MAX_CHARACTER_NAME;
+    bool face_valid = req->face_id() > 0 && req->face_id() < g_TblFACE.m_nDataCnt;
+    bool hair_valid = req->hair_id() > 0 && req->hair_id() < g_TblHAIR.m_nDataCnt;
+
+    Gender gender = gender_from(req->gender_id());
+    Job job = job_from(req->job_id());
+
+    bool job_valid = (job == Job::Visitor) || is_first_job(job);
+
+    if (!(name_valid && face_valid && hair_valid && job_valid)) {
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
+
+    // Check if the name already exists
+    std::string query = "SELECT COUNT(*) FROM tblGS_AVATAR WHERE txtNAME=?";
+    this->db->bind_string(1, req->name()->str());
+
+    if (!this->db->execute(query)) {
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
+
+    if (this->db->fetch() != FetchResult::Ok) {
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
+
+    if (this->db->get_int32(1) != 0) {
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_DUP_NAME);
+        return false;
+    }
+
+    CWS_Client* client = g_pUserLIST->find_client(p.socket_id);
+    if (!client) {
+        return false;
+    }
+
+    std::string account_name = client->Get_ACCOUNT();
+
+    query = "SELECT COUNT(*) from tblGS_AVATAR WHERE txtACCOUNT=?";
+    this->db->bind_string(1, account_name);
+
+    if (!this->db->execute(query)) {
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
+
+    if (this->db->fetch() != FetchResult::Ok) {
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
+
+    int char_count = this->db->get_int32(1);
+    if (char_count >= GameConfig::MAX_CHARACTERS) {
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_NO_MORE_SLOT);
+        return false;
+    }
+
+    const int gender_id = static_cast<int>(gender);
+    const int start_map_id = AVATAR_ZONE(gender_id);
+
+    tagBasicETC& basic_etc = m_pDefaultBE[gender_id];
+
+    basic_etc.m_btCharSlotNO = 0; // Premium slots?
+    basic_etc.m_btCharRACE = gender_id;
+    basic_etc.m_nZoneNO = start_map_id;
+    basic_etc.m_PosSTART = g_ZoneLIST.Get_StartPOS(start_map_id);
+    basic_etc.m_nReviveZoneNO = start_map_id;
+    basic_etc.m_PosREVIVE = g_ZoneLIST.Get_StartRevivePOS(start_map_id);
+    basic_etc.m_PartITEM[BODY_PART_FACE].m_nItemNo = req->face_id();
+    basic_etc.m_PartITEM[BODY_PART_HAIR].m_nItemNo = req->hair_id();
+
+    tagBasicINFO basic_info;
+    basic_info.Init(0, req->face_id(), req->hair_id());
+    basic_info.m_nClass = req->job_id();
+
+    CInventory& inv = m_pDefaultINV[gender_id];
+    tagBasicAbility& basic_ability = m_pDefaultBA[gender_id];
+
+    query =
+        "INSERT INTO tblGS_AVATAR (txtACCOUNT, txtNAME, intDataVER, binBasicE, "
+        "binBasicI, binBasicA, binGrowA, binSkillA, blobINV, intJOB) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    this->db->bind_string(1, account_name);
+    this->db->bind_string(2, req->name()->str());
+    this->db->bind_int32(3, DATA_VER_2);
+    this->db->bind_binary(4, reinterpret_cast<uint8_t*>(&basic_etc), sizeof(tagBasicETC));
+    this->db->bind_binary(5, reinterpret_cast<uint8_t*>(&basic_info), sizeof(tagBasicINFO));
+    this->db->bind_binary(6, reinterpret_cast<uint8_t*>(&basic_ability), sizeof(tagBasicAbility));
+    this->db->bind_binary(7, reinterpret_cast<uint8_t*>(&m_sGA), sizeof(tagGrowAbility));
+    this->db->bind_binary(8, reinterpret_cast<uint8_t*>(&m_sSA), sizeof(tagSkillAbility));
+    this->db->bind_binary(9, reinterpret_cast<uint8_t*>(&inv), sizeof(CInventory));
+    this->db->bind_int32(10, static_cast<int>(job));
+
+    if (!this->db->execute(query)) {
+        LOG_ERROR("Failed to insert character %s for account %s",
+            req->name()->c_str(),
+            account_name.c_str());
+
+        for (const std::string& error: this->db->get_error_messages()) {
+            LOG_ERROR(error.c_str());
+        }
+
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
+
+    g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_OK, char_count + 1);
+
+    return true;
+}

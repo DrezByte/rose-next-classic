@@ -115,7 +115,6 @@ private:
 
     bool Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET);
-    bool Proc_cli_CREATE_CHAR(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET);
 

@@ -198,7 +198,6 @@ private:
 
     bool Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket);
 
-    bool Recv_cli_CREATE_CHAR(t_PACKET* pPacket);
     bool Recv_cli_DELETE_CHAR(t_PACKET* pPacket);
 
     bool Recv_cli_CHAR_LIST(t_PACKET* pPacket);

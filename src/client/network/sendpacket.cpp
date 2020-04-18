@@ -170,33 +170,6 @@ CSendPACKET::Send_cli_CHAR_LIST() {
 }
 
 //-------------------------------------------------------------------------------------------------
-void
-CSendPACKET::Send_cli_CREATE_CHAR(char* szCharName,
-    BYTE btCharRACE,
-    char cBoneStone,
-    char cHairIdx,
-    char cFaceIdx,
-    char cWeaponType,
-    char cZoneNo) {
-#ifdef __VIRTUAL_SERVER
-    ;
-    _ASSERT(0);
-    ;
-#else
-    m_pSendPacket->m_HEADER.m_wType = CLI_CREATE_CHAR;
-    m_pSendPacket->m_HEADER.m_nSize = sizeof(cli_CREATE_CHAR);
-
-    m_pSendPacket->m_cli_CREATE_CHAR.m_btCharRACE = btCharRACE;
-    m_pSendPacket->m_cli_CREATE_CHAR.m_cBoneSTONE = cBoneStone;
-    m_pSendPacket->m_cli_CREATE_CHAR.m_cHairIDX = cHairIdx;
-    m_pSendPacket->m_cli_CREATE_CHAR.m_cFaceIDX = cFaceIdx;
-    m_pSendPacket->m_cli_CREATE_CHAR.m_cWeaponTYPE = cWeaponType;
-    m_pSendPacket->m_cli_CREATE_CHAR.m_nZoneNO = cZoneNo;
-    Packet_AppendString(m_pSendPacket, szCharName);
-#endif
-    this->Send_PACKET(m_pSendPacket, true);
-}
-//-------------------------------------------------------------------------------------------------
 /// @param bDeleteOrRevive - true : delete, false - Revive
 //-------------------------------------------------------------------------------------------------
 void

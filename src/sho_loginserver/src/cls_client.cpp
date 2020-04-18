@@ -255,7 +255,7 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
             }
             default: {
                 LOG_WARN("Received unknown packet type %d", packet_type);
-                break;
+                break; // TODO: Don't fall through once old packet handling has been replaced
             }
         }
     }
@@ -350,7 +350,7 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
 bool
 CLS_Client::recv_login_req(Packet& p) {
     const Packets::LoginRequest* req = p.packet_data()->data_as_LoginRequest();
-    g_pThreadSQL->queue_packet(this->m_iSocketIDX, "", p);
+    g_pThreadSQL->queue_packet(this->m_iSocketIDX, p);
     return true;
 }
 

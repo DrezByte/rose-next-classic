@@ -13,8 +13,11 @@
 #include "system/cgamestate.h"
 #include "util/classmd5.h"
 
+#include "rose/common/game_types.h"
 #include "rose/network/packet.h"
 #include "rose/network/packets/packet_data_generated.h"
+
+#include "rose/network/packets/char_create_req_generated.h"
 #include "rose/network/packets/login_req_generated.h"
 
 CNetwork* g_pNet;
@@ -24,11 +27,7 @@ CNetwork* CNetwork::m_pInstance = NULL;
 #define WM_WORLD_SOCKET_NOTIFY (WM_SOCKETWND_MSG + 0)
 #define WM_ZONE_SOCKET_NOTIFY (WM_SOCKETWND_MSG + 1)
 
-/*
-void	(*fpCMDProc )	(t_unit *pUnit);
-typedef	unsigned int UINT;
-*/
-
+using namespace Rose::Common;
 using namespace Rose::Network;
 
 //-------------------------------------------------------------------------------------------------
@@ -751,6 +750,40 @@ CNetwork::send_packet(const Packet& packet, Server target) {
     } else {
         m_ZoneSOCKET.add_send_packet(packet);
     }
+}
+
+void
+CNetwork::send_char_create_req(const std::string& name,
+    int face_id,
+    int hair_id,
+    Gender gender,
+    Job job) {
+
+    bool valid_job =
+        (job == Job::Visitor || is_first_job(job));
+
+    if (name.empty() || face_id <= 0 || hair_id <= 0 || !valid_job) {
+        return;
+    }
+
+    flatbuffers::FlatBufferBuilder builder;
+    const auto name_string = builder.CreateString(name);
+
+    Packets::CharacterCreateRequestBuilder req(builder);
+    req.add_name(name_string);
+    req.add_face_id(face_id);
+    req.add_hair_id(hair_id);
+    req.add_gender_id(static_cast<int>(gender));
+    req.add_job_id(static_cast<int>(job));
+    const auto char_create_req = req.Finish();
+
+    Packets::PacketDataBuilder pd(builder);
+    pd.add_data_type(Packets::PacketType::PacketType_CharacterCreateRequest);
+    pd.add_data(char_create_req.Union());
+    builder.Finish(pd.Finish());
+
+    Packet p(builder);
+    this->send_packet(p, Server::World);
 }
 
 void

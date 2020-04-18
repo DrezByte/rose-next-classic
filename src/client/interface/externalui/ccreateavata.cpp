@@ -17,12 +17,15 @@
 #include "../../System/SystemProcScript.h"
 #include "../../GameData/CGameDataCreateAvatar.h"
 
+#include "rose/common/game_types.h"
+
+using namespace Rose::Common;
+
 CCreateAvata::CCreateAvata() {
     m_iSelectedSex = 0;
     m_iSelectedFace = 0;
     m_iSelectedHair = 0;
-    m_iSelectedStartPos = 0;
-    m_iSelectedBirthStone = 0;
+    m_iSelectedJob = 0;
 }
 
 CCreateAvata::~CCreateAvata() {}
@@ -51,33 +54,6 @@ CCreateAvata::Process(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
         return uiMsg;
     }
     return 0;
-}
-
-void
-CCreateAvata::SetAvataInfo(char* strName, cli_CREATE_CHAR& info) {
-    if (strName != NULL)
-        m_strAvataName = std::string(strName);
-    else
-        m_strAvataName = std::string("");
-
-    memcpy(&m_AvataInfo, &info, sizeof(m_AvataInfo));
-}
-
-///
-/// Create Avata
-///
-void
-CCreateAvata::SendCreateAvata() {
-
-    strcpy(g_MsgBuf, m_strAvataName.c_str());
-    g_pNet->Send_cli_CREATE_CHAR(g_MsgBuf,
-        m_AvataInfo.m_btCharRACE,
-        m_AvataInfo.m_cBoneSTONE,
-        m_AvataInfo.m_cHairIDX,
-        m_AvataInfo.m_cFaceIDX,
-        0,
-        m_AvataInfo.m_nZoneNO);
-    g_EUILobby.ShowWaitMsgBox();
 }
 
 bool
@@ -125,10 +101,9 @@ CCreateAvata::OnLButtonUp(unsigned iProcID) {
     switch (iProcID) {
         case IID_BTN_OK: {
             int iSex = atoi(m_mapSex[m_iSelectedSex].m_strValue.c_str());
-            int iBoneStone = atoi(m_mapBirthStone[m_iSelectedBirthStone].m_strValue.c_str());
             int iHair = atoi(m_mapHair[m_iSelectedHair].m_strValue.c_str());
             int iFace = atoi(m_mapFace[m_iSelectedFace].m_strValue.c_str());
-            int iStartPos = atoi(m_mapStartPos[m_iSelectedStartPos].m_strValue.c_str());
+            int iJob = atoi(m_mapJob[m_iSelectedJob].m_strValue.c_str());
 
             char szName[255] = {0};
 
@@ -143,7 +118,7 @@ CCreateAvata::OnLButtonUp(unsigned iProcID) {
 
             strcpy(szName, pEditBox->get_text());
 
-            CreateAvata(szName, 0, iSex, iBoneStone, iHair, iFace, iStartPos);
+            CreateAvata(std::string(szName), iSex, iHair, iFace, iJob);
 
         } break;
         case IID_BTN_CANCEL:
@@ -180,15 +155,10 @@ CCreateAvata::OnLButtonUp(unsigned iProcID) {
                 atoi(m_mapHair[m_iSelectedHair].m_strValue.c_str()),
                 ZZ_PARAM_END);
             break;
-        case IID_BTN_LEFT_STARTPOS:
-            --m_iSelectedStartPos;
-            if (m_iSelectedStartPos < 0)
-                m_iSelectedStartPos = m_mapStartPos.size() - 1;
-            break;
-        case IID_BTN_LEFT_BIRTHSTONE:
-            --m_iSelectedBirthStone;
-            if (m_iSelectedBirthStone < 0)
-                m_iSelectedBirthStone = m_mapBirthStone.size() - 1;
+        case IID_BTN_LEFT_JOB:
+            --m_iSelectedJob;
+            if (m_iSelectedJob < 0)
+                m_iSelectedJob = m_mapJob.size() - 1;
             break;
         case IID_BTN_RIGHT_SEX:
             ++m_iSelectedSex;
@@ -223,15 +193,10 @@ CCreateAvata::OnLButtonUp(unsigned iProcID) {
                 ZZ_PARAM_END);
 
             break;
-        case IID_BTN_RIGHT_STARTPOS:
-            ++m_iSelectedStartPos;
-            if (m_iSelectedStartPos >= m_mapStartPos.size())
-                m_iSelectedStartPos = 0;
-            break;
-        case IID_BTN_RIGHT_BIRTHSTONE:
-            ++m_iSelectedBirthStone;
-            if (m_iSelectedBirthStone >= m_mapBirthStone.size())
-                m_iSelectedBirthStone = 0;
+        case IID_BTN_RIGHT_JOB:
+            ++m_iSelectedJob;
+            if (m_iSelectedJob >= m_mapJob.size())
+                m_iSelectedJob = 0;
             break;
         default:
             break;
@@ -239,27 +204,22 @@ CCreateAvata::OnLButtonUp(unsigned iProcID) {
 }
 
 void
-CCreateAvata::CreateAvata(char* strName,
-    int iRace,
-    int iSex,
-    int iBoneStone,
-    int iHair,
-    int iFace,
-    int iStartPos) {
-    if (strName == NULL || strcmp(strName, "") == 0)
+CCreateAvata::CreateAvata(const std::string& name,
+    int gender_id,
+    int hair_id,
+    int face_id,
+    int job_id) {
+
+    if (name.empty())
         return;
 
-    cli_CREATE_CHAR info;
+    g_pNet->send_char_create_req(name,
+        face_id,
+        hair_id,
+        gender_from(gender_id),
+        job_from(job_id));
 
-    info.m_btCharRACE = iSex;
-    info.m_cBoneSTONE = iBoneStone;
-    info.m_cHairIDX = iHair;
-    info.m_cFaceIDX = iFace;
-
-    info.m_nZoneNO = iStartPos;
-
-    SetAvataInfo(strName, info);
-    SendCreateAvata();
+    g_EUILobby.ShowWaitMsgBox();
 }
 
 void
@@ -285,10 +245,7 @@ CCreateAvata::ClearSelectItem(int iType) {
             m_mapHair.clear();
             break;
         case 3:
-            m_mapStartPos.clear();
-            break;
-        case 4:
-            m_mapBirthStone.clear();
+            m_mapJob.clear();
             break;
         default:
             break;
@@ -316,10 +273,7 @@ CCreateAvata::AddSelectItem(int iType, const char* pszIdentify, const char* pszV
             m_mapHair.push_back(Item);
             break;
         case 3:
-            m_mapStartPos.push_back(Item);
-            break;
-        case 4:
-            m_mapBirthStone.push_back(Item);
+            m_mapJob.push_back(Item);
             break;
         default:
             break;
@@ -345,14 +299,9 @@ CCreateAvata::SelectItem(int iType, unsigned iSubscript) {
                 m_iSelectedHair = iSubscript;
             break;
         case 3:
-            assert(iSubscript >= 0 && iSubscript < m_mapStartPos.size());
-            if (iSubscript >= 0 && iSubscript < m_mapStartPos.size())
-                m_iSelectedStartPos = iSubscript;
-            break;
-        case 4:
-            assert(iSubscript >= 0 && iSubscript < m_mapBirthStone.size());
-            if (iSubscript >= 0 && iSubscript < m_mapBirthStone.size())
-                m_iSelectedBirthStone = iSubscript;
+            assert(iSubscript >= 0 && iSubscript < m_mapJob.size());
+            if (iSubscript >= 0 && iSubscript < m_mapJob.size())
+                m_iSelectedJob = iSubscript;
             break;
         default:
             break;
@@ -419,12 +368,5 @@ CCreateAvata::Draw() {
         &rcDraw,
         g_dwWHITE,
         DT_CENTER,
-        m_mapStartPos[m_iSelectedStartPos].m_strIdentify.c_str());
-    SetRect(&rcDraw, 172, 275, 235, 295);
-    drawFont(g_GameDATA.m_hFONT[FONT_NORMAL],
-        true,
-        &rcDraw,
-        g_dwWHITE,
-        DT_CENTER,
-        m_mapBirthStone[m_iSelectedBirthStone].m_strIdentify.c_str());
+        m_mapJob[m_iSelectedJob].m_strIdentify.c_str());
 }

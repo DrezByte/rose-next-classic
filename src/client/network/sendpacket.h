@@ -31,13 +31,6 @@ public:
     //	void Send_cli_JOIN_WORLD (DWORD dwLSVID);
     void Send_cli_JOIN_SERVER_REQ(DWORD dwLSVID, bool bWorldServer = false);
 
-    void Send_cli_CREATE_CHAR(char* szCharName,
-        BYTE btCharRace,
-        char cBoneStone,
-        char cHairIdx,
-        char cFaceIdx,
-        char cWeaponType,
-        char cZoneNo);
     void Send_cli_DELETE_CHAR(BYTE btCharNO, bool bDeleteOrRevive, char* szCharName);
 
     void Send_cli_SELECT_CHAR(BYTE btCharNO, char* szCharName);

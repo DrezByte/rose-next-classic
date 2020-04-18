@@ -11,7 +11,11 @@
 #include "WS_ThreadSQL.h"
 #include "WS_ZoneLIST.h"
 
-//-------------------------------------------------------------------------------------------------
+#include "rose/network/packet.h"
+#include "rose/network/packets/packet_data_generated.h"
+
+using namespace Rose::Network;
+
 CWS_Client::CWS_Client() {
     m_pNodeChatROOM = new CDLList<CWS_Client*>::tagNODE;
     m_pNodeChatROOM->m_VALUE = this;
@@ -173,21 +177,6 @@ CWS_Client::Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-bool
-CWS_Client::Recv_cli_CREATE_CHAR(t_PACKET* pPacket) {
-    short nOffset = sizeof(cli_CREATE_CHAR);
-    char* pCharName = Packet_GetStringPtr(pPacket, nOffset);
-    if (!pCharName) {
-        return false;
-    }
-
-    //	g_pSockLOG->When_CreateCHAR( this, pCharName );
-
-    return g_pThreadSQL->Add_SqlPacketWithACCOUNT(this, pPacket);
-}
-
-//-------------------------------------------------------------------------------------------------
 bool
 CWS_Client::Recv_cli_DELETE_CHAR(t_PACKET* pPacket) {
     short nOffset = sizeof(cli_DELETE_CHAR);
@@ -575,12 +564,26 @@ bool
 CWS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
     LOG_TRACE("Client %d sent packet: 0x%04X", Get_WSID(), pPacket->m_wType);
 
-    /*
-        패킷 디코딩...
-        패킷 일련번호, 사이즈, CRC, CheckSUM등으로 적합패킷인지 판단.
-    */
-    //    LogString (0xffff, "        >> %d CWS_Client::HandlePACKET:: Type: 0x%x, Length: %d\n",
-    //    this->m_iSocketIDX, pPacket->m_wType, pPacket->m_nSize);
+    if (this->m_iSocketIDX == 0) {
+        return false;
+    }
+
+    flatbuffers::Verifier verifier(&pPacket->m_pDATA[2], pPacket->size - 2);
+    bool valid = Packets::VerifyPacketDataBuffer(verifier);
+    if (valid) {
+        Packet p(&pPacket->m_pDATA[0], pPacket->size);
+
+        Packets::PacketType packet_type = p.packet_data()->data_type();
+        switch (packet_type) {
+            case Packets::PacketType::PacketType_CharacterCreateRequest: {
+                return this->recv_char_create_req(p);
+            }
+            default: {
+                LOG_WARN("Received unknown packet type %d", packet_type);
+                break; // TODO: Don't fall through once old packet handling has been replaced
+            }
+        }
+    }
 
     switch (pPacket->m_wType) {
         case MON_SERVER_LIST_REQ:
@@ -600,16 +603,6 @@ CWS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
                 return false;
             this->m_bVerified = true;
             return Recv_cli_JOIN_SERVER_REQ((t_PACKET*)pPacket);
-
-        case CLI_CREATE_CHAR:
-            if (this->m_HashCHAR)
-                return false;
-            if (SHO_WS::GetInstance()->IsBlockedCreateCHAR()) {
-                g_pUserLIST->Send_wsv_CREATE_CHAR(this->m_iSocketIDX, RESULT_CREATE_CHAR_BLOCKED);
-                return true;
-            }
-            return Recv_cli_CREATE_CHAR((t_PACKET*)pPacket);
-
         case CLI_DELETE_CHAR:
             if (this->m_HashCHAR)
                 return false;
@@ -696,6 +689,21 @@ CWS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
 
     //	return IS_HACKING( this, "HandlePACKET" );
     return false;
+}
+
+bool
+CWS_Client::recv_char_create_req(Rose::Network::Packet& p) {
+    if (this->m_HashCHAR) {
+        return false;
+    }
+    if (SHO_WS::GetInstance()->IsBlockedCreateCHAR()) {
+        g_pUserLIST->Send_wsv_CREATE_CHAR(this->m_iSocketIDX, RESULT_CREATE_CHAR_BLOCKED);
+        return true;
+    }
+
+    const Packets::CharacterCreateRequest* req = p.packet_data()->data_as_CharacterCreateRequest();
+    g_pThreadSQL->queue_packet(this->m_iSocketIDX, p);
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -995,6 +1003,7 @@ CWS_ListCLIENT::Add_CHAR(CWS_Client* pCLIENT, char* szCharName) {
 
     return true;
 }
+
 void
 CWS_ListCLIENT::Del_CHAR(CWS_Client* pCLIENT) {
     g_pChatROOMs->LeftUSER(pCLIENT);
@@ -1116,4 +1125,13 @@ CWS_ListCLIENT::Check_SocketALIVE() {
         }
     }
     m_csHashACCOUNT.Unlock();
+}
+
+CWS_Client*
+CWS_ListCLIENT::find_client(size_t socket_id) {
+    iocpSOCKET* sock = this->GetSOCKET(socket_id);
+    if (sock) {
+        return static_cast<CWS_Client*>(sock);
+    }
+    return nullptr;
 }

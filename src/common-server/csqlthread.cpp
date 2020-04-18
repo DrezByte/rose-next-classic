@@ -156,10 +156,9 @@ CSqlTHREAD::tick() {
 
 void
 CSqlTHREAD::queue_packet(int32_t socket_id,
-    const std::string& account_name,
     const Rose::Network::Packet& p) {
 
     const std::lock_guard<std::mutex> lock(this->queue_mutex);
-    this->packet_queue.push({socket_id, account_name, p});
+    this->packet_queue.push({socket_id, p});
     m_pEVENT->SetEvent();
 }

@@ -9,6 +9,11 @@
 
 #include "rose/network/packet.h"
 
+namespace Rose::Common {
+enum class Gender;
+enum class Job;
+} // namespace Rose::Common
+
 enum { NS_NULL = 0, NS_CON_TO_LSV, NS_DIS_FORM_LSV, NS_CON_TO_WSV };
 
 class CNetwork: public CRecvPACKET, public CSendPACKET {
@@ -58,6 +63,11 @@ public:
     void Proc();
 
     void send_packet(const Rose::Network::Packet& packet, Server target = Server::Game);
+    void send_char_create_req(const std::string& name,
+        int face_id,
+        int hair_id,
+        Rose::Common::Gender gender,
+        Rose::Common::Job job);
     void send_login_req(const std::string& username, const std::string& password);
 };
 extern CNetwork* g_pNet;
