@@ -26,7 +26,14 @@ help(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     if (!user) {
         return false;
     }
-    return user->send_server_whisper("HELP MAN, HELP!");
+
+    for(const CommandInfo& cmd_info: commands) {
+        if (user->m_dwRIGHT >= cmd_info.level) {
+            std::string msg = cmd_info.name + std::string(" -- ") + cmd_info.description;
+            user->send_server_whisper(msg);
+        }
+    }
+    return true;
 }
 
 bool
@@ -70,12 +77,49 @@ rates(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     return true;
 }
 
+bool
+teleport(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+    if (!user) {
+        return false;
+    }
+
+    if (args.size() < 2) {
+        user->send_server_whisper(info.usage);
+        return false;
+    }
+
+    const int map_id = std::atoi(args[1].c_str());
+    if (!g_pZoneLIST->IsValidZONE(map_id)) {
+        user->send_server_whisper("Invalid map id");
+        return false;
+    }
+
+    tPOINTF spawn = g_pZoneLIST->GetZONE(map_id)->Get_StartPOS();
+    if (args.size() >= 4) {
+        spawn.x = atoi(args[2].c_str()) * 1000.0f;
+        spawn.y = atoi(args[3].c_str()) * 1000.0f;
+    }
+
+    POINTS sector_pos;
+    sector_pos.x = spawn.x / g_pZoneLIST->GetSectorSIZE(map_id);
+    sector_pos.y = spawn.y / g_pZoneLIST->GetSectorSIZE(map_id);
+
+    if (sector_pos.x < 0 && sector_pos.y < 0) {
+        user->send_server_whisper("Invalid coordinates");
+        return false;
+    }
+
+    user->Proc_TELEPORT(map_id, spawn);
+    return true;
+}
+
 using CommandFunction = std::function<bool(classUSER*, CommandInfo, std::vector<std::string>&)>;
 static const std::unordered_map<std::string, std::tuple<CommandFunction, CommandInfo>>
     command_registry = {
         REGISTER_COMMAND(Command::HELP, help),
         REGISTER_COMMAND(Command::MAPS, maps),
         REGISTER_COMMAND(Command::RATES, rates),
+        REGISTER_COMMAND(Command::TELEPORT, teleport),
     };
 
 char* l_szAbility[] = {"STR",

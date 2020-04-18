@@ -139,6 +139,8 @@ public:
 
     bool send_server_whisper(const std::string& message);
 
+    short Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment = false);
+
 private:
     CCriticalSection m_csSrvRECV;
     CSLList<t_PACKET*> m_SrvRecvQ;
@@ -170,7 +172,6 @@ private:
     bool Send_gsv_LEVELUP(short nLevelDIFF);
 
     bool Check_WarpPayment(short nZoneNO);
-    short Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment = false);
 
     bool Send_gsv_ADJUST_POS(bool bOnlySelf = false);
     bool Send_gsv_CREATE_ITEM_REPLY(BYTE btResult,

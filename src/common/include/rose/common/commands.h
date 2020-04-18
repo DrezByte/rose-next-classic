@@ -9,7 +9,8 @@ enum class CommandContext { Client, Server };
 struct CommandInfo {
     const char* name;
     int level;
-    const char* help;
+    const char* description;
+    const char* usage;
     CommandContext context;
 };
 
@@ -20,15 +21,17 @@ enum CommandId {
     DAYTIME,
     MAPS,
     RATES,
+    TELEPORT,
 };
 }
 
 static const std::vector<CommandInfo> commands = {
-    {"help", 1, "Display this help. Usage: help", CommandContext::Client},
+    {"help", 1, "Display this help.", "Usage: help", CommandContext::Client},
 
-    {"daytime", 100, "Set time of day. Usage: daytime [morning|night]", CommandContext::Server},
-    {"maps", 100, "List all maps by id. Usage: maps", CommandContext::Server},
-    {"rates", 100, "List server rates. Usage: rates", CommandContext::Server},
+    {"daytime", 100, "Set time of day.", "Usage: daytime <morning|night>", CommandContext::Server},
+    {"maps", 100, "List all maps by id.", "Usage: maps", CommandContext::Server},
+    {"rates", 100, "List server rates.", "Usage: rates", CommandContext::Server},
+    {"tp", 100, "Teleport to a location.", " Usage: tp <map_id> [x_coord] [y_coord]", CommandContext::Server},
 };
 
 } // namespace Rose::Common
