@@ -30698,9 +30698,9 @@ void                      __RPC_USER  VARIANT_UserFree(     unsigned long *, VAR
     IKsPropertySet * This,
     /* [in] */ REFGUID guidPropSet,
     /* [in] */ DWORD dwPropID,
-    /* [size_is][in] */ byte *pInstanceData,
+    /* [size_is][in] */ std::byte *pInstanceData,
     /* [in] */ DWORD cbInstanceData,
-    /* [size_is][in] */ byte *pPropData,
+    /* [size_is][in] */ std::byte *pPropData,
     /* [in] */ DWORD cbPropData);
 
 /* [local] */ HRESULT STDMETHODCALLTYPE IKsPropertySet_Get_Proxy( 
@@ -30718,9 +30718,9 @@ void                      __RPC_USER  VARIANT_UserFree(     unsigned long *, VAR
     IKsPropertySet * This,
     /* [in] */ REFGUID guidPropSet,
     /* [in] */ DWORD dwPropID,
-    /* [size_is][in] */ byte *pInstanceData,
+    /* [size_is][in] */ std::byte* pInstanceData,
     /* [in] */ DWORD cbInstanceData,
-    /* [size_is][out] */ byte *pPropData,
+    /* [size_is][out] */ std::byte* pPropData,
     /* [in] */ DWORD cbPropData,
     /* [out] */ DWORD *pcbReturned);
 
