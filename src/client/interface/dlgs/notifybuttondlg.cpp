@@ -72,12 +72,12 @@ CNotifyButtonDlg::AddButton(CTButton* pBtn) {
 
 void
 CNotifyButtonDlg::Draw() {
-    for_each(m_Children.begin(), m_Children.end(), mem_fun(&CTButton::Draw));
+    for_each(m_Children.begin(), m_Children.end(), [](auto b) { b->Draw(); });
 }
 
 void
 CNotifyButtonDlg::Update(POINT ptMouse) {
-    for_each(m_Children.rbegin(), m_Children.rend(), bind2nd(mem_fun(&CTButton::Update), ptMouse));
+    for_each(m_Children.rbegin(), m_Children.rend(), [ptMouse](auto b) { b->Update(ptMouse); });
 }
 
 void

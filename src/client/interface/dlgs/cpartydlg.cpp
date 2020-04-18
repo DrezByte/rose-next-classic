@@ -230,7 +230,7 @@ CPartyDlg::Draw() {
     CTDialog::Draw();
 
     CParty& Party = CParty::GetInstance();
-    for_each(m_listPartyMember.begin(), m_listPartyMember.end(), mem_fun(&CPartyMember::Draw));
+    for_each(m_listPartyMember.begin(), m_listPartyMember.end(), [](auto p) { p->Draw(); });
 
     ///파티레벨, 파티 경험치
     D3DXMATRIX mat;
@@ -291,9 +291,9 @@ CPartyDlg::Update(POINT ptMouse) {
 
     CTDialog::Update(ptMouse);
 
-    for_each(m_listPartyMember.begin(),
-        m_listPartyMember.end(),
-        bind2nd(mem_fun(&CPartyMember::Update), ptMouse));
+    for_each(m_listPartyMember.begin(), m_listPartyMember.end(), [ptMouse](auto p) {
+        p->Update(ptMouse);
+    });
 
     CTDialog* pDlg = CTDialog::GetProcessMouseOverDialog();
     if (pDlg && pDlg != this)

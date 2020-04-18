@@ -65,7 +65,7 @@ CPartyMember::Draw() {
     }
 
     /// 선택 테두리
-    for_each(m_listStatusIcon.begin(), m_listStatusIcon.end(), mem_fun_ref(&CIconStatus::Draw));
+    for_each(m_listStatusIcon.begin(), m_listStatusIcon.end(), [](auto i) { i.Draw(); });
 
     /// 이름
     D3DXMATRIX mat;

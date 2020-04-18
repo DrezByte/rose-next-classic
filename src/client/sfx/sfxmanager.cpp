@@ -29,12 +29,12 @@ CSFXManager::Clear() {
 
 void
 CSFXManager::Update() {
-    std::for_each(m_SFXList.begin(), m_SFXList.end(), std::mem_fun<void, ISFX>(&(ISFX::Update)));
+    std::for_each(m_SFXList.begin(), m_SFXList.end(), [](auto sfx) { sfx->Update(); });
 }
 
 void
 CSFXManager::Draw() {
-    std::for_each(m_SFXList.begin(), m_SFXList.end(), std::mem_fun<void, ISFX>(&(ISFX::Draw)));
+    std::for_each(m_SFXList.begin(), m_SFXList.end(), [](auto sfx) { sfx->Draw(); });
 }
 
 ISFX*

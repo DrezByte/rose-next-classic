@@ -126,9 +126,5 @@ CItemInfoView::PushDropItemInfo(CObjITEM* pItem) {
 
 void
 CItemInfoView::Draw() {
-    int i = m_ViewedItemList.size();
-
-    std::for_each(m_ViewedItemList.begin(),
-        m_ViewedItemList.end(),
-        std::mem_fun<void, CDropItemInfo>(&CDropItemInfo::Draw));
+    std::for_each(m_ViewedItemList.begin(), m_ViewedItemList.end(), [](auto v) { v->Draw(); });
 }

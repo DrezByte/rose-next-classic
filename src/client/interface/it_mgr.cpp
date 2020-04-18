@@ -669,12 +669,12 @@ IT_MGR::DrawDLGs(POINT ptMouse) {
     ///
     CTDialog* pDlg = NULL;
 
-    for_each(m_Dlgs.rbegin(), m_Dlgs.rend(), bind2nd(mem_fun(&CTDialog::Update), ptMouse));
-    for_each(m_Icons.rbegin(), m_Icons.rend(), bind2nd(mem_fun(&CIcon::Update), ptMouse));
+    for_each(m_Dlgs.rbegin(), m_Dlgs.rend(), [ptMouse](auto d) { d->Update(ptMouse); });
+    for_each(m_Icons.rbegin(), m_Icons.rend(), [ptMouse](auto i) { i->Update(ptMouse); });
     m_pNotifyButtonDlg->Update(ptMouse);
 
-    for_each(m_Icons.begin(), m_Icons.end(), mem_fun(&CIcon::Draw));
-    for_each(m_Dlgs.begin(), m_Dlgs.end(), mem_fun(&CTDialog::Draw));
+    for_each(m_Icons.begin(), m_Icons.end(), [](auto i) { i->Draw(); });
+    for_each(m_Dlgs.begin(), m_Dlgs.end(), [](auto d) { d->Draw(); });
     m_pNotifyButtonDlg->Draw();
 
     if (!IsMouseOnInterface()) {

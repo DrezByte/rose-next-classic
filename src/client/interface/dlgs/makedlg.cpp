@@ -118,7 +118,7 @@ CMakeDLG::~CMakeDLG() {
         delete m_pMakeState[i];
 
     m_MakeItemSlot.DetachIcon();
-    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), mem_fun_ref(&CSlot::DetachIcon));
+    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [](auto s) { s.DetachIcon(); });
     m_pCurrState = NULL;
 
     SAFE_DELETE(m_pDragItem);
@@ -137,9 +137,9 @@ CMakeDLG::MoveWindow(POINT pt) {
     CTDialog::MoveWindow(pt);
 
     m_MakeItemSlot.MoveWindow(pt);
-    for_each(m_listMaterialSlot.begin(),
-        m_listMaterialSlot.end(),
-        bind2nd(mem_fun_ref(&CSlot::MoveWindow), pt));
+    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [pt](auto s) {
+        s.MoveWindow(pt);
+    });
 
     for (int i = 0; i < STATE_MAX; ++i)
         m_pMakeState[i]->MoveWindow(pt);
@@ -163,7 +163,7 @@ CMakeDLG::Draw() {
     m_MakeItemSlot.Draw();
 
     /// 인벤토리에서 옮긴 재료아이템 Draw
-    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), mem_fun_ref(&CSlot::Draw));
+    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [](auto s) { s.Draw(); });
 
     /// 필요 재료 Draw
     D3DXMATRIX mat;
@@ -253,9 +253,9 @@ CMakeDLG::Update(POINT ptMouse) {
     CTDialog::Update(ptMouse);
 
     m_MakeItemSlot.Update(ptMouse);
-    for_each(m_listMaterialSlot.begin(),
-        m_listMaterialSlot.end(),
-        bind2nd(mem_fun_ref(&CSlot::Update), ptMouse));
+    for_each(m_listMaterialSlot.begin(), m_listMaterialSlot.end(), [ptMouse](auto s) {
+        s.Update(ptMouse);
+    });
 
     m_pCurrState->Update(ptMouse);
 
