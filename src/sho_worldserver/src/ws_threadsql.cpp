@@ -156,67 +156,6 @@ __fastcall CWS_ThreadSQL::~CWS_ThreadSQL() {
     SAFE_DELETE_ARRAY(m_pDefaultINV);
 }
 
-//-------------------------------------------------------------------------------------------------
-bool __fastcall CWS_ThreadSQL::ConvertBasicETC() {
-    /*
-        short nI;
-        tagBasicETC3 *pOldBE;
-        tagBasicETC   sNewBE;
-        int iCharID, iRecCNT=0;
-
-        while( true )
-        {
-            this->db->MakeQuery( "SELECT TOP 1 intCharID, binBasicE FROM tblGS_AVATAR WHERE
-       intDataVER=0 ", //and txtACCOUNT=\'icarus3\'", MQ_PARAM_END); if (
-       !this->db->QuerySQLBuffer() ) { g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n",
-       this->db->GetERROR() ); return false;
-            }
-
-            if ( !this->db->GetNextRECORD() ) {
-                return false;
-            }
-
-            iCharID = this->db->GetInteger( 0 );
-            pOldBE = (tagBasicETC3*)this->db->GetDataPTR( 1 );
-
-            assert( iCharID && pOldBE );
-
-            sNewBE.Init ();
-            sNewBE.m_btCharRACE		= pOldBE->m_btCharRACE;
-            sNewBE.m_nReviveZoneNO	= pOldBE->m_nReviveZoneNO;
-
-            sNewBE.m_PosSTART		= pOldBE->m_PosSTART	;
-            sNewBE.m_btCharRACE		= pOldBE->m_btCharRACE	;
-            sNewBE.m_nZoneNO		= pOldBE->m_nZoneNO	;
-            sNewBE.m_PosREVIVE		= pOldBE->m_PosREVIVE	;
-            sNewBE.m_nReviveZoneNO	= pOldBE->m_nReviveZoneNO;
-
-            for (nI=0; nI<MAX_BODY_PART; nI++) {
-                sNewBE.m_PartITEM[ nI ].m_nItemNo = pOldBE->m_nPartItemIDX[ nI ];
-            }
-            for (nI=0; nI<MAX_RIDING_PART; nI++) {
-                sNewBE.m_RideITEM[ nI ].m_nItemNo = pOldBE->m_nRideItemIDX[ nI ];
-            }
-
-            this->db->BindPARAM( 1, (BYTE*)&sNewBE,		sizeof( tagBasicETC )	);
-            this->db->MakeQuery( "UPDATE tblGS_AVATAR SET binBasicE=",
-                                                            MQ_PARAM_BINDIDX,	1,
-                        MQ_PARAM_ADDSTR, ",intDataVER=",	MQ_PARAM_INT,		2,
-                        MQ_PARAM_ADDSTR, "WHERE intCharID=",MQ_PARAM_INT,	iCharID,
-                                                            MQ_PARAM_END );
-            if ( this->db->ExecSQLBuffer() < 0 ) {
-                // 고치기 실패 !!!
-                // log ...
-                g_LOG.CS_ODS(LOG_NORMAL, "SQL Exec ERROR:: UPDATE binBasicE: %d, \n", iCharID,
-       this->db->GetERROR() ); } else iRecCNT ++;
-        }
-
-        g_LOG.CS_ODS(LOG_NORMAL, "Complete ConvertBasicETC, %d records\n", iRecCNT);
-    */
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
 void
 CWS_ThreadSQL::Execute() {
     this->SetPriority(THREAD_PRIORITY_ABOVE_NORMAL); // Priority 1 point above the priority class
@@ -227,8 +166,6 @@ CWS_ThreadSQL::Execute() {
         ">  > >> CWS_ThreadSQL::Execute() ThreadID: %d(0x%x)\n",
         this->ThreadID,
         this->ThreadID);
-
-    this->ConvertBasicETC();
 
     while (TRUE) {
         if (!this->Terminated) {
@@ -329,18 +266,13 @@ struct tagDelCHAR {
     DWORD m_dwDBID;
     CStrVAR m_Name;
 };
+
 bool
 CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
-    /*
-        //주의 !!! 프로지져를 쓸려면 프로시져에 intCharID를 추가해야 한다.
-        // if ( !this->db->QuerySQL( "{call ws_GetCharLIST(\'%s\')}", pSqlPACKET->m_Name.Get() )
-       ) { this->db->MakeQuery( "SELECT txtNAME, binBasicE, binBasicI, binGrowA, dwDelTIME,
-       intCharID FROM tblGS_AVATAR WHERE txtACCOUNT=", MQ_PARAM_STR, pSqlPACKET->m_Name.Get(),
-                                MQ_PARAM_END);
-    */
+
     this->db->MakeQuery(
-        (char*)"SELECT txtNAME, binBasicE, binBasicI, binGrowA, dwDelTIME, intDataVER "
-               "FROM tblGS_AVATAR WHERE txtACCOUNT=",
+        (char*)"SELECT name, basic_etc, basic_info, grow_ability, delete_by_int "
+               "FROM character WHERE account_name=",
         MQ_PARAM_STR,
         pSqlPACKET->m_Name.Get(),
         MQ_PARAM_END);
@@ -430,19 +362,12 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
 
         pNode = DelList.GetHeadNode();
         while (pNode) {
-            // if ( this->db->ExecSQL("DELETE FROM tblGS_AVATAR WHERE txtNAME=\'%s\'",
-            // pNode->m_VALUE.m_Name.Get() ) < 1 ) {
-            //	// 오류 또는 삭제된것이 없다.
-            //	g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR(DELETE_CHAR:%s):: %s \n",
-            // pNode->m_VALUE.m_Name.Get(), this->db->GetERROR() );
-            //}
-
             long iResultSP = -99;
             SDWORD cbSize1 = SQL_NTS;
             this->db->SetParam_long(1, iResultSP, cbSize1);
 
-#define SP_DeleteCHAR "{?=call ws_CharDELETE(\'%s\')}"
-            if (this->db->QuerySQL((char*)SP_DeleteCHAR, pNode->m_VALUE.m_Name.Get())) {
+           const char* query = "DELETE FROM character WHERE name=\'%s\'";
+            if (this->db->QuerySQL((char*)query, pNode->m_VALUE.m_Name.Get())) {
                 while (this->db->GetMoreRESULT()) {
                     if (this->db->BindRESULT()) {
                         if (this->db->GetNextRECORD()) {
@@ -520,8 +445,8 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     }
 
     // 케릭터의 소유자인지 판단...
-    this->db->MakeQuery((char*)"SELECT txtACCOUNT, binBasicE, intCharID, intDataVER FROM "
-                               "tblGS_AVATAR WHERE txtNAME=",
+    this->db->MakeQuery((char*)"SELECT account_name, basic_etc, id FROM "
+                               "character WHERE name=",
         MQ_PARAM_STR,
         pCharName,
         MQ_PARAM_END);
@@ -537,7 +462,7 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
     char* szCharOWNER = this->db->GetStrPTR(0);
     tagBasicETC* pBE = (tagBasicETC*)this->db->GetDataPTR(1);
-    short nDataVER = this->db->GetInteger16(3);
+    short nDataVER = DATA_VER_2;
 
     CWS_Client* pUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
     if (pUSER) {
@@ -651,8 +576,8 @@ CWS_ThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
         }
     }
 
-    if (this->db->ExecSQL((char*)"UPDATE tblGS_AVATAR SET dwDelTIME=%u WHERE txtACCOUNT=\'%s\' "
-                                 "AND txtNAME=\'%s\'",
+    if (this->db->ExecSQL((char*)"UPDATE character SET delete_by_int=%u WHERE account_name=\'%s\' "
+                                 "AND name=\'%s\'",
             dwCurAbsSEC,
             pSqlPACKET->m_Name.Get(),
             pCharName)
@@ -866,26 +791,6 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 return true;
             }
 
-#define OPTION_REFUSE_JJOKJI 0x00000001
-            // 대상 케릭의 쪽지 수신 거부 여부...
-            if (!this->db->QuerySQL(
-                    (char*)"SELECT dwOPTION FROM tblGS_AVATAR WHERE txtNAME=\'%s\';",
-                    szTargetCHAR)) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-                return false;
-            }
-
-            if (!this->db->GetNextRECORD()) {
-                // 보낼 대상 케릭 없다.
-                g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_NOT_EXIST);
-                return true;
-            }
-            if (this->db->GetInteger(0) & OPTION_REFUSE_JJOKJI) {
-                // 거부 상태
-                g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_REFUSED);
-                return true;
-            }
-
 #define MAX_RECV_MEMO_CNT 50
             // 대상 케릭이 몇개의 보관된 쪽지가 있냐?
             if (!this->db->QuerySQL((char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
@@ -969,7 +874,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     }
 
     // Check if the name already exists
-    std::string query = "SELECT COUNT(*) FROM tblGS_AVATAR WHERE txtNAME=?";
+    std::string query = "SELECT COUNT(*) FROM character WHERE name=?";
     this->db->bind_string(1, req->name()->str());
 
     if (!this->db->execute(query)) {
@@ -994,7 +899,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
 
     std::string account_name = client->Get_ACCOUNT();
 
-    query = "SELECT COUNT(*) from tblGS_AVATAR WHERE txtACCOUNT=?";
+    query = "SELECT COUNT(*) from character WHERE account_name=?";
     this->db->bind_string(1, account_name);
 
     if (!this->db->execute(query)) {
@@ -1034,20 +939,30 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     CInventory& inv = m_pDefaultINV[gender_id];
     tagBasicAbility& basic_ability = m_pDefaultBA[gender_id];
 
-    query =
-        "INSERT INTO tblGS_AVATAR (txtACCOUNT, txtNAME, intDataVER, binBasicE, "
-        "binBasicI, binBasicA, binGrowA, binSkillA, blobINV, intJOB) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    query = "INSERT INTO character (account_name, name, basic_etc, "
+            "basic_info, basic_ability, grow_ability, skill_ability, inventory, "
+            "face_id, hair_id, gender_id, map_id, respawn_x, respawn_y, "
+            "town_respawn_id, town_respawn_x, town_respawn_y, job_id)"
+            "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     this->db->bind_string(1, account_name);
     this->db->bind_string(2, req->name()->str());
-    this->db->bind_int32(3, DATA_VER_2);
-    this->db->bind_binary(4, reinterpret_cast<uint8_t*>(&basic_etc), sizeof(tagBasicETC));
-    this->db->bind_binary(5, reinterpret_cast<uint8_t*>(&basic_info), sizeof(tagBasicINFO));
-    this->db->bind_binary(6, reinterpret_cast<uint8_t*>(&basic_ability), sizeof(tagBasicAbility));
-    this->db->bind_binary(7, reinterpret_cast<uint8_t*>(&m_sGA), sizeof(tagGrowAbility));
-    this->db->bind_binary(8, reinterpret_cast<uint8_t*>(&m_sSA), sizeof(tagSkillAbility));
-    this->db->bind_binary(9, reinterpret_cast<uint8_t*>(&inv), sizeof(CInventory));
-    this->db->bind_int32(10, static_cast<int>(job));
+    this->db->bind_binary(3, reinterpret_cast<uint8_t*>(&basic_etc), sizeof(tagBasicETC));
+    this->db->bind_binary(4, reinterpret_cast<uint8_t*>(&basic_info), sizeof(tagBasicINFO));
+    this->db->bind_binary(5, reinterpret_cast<uint8_t*>(&basic_ability), sizeof(tagBasicAbility));
+    this->db->bind_binary(6, reinterpret_cast<uint8_t*>(&m_sGA), sizeof(tagGrowAbility));
+    this->db->bind_binary(7, reinterpret_cast<uint8_t*>(&m_sSA), sizeof(tagSkillAbility));
+    this->db->bind_binary(8, reinterpret_cast<uint8_t*>(&inv), sizeof(CInventory));
+    this->db->bind_int16(9, basic_info.m_cFaceIDX);
+    this->db->bind_int16(10, basic_info.m_cHairIDX);
+    this->db->bind_int16(11, basic_etc.m_btCharRACE);
+    this->db->bind_int16(12, basic_etc.m_nZoneNO);
+    this->db->bind_float(13, basic_etc.m_PosSTART.x);
+    this->db->bind_float(14, basic_etc.m_PosSTART.y);
+    this->db->bind_int16(15, basic_etc.m_nReviveZoneNO);
+    this->db->bind_float(16, basic_etc.m_PosREVIVE.x);
+    this->db->bind_float(17, basic_etc.m_PosREVIVE.y);
+    this->db->bind_int32(18, static_cast<int>(job));
 
     if (!this->db->execute(query)) {
         LOG_ERROR("Failed to insert character %s for account %s",

@@ -1953,13 +1953,6 @@ classUSER::Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// 케릭터 리스트 요청처리 :: 개인 서버에서만 사용됨
-bool
-classUSER::Recv_cli_CHAR_LIST(t_PACKET* pPacket) {
-    return g_pThreadSQL->Add_SqlPacketWithACCOUNT(this, pPacket);
-}
-
-//-------------------------------------------------------------------------------------------------
 /// 케릭터 선택 요청처리 :: 개인 서버에서만 사용됨
 bool
 classUSER::Recv_cli_SELECT_CHAR(t_PACKET* pPacket,

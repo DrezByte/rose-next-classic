@@ -75,9 +75,6 @@ public:
     bool handle_char_create_req(QueuedPacket& p);
 
 private:
-    bool __fastcall ConvertBasicETC();
-
-private:
     short m_nDefaultDataCNT;
     tagBasicETC* m_pDefaultBE;
     CInventory* m_pDefaultINV;

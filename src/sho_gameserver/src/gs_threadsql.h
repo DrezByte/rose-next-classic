@@ -73,7 +73,6 @@ struct tagGrowA_BUFF {
  */
 class GS_CThreadSQL: public CSqlTHREAD {
 private:
-    bool __fastcall ConvertBasicETC();
     bool m_bWaiting;
 
 private:
@@ -113,7 +112,6 @@ private:
 
     bool Proc_cli_MEMO(tagQueryDATA* pSqlPACKET);
 
-    bool Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET);

@@ -7,48 +7,46 @@ CREATE TABLE [dbo].[account]
 	[email] varchar(100) NOT NULL,
 	[created] datetime NOT NULL CONSTRAINT DF_account_created DEFAULT GETUTCDATE(),
 	[last_connected] datetime,
-	CONSTRAINT [PK_account_id] PRIMARY KEY (id),
-	CONSTRAINT [UQ_password] UNIQUE (password),
+	CONSTRAINT PK_account_id PRIMARY KEY (id),
+	CONSTRAINT UQ_password UNIQUE (password),
 );
 GO
 
-/****** Object:  Table [dbo].[tblGS_AVATAR]    Script Date: 9/12/2019 2:20:43 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[tblGS_AVATAR]
+CREATE TABLE [dbo].[character]
 (
-	[intCharID] [int] IDENTITY(1,1) NOT NULL,
-	[txtACCOUNT] [nvarchar](20) NOT NULL,
-	[txtNAME] [nvarchar](30) NOT NULL,
-	[btLEVEL] [smallint] NULL,
-	[intMoney] [bigint] NULL,
-	[dwRIGHT] [int] NULL,
-	[binBasicE] [binary](96) NOT NULL,
-	[binBasicI] [binary](32) NOT NULL,
-	[binBasicA] [binary](48) NOT NULL,
-	[binGrowA] [binary](384) NOT NULL,
-	[binSkillA] [binary](384) NOT NULL,
-	[blobQUEST] [binary](1024) NULL,
-	[blobINV] [binary](2048) NOT NULL,
-	[binHotICON] [binary](128) NULL,
-	[dwDelTIME] [int] NULL,
-	[binWishLIST] [binary](256) NULL,
-	[dwOPTION] [int] NULL,
-	[intJOB] [smallint] NOT NULL,
-	[dwRegTIME] [int] NOT NULL,
-	[dwPartyIDX] [int] NULL,
-	[dwItemSN] [int] NULL,
-	[intDataVER] [smallint] NOT NULL,
-	[txtCharName] [nvarchar](30) NULL,
-	[binSkillB] [binary](240) NULL,
-	CONSTRAINT [PK_tblGS_AVATAR] PRIMARY KEY CLUSTERED 
-(
-	[txtNAME] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
-) ON [PRIMARY]
-GO
+	[id] int NOT NULL IDENTITY(1,1),
+	[account_name] varchar(50) NOT NULL,
+	[name] varchar(30) NOT NULL,
+	[level] smallint NOT NULL CONSTRAINT DF_character_level DEFAULT (1),
+	[job_id] smallint NOT NULL CONSTRAINT DF_character_job_id DEFAULT (0),
+	[money] bigint NOT NULL CONSTRAINT DF_character_money DEFAULT(0),
+	[gender_id] tinyint NOT NULL CONSTRAINT DF_character_gender DEFAULT(0),
+	[face_id] smallint NOT NULL CONSTRAINT DF_character_face_id DEFAULT(1),
+	[hair_id] smallint NOT NULL CONSTRAINT DF_character_hair_id DEFAULT(1),
+	[created] datetime NOT NULL CONSTRAINT DF_character_created DEFAULT GETUTCDATE(),
+	/* Set default respawn and town respawn to adventure plains start point */
+	[map_id] smallint NOT NULL CONSTRAINT DF_character_map_id DEFAULT (22),
+	[respawn_x] float NOT NULL CONSTRAINT DF_character_respawn_x DEFAULT (577987.99),
+	[respawn_y] float NOT NULL CONSTRAINT DF_character_respawn_y DEFAULT (515579.9805),
+	[town_respawn_id] smallint NOT NULL CONSTRAINT DF_character_town_respawn_id DEFAULT (22),
+	[town_respawn_x] float NOT NULL CONSTRAINT DF_character_town_respawn_x DEFAULT (577987.99),
+	[town_respawn_y] float NOT NULL CONSTRAINT DF_character_town_respawn_y DEFAULT (515579.9805),
+	[basic_etc] binary(96) NOT NULL,
+	[basic_info] binary(32) NOT NULL,
+	[basic_ability] binary(48) NOT NULL,
+	[grow_ability] binary(384) NOT NULL,
+	[skill_ability] binary(384) NOT NULL,
+	[quest_data] binary(1024),
+	[inventory] binary(2048) NOT NULL,
+	[hot_icon] binary(128),
+	[wish_list] binary(256),
+	[delete_by_int] int,
+	[party_id] int,
+	[item_serial] int,
+	CONSTRAINT PK_character_id PRIMARY KEY (id),
+	CONSTRAINT UQ_character_name UNIQUE (name),
+)
+
 /****** Object:  Table [dbo].[tblGS_BANK]    Script Date: 9/12/2019 2:20:43 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -180,38 +178,6 @@ CREATE TABLE [dbo].[WS_CheatLog]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [IX_tblGS_AVATAR]    Script Date: 9/12/2019 2:20:43 PM ******/
-CREATE NONCLUSTERED INDEX [IX_tblGS_AVATAR] ON [dbo].[tblGS_AVATAR]
-(
-	[txtACCOUNT] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
-GO
-/****** Object:  Index [IX_tblGS_AVATAR_1]    Script Date: 9/12/2019 2:20:43 PM ******/
-CREATE UNIQUE NONCLUSTERED INDEX [IX_tblGS_AVATAR_1] ON [dbo].[tblGS_AVATAR]
-(
-	[intCharID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
-GO
-/****** Object:  Index [IX_tblGS_AVATAR_2]    Script Date: 9/12/2019 2:20:43 PM ******/
-CREATE NONCLUSTERED INDEX [IX_tblGS_AVATAR_2] ON [dbo].[tblGS_AVATAR]
-(
-	[btLEVEL] DESC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
-GO
-/****** Object:  Index [IX_tblGS_AVATAR_3]    Script Date: 9/12/2019 2:20:43 PM ******/
-CREATE NONCLUSTERED INDEX [IX_tblGS_AVATAR_3] ON [dbo].[tblGS_AVATAR]
-(
-	[intMoney] DESC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
-GO
-/****** Object:  Index [IX_tblGS_AVATAR_4]    Script Date: 9/12/2019 2:20:43 PM ******/
-CREATE NONCLUSTERED INDEX [IX_tblGS_AVATAR_4] ON [dbo].[tblGS_AVATAR]
-(
-	[intJOB] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
-GO
-SET ANSI_PADDING ON
-GO
 /****** Object:  Index [IX_tblWS_CLAN]    Script Date: 9/12/2019 2:20:43 PM ******/
 CREATE NONCLUSTERED INDEX [IX_tblWS_CLAN] ON [dbo].[tblWS_CLAN]
 (
@@ -223,28 +189,6 @@ CREATE NONCLUSTERED INDEX [IX_tblWS_ClanCHAR] ON [dbo].[tblWS_ClanCHAR]
 (
 	[intClanID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_btLEVEL]  DEFAULT ((0)) FOR [btLEVEL]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_intMoney]  DEFAULT ((0)) FOR [intMoney]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_dwRIGHT]  DEFAULT ((0)) FOR [dwRIGHT]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_binSkillA]  DEFAULT (0x0B000C0010000000140029002A002B001E00) FOR [binSkillA]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_dwDelTIME]  DEFAULT ((0)) FOR [dwDelTIME]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_dwOPTION]  DEFAULT ((0)) FOR [dwOPTION]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_intJOB]  DEFAULT ((0)) FOR [intJOB]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_dwRegTIME]  DEFAULT ((0)) FOR [dwRegTIME]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_dwPartyIDX]  DEFAULT ((0)) FOR [dwPartyIDX]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR_dwItemSN]  DEFAULT ((0)) FOR [dwItemSN]
-GO
-ALTER TABLE [dbo].[tblGS_AVATAR] ADD  CONSTRAINT [DF_tblGS_AVATAR]  DEFAULT ((0)) FOR [intDataVER]
 GO
 ALTER TABLE [dbo].[tblGS_BANK] ADD  CONSTRAINT [DF_tblGS_BANK_intREWARD]  DEFAULT ((0)) FOR [intREWARD]
 GO
@@ -692,104 +636,14 @@ GO
 
 
 /****** Object:  Stored Procedure dbo.gs_SelectBANK    Script Date: 10/24/2005 4:10:57 PM ******/
-
-
-
-
 CREATE PROCEDURE [dbo].[gs_SelectBANK]
 	@szAccount  nvarchar(30)
 AS
 SELECT *
 FROM tblGS_BANK
 WHERE txtACCOUNT=@szAccount
-
-
-
-
-
-GO
-/****** Object:  StoredProcedure [dbo].[gs_SelectCHAR]    Script Date: 9/12/2019 2:20:43 PM ******/
-SET ANSI_NULLS OFF
-GO
-SET QUOTED_IDENTIFIER OFF
 GO
 
-
-/****** Object:  Stored Procedure dbo.gs_SelectCHAR    Script Date: 10/24/2005 4:10:57 PM ******/
-
-
-
-
-CREATE PROCEDURE [dbo].[gs_SelectCHAR]
-	@szCharName	nvarchar(30)
-AS
-SELECT *
-FROM tblGS_AVATAR
-WHERE txtNAME=@szCharName
-
-
-
-
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[ws_CharDELETE]    Script Date: 9/12/2019 2:20:43 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER OFF
-GO
-
-
-/****** Object:  Stored Procedure dbo.ws_CharDELETE    Script Date: 10/24/2005 4:10:57 PM ******/
-
-
-
-
-CREATE PROCEDURE [dbo].[ws_CharDELETE]
-	@szCharName	nvarchar(30)
-AS
-DECLARE @del_error1 int;
-DECLARE @del_error2 int;
-DECLARE @del_error3 int;
-DECLARE @del_error4 int;
-
-DECLARE @iCharID	int;
-
--- ??? ??? ID??
-SELECT @iCharID=intCharID
-from tblGS_AVATAR
-where txtNAME = @szCharName;
-IF @@ROWCOUNT <= 0 
-		RETURN -1;
--- ???? ??
-BEGIN TRAN del_char
-
-DELETE from tblWS_FRIEND WHERE intCharID = @iCharID;
-SET @del_error1 = @@ERROR;
-
-DELETE FROM tblGS_AVATAR WHERE txtNAME=@szCharName;
-SET @del_error2 = @@ERROR;
-
-DELETE FROM tblWS_MEMO   WHERE txtNAME=@szCharName;
-SET @del_error3 = @@ERROR;
-
-DELETE FROM tblWS_ClanCHAR WHERE txtCharNAME=@szCharName;
-SET @del_error4 = @@ERROR;
-
-IF @del_error1 = 0 AND @del_error2 = 0 AND @del_error3 = 0 AND @del_error4 = 0
-	BEGIN
-	COMMIT TRAN del_char;
-	RETURN 0;
-END
-
-ROLLBACK TRAN del_char;
-RETURN -2;
-
-
-
-
-
-GO
 /****** Object:  StoredProcedure [dbo].[ws_ClanBinUPDATE]    Script Date: 9/12/2019 2:20:43 PM ******/
 SET ANSI_NULLS OFF
 GO
@@ -1253,9 +1107,6 @@ GO
 
 /****** Object:  Stored Procedure dbo.ws_ClanUPDATE    Script Date: 10/24/2005 4:10:57 PM ******/
 
-
-
-
 --Create Proc
 
 CREATE PROCEDURE [dbo].[ws_ClanUPDATE]
@@ -1282,60 +1133,8 @@ SET @szQry = 'SELECT ' + @szField + ' FROM tblWS_CLAN WHERE intID= ' + cast ( @i
 EXEC ( @szQry  )
 RETURN 1;
 
-
-
-
-
-GO
-/****** Object:  StoredProcedure [dbo].[ws_DeleteCHAR]    Script Date: 9/12/2019 2:20:43 PM ******/
-SET ANSI_NULLS OFF
-GO
-SET QUOTED_IDENTIFIER OFF
 GO
 
-
-/****** Object:  Stored Procedure dbo.ws_DeleteCHAR    Script Date: 10/24/2005 4:10:58 PM ******/
-
-
-
-
-CREATE PROCEDURE [dbo].[ws_DeleteCHAR]
-	@szCharName	nvarchar(30),
-	@iCharID	int
-AS
-DELETE FROM tblWS_FRIEND WHERE intCharID=@iCharID;
-DELETE FROM tblGS_AVATAR WHERE txtNAME=@szCharName;
-DELETE FROM tblWS_MEMO   WHERE txtNAME=@szCharName;
-
-
-
-
-
-GO
-/****** Object:  StoredProcedure [dbo].[ws_GetCharLIST]    Script Date: 9/12/2019 2:20:43 PM ******/
-SET ANSI_NULLS OFF
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-/****** Object:  Stored Procedure dbo.ws_GetCharLIST    Script Date: 10/24/2005 4:10:58 PM ******/
-
-
-
-
-CREATE PROCEDURE [dbo].[ws_GetCharLIST]
-	@szAccount	nvarchar(30)
-AS
-SELECT txtNAME, binBasicE, binBasicI, binGrowA, dwDelTIME
-FROM tblGS_AVATAR
-WHERE txtACCOUNT=@szAccount
-
-
-
-
-
-GO
 /****** Object:  StoredProcedure [dbo].[ws_GetFRIEND]    Script Date: 9/12/2019 2:20:43 PM ******/
 SET ANSI_NULLS OFF
 GO

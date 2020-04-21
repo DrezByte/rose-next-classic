@@ -1044,6 +1044,11 @@ classODBC::bind_int64(size_t idx, int64_t i) {
 }
 
 bool
+classODBC::bind_float(size_t idx, float f) {
+    return this->bind(idx, (uint8_t*)&f, sizeof(float), SQL_C_FLOAT, SQL_FLOAT);
+}
+
+bool
 classODBC::bind_string(size_t idx, const char* data, size_t size) {
     return this->bind(idx, (uint8_t*)data, size, SQL_C_CHAR, SQL_VARCHAR);
 }
@@ -1109,6 +1114,10 @@ classODBC::auto_bind() {
             case SQL_FLOAT:
             case SQL_REAL:
                 bound_data.c_type = SQL_C_DOUBLE;
+                break;
+            case SQL_BINARY:
+            case SQL_VARBINARY:
+                bound_data.c_type = SQL_C_BINARY;
                 break;
         };
 

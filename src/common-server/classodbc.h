@@ -176,6 +176,7 @@ public:
     bool bind_int16(size_t idx, int16_t i);
     bool bind_int32(size_t idx, int32_t i);
     bool bind_int64(size_t idx, int64_t i);
+    bool bind_float(size_t idx, float f);
     bool bind_string(size_t idx, const char* data, size_t size);
     bool bind_string(size_t idx, const std::string& data);
 
