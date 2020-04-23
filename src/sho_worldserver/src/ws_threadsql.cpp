@@ -858,6 +858,14 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     const Packets::CharacterCreateRequest* req =
         p.packet.packet_data()->data_as_CharacterCreateRequest();
 
+    if (!req) {
+        return false;
+    }
+
+    if (!req->name()) {
+        return false;
+    }
+
     bool name_valid =
         req->name()->size() > 3 && req->name()->size() <= GameStaticConfig::MAX_CHARACTER_NAME;
     bool face_valid = req->face_id() > 0 && req->face_id() < g_TblFACE.m_nDataCnt;

@@ -104,6 +104,14 @@ bool
 CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
     const Packets::LoginRequest* req = p.packet.packet_data()->data_as_LoginRequest();
 
+    if (!req) {
+        return false;
+    }
+
+    if (!req->username() || req->password()) {
+        return false;
+    }
+
     if (req->username()->size() == 0 || req->username()->size() > USERNAME_MAX) {
         LOG_DEBUG("Username was string was empty or too long: %s", req->username()->c_str());
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
