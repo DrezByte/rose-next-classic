@@ -16,7 +16,7 @@ impl FfiString {
 
     pub fn set_string(&mut self, v: &str) {
         let c_str = CString::new(v.as_bytes()).unwrap_or_default();
-        self.len = c_str.as_bytes_with_nul().len();
+        self.len = c_str.as_bytes().len();
         self.chars = c_str.into_raw() as *mut libc::c_char;
     }
 }

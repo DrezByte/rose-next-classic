@@ -744,7 +744,7 @@ CRecvPACKET::Recv_gsv_SELECT_CHAR() {
     ;*/
     short nOffset = sizeof(gsv_SELECT_CHAR);
     char* szName = Packet_GetStringPtr(m_pRecvPacket, nOffset);
-    g_pCApp->SetCaption(CStr::Printf("%s [ %s ]", GameConfig::NAME, szName));
+    g_pCApp->SetCaption(CStr::Printf("%s [ %s ]", GameStaticConfig::NAME, szName));
 
     LogString(LOG_NORMAL,
         "AVATER( %s ) : Zone: %d, Pos: %f, %f",

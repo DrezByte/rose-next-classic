@@ -46,8 +46,8 @@ drop_rule_from_int(int i) {
 __int64
 CCal::Get_NeedRawEXP(int iLevel) {
     // 필요 경험치
-    if (iLevel > GameConfig::MAX_LEVEL)
-        iLevel = GameConfig::MAX_LEVEL;
+    if (iLevel > GameStaticConfig::MAX_LEVEL)
+        iLevel = GameStaticConfig::MAX_LEVEL;
 
     // [레벨 15이하일 경우]   필요 경험치 = { (LV + 3) * (LV + 5 ) * (LV + 10) * 0.7 }
     if (iLevel <= 15)

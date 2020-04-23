@@ -66,9 +66,7 @@ main(int argc, char** argv) {
 
     // Initialize and start the server
     LOG_INFO("Initializing the server");
-    g_instance = CLIB_GameSRV::InitInstance(console_handle,
-        (char*)config.gameserver.data_dir.c_str(),
-        config.gameserver.language);
+    g_instance = CLIB_GameSRV::InitInstance(console_handle, config);
 
     LOG_INFO("Connecting to other servers");
     g_instance->ConnectSERVER((char*)config.database.ip.c_str(),

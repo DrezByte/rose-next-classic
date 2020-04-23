@@ -101,11 +101,14 @@ CThreadGUILD* g_pThreadGUILD = NULL;
 
 char g_szURL[MAX_PATH];
 
-#define BASE_DATA_DIR m_BaseDataDIR.Get() //	"..\\..\\sho\\"
+//#define BASE_DATA_DIR m_BaseDataDIR.Get()
+#define BASE_DATA_DIR (char*)this->config.gameserver.data_dir.c_str()
 
 CLIB_GameSRV* CLIB_GameSRV::m_pInstance = NULL;
 
 FILE* g_fpTXT = NULL;
+
+using namespace Rose::Common;
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
@@ -258,22 +261,29 @@ CLIB_GameSRV::~CLIB_GameSRV() {
 }
 
 void
-CLIB_GameSRV::SystemINIT(HINSTANCE hInstance, char* szBaseDataDIR, int iLangType) {
+CLIB_GameSRV::init(HINSTANCE hInstance, const ServerConfig& config) {
+    this->config = config;
+
     m_pInstance = this;
 
-    if (iLangType < 0)
-        iLangType = 0;
+    if (this->config.gameserver.language < 0) {
+        this->config.gameserver.language = 0;
+    }
+
+    if (this->config.gameserver.data_dir.back() != '\\') {
+        this->config.gameserver.data_dir.push_back('\\');
+    }
 
     m_bTestServer = true;
-    m_iLangTYPE = iLangType;
+    m_iLangTYPE = this->config.gameserver.language;
     m_pCheckedLocalZONE = NULL;
     m_pWorldTIMER = NULL;
 
     CSOCKET::Init();
     CStr::Init();
 
-    m_BaseDataDIR.Alloc((WORD)(strlen(szBaseDataDIR) + 3));
-    m_BaseDataDIR.Printf("%s\\", szBaseDataDIR);
+    m_BaseDataDIR.Alloc((WORD)(strlen(this->config.gameserver.data_dir.c_str()) + 3));
+    m_BaseDataDIR.Printf("%s\\", this->config.gameserver.data_dir.c_str());
 
     CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
 

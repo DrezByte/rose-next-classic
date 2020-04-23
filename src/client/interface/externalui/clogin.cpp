@@ -360,7 +360,7 @@ CLogin::Draw() {
         0,
         0,
         g_dwWHITE,
-        CStr::Printf("%s", GameConfig::NAME));
+        CStr::Printf("%s", GameStaticConfig::NAME));
 }
 
 bool

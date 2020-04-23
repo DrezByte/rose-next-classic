@@ -28,8 +28,16 @@
 #include "OBJECT.h"
 
 #include "rose/common/log.h"
+#include "rose/common/server_config.h"
+
+namespace Rose::Common {
+class ServerConfig;
+}
 
 class CLIB_GameSRV {
+public:
+    Rose::Common::ServerConfig config;
+
 private:
     static CLIB_GameSRV* m_pInstance;
 
@@ -70,7 +78,7 @@ private:
 
     CLIB_GameSRV();
     virtual ~CLIB_GameSRV();
-    void SystemINIT(HINSTANCE hInstance, char* szBaseDataDIR, int iLangType);
+    void init(HINSTANCE hInstance, const Rose::Common::ServerConfig& config);
 
     bool CheckSTB_UseITEM();
     bool CheckSTB_NPC();
@@ -146,11 +154,11 @@ public:
     DWORD Get_UserLIMIT() { return m_dwUserLIMIT; }
 
     static CLIB_GameSRV* GetInstance() { return m_pInstance; }
-    static CLIB_GameSRV* InitInstance(HINSTANCE hInstance, char* szBaseDataDIR, int iLangType) {
+    static CLIB_GameSRV* InitInstance(HINSTANCE hInstance, const Rose::Common::ServerConfig& config) {
         if (NULL == m_pInstance) {
             m_pInstance = new CLIB_GameSRV();
             _ASSERT(m_pInstance);
-            m_pInstance->SystemINIT(hInstance, szBaseDataDIR, iLangType);
+            m_pInstance->init(hInstance, config);
         }
         return m_pInstance;
     }

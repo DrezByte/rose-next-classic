@@ -771,7 +771,7 @@ public:
 
     void SetCur_LEVEL(WORD wValue) {
         this->m_GrowAbility.m_nLevel =
-            (wValue > Rose::GameConfig::MAX_LEVEL) ? Rose::GameConfig::MAX_LEVEL : wValue;
+            (wValue > Rose::GameStaticConfig::MAX_LEVEL) ? Rose::GameStaticConfig::MAX_LEVEL : wValue;
     }
     void SetCur_EXP(long lValue) { this->m_GrowAbility.m_lEXP = lValue; }
     void SetCur_BonusPOINT(short nValue) { this->m_GrowAbility.m_nBonusPoint = nValue; }

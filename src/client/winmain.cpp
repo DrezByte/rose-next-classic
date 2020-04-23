@@ -132,7 +132,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmd
 
     g_pCApp->SetFullscreenMode(iFullScreen);
     g_pCApp->CreateWND("classCLIENT",
-        CStr::Printf("%s", GameConfig::NAME),
+        CStr::Printf("%s", GameStaticConfig::NAME),
         Resolution.iWidth,
         Resolution.iHeight,
         Resolution.iDepth,

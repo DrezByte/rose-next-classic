@@ -859,7 +859,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
         p.packet.packet_data()->data_as_CharacterCreateRequest();
 
     bool name_valid =
-        req->name()->size() > 3 && req->name()->size() <= GameConfig::MAX_CHARACTER_NAME;
+        req->name()->size() > 3 && req->name()->size() <= GameStaticConfig::MAX_CHARACTER_NAME;
     bool face_valid = req->face_id() > 0 && req->face_id() < g_TblFACE.m_nDataCnt;
     bool hair_valid = req->hair_id() > 0 && req->hair_id() < g_TblHAIR.m_nDataCnt;
 
@@ -913,7 +913,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     }
 
     int char_count = this->db->get_int32(1);
-    if (char_count >= GameConfig::MAX_CHARACTERS) {
+    if (char_count >= GameStaticConfig::MAX_CHARACTERS) {
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_NO_MORE_SLOT);
         return false;
     }
