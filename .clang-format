@@ -32,7 +32,7 @@ BreakConstructorInitializers: AfterColon
 BreakStringLiterals: true
 ColumnLimit: 100
 CompactNamespaces: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
 # ConstructorInitializerIndentWidth
 # ContinuationIndentWidth
 Cpp11BracedListStyle: true
