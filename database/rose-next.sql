@@ -8,7 +8,8 @@ CREATE TABLE [dbo].[account]
 	[created] datetime NOT NULL CONSTRAINT DF_account_created DEFAULT GETUTCDATE(),
 	[last_connected] datetime,
 	CONSTRAINT PK_account_id PRIMARY KEY (id),
-	CONSTRAINT UQ_password UNIQUE (password),
+	CONSTRAINT UQ_username UNIQUE (username),
+	CONSTRAINT UQ_email UNIQUE (email),
 );
 GO
 
