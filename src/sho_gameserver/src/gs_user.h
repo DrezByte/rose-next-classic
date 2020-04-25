@@ -137,7 +137,22 @@ public:
     classUSER();
     virtual ~classUSER();
 
+    template<typename T>
+    bool send_packet_from_offset(flatbuffers::FlatBufferBuilder& builder, flatbuffers::Offset<T> offset,
+        Rose::Network::Packets::PacketType type) {
+
+        Packets::PacketDataBuilder pd(builder);
+        pd.add_data_type(type);
+        pd.add_data(offset.Union());
+        builder.Finish(pd.Finish());
+
+        Packet p(builder);
+        return this->send_packet(p);
+    }
+
+    bool send_packet(Rose::Network::Packet& packet);
     bool send_server_whisper(const std::string& message);
+    bool send_update_stats_all();
 
     short Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment = false);
 

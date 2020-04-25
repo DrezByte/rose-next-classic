@@ -41,7 +41,6 @@ private:
     CNetwork(HINSTANCE hInstance);
     ~CNetwork();
 
-    void Proc_WorldPacket();
     void Proc_ZonePacket();
 
     void MoveZoneServer();
@@ -61,6 +60,9 @@ public:
     void Send_AuthMsg(void);
 
     void Proc();
+
+    void recv_packet(t_PACKET* packet);
+    void recv_update_stats(Rose::Network::Packet& p);
 
     void send_packet(const Rose::Network::Packet& packet, Server target = Server::Game);
     void send_char_create_req(const std::string& name,

@@ -17,6 +17,7 @@
 #include "ZoneLIST.h"
 
 #include "rose/common/util.h"
+#include "rose/network/packets/update_stats_generated.h"
 
 #include <iomanip>
 #include <sstream>
@@ -26,6 +27,7 @@
 #define RET_SKIP_PROC 2
 
 using namespace Rose;
+using namespace Rose::Network;
 
 classUSER::classUSER() {
     COMPILE_TIME_ASSERT(sizeof(tagITEM) == (6 + sizeof(__int64)));
@@ -8549,6 +8551,29 @@ classUSER::LogCHAT(const char* szMSG, const char* pDestCHAR, const char* szMsgTY
 }
 
 bool
+classUSER::send_packet(Packet& packet) {
+    classPACKET p;
+    p.m_HEADER.m_nSize = 2;
+    p.AppendData(packet.raw_packet_data(), packet.raw_packet_data_size());
+    return this->SendPacket(&p);
+}
+
+bool
 classUSER::send_server_whisper(const std::string& message) {
     return this->Send_gsv_WHISPER("Server", (char*)message.c_str());
+}
+
+bool
+classUSER::send_update_stats_all() {
+    flatbuffers::FlatBufferBuilder builder;
+    builder.ForceDefaults(true);
+
+    Packets::UpdateStatsBuilder rep(builder);
+    rep.add_move_speed(1000); // TODO: Build actual stats
+    // this->stats.move_speed = 1000; // TODO: Magoo
+    const auto update_stats_packet = rep.Finish();
+
+    this->send_packet_from_offset(builder, update_stats_packet, Packets::PacketType::UpdateStats);
+
+    return true;
 }

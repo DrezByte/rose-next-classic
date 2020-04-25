@@ -105,149 +105,6 @@ CNetwork::MoveZoneServer() {
     }
 }
 
-//-------------------------------------------------------------------------------------------------
-void
-CNetwork::Proc_WorldPacket() {
-    CClientSOCKET* pSocket = &this->m_WorldSOCKET;
-
-    while (m_WorldSOCKET.Peek_Packet(m_pRecvPacket, true)) {
-        switch (m_pRecvPacket->m_HEADER.m_wType) {
-            case SOCKET_NETWORK_STATUS: {
-                switch (m_pRecvPacket->m_NetSTATUS.m_btStatus) {
-                    case NETWORK_STATUS_ACCEPTED: {
-                        CGame::GetInstance().AcceptedConnectLoginSvr();
-                        CGame::GetInstance().active_state->on_loginserver_connected();
-                        continue;
-                    }
-                    case NETWORK_STATUS_CONNECT: {
-                        // 서버와 연결됐다...
-                        switch (m_nProcLEVEL) {
-                            case NS_CON_TO_WSV: // 월드 서버에 접속했다.
-                                Send_cli_JOIN_SERVER_REQ(m_dwWSV_ID, true);
-                                m_bWarping = false;
-                                bAllInONE = true;
-                                break;
-                            case NS_CON_TO_LSV: // 로긴 서버에 접속했다.
-                                Send_cli_HEADER(CLI_ACCEPT_REQ, true);
-
-                                break;
-                        }
-                        continue;
-                    }
-                    case NETWORK_STATUS_DISCONNECT: {
-                        if (NS_DIS_FORM_LSV == m_nProcLEVEL) {
-                            // 게임 서버에 재접속 한다...
-                            std::string world_server_ip(m_WSV_IP.Get());
-                            this->ConnectToServer(world_server_ip, m_wWSV_PORT, NS_CON_TO_WSV);
-                            continue;
-                        }
-                        CGame::GetInstance().ProcWndMsg(WM_USER_WORLDSERVER_DISCONNECTED, 0, 0);
-                        break;
-                    }
-                    case NETWORK_STATUS_DERVERDEAD: {
-                        g_pCApp->SetCaption("Server DEAD");
-#ifndef __VIRTUAL_SERVER
-                        g_pCApp->ErrorBOX(STR_SERVER_EXAMINE, STR_SERVER_INFO, MB_OK);
-                        g_pCApp->SetExitGame();
-#endif
-                        break;
-                    }
-                }
-
-                // CGame::GetInstance().ProcWndMsg( WM_USER_SERVER_DISCONNECTED,0,0 );
-                // 서버와 접속 실패 했다.
-                LogString(LOG_NORMAL, "서버와의 접속에 실패했습니다.\n");
-                break;
-            }
-            case SRV_ERROR:
-                Recv_srv_ERROR();
-                break;
-
-            case SRV_JOIN_SERVER_REPLY: // 월드 서버에 접속했다.
-            {
-                DWORD dwRet = Recv_srv_JOIN_SERVER_REPLY();
-                if (dwRet) {
-                    CLiveCheck::GetSingleton().ResetTime();
-                    this->Send_cli_CHAR_LIST();
-                    CGame::GetInstance().active_state->on_charserver_connected();
-                } else {
-                    // TODO:: error
-                    this->DisconnectFromServer();
-                    CGame::GetInstance().active_state->on_charserver_connect_failed();
-                    return;
-                }
-                break;
-            }
-
-            case LSV_LOGIN_REPLY: {
-                const bool login_succeeded = Recv_lsv_LOGIN_REPLY();
-                if (login_succeeded) {
-                    CGame::GetInstance().active_state->on_login_succeeded();
-                } else {
-                    this->DisconnectFromServer();
-                    CGame::GetInstance().active_state->on_login_failed(
-                        m_pRecvPacket->m_srv_LOGIN_REPLY.m_btResult & ~0x80);
-                    return;
-                }
-                break;
-            }
-            case LSV_SELECT_SERVER: {
-                DWORD dwRet = Recv_lsv_SELECT_SERVER();
-                break;
-            }
-            case LSV_CHANNEL_LIST_REPLY:
-                Recv_lsv_CHANNEL_LIST_REPLY();
-                break;
-            // 캐릭터 리스트 받았음
-            case WSV_CHAR_LIST:
-                Recv_wsv_CHAR_LIST();
-                break;
-
-            case WSV_DELETE_CHAR:
-                Recv_wsv_DELETE_CHAR();
-                break;
-            // 캐릭터 생성요청 결과 통보받음
-            case WSV_CREATE_CHAR:
-                Recv_wsv_CREATE_CHAR();
-
-                break;
-            case WSV_MESSENGER:
-                Recv_tag_MCMD_HEADER();
-                break;
-            case WSV_MESSENGER_CHAT:
-                Recv_wsv_MESSENGER_CHAT();
-                break;
-            case WSV_MEMO:
-                Recv_wsv_MEMO();
-                break;
-            case WSV_CHATROOM:
-                Recv_wsv_CHATROOM();
-                break;
-            case WSV_CHATROOM_MSG:
-                Recv_wsv_CHATROOM_MSG();
-                break;
-            case WSV_CHAR_CHANGE:
-                Recv_wsv_CHAR_CHANGE();
-                break;
-            // 존 서버를 이동해라...
-            case WSV_MOVE_SERVER: {
-                bAllInONE = false;
-                Recv_wsv_MOVE_SERVER();
-                MoveZoneServer();
-                break;
-            }
-
-            case GSV_GODDNESS_MODE: {
-                Recv_gsv_GODDNESS_MODE();
-                break;
-            }
-
-            default:
-                Proc_ZonePacket();
-        }
-    }
-}
-
 void
 CNetwork::Proc_ZonePacket() {
     switch (m_pRecvPacket->m_HEADER.m_wType) {
@@ -691,12 +548,144 @@ CNetwork::Proc_ZonePacket() {
 //-------------------------------------------------------------------------------------------------
 void
 CNetwork::Proc() {
-    this->Proc_WorldPacket();
+    while (m_WorldSOCKET.Peek_Packet(m_pRecvPacket, true)) {
+        this->recv_packet(m_pRecvPacket);
 
-    CClientSOCKET* pSocket = &this->m_ZoneSOCKET;
+        switch (m_pRecvPacket->m_HEADER.m_wType) {
+            case SOCKET_NETWORK_STATUS: {
+                switch (m_pRecvPacket->m_NetSTATUS.m_btStatus) {
+                    case NETWORK_STATUS_ACCEPTED: {
+                        CGame::GetInstance().AcceptedConnectLoginSvr();
+                        CGame::GetInstance().active_state->on_loginserver_connected();
+                        continue;
+                    }
+                    case NETWORK_STATUS_CONNECT: {
+                        // 서버와 연결됐다...
+                        switch (m_nProcLEVEL) {
+                            case NS_CON_TO_WSV: // 월드 서버에 접속했다.
+                                Send_cli_JOIN_SERVER_REQ(m_dwWSV_ID, true);
+                                m_bWarping = false;
+                                bAllInONE = true;
+                                break;
+                            case NS_CON_TO_LSV: // 로긴 서버에 접속했다.
+                                Send_cli_HEADER(CLI_ACCEPT_REQ, true);
+
+                                break;
+                        }
+                        continue;
+                    }
+                    case NETWORK_STATUS_DISCONNECT: {
+                        if (NS_DIS_FORM_LSV == m_nProcLEVEL) {
+                            // 게임 서버에 재접속 한다...
+                            std::string world_server_ip(m_WSV_IP.Get());
+                            this->ConnectToServer(world_server_ip, m_wWSV_PORT, NS_CON_TO_WSV);
+                            continue;
+                        }
+                        CGame::GetInstance().ProcWndMsg(WM_USER_WORLDSERVER_DISCONNECTED, 0, 0);
+                        break;
+                    }
+                    case NETWORK_STATUS_DERVERDEAD: {
+                        g_pCApp->SetCaption("Server DEAD");
+                        g_pCApp->ErrorBOX(STR_SERVER_EXAMINE, STR_SERVER_INFO, MB_OK);
+                        g_pCApp->SetExitGame();
+                        break;
+                    }
+                }
+
+                LogString(LOG_NORMAL, "서버와의 접속에 실패했습니다.\n");
+                break;
+            }
+            case SRV_ERROR:
+                Recv_srv_ERROR();
+                break;
+
+            case SRV_JOIN_SERVER_REPLY: // 월드 서버에 접속했다.
+            {
+                DWORD dwRet = Recv_srv_JOIN_SERVER_REPLY();
+                if (dwRet) {
+                    CLiveCheck::GetSingleton().ResetTime();
+                    this->Send_cli_CHAR_LIST();
+                    CGame::GetInstance().active_state->on_charserver_connected();
+                } else {
+                    // TODO:: error
+                    this->DisconnectFromServer();
+                    CGame::GetInstance().active_state->on_charserver_connect_failed();
+                    continue;
+                }
+                break;
+            }
+
+            case LSV_LOGIN_REPLY: {
+                const bool login_succeeded = Recv_lsv_LOGIN_REPLY();
+                if (login_succeeded) {
+                    CGame::GetInstance().active_state->on_login_succeeded();
+                } else {
+                    this->DisconnectFromServer();
+                    CGame::GetInstance().active_state->on_login_failed(
+                        m_pRecvPacket->m_srv_LOGIN_REPLY.m_btResult & ~0x80);
+                    continue;
+                }
+                break;
+            }
+            case LSV_SELECT_SERVER: {
+                DWORD dwRet = Recv_lsv_SELECT_SERVER();
+                break;
+            }
+            case LSV_CHANNEL_LIST_REPLY:
+                Recv_lsv_CHANNEL_LIST_REPLY();
+                break;
+            // 캐릭터 리스트 받았음
+            case WSV_CHAR_LIST:
+                Recv_wsv_CHAR_LIST();
+                break;
+
+            case WSV_DELETE_CHAR:
+                Recv_wsv_DELETE_CHAR();
+                break;
+            // 캐릭터 생성요청 결과 통보받음
+            case WSV_CREATE_CHAR:
+                Recv_wsv_CREATE_CHAR();
+
+                break;
+            case WSV_MESSENGER:
+                Recv_tag_MCMD_HEADER();
+                break;
+            case WSV_MESSENGER_CHAT:
+                Recv_wsv_MESSENGER_CHAT();
+                break;
+            case WSV_MEMO:
+                Recv_wsv_MEMO();
+                break;
+            case WSV_CHATROOM:
+                Recv_wsv_CHATROOM();
+                break;
+            case WSV_CHATROOM_MSG:
+                Recv_wsv_CHATROOM_MSG();
+                break;
+            case WSV_CHAR_CHANGE:
+                Recv_wsv_CHAR_CHANGE();
+                break;
+            // 존 서버를 이동해라...
+            case WSV_MOVE_SERVER: {
+                bAllInONE = false;
+                Recv_wsv_MOVE_SERVER();
+                MoveZoneServer();
+                break;
+            }
+
+            case GSV_GODDNESS_MODE: {
+                Recv_gsv_GODDNESS_MODE();
+                break;
+            }
+
+            default:
+                Proc_ZonePacket();
+        }
+    }
+
     while (m_ZoneSOCKET.Peek_Packet(m_pRecvPacket, true)) {
-        // LogString (LOG_DEBUG_, "Packet_Proc:: Type: 0x%x, Size: %d \n",
-        // m_pRecvPacket->m_HEADER.m_wType, m_pRecvPacket->m_HEADER.m_nSize );
+        this->recv_packet(m_pRecvPacket);
+
         switch (m_pRecvPacket->m_HEADER.m_wType) {
             case SOCKET_NETWORK_STATUS: {
                 m_btZoneSocketSTATUS = m_pRecvPacket->m_NetSTATUS.m_btStatus;
@@ -741,6 +730,64 @@ CNetwork::Send_AuthMsg(void) {
     m_pSendPacket->m_HEADER.m_wType = CLI_CHECK_AUTH;
     m_pSendPacket->m_HEADER.m_nSize = sizeof(cli_CHECK_AUTH);
     Send_PACKET(m_pSendPacket);
+}
+
+void
+CNetwork::recv_packet(t_PACKET* packet) {
+    flatbuffers::Verifier verifier(&packet->m_pDATA[2], packet->size - 2);
+    bool valid = Packets::VerifyPacketDataBuffer(verifier);
+    if (valid) {
+        Packet p(&packet->m_pDATA[0], packet->size);
+
+        Packets::PacketType packet_type = p.packet_data()->data_type();
+        switch (packet_type) {
+            case Packets::PacketType::UpdateStats: {
+                return this->recv_update_stats(p);
+            }
+            default: {
+                LOG_WARN("Received unknown packet type %d", packet_type);
+                break;
+            }
+        }
+    }
+}
+
+void
+CNetwork::recv_update_stats(Packet& p) {
+    if (!g_pAVATAR || !p.packet_data()) {
+        return;
+    }
+
+    auto req = p.packet_data()->data_as_UpdateStats();
+    if (!req) {
+        return;
+    }
+
+    if (flatbuffers::IsFieldPresent(req, Packets::UpdateStats::VT_MOVE_SPEED)) {
+        // g_pAVATAR->stats.move_speed = req->move_speed();
+    }
+
+    g_pAVATAR->UpdateAbility();
+
+    /*
+void
+CRecvPACKET::Recv_gsv_SPEED_CHANGED() {
+    CObjAVT* pAVTChar =
+        g_pObjMGR->Get_ClientCharAVT(m_pRecvPacket->m_gsv_SPEED_CHANGED.m_wObjectIDX, false);
+
+    if (pAVTChar) {
+        pAVTChar->SetOri_RunSPEED(
+            m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED); // 패시브 상태를 포함, 지속 상태 제외
+        pAVTChar->SetPsv_AtkSPEED(
+            m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED); // 패시브 값만...
+
+        if (g_pAVATAR && pAVTChar->IsA(OBJ_USER))
+            g_pAVATAR->UpdateAbility();
+
+        /// TODO::
+        m_pRecvPacket->m_gsv_SPEED_CHANGED.m_btWeightRate; // 현재소지량/최대소지량*100
+    }
+    */
 }
 
 void
