@@ -152,7 +152,9 @@ public:
 
     bool send_packet(Rose::Network::Packet& packet);
     bool send_server_whisper(const std::string& message);
+
     bool send_update_stats_all();
+    bool send_update_move_speed(uint16_t move_speed);
 
     short Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment = false);
 

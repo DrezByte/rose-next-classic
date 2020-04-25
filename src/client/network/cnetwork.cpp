@@ -764,30 +764,10 @@ CNetwork::recv_update_stats(Packet& p) {
     }
 
     if (flatbuffers::IsFieldPresent(req, Packets::UpdateStats::VT_MOVE_SPEED)) {
-        // g_pAVATAR->stats.move_speed = req->move_speed();
+        g_pAVATAR->stats.move_speed = req->move_speed();
     }
 
     g_pAVATAR->UpdateAbility();
-
-    /*
-void
-CRecvPACKET::Recv_gsv_SPEED_CHANGED() {
-    CObjAVT* pAVTChar =
-        g_pObjMGR->Get_ClientCharAVT(m_pRecvPacket->m_gsv_SPEED_CHANGED.m_wObjectIDX, false);
-
-    if (pAVTChar) {
-        pAVTChar->SetOri_RunSPEED(
-            m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED); // 패시브 상태를 포함, 지속 상태 제외
-        pAVTChar->SetPsv_AtkSPEED(
-            m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED); // 패시브 값만...
-
-        if (g_pAVATAR && pAVTChar->IsA(OBJ_USER))
-            g_pAVATAR->UpdateAbility();
-
-        /// TODO::
-        m_pRecvPacket->m_gsv_SPEED_CHANGED.m_btWeightRate; // 현재소지량/최대소지량*100
-    }
-    */
 }
 
 void

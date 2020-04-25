@@ -4429,8 +4429,7 @@ CObjAVT::CObjAVT() {
     //	m_fScale  = 0.5;
     m_dwSitTIME = 0;
     m_bIsFemale = false;
-    m_bRunMODE = true; // 아바타 기본은 달리기..
-    m_nRunSPEED = WALK_CmPerSec;
+    m_bRunMODE = true;
 
     m_pCharMODEL = &m_CharMODEL; // Init ..
 

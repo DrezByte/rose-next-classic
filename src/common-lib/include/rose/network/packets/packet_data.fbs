@@ -1,13 +1,15 @@
 include "char_create_req.fbs";
 include "login_rep.fbs";
 include "login_req.fbs";
+include "update_stats.fbs";
 
 namespace Rose.Network.Packets;
 
 union PacketType {
 	CharacterCreateRequest,
 	LoginRequest,
-	LoginReply
+	LoginReply,
+	UpdateStats,
 }
 
 table PacketData {

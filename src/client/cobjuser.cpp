@@ -281,33 +281,15 @@ CObjUSER::Skill_LevelUp(int iSkillSlotNo, int iSkillIndex) {
 
 void
 CObjUSER::Update_SPEED() {
-    m_nRunSPEED = Cal_RunSPEED();
-    /*m_fRunAniSPEED  = Cal_RunAniSPEED( m_nRunSPEED );
-    m_nAtkAniSPEED  = Cal_AtkAniSPEED( Get_R_WEAPON() );	*/
     if (this->GetPetMode() < 0) {
-        m_fRunAniSPEED = Cal_RunAniSPEED(m_nRunSPEED);
+        m_fRunAniSPEED = Cal_RunAniSPEED(this->stats.move_speed);
         m_nAtkAniSPEED = Cal_AtkAniSPEED(this->GetPartITEM(BODY_PART_WEAPON_R));
     } else {
-        /// 배틀카트 공속 적용 추가 nAvy - 2005/7/28
-#if defined(_GBC)
-        m_fRunAniSPEED = (m_nRunSPEED + 500) / 1000.f;
-        m_nAtkAniSPEED = Cal_AtkAniSPEED(this->GetPartITEM(BODY_PART_WEAPON_R));
-
-        /*for( int i = 0 ; i < MAX_RIDING_PART; ++i )
-            m_nAtkAniSPEED += PAT_ITEM_ATK_SPD( m_sPetPartItemIDX[ i ].m_nItemNo );*/
-#else
-        m_fRunAniSPEED = (m_nRunSPEED + 500) / 1000.f;
-        ///<- 2005/7/25 카트 시스템 파츠 추가로 수정 : nAvy
-        // m_nAtkAniSPEED = ( 1500.f / ( ( PAT_ITEM_ATK_SPD( m_sPetPartItemIDX[ RIDE_PART_ARMS
-        // ].m_nItemNo )) + 5 ) ) + this->m_iAddValue[ AT_ATK_SPD ];
+        m_fRunAniSPEED = (this->stats.move_speed + 500) / 1000.f;
         m_nAtkAniSPEED =
             (1500.f / ((PAT_ITEM_ATK_SPD(m_sPetPartItemIDX[RIDE_PART_ARMS].m_nItemNo)) + 5))
             + this->m_iAddValue[AT_ATK_SPD];
-        ///->
-#endif
     }
-
-    LogString(LOG_DEBUG_, "CmPerSEC: %f, AniSpeed: %f \n", m_nRunSPEED, m_fRunAniSPEED);
 };
 
 //-------------------------------------------------------------------------------------------------

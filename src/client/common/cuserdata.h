@@ -343,7 +343,6 @@ protected:
     short GetPassiveSkillAttackSpeed(short nRightWeaponItemNo);
 
 protected:
-    float Cal_RunSPEED();
     void Cal_BattleAbility();
     int Cal_ATTACK();
 

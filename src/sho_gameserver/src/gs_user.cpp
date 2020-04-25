@@ -1260,6 +1260,9 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
 
     this->SendPacket(pCPacket);
 
+    // TODO: This should be sent as part of the above packet
+    this->send_update_move_speed(this->GetOri_RunSPEED());
+
     Packet_ReleaseNUnlock(pCPacket);
 
     // 자신에게 무계비율 설정.
@@ -8571,9 +8574,19 @@ classUSER::send_update_stats_all() {
     Packets::UpdateStatsBuilder rep(builder);
     rep.add_move_speed(1000); // TODO: Build actual stats
     // this->stats.move_speed = 1000; // TODO: Magoo
-    const auto update_stats_packet = rep.Finish();
+    const auto pak = rep.Finish();
 
-    this->send_packet_from_offset(builder, update_stats_packet, Packets::PacketType::UpdateStats);
+    return this->send_packet_from_offset(builder, pak, Packets::PacketType::UpdateStats);
+}
 
-    return true;
+bool
+classUSER::send_update_move_speed(uint16_t move_speed) {
+    flatbuffers::FlatBufferBuilder builder;
+    builder.ForceDefaults(true);
+
+    Packets::UpdateStatsBuilder rep(builder);
+    rep.add_move_speed(move_speed);
+    const auto pak = rep.Finish();
+
+    return this->send_packet_from_offset(builder, pak, Packets::PacketType::UpdateStats);
 }

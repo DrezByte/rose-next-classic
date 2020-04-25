@@ -28,6 +28,8 @@
     #include "GameProc\changeactionmode.h"
 #endif
 
+#include "rose/common/character_stats.h"
+
 #define QUEST_EVENT_ON_DEAD 0
 
 const int INVALID_DUMMY_POINT_NUM = 999;
@@ -55,6 +57,8 @@ class CObjAVT;
 ///
 
 class CObjCHAR: public CObjAI {
+public:
+    Rose::Common::CharacterStats stats;
 
 protected:
     int m_iHP;
@@ -1084,7 +1088,6 @@ protected:
     DWORD m_dwSitTIME;
     short m_nPsvAtkSPEED;
 
-    short m_nRunSPEED;
     short m_nAtkAniSPEED;
 
     /// 교환할 무기가 세팅되면.. 모션이 끝난후에 바꾼다..
@@ -1141,7 +1144,7 @@ public:
 
     virtual void Update_SPEED() {
         m_nAtkAniSPEED = Cal_AtkAniSPEED(this->GetPartITEM(BODY_PART_WEAPON_R));
-        m_fRunAniSPEED = Cal_RunAniSPEED(m_nRunSPEED);
+        m_fRunAniSPEED = Cal_RunAniSPEED(this->stats.move_speed);
     }
     /// Virtual function
     virtual void Update(bool bUpdateBONE = false);
@@ -1273,7 +1276,7 @@ public:
 
     /*override*/ short GetOri_ATKSPEED() { return m_nAtkAniSPEED; }
     /*override*/ short GetOri_WalkSPEED() { return WALK_CmPerSec; }
-    /*override*/ short GetOri_RunSPEED() { return m_nRunSPEED; }
+    /*override*/ short GetOri_RunSPEED() { return this->stats.move_speed; }
     virtual int GetOri_MaxHP();
 
     /*override*/ virtual int Get_BulletNO();
@@ -1295,7 +1298,7 @@ public:
     /// < end
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    void SetOri_RunSPEED(short nRunSpeed) { m_nRunSPEED = nRunSpeed; }
+    void SetOri_RunSPEED(short nRunSpeed) { this->stats.move_speed = nRunSpeed; }
     void SetPsv_AtkSPEED(short nPsvAtkSpeed) { m_nPsvAtkSPEED = nPsvAtkSpeed; }
 
     /// 최대 생명력

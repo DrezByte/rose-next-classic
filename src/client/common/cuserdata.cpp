@@ -929,62 +929,6 @@ CUserDATA::Cal_DEFENCE() {
 }
 
 //-------------------------------------------------------------------------------------------------
-float
-CUserDATA::Cal_RunSPEED() {
-    /*
-     * 뛸 때의 이동 속도. (걷기는 디폴트 속도로 모든 아바타가 같다)
-     * 장착되어 있는 방어구나 무기의 무게의 합이 높을수록 이동속도가 저하된다.
-     * DEX가 높을수록, 장착된 신발의 이동력이 높을수록 이동속도가 높아진다.
-     * SPE = { (신발의 이동력 + 15) * (DEX+400) - (장착된 무게+50)*4 } / 70
-     */
-    float fMoveSpeed;
-    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
-        short nItemSpeed, nItemNo;
-
-        // nItemNo = this->GetCur_PartITEM(BODY_PART_BOOTS);
-        nItemNo = this->m_Inventory.m_ItemEQUIP[EQUIP_IDX_BOOTS].GetItemNO();
-        if (nItemNo > 0 && this->m_Inventory.m_ItemEQUIP[EQUIP_IDX_BOOTS].GetLife()) {
-            nItemSpeed = BOOTS_MOVE_SPEED(nItemNo);
-        } else {
-            nItemSpeed = BOOTS_MOVE_SPEED(0); /// 수명이 다한 신발은 맨발 속도로 대체...
-        }
-
-        // nItemNo = this->GetCur_PartITEM(BODY_PART_KNAPSACK);
-        nItemNo = this->m_Inventory.m_ItemEQUIP[EQUIP_IDX_KNAPSACK].GetItemNO();
-        if (nItemNo > 0 && this->m_Inventory.m_ItemEQUIP[EQUIP_IDX_KNAPSACK].GetLife()) {
-            nItemSpeed += BACKITEM_MOVE_SPEED(nItemNo);
-        }
-        nItemSpeed += 20;
-        fMoveSpeed = nItemSpeed * (GetCur_DEX() + 500.f) / 100.f + this->m_iAddValue[AT_SPEED];
-
-        float fPsvSpd = GetPassiveSkillValue(AT_PSV_MOV_SPD)
-            + fMoveSpeed * GetPassiveSkillRate(AT_PSV_MOV_SPD) / 100.f;
-        return (fMoveSpeed + fPsvSpd);
-    } else {
-        tagITEM* pLEG = &this->m_Inventory.m_ItemRIDE[RIDE_PART_LEG];
-        tagITEM* pENG = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ENGINE];
-
-        if (pLEG->GetLife() && pENG->GetLife()) {
-            fMoveSpeed =
-                PAT_ITEM_MOV_SPD(pLEG->GetItemNO()) * PAT_ITEM_MOV_SPD(pENG->GetItemNO()) / 10.f;
-        } else {
-            fMoveSpeed = 200; /// 이동 최소 속도
-        }
-
-        fMoveSpeed += this->m_iAddValue[AT_SPEED];
-
-        // 20050817 홍근 카트 탑승시 무게가 100% 이상이면 이동속도 300으로 규정.
-        if (g_pAVATAR->GetWeightRate() >= 100) {
-            if (fMoveSpeed > 300) {
-                fMoveSpeed = 300;
-            }
-        }
-    }
-
-    return fMoveSpeed;
-}
-
-//-------------------------------------------------------------------------------------------------
 #ifndef __SERVER
 int
 CUserDATA::Get_AbilityValue(WORD wType) {
