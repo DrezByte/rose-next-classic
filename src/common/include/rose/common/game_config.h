@@ -12,6 +12,8 @@ const int MAX_CHARACTER_NAME = 20;
 const int MAX_CHARACTERS = 5;
 }; // namespace GameStaticConfig
 
+namespace Common {
+
 struct GameConfig {
     uint32_t base_attack_damage;
     uint32_t base_attack_speed;
@@ -27,4 +29,5 @@ struct GameConfig {
         base_crit(0) {}
 };
 
+} // namespace Common
 }; // namespace Rose

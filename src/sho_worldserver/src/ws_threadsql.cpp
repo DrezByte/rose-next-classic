@@ -270,9 +270,8 @@ struct tagDelCHAR {
 bool
 CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
 
-    this->db->MakeQuery(
-        (char*)"SELECT name, basic_etc, basic_info, grow_ability, delete_by_int "
-               "FROM character WHERE account_name=",
+    this->db->MakeQuery((char*)"SELECT name, basic_etc, basic_info, grow_ability, delete_by_int "
+                               "FROM character WHERE account_name=",
         MQ_PARAM_STR,
         pSqlPACKET->m_Name.Get(),
         MQ_PARAM_END);
@@ -366,7 +365,7 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
             SDWORD cbSize1 = SQL_NTS;
             this->db->SetParam_long(1, iResultSP, cbSize1);
 
-           const char* query = "DELETE FROM character WHERE name=\'%s\'";
+            const char* query = "DELETE FROM character WHERE name=\'%s\'";
             if (this->db->QuerySQL((char*)query, pNode->m_VALUE.m_Name.Get())) {
                 while (this->db->GetMoreRESULT()) {
                     if (this->db->BindRESULT()) {
@@ -846,7 +845,7 @@ void
 CWS_ThreadSQL::handle_queued_packet(QueuedPacket& p) {
     Packets::PacketType packet_type = p.packet.packet_data()->data_type();
     switch (packet_type) {
-        case Packets::PacketType::PacketType_CharacterCreateRequest: {
+        case Packets::PacketType::CharacterCreateRequest: {
             this->handle_char_create_req(p);
             break;
         }

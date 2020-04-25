@@ -575,7 +575,7 @@ CWS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
 
         Packets::PacketType packet_type = p.packet_data()->data_type();
         switch (packet_type) {
-            case Packets::PacketType::PacketType_CharacterCreateRequest: {
+            case Packets::PacketType::CharacterCreateRequest: {
                 return this->recv_char_create_req(p);
             }
             default: {

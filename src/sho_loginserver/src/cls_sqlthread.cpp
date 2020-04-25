@@ -88,7 +88,7 @@ void
 CLS_SqlTHREAD::handle_queued_packet(QueuedPacket& p) {
     Packets::PacketType packet_type = p.packet.packet_data()->data_type();
     switch (packet_type) {
-        case Packets::PacketType::PacketType_LoginRequest: {
+        case Packets::PacketType::LoginRequest: {
             if (!this->handle_login_req(p)) {
                 CLS_Client* pClient = (CLS_Client*)g_pListCLIENT->GetSOCKET(p.socket_id);
                 if (pClient) {
@@ -108,7 +108,7 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
         return false;
     }
 
-    if (!req->username() || req->password()) {
+    if (!req->username() || !req->password()) {
         return false;
     }
 

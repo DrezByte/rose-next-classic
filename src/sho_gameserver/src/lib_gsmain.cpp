@@ -282,9 +282,6 @@ CLIB_GameSRV::init(HINSTANCE hInstance, const ServerConfig& config) {
     CSOCKET::Init();
     CStr::Init();
 
-    m_BaseDataDIR.Alloc((WORD)(strlen(this->config.gameserver.data_dir.c_str()) + 3));
-    m_BaseDataDIR.Printf("%s\\", this->config.gameserver.data_dir.c_str());
-
     CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
 
     g_pCharDATA = CCharDatLIST::Instance();

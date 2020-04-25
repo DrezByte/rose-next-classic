@@ -245,7 +245,7 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
 
         Packets::PacketType packet_type = p.packet_data()->data_type();
         switch (packet_type) {
-            case Packets::PacketType::PacketType_LoginRequest: {
+            case Packets::PacketType::LoginRequest: {
                 // TODO: Check client is not already logged in?
                 if (this->recv_login_req(p)) {
                     this->m_nProcSTEP = CLIENT_STEP_LOGIN_REQ;

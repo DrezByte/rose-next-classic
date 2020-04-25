@@ -28,6 +28,7 @@
 #include "OBJECT.h"
 
 #include "rose/common/log.h"
+#include "rose/common/game_config.h"
 #include "rose/common/server_config.h"
 
 namespace Rose::Common {
@@ -45,7 +46,6 @@ private:
     CTimer* m_pWorldTIMER; ///< 월드 타이머
     bool* m_pCheckedLocalZONE;
 
-    CStrVAR m_BaseDataDIR; ///< 게임 데이타 폴더
     CStrVAR m_ServerNAME; ///< 설정된 서버 이름
     CStrVAR m_ServerIP; ///< 서버 IP
     int m_iListenPortNO; ///< 사용자 접속 포트번호
@@ -162,6 +162,11 @@ public:
         }
         return m_pInstance;
     }
+
+    static Rose::Common::GameConfig& game_config() {
+        return CLIB_GameSRV::GetInstance()->config.game;
+    }
+
     void Destroy() { SAFE_DELETE(m_pInstance); }
 };
 

@@ -778,7 +778,7 @@ CNetwork::send_char_create_req(const std::string& name,
     const auto char_create_req = req.Finish();
 
     Packets::PacketDataBuilder pd(builder);
-    pd.add_data_type(Packets::PacketType::PacketType_CharacterCreateRequest);
+    pd.add_data_type(Packets::PacketType::CharacterCreateRequest);
     pd.add_data(char_create_req.Union());
     builder.Finish(pd.Finish());
 
@@ -812,7 +812,7 @@ CNetwork::send_login_req(const std::string& username, const std::string& passwor
     const auto login_request = req.Finish();
 
     Packets::PacketDataBuilder pd(builder);
-    pd.add_data_type(Packets::PacketType::PacketType_LoginRequest);
+    pd.add_data_type(Packets::PacketType::LoginRequest);
     pd.add_data(login_request.Union());
     builder.Finish(pd.Finish());
 
