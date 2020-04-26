@@ -137,6 +137,8 @@ public:
     classUSER();
     virtual ~classUSER();
 
+    void level_up(int amount);
+
     template<typename T>
     bool send_packet_from_offset(flatbuffers::FlatBufferBuilder& builder, flatbuffers::Offset<T> offset,
         Rose::Network::Packets::PacketType type) {

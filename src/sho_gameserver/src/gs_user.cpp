@@ -8553,6 +8553,31 @@ classUSER::LogCHAT(const char* szMSG, const char* pDestCHAR, const char* szMsgTY
     return;
 }
 
+void
+classUSER::level_up(int amount) {
+    if (amount <= 0) {
+        return;
+    }
+
+    int start_level = this->Get_LEVEL();
+    int end_level = min(this->Get_LEVEL() + amount, GameStaticConfig::MAX_LEVEL);
+
+    for (int level = start_level + 1; level <= end_level; ++level) {
+        this->AddCur_BonusPOINT((level * 0.8) + 10);
+
+        for (short nD = 0; nD < g_TblSkillPoint.m_nDataCnt; nD++) {
+            if (SP_LEVEL(nD) == level) {
+                this->AddCur_SkillPOINT(SP_POINT(nD));
+                break;
+            }
+        }
+    }
+
+    this->Set_LEVEL(end_level);
+
+    this->Send_gsv_LEVELUP(end_level - start_level);
+}
+
 bool
 classUSER::send_packet(Packet& packet) {
     classPACKET p;

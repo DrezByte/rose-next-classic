@@ -37,6 +37,28 @@ help(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
+levelup(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+    if (!user) {
+        return false;
+    }
+
+    if (args.size() < 2) {
+        user->send_server_whisper(info.usage);
+        return false;
+    }
+
+    const int level_amount = std::atoi(args[1].c_str());
+    if (level_amount <= 0) {
+        user->send_server_whisper("Invalid level amount, must be positive.");
+        return false;
+    }
+
+    user->level_up(level_amount);
+
+    return true;
+}
+
+bool
 maps(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     if (!user) {
         return false;
@@ -117,6 +139,7 @@ using CommandFunction = std::function<bool(classUSER*, CommandInfo, std::vector<
 static const std::unordered_map<std::string, std::tuple<CommandFunction, CommandInfo>>
     command_registry = {
         REGISTER_COMMAND(Command::HELP, help),
+        REGISTER_COMMAND(Command::LEVELUP, levelup),
         REGISTER_COMMAND(Command::MAPS, maps),
         REGISTER_COMMAND(Command::RATES, rates),
         REGISTER_COMMAND(Command::TELEPORT, teleport),
