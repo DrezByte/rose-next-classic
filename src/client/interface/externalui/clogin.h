@@ -32,9 +32,6 @@ private:
     ///
     CExternalUIManager* m_pEUIManager;
 
-    char m_strID[32];
-    char m_strPassword[32];
-
 public:
     CLogin();
     virtual ~CLogin();
@@ -57,9 +54,6 @@ public:
     /// @param strID user Password
     /// @return is valid Password
     bool SetPassword(const char* strPassword);
-
-    const char* GetID() { return m_strID; }
-    const char* GetPassword() { return m_strPassword; }
 
     /// send login request
     void SendLoginReq();

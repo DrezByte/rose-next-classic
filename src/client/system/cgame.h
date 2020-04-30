@@ -197,10 +197,7 @@ public:
     void ToggleAutoRun();
     void ResetAutoRun();
 
-    /// 일본 파트너사 구분을 위한 콤보박스를 활성화시킬것인가?
     bool IsActiveRouteComboBox();
-    void SetJapanPartnerString(const char* str);
-    const std::string& GetJapanPartnerString();
 
     /// 클라이언트 화일버젼
     std::string& GetClientFileVersion();
@@ -285,7 +282,6 @@ private:
     unsigned int m_uiSelectedServerID;
     bool m_bAutoRun;
 
-    std::string m_JapanPartnerString;
     CFileVersionInfo m_ClientFileVersion;
 
     ServerInfo m_sServerInfo;

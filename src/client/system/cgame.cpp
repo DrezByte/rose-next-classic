@@ -1496,19 +1496,6 @@ CGame::IsActiveRouteComboBox() {
     return false;
 }
 
-void
-CGame::SetJapanPartnerString(const char* str) {
-    if (NULL == str)
-        return;
-
-    m_JapanPartnerString = str;
-}
-
-const std::string&
-CGame::GetJapanPartnerString() {
-    return m_JapanPartnerString;
-}
-
 std::string&
 CGame::GetClientFileVersion() {
     return m_ClientFileVersion.m_strFileVersion;

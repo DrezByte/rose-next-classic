@@ -457,17 +457,13 @@ CRecvPACKET::Recv_lsv_LOGIN_REPLY() {
     g_EUILobby.CreateServerListDlg();
     g_EUILobby.SendReqFirstServerChannelList();
 
-    ///접속에 성공했다
-
-    if (CTDialog* pDlg = g_EUILobby.GetEUI(EUI_LOGIN)) {
-        CLogin* p = (CLogin*)pDlg;
-        if (g_ClientStorage.IsSaveLastConnectID())
-            g_ClientStorage.SaveLastConnectID(p->GetID());
-        else
-            g_ClientStorage.SaveLastConnectID(NULL);
-
-        g_ClientStorage.SaveOptionLastConnectID();
+    if (g_ClientStorage.IsSaveLastConnectID()) {
+        g_ClientStorage.SaveLastConnectID(g_GameDATA.username.c_str());
+    } else {
+        g_ClientStorage.SaveLastConnectID(NULL);
     }
+
+    g_ClientStorage.SaveOptionLastConnectID();
 
     return true;
 }
@@ -1032,7 +1028,8 @@ CRecvPACKET::Recv_tag_ADD_CHAR(short nCliObjIDX, tag_ADD_CHAR* tagAddChar) {
     //	WORD		m_wCommand;
     //	WORD		m_wTargetOBJ;
     //	BYTE		m_btMoveMODE;					// 0:걷기, 1:뛰기, 2:내 승용아이템에 타고있다,
-    //3: m_wTargetOBJ의 승용아이템에 타고있다. 	int			m_iHP; #ifdef __APPLY_04_10_15_TEAMNO
+    // 3: m_wTargetOBJ의 승용아이템에 타고있다. 	int			m_iHP; #ifdef
+    // __APPLY_04_10_15_TEAMNO
     // int m_iTeamNO;						//	char m_cTeamNO => int로 변경 04.10.15 수정... #else
     // char m_cTeamNO; #endif 	DWORD		m_dwStatusFALG; } ;
 
@@ -1830,7 +1827,8 @@ CRecvPACKET::Recv_gsv_DAMAGE() {
     //	LogString (LOG_NORMAL, "damage: %x,  %s(%f, %f) => %s(%f, %f) \n",
     // m_pRecvPacket->m_gsv_DAMAGE.m_Damage.m_wDamage, 						pAtkOBJ->Get_NAME(),
     // pAtkOBJ->m_PosCUR.x,
-    // pAtkOBJ->m_PosCUR.y, 						pDefOBJ->Get_NAME(), pDefOBJ->m_PosCUR.x, pDefOBJ->m_PosCUR.y
+    // pAtkOBJ->m_PosCUR.y, 						pDefOBJ->Get_NAME(), pDefOBJ->m_PosCUR.x,
+    // pDefOBJ->m_PosCUR.y
     // );
     //}
 

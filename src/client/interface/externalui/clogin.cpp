@@ -30,14 +30,7 @@ using namespace Rose;
 ///
 /// Construct
 ///
-CLogin::CLogin() {
-    memset(m_strID, 0, sizeof(m_strID));
-    memset(m_strPassword, 0, sizeof(m_strPassword));
-
-    m_pEUIManager = NULL;
-
-    m_hUserGrade = 0; ///사용자 등급
-}
+CLogin::CLogin(): m_pEUIManager(nullptr), m_hUserGrade(0) {}
 
 ///
 /// Destruct
@@ -193,13 +186,11 @@ CLogin::Process(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
 /// @param strID user ID
 /// @return is valid ID
 bool
-CLogin::SetID(const char* strID) {
-    if (strID == NULL)
+CLogin::SetID(const char* username) {
+    if (!username) {
         return false;
-    strcpy(m_strID, strID);
-
-    g_GameDATA.username = m_strID;
-
+    }
+    g_GameDATA.username = username;
     return true;
 }
 
@@ -207,13 +198,11 @@ CLogin::SetID(const char* strID) {
 /// @param strID user Password
 /// @return is valid Password
 bool
-CLogin::SetPassword(const char* strPassword) {
-    if (strPassword == NULL)
+CLogin::SetPassword(const char* password) {
+    if (!password) {
         return false;
-    strcpy(m_strPassword, strPassword);
-
-    g_GameDATA.m_Password.Set(m_strPassword);
-
+    }
+    g_GameDATA.password = password;
     return true;
 }
 
@@ -222,7 +211,7 @@ void
 CLogin::SendLoginReq() {
     CTCommand* pCmd = new CTCmdExit;
     g_EUILobby.ShowMsgBox(STR_WAIT_LOGIN, CTMsgBox::BT_CANCEL, true, GetDialogType(), NULL, pCmd);
-    g_pNet->send_login_req(m_strID, m_strPassword);
+    g_pNet->send_login_req(g_GameDATA.username, g_GameDATA.password);
 }
 
 void
