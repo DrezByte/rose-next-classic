@@ -1,4 +1,4 @@
-#include "stdAFX.h"
+Ôªø#include "stdAFX.h"
 
 #ifndef __SERVER
     #include "CObjUSER.h"
@@ -43,62 +43,34 @@ drop_rule_from_int(int i) {
 }
 
 //-------------------------------------------------------------------------------------------------
-__int64
+int64_t
 CCal::Get_NeedRawEXP(int iLevel) {
-    // « ø‰ ∞Ê«Ëƒ°
-    if (iLevel > GameStaticConfig::MAX_LEVEL)
+    if (iLevel > GameStaticConfig::MAX_LEVEL) {
         iLevel = GameStaticConfig::MAX_LEVEL;
+    }
 
-    // [∑π∫ß 15¿Ã«œ¿œ ∞ÊøÏ]   « ø‰ ∞Ê«Ëƒ° = { (LV + 3) * (LV + 5 ) * (LV + 10) * 0.7 }
-    if (iLevel <= 15)
-        return (__int64)((iLevel + 3) * (iLevel + 5) * (iLevel + 10) * 0.7);
+    if (iLevel <= 15) {
+        return static_cast<int64_t>(((iLevel + 3) * (iLevel + 5) * (iLevel + 10) * 0.7f));
+    }
 
-    // [∑π∫ß 50¿Ã«œ¿œ ∞ÊøÏ]   « ø‰ ∞Ê«Ëƒ° = { (LV - 5) * (LV + 2 ) * (LV + 2) * 2.2 }
-    if (iLevel <= 50)
-        return (__int64)((iLevel - 5) * (iLevel + 2) * (iLevel + 2) * 2.2);
-
-    // [∑π∫ß 100¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV - 5) * ( LV +2 ) * (LV -38 ) * 9 }
-    if (iLevel <= 100)
-        return (__int64)((iLevel - 5) * (iLevel + 2) * (iLevel - 38) * 9);
-
-    // [∑π∫ß 139¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV + 27) * (LV +34 ) * (LV + 220) }
-    if (iLevel <= 139)
-        return (__int64)((iLevel + 27) * (iLevel + 34) * (iLevel + 220));
-
-    // [∑π∫ß 200¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV - 15) * (LV +7 ) * (LV - 126) * 41 }
-    return (__int64)((iLevel - 15) * (iLevel + 7) * (iLevel - 126) * 41);
-
-    // «—±π ∞ËªÍΩƒ...2005.05.25(ºˆ¡§) ~
     if (iLevel <= 60) {
-        if (iLevel <= 15) {
-            // [∑π∫ß 15 ¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV + 3) * (LV + 5 ) * (LV + 10) * 0.7 }
-            return (__int64)(((iLevel + 3) * (iLevel + 5) * (iLevel + 10) * 0.7f));
-        }
-
-        // [∑π∫ß 60 ¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV - 5) * (LV + 2 ) * (LV + 2) * 2.2 }
-        return (__int64)(((iLevel - 5) * (iLevel + 2) * (iLevel + 2) * 2.2f));
+        return static_cast<int64_t>(((iLevel - 5) * (iLevel + 2) * (iLevel + 2) * 2.2f));
     }
 
     if (iLevel <= 113) {
-        // [∑π∫ß 113¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV - 11) * ( LV ) * (LV + 4) * 2.5 }
-        return (__int64)(((iLevel - 11) * (iLevel) * (iLevel + 4) * 2.5f));
+        return static_cast<int64_t>(((iLevel - 11) * (iLevel) * (iLevel + 4) * 2.5f));
     }
 
     if (iLevel <= 150) {
-        // [∑π∫ß 150¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV - 31) * (LV - 20 ) * (LV + 4) * 3.8 }
-        return (__int64)(((iLevel - 31) * (iLevel - 20) * (iLevel + 4) * 3.8f));
+        return static_cast<int64_t>(((iLevel - 31) * (iLevel - 20) * (iLevel + 4) * 3.8f));
     }
 
-    //	if ( iLevel <= 176 ) {
     if (iLevel <= 189) {
-        // [∑π∫ß 189¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV - 67) * (LV - 20 ) * (LV - 10) * 6 }
-        return (__int64)(((iLevel - 67) * (iLevel - 20) * (iLevel - 10) * 6.f));
+        return static_cast<int64_t>(((iLevel - 67) * (iLevel - 20) * (iLevel - 10) * 6.f));
     }
 
-    // [∑π∫ß 200¿Ã«œ¿œ ∞ÊøÏ]  « ø‰ ∞Ê«Ëƒ° = { (LV - 90) * (LV - 120) * (LV - 60) * (LV - 170) * (LV
-    // -188)}
-    return (
-        __int64)((iLevel - 90) * (iLevel - 120) * (iLevel - 60) * (iLevel - 170) * (iLevel - 188));
+    return static_cast<int64_t>(
+        (iLevel - 90) * (iLevel - 120) * (iLevel - 60) * (iLevel - 170) * (iLevel - 188));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -107,30 +79,30 @@ CCal::Get_RewardVALUE(BYTE btEquation, int S_REWARD, CUserDATA* pUSER, short nDu
     int iR = 0;
 
     switch (btEquation) {
-        case 0: // ∞Ê«Ëƒ° ±‚¡ÿ∞™ øÏº±
+        case 0: // ¬∞√¶√á√®√Ñ¬° ¬±√¢√Å√ò¬∞¬™ ¬ø√¨¬º¬±
             iR = ((S_REWARD + 30) * (pUSER->GetCur_CHARM() + 10) * (::Get_WorldREWARD())
                      * (pUSER->GetCur_FAME() + 20) / (pUSER->GetCur_LEVEL() + 70) / 30000)
                 + S_REWARD;
             break;
-        case 1: // ∞Ê«Ëƒ° ∑π∫ß∫Ò¿≤
+        case 1: // ¬∞√¶√á√®√Ñ¬° ¬∑¬π¬∫¬ß¬∫√±√Ä¬≤
             iR = S_REWARD * (pUSER->GetCur_LEVEL() + 3)
                 * (pUSER->GetCur_LEVEL() + pUSER->GetCur_CHARM() / 2 + 40) * (::Get_WorldREWARD())
                 / 10000;
             break;
-        case 2: // µ∑ »Ωºˆ
+        case 2: // ¬µ¬∑ √à¬Ω¬º√∂
             iR = S_REWARD * nDupCNT;
             break;
-        case 3: // µ∑ ±‚¡ÿ∞™
-        case 5: // æ∆¿Ã≈€ ±‚¡ÿ∞™
+        case 3: // ¬µ¬∑ ¬±√¢√Å√ò¬∞¬™
+        case 5: // ¬æ√Ü√Ä√å√Ö√õ ¬±√¢√Å√ò¬∞¬™
             iR = ((S_REWARD + 20) * (pUSER->GetCur_CHARM() + 10) * (::Get_WorldREWARD())
                      * (pUSER->GetCur_FAME() + 20) / (pUSER->GetCur_LEVEL() + 70) / 30000)
                 + S_REWARD;
             break;
-        case 4: // µ∑ ∑π∫ß ∫Ò¿≤
+        case 4: // ¬µ¬∑ ¬∑¬π¬∫¬ß ¬∫√±√Ä¬≤
             iR = (S_REWARD + 2) * (pUSER->GetCur_LEVEL() + pUSER->GetCur_CHARM() + 40)
                 * (pUSER->GetCur_FAME() + 40) * (::Get_WorldREWARD()) / 140000;
             break;
-        case 6: // æ∆¿Ã≈€ ∑π∫ß∫Ò¿≤
+        case 6: // ¬æ√Ü√Ä√å√Ö√õ ¬∑¬π¬∫¬ß¬∫√±√Ä¬≤
             iR = ((S_REWARD + 20) * (pUSER->GetCur_LEVEL() + pUSER->GetCur_CHARM())
                      * (pUSER->GetCur_FAME() + 20) * (::Get_WorldREWARD()) / 3000000)
                 + S_REWARD;
@@ -157,24 +129,17 @@ CCal::Get_DropITEM(int level_difference,
         return false;
     }
 
-    if (level_difference < 9) {
-        iDrop_VAR =
-            (int)((::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - (1 + RANDOM(100))
-                      - ((level_difference + 16) * 3.5f) - 10 + iDropRate)
-                * 0.38f); // * ( NPC_DROP_MONEY( pMobCHAR->Get_CharNO() ) + 30 ) / 130;
-    } else {
-        iDrop_VAR =
-            (int)((::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - (1 + RANDOM(100))
-                      - ((level_difference + 20) * 5.5f) - 10 + iDropRate)
-                * 0.23f); // * ( NPC_DROP_MONEY( pMobCHAR->Get_CharNO() ) + 30 ) / 130;
-    }
+    iDrop_VAR = static_cast<int>(
+        (::Get_WorldDROP() + NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - (1 + RANDOM(100))
+            - ((level_difference + 16) * 3.5f) - 10 + iDropRate)
+        * 0.38f);
 
     if (iDrop_VAR <= 0) {
         return false;
     }
 
     if (1 + RANDOM(100) <= NPC_DROP_MONEY(pMobCHAR->Get_CharNO())) {
-        // µ∑ª˝º∫
+        // ¬µ¬∑¬ª√Ω¬º¬∫
         // DROP_MONEY_Q = { (MOP_LV + 20) * (MOP_LV + DROP_ VAR +40) * WORLD_DROP_M / 3200 }
         int iMoney = (pMobCHAR->Get_LEVEL() + 20) * (pMobCHAR->Get_LEVEL() + iDrop_VAR + 40)
             * ::Get_WorldDROP_M() / 3200;
@@ -198,19 +163,19 @@ CCal::Get_DropITEM(int level_difference,
     int iDropITEM = DROPITEM_ITEMNO(iDropTBL, iDropTblIDX);
     if (iDropITEM <= 1000) {
         if (iDropITEM >= 1 && iDropITEM <= 4) {
-            // ¥ŸΩ√ ∞ËªÍ
+            // ¬¥√ô¬Ω√É ¬∞√®¬ª√™
             iDropTblIDX = 26 + (iDropITEM * 5) + RANDOM(5);
             if (iDropTblIDX >= g_TblDropITEM.m_nColCnt) {
-                // ≈◊¿Ã∫Ì ƒ√∑≥ ∞πºˆ √ ∞˙...
+                // √Ö√ó√Ä√å¬∫√≠ √Ñ√É¬∑¬≥ ¬∞¬π¬º√∂ √É√ä¬∞√∫...
                 return false;
             }
             iDropITEM = DROPITEM_ITEMNO(iDropTBL, iDropTblIDX);
             if (iDropITEM <= 1000) {
-                // æ¯¥Ÿ !
+                // ¬æ√∏¬¥√ô !
                 return false;
             }
         } else {
-            // æ¯¥Ÿ !
+            // ¬æ√∏¬¥√ô !
             return false;
         }
     }
@@ -221,20 +186,17 @@ CCal::Get_DropITEM(int level_difference,
 
     int iTEMP;
     if (item.GetTYPE() >= ITEM_TYPE_ETC
-        && item.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PART¿∫ ¡¶ø‹«ÿæﬂ «‘
+        && item.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PART√Ä¬∫ √Å¬¶¬ø√ú√á√ò¬æ√ü √á√î
         item.m_uiQuantity =
             1 + ((pMobCHAR->Get_LEVEL() + 10) / 9 + (1 + RANDOM(20)) + iDropRate) / (iDrop_VAR + 4);
 
         if (item.m_uiQuantity > 10)
             item.m_uiQuantity = 10;
     } else if (item.GetTYPE() >= ITEM_TYPE_USE
-        && item.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PART¿∫ ¡¶ø‹«ÿæﬂ «‘
+        && item.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PART√Ä¬∫ √Å¬¶¬ø√ú√á√ò¬æ√ü √á√î
         item.m_uiQuantity = 1;
     } else {
         short nRareType = ITEM_RARE_TYPE(item.GetTYPE(), item.GetItemNO());
-        if (nRareType < 3) {
-            nRareType = 0;
-        }
 
         const DropRule drop_rule = drop_rule_from_int(nRareType);
         switch (drop_rule) {
@@ -253,34 +215,26 @@ CCal::Get_DropITEM(int level_difference,
                 }
 
                 if (item.GetTYPE() <= ITEM_TYPE_KNAPSACK) {
-                    // ¿Â∫Ò¥¬ ∞¢ stb¿« ±‚∫ª «∞¡˙ ∞™¿ª º≥¡§.
+                    // √Ä√•¬∫√±¬¥√Ç ¬∞¬¢ stb√Ä√á ¬±√¢¬∫¬ª √á¬∞√Å√∫ ¬∞¬™√Ä¬ª ¬º¬≥√Å¬§.
                     int iITEM_OP = (int)(((pMobCHAR->Get_LEVEL() * 0.4f
                                               + (NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - 35) * 4
                                               + 80 - iTEMP + iCharm)
                                              * 24 / (iTEMP + 13))
                         - 100);
                     if (iITEM_OP > 0) {
-                        int iOption = RANDOM(100);
-                        if (iOption <= 35) { // 1-6
-                            iOption = 1 + RANDOM(7 - 1);
-                        } else if (iOption <= 70) { // 7-48
-                            iOption = 7 + RANDOM(49 - 7);
-                        } else if (iOption <= 85) { // 49-64
-                            iOption = 49 + RANDOM(65 - 49);
-                        } else if (iOption <= 95) { // 65-72
-                            iOption = 65 + RANDOM(73 - 65);
-                        } else { // 73-80
-                            iOption = 73 + RANDOM(81 - 73);
-                        }
-                        item.m_nGEM_OP = iOption;
-                        item.m_bIsAppraisal = 1;
+                        if (pMobCHAR->Get_LEVEL() < 230)
+                            item.m_nGEM_OP = iITEM_OP % (pMobCHAR->Get_LEVEL() + 70);
+                        else
+                            item.m_nGEM_OP = iITEM_OP % 301;
+
+                        item.m_bIsAppraisal = item.m_nGEM_OP ? 0 : 1;
                     }
                 }
                 break;
             }
         }
 
-        // ≥ª±∏µµ ∞·¡§
+        // ¬≥¬ª¬±¬∏¬µ¬µ ¬∞√°√Å¬§
         iTEMP = (int)(ITEM_DURABITY(item.GetTYPE(), item.GetItemNO())
             * (pMobCHAR->Get_LEVEL() * 0.3f + NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) * 2 + 320)
             * 0.5f / (RANDOM(100) + 201));
@@ -288,7 +242,7 @@ CCal::Get_DropITEM(int level_difference,
             iTEMP = 100;
         item.m_cDurability = iTEMP;
 
-        // ºˆ∏Ì ∞·¡§
+        // ¬º√∂¬∏√≠ ¬∞√°√Å¬§
         iTEMP = (int)((NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) + 200) * 80 / (31 + RANDOM(100)));
         if (iTEMP > MAX_ITEM_LIFE)
             iTEMP = MAX_ITEM_LIFE;
@@ -300,28 +254,20 @@ CCal::Get_DropITEM(int level_difference,
 }
 
 //-------------------------------------------------------------------------------------------------
-// iGiveDamage = ∞¯∞›¿⁄∞°¡ÿ µ•πÃ¡ˆ
+// iGiveDamage = ¬∞√∏¬∞√ù√Ä√ö¬∞¬°√Å√ò ¬µ¬•¬π√å√Å√∂
 __int64
 CCal::Get_EXP(CObjCHAR* pAtkCHAR, CObjCHAR* pDefCHAR, int iGiveDamage) {
     __int64 iGAB, iEXP;
 
     iGAB = pAtkCHAR->Get_LEVEL() - pDefCHAR->Get_LEVEL();
-    if (iGiveDamage > pDefCHAR->Get_MaxHP() * 1.15f)
-        iGiveDamage = (int)(pDefCHAR->Get_MaxHP() * 1.15f);
-
     if (iGAB <= 3) {
         iEXP = (__int64)((float)((pDefCHAR->Get_LEVEL() + 3) * pDefCHAR->Get_GiveEXP()
                              * (iGiveDamage + pDefCHAR->Get_MaxHP() / 15.f + 30))
             * ::Get_WorldEXP() / (pDefCHAR->Get_MaxHP()) / 370.f);
-    } else if (iGAB >= 4 && iGAB < 9) {
+    } else {
         iEXP = (__int64)((float)((pDefCHAR->Get_LEVEL() + 3) * pDefCHAR->Get_GiveEXP()
                              * (iGiveDamage + pDefCHAR->Get_MaxHP() / 15.f + 30))
             * ::Get_WorldEXP() / pDefCHAR->Get_MaxHP() / (iGAB + 3) / 60.f);
-    } else {
-        // ¥Î∏∏ 6-13 kchs
-        iEXP = (__int64)((float)((pDefCHAR->Get_LEVEL() + 3) * pDefCHAR->Get_GiveEXP()
-                             * (iGiveDamage + pDefCHAR->Get_MaxHP() / 15.f + 30))
-            * ::Get_WorldEXP() / pDefCHAR->Get_MaxHP() / (iGAB + 3) / 180.f);
     }
 
     if (iEXP < 1)
@@ -331,7 +277,7 @@ CCal::Get_EXP(CObjCHAR* pAtkCHAR, CObjCHAR* pDefCHAR, int iGiveDamage) {
 }
 
 //-------------------------------------------------------------------------------------------------
-// ∞¯∞› º∫∞¯µµ
+// ¬∞√∏¬∞√ù ¬º¬∫¬∞√∏¬µ¬µ
 int
 CCal::Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF) // , int &iCriticalSUC )
 {
@@ -340,9 +286,9 @@ CCal::Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF) // , int &iCriticalSUC )
 
     if (pATK->IsUSER()) {
         if (pDEF->IsUSER()) {
-            // PVP¿œ∞ÊøÏ º∫∞¯ »Æ∑¸...
+            // PVP√Ä√è¬∞√¶¬ø√¨ ¬º¬∫¬∞√∏ √à¬Æ¬∑√º...
             iRAND1 = 1 + RANDOM(100);
-            iSuccess = (int)(90 - ((pATK->Get_HIT() + pDEF->Get_AVOID()) / pATK->Get_HIT()) * 40.f
+            iSuccess = (int)(40 - ((pATK->Get_HIT() + pDEF->Get_AVOID()) / pATK->Get_AVOID()) * 60.f
                 + iRAND1);
 
         } else {
@@ -359,56 +305,56 @@ CCal::Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF) // , int &iCriticalSUC )
                 / 80.f);
         }
     } else {
-        iRAND1 = 1 + RANDOM(100);
-        iSuccess = 138 - ((float)(pATK->Get_HIT() + pDEF->Get_AVOID()) / pATK->Get_HIT()) * 75.0f
-            + iRAND1; // 2005-7-13 kchs
+        iRAND1 = 1 + RANDOM(50); // 1+RANDOM(100) * 0.6f;
+        iRAND2 = 1 + RANDOM(60); // 1+RANDOM(100) * 0.7f;
+        iSuccess =
+            (int)((pATK->Get_LEVEL() + 10) - pDEF->Get_LEVEL() * 1.1f + (iRAND1 /* *0.6f */));
+        if (iSuccess <= 0)
+            return 0;
+
+        return (int)(iSuccess
+            * (pATK->Get_HIT() * 1.1f - pDEF->Get_AVOID() * 0.93f + iRAND2 /* *0.7f */ + 5
+                + pATK->Get_LEVEL() * 0.2f)
+            / 80.f);
     }
 
     return iSuccess;
 }
 
 //-------------------------------------------------------------------------------------------------
-// ≈©∏Æ∆ºƒ√ Success ∞™ ∞¯Ωƒ 2005-7-13 √ﬂ∞°
+// √Ö¬©¬∏¬Æ√Ü¬º√Ñ√É Success ¬∞¬™ ¬∞√∏¬Ω√Ñ 2005-7-13 √É√ü¬∞¬°
 int
 CCal::Get_CriSuccessRATE(CObjCHAR* pATK) {
-    int iCriSuc = 0;
-
-    if (pATK->IsUSER())
-        iCriSuc =
-            (int)(28
-                - ((pATK->Get_CRITICAL() / 2.f + pATK->Get_LEVEL()) / (pATK->Get_LEVEL() + 8)) * 20)
-            + 1 + RANDOM(100);
-    else
-        iCriSuc = 1 + RANDOM(100);
-
-    return iCriSuc;
+    return static_cast<int>(
+        ((1 + RANDOM(100)) * 3 + pATK->Get_LEVEL() + 30) * 16 / (pATK->Get_CRITICAL() + 70));
 }
 
 //-------------------------------------------------------------------------------------------------
-// ¿œπ› π∞∏Æ µ•πÃ¡ˆ ∞ËªÍΩƒ...
+// √Ä√è¬π√ù ¬π¬∞¬∏¬Æ ¬µ¬•¬π√å√Å√∂ ¬∞√®¬ª√™¬Ω√Ñ...
 WORD
 CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     int iDamage, iCriSuc;
 
     iCriSuc = Get_CriSuccessRATE(pATK);
 
-    // ∏¬¥¬ µø¿€ »Æ∑¸.
+    // ¬∏√Ç¬¥√Ç ¬µ¬ø√Ä√õ √à¬Æ¬∑√º.
     int iHitActRATE = (28 - iCriSuc) * (pATK->Get_ATK() + 20) / (pDEF->Get_DEF() + 5);
 
     if (iCriSuc < 20) {
         // Critical damage !!!
         if (pATK->IsUSER() && pDEF->IsUSER()) {
-            // PVP :: ≈©∏Æ∆ºƒ√ π∞∏Æ µ•πÃ¡ˆ
-            iDamage = (int)(pATK->Get_ATK() * ((float)pDEF->Get_LEVEL() / pATK->Get_LEVEL())
-                * (iSuc * 0.05f + 29) * (2.4f * pATK->Get_ATK() - pDEF->Get_DEF() + 180)
-                / (1.1f * pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.3f + 50) / 85.f);
+            // PVP :: √Ö¬©¬∏¬Æ√Ü¬º√Ñ√É ¬π¬∞¬∏¬Æ ¬µ¬•¬π√å√Å√∂
+            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 35)
+                    * (pATK->Get_ATK() - pDEF->Get_DEF() + 430)
+                    / ((pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 10) * 300)
+                + 25);
         } else {
-            // ∏ÛΩ∫≈Õ :: ≈©∏Æ∆ºƒ√ π∞∏Æ µ•πÃ¡ˆ
+            // ¬∏√≥¬Ω¬∫√Ö√ç :: √Ö¬©¬∏¬Æ√Ü¬º√Ñ√É ¬π¬∞¬∏¬Æ ¬µ¬•¬π√å√Å√∂
             iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 29)
-                * (2.4f * pATK->Get_ATK() - pDEF->Get_DEF() + 180)
-                / (1.1f * pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.3f + 50) / 85.f);
+                * (pATK->Get_ATK() - pDEF->Get_DEF() + 230)
+                / ((pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.3f + 5) * 100));
         }
-        // √ﬂ∞° µ•πÃ¡ˆ Ω∫≈≥ ...
+        // √É√ü¬∞¬° ¬µ¬•¬π√å√Å√∂ ¬Ω¬∫√Ö¬≥ ...
         if (FLAG_ING_DUMMY_DAMAGE & pATK->GetIngDurationStateFLAG()) {
             iDamage += (int)(iDamage * SKILL_POWER(pATK->GetIngDurationStateSKILL(ING_DUMMY_DAMAGE))
                 / 100.f);
@@ -432,15 +378,16 @@ CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     } else {
         // Normal damage
         if (pATK->IsUSER() && pDEF->IsUSER()) {
-            iDamage = (int)(pATK->Get_ATK() * ((float)pDEF->Get_LEVEL() / pATK->Get_LEVEL())
-                * (iSuc * 0.03f + 26) * (1.8f * pATK->Get_ATK() - pDEF->Get_DEF() + 150)
-                / (1.1f * pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 50) / 126.f);
+            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 25)
+                    * (pATK->Get_ATK() - pDEF->Get_DEF() + 400)
+                    / ((pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 5) * 420)
+                + 20);
         } else {
             iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.03f + 26)
-                * (1.8f * pATK->Get_ATK() - pDEF->Get_DEF() + 150)
-                / (1.1f * pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 50) / 145.f);
+                * (pATK->Get_ATK() - pDEF->Get_DEF() + 250)
+                / ((pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 5) * 145));
         }
-        // √ﬂ∞° µ•πÃ¡ˆ Ω∫≈≥ ...
+        // √É√ü¬∞¬° ¬µ¬•¬π√å√Å√∂ ¬Ω¬∫√Ö¬≥ ...
         if (FLAG_ING_DUMMY_DAMAGE & pATK->GetIngDurationStateFLAG()) {
             iDamage += (int)(iDamage * SKILL_POWER(pATK->GetIngDurationStateSKILL(ING_DUMMY_DAMAGE))
                 / 100.f);
@@ -465,30 +412,30 @@ CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
 }
 
 //-------------------------------------------------------------------------------------------------
-// ∏∂π˝ µ•πÃ¡ˆ
+// ¬∏¬∂¬π√Ω ¬µ¬•¬π√å√Å√∂
 WORD
 CCal::Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     int iDamage, iCriSuc;
 
     iCriSuc = Get_CriSuccessRATE(pATK);
 
-    // ∏¬¥¬ µø¿€ »Æ∑¸.
+    // ¬∏√Ç¬¥√Ç ¬µ¬ø√Ä√õ √à¬Æ¬∑√º.
     int iHitActRATE = (28 - iCriSuc) * (pATK->Get_ATK() + 20) / (pDEF->Get_RES() + 5);
 
     if (iCriSuc < 20) {
         // Critical damage !!!
-        if (pATK->IsUSER() && pDEF->IsUSER()) { // ∏∂π˝ ≈©∏Æ∆ºƒ√ PVP
-            iDamage = (int)(pATK->Get_ATK() * ((float)pDEF->Get_LEVEL() / pATK->Get_LEVEL())
-                * (iSuc * 0.05f + 25) * (2.4f * pATK->Get_ATK() - pDEF->Get_DEF() + 180)
-                / (1.1f * pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 50)
-                / 90.f); //  (IROSE 2005.05.13)
+        if (pATK->IsUSER() && pDEF->IsUSER()) { // ¬∏¬∂¬π√Ω √Ö¬©¬∏¬Æ√Ü¬º√Ñ√É PVP
+            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.08f + 33)
+                    * (pATK->Get_ATK() - pDEF->Get_DEF() + 340)
+                    / ((pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 20) * 360)
+                + 25);
         } else {
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 25)
-                * (2.4f * pATK->Get_ATK() - pDEF->Get_DEF() + 180)
-                / (1.1f * pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 50) / 90.f);
+            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 33)
+                * (pATK->Get_ATK() - pDEF->Get_DEF() * 0.8f + 310)
+                / ((pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 5) * 200));
         }
 
-        // √ﬂ∞° µ•πÃ¡ˆ ...
+        // √É√ü¬∞¬° ¬µ¬•¬π√å√Å√∂ ...
         if (FLAG_ING_DUMMY_DAMAGE & pATK->GetIngDurationStateFLAG()) {
             iDamage += (int)(iDamage * SKILL_POWER(pATK->GetIngDurationStateSKILL(ING_DUMMY_DAMAGE))
                 / 100.f);
@@ -511,18 +458,18 @@ CCal::Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
         iDamage |= DMG_BIT_CRITICAL;
     } else {
         // Normal damage
-        if (pATK->IsUSER() && pDEF->IsUSER()) { // ∏∂π˝ ¿œπ› PVP
-            iDamage = (int)((float)pATK->Get_ATK() * (pDEF->Get_LEVEL() / pATK->Get_LEVEL())
-                * (iSuc * 0.03f + 25) * (1.8f * pATK->Get_ATK() - pDEF->Get_DEF() + 150)
-                / (1.1f * pDEF->Get_RES() + pDEF->Get_AVOID() * 0.4f + 50)
-                / 120.f); // kchs ºˆ¡§ : 2005-08-12 D_LEV - A_LEV ==> D_LEV / A_LEV
+        if (pATK->IsUSER() && pDEF->IsUSER()) { // ¬∏¬∂¬π√Ω √Ä√è¬π√ù PVP
+            iDamage = (int)((float)pATK->Get_ATK() * (iSuc * 0.06f + 29)
+                    * (pATK->Get_ATK() - pDEF->Get_DEF() * 0.8f + 350)
+                    / ((pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 5) * 640)
+                + 20);
         } else {
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.03f + 25)
-                * (1.8f * pATK->Get_ATK() - pDEF->Get_DEF() + 150)
-                / (1.1f * pDEF->Get_RES() + pDEF->Get_AVOID() * 0.4f + 50) / 120.f);
+            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.03f + 30)
+                * (pATK->Get_ATK() - pDEF->Get_DEF() * 0.8f + 280)
+                / ((pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 5) * 280));
         }
 
-        // √ﬂ∞° µ•πÃ¡ˆ ...
+        // √É√ü¬∞¬° ¬µ¬•¬π√å√Å√∂ ...
         if (FLAG_ING_DUMMY_DAMAGE & pATK->GetIngDurationStateFLAG()) {
             iDamage += (int)(iDamage * SKILL_POWER(pATK->GetIngDurationStateSKILL(ING_DUMMY_DAMAGE))
                 / 100.f);
@@ -556,8 +503,6 @@ CCal::Get_DAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT) {
             return 0;
     }
 
-    wHitCNT = 1;
-
     if (pATK->IsMagicDAMAGE())
         return Get_MagicDAMAGE(pATK, pDEF, wHitCNT, iSuc);
 
@@ -569,7 +514,7 @@ int
 CCal::Get_WeaponSkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, int iSuccess) {
     int iDamage;
 
-    // [π´±‚ Ω∫≈≥«¸] µ•πÃ¡ˆ ∞ËªÍΩƒ
+    // [¬π¬´¬±√¢ ¬Ω¬∫√Ö¬≥√á√º] ¬µ¬•¬π√å√Å√∂ ¬∞√®¬ª√™¬Ω√Ñ
     if (pATK->IsUSER() && pDEF->IsUSER()) {
         // DMG= (SKILL_POW/100) *(D_LV/A_LV) * A_ATT * ( SUC*0.03+26)*(1.8* A_ATT - D_DEF +150) /
         // (1.1* D_DEF + D_AVO *0.4+50)/145
@@ -591,7 +536,7 @@ int
 CCal::Get_MagicSkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, int iSuccess) {
     int iDamage;
 
-    // [∏∂π˝ Ω∫≈≥«¸] µ•πÃ¡ˆ ∞ËªÍΩƒ
+    // [¬∏¬∂¬π√Ω ¬Ω¬∫√Ö¬≥√á√º] ¬µ¬•¬π√å√Å√∂ ¬∞√®¬ª√™¬Ω√Ñ
     if (pATK->IsUSER() && pDEF->IsUSER()) {
         // DMG = (SKILL_POW/100) *(D_LV/A_LV) * A_ATT *( SUC *0.03+25)*(1.8 *A_ATT - D_DEF
         // +150)/(1.1* D_RES + D_AVO *0.4+50)/140
@@ -614,12 +559,10 @@ WORD
 CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHitCNT) {
     int iDamage;
 
-    wHitCNT = 1;
-
-    // int iSuccess  = Get_SuccessRATE (pATK, pDEF); // 2005-7-26 kchs ºˆ¡§. ¿ﬂ∏¯µ«º≠ ¥ŸΩ√ øæ≥Ø∑Œ
-    // ∫πø¯
+    // int iSuccess  = Get_SuccessRATE (pATK, pDEF); // 2005-7-26 kchs ¬º√∂√Å¬§. √Ä√ü¬∏√∏¬µ√á¬º¬≠ ¬¥√ô¬Ω√É ¬ø¬æ¬≥¬Ø¬∑√é
+    // ¬∫¬π¬ø√∏
     switch (SKILL_DAMAGE_TYPE(nSkillIDX)) {
-        case 1: // π´±‚ Ω∫≈≥
+        case 1: // ¬π¬´¬±√¢ ¬Ω¬∫√Ö¬≥
         {
             int iSuccess;
             int iRAND1 = 1 + RANDOM(60);
@@ -627,23 +570,83 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             iSuccess = (int)(((pATK->Get_LEVEL() + 20) - pDEF->Get_LEVEL() + (iRAND1 /* *0.6f */))
                 * (pATK->Get_HIT() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.7f */ + 10) / 110.f);
 
-            if (iSuccess < 20)
-                return 0;
+            if (iSuccess < 20) {
+                if (iSuccess < 10)
+                    return 0;
 
-            iDamage = Get_WeaponSkillDAMAGE(pATK, pDEF, nSkillIDX, iSuccess);
+                iDamage = (int)(((SKILL_POWER(nSkillIDX) * 0.4f) * (pATK->Get_ATK() + 50)
+                                    * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 1.2f + 340))
+                        / (pDEF->Get_DEF() + pDEF->Get_RES() + 20)
+                        / (250 + pDEF->Get_LEVEL() - pATK->Get_LEVEL())
+                    + 20);
+            } else {
+                if (pATK->IsUSER() && pDEF->IsUSER()) {
+                    iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->Get_ATK() * 0.2f)
+                                        * (pATK->Get_ATK() + 60)
+                                        * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 0.7 + 370))
+                            * 0.01 * (320 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
+                            / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.8f + pDEF->Get_AVOID() * 0.4f
+                                + 40)
+                            / 1600
+                        + 60);
+                } else {
+                    // [ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩ≈≥ÔøΩÔøΩ] ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ
+                    iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->Get_ATK() * 0.2f)
+                                        * (pATK->Get_ATK() + 60)
+                                        * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 0.7f + 370))
+                            * 0.01 * (120 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
+                            / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.8f + pDEF->Get_AVOID() * 0.4f
+                                + 20)
+                            / 270
+                        + 20);
+                }
+            }
             break;
         }
-        case 2: // ∏∂π˝ Ω∫≈≥
+        case 2: // ¬∏¬∂¬π√Ω ¬Ω¬∫√Ö¬≥
         {
             int iSuccess;
             int iRAND1 = 1 + RANDOM(50);
             int iRAND2 = 1 + RANDOM(70);
             iSuccess = (int)(((pATK->Get_LEVEL() + 30) - pDEF->Get_LEVEL() + (iRAND1))
                 * (pATK->Get_HIT() - pDEF->Get_AVOID() * 0.56f + iRAND2 + 10) / 110.f);
-            iDamage = Get_MagicSkillDAMAGE(pATK, pDEF, nSkillIDX, iSuccess);
+
+            if (iSuccess < 20) {
+                if (iSuccess < 8)
+                    return 0;
+                iDamage =
+                    (int)((SKILL_POWER(nSkillIDX) * (pATK->Get_ATK() * 0.8f + pATK->Get_INT() + 80)
+                              * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 1.3f + 280) * 0.2f)
+                            / (pDEF->Get_DEF() * 0.3f + pDEF->Get_RES() + 30)
+                            / (250 + pDEF->Get_LEVEL() - pATK->Get_LEVEL())
+                        + 20);
+            } else {
+                if (pATK->IsUSER() && pDEF->IsUSER()) {
+                    iDamage =
+                        (int)(((SKILL_POWER(nSkillIDX) + 50)
+                                  * (pATK->Get_ATK() * 0.8f + pATK->Get_INT() * 1.2f + 100)
+                                  * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 0.7f + 350) * 0.01f)
+                                * (380 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
+                                / (pDEF->Get_DEF() * 0.4f + pDEF->Get_RES()
+                                    + pDEF->Get_AVOID() * 0.3f + 60)
+                                / 2500.f
+                            + 60);
+                } else {
+                    iDamage =
+                        (int)((SKILL_POWER(nSkillIDX)
+                                  * (pATK->Get_ATK() * 0.8f + pATK->Get_INT() * 1.2f + 100)
+                                  * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 0.7f + 350) * 0.01f)
+                                * (150 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
+                                / (pDEF->Get_DEF() * 0.3f + pDEF->Get_RES()
+                                    + pDEF->Get_AVOID() * 0.3f + 60)
+                                / 350.f
+                            + 20);
+                }
+            }
+
             break;
         }
-        case 3: // ∏«º’ Ω∫≈≥
+        case 3: // ¬∏√á¬º√ï ¬Ω¬∫√Ö¬≥
         {
             int iSuccess;
             int iRAND1 = 1 + RANDOM(80);
@@ -683,7 +686,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             break;
         }
         default: {
-            // ¿œπ› ∞¯∞› µ•πÃ¡ˆ∑Œ ∞ËªÍ...
+            // √Ä√è¬π√ù ¬∞√∏¬∞√ù ¬µ¬•¬π√å√Å√∂¬∑√é ¬∞√®¬ª√™...
             int iSuccess;
             int iRAND1 = 1 + RANDOM(80);
             int iRAND2 = 1 + RANDOM(50);
@@ -710,19 +713,19 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
                         + 20);
                 } else {
                     iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->Get_CRITICAL() * 0.15f + 40)
-                                        * (pATK->Get_ATK() + 70)
-                                        * ((1 + RANDOM(30)) + pATK->Get_CRITICAL() * 0.34f + 35))
-                            * 0.01f * (200 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
-                            / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.5f + pDEF->Get_AVOID() * 0.4f
-                                + 40)
-                            / 200.f
+                                        * (pATK->Get_ATK())
+                                        * ((1 + RANDOM(30)) + pATK->Get_CRITICAL() * 0.32f + 35))
+                            * 0.01f * (120 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
+                            / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.3f + pDEF->Get_AVOID() * 0.4f
+                                + 10)
+                            / 100.f
                         + 20);
                 }
             }
         }
     }
 
-    // √ﬂ∞° µ•πÃ¡ˆ ...
+    // √É√ü¬∞¬° ¬µ¬•¬π√å√Å√∂ ...
     if (FLAG_ING_DUMMY_DAMAGE & pATK->GetIngDurationStateFLAG()) {
         iDamage +=
             (int)(iDamage * SKILL_POWER(pATK->GetIngDurationStateSKILL(ING_DUMMY_DAMAGE)) / 100.f);
@@ -731,7 +734,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
 
 #ifdef __APPLY_2ND_JOB
     if (IsTAIWAN()) {
-        // º”º∫ ≈◊¿Ã∫Ì ¬¸¡∂«œø© ¿Á∞ËªÍ
+        // ¬º√ì¬º¬∫ √Ö√ó√Ä√å¬∫√≠ √Ç√º√Å¬∂√á√è¬ø¬© √Ä√ß¬∞√®¬ª√™
         short nSA = SKILL_ATTRIBUTE(nSkillIDX);
         short nNA = pDEF->Get_ATTRIBUTE();
         int iNewDamage = (int)(iDamage * ATTRIBUTE_FORM(nSA, nNA) / 100.f);
@@ -747,12 +750,12 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
         int iMaxDmg = (int)(pDEF->Get_MaxHP() * 0.45f);
         if (iDamage > iMaxDmg)
             iDamage = iMaxDmg;
-    } // else  ∞ËªÍΩƒ pDEF->Get_MaxHP()*0.45f ¿« ∞·∞˙∞° MAX_DAMAGE∫∏¥Ÿ ≈¨ºˆ ¿÷¿∏π«∑Œ else ªË¡¶...
+    } // else  ¬∞√®¬ª√™¬Ω√Ñ pDEF->Get_MaxHP()*0.45f √Ä√á ¬∞√°¬∞√∫¬∞¬° MAX_DAMAGE¬∫¬∏¬¥√ô √Ö¬¨¬º√∂ √Ä√ñ√Ä¬∏¬π√á¬∑√é else ¬ª√®√Å¬¶...
 
     if (iDamage > MAX_DAMAGE)
         iDamage = MAX_DAMAGE;
 
-    // »˜∆Æ µø¿€ »Æ∑¸...
+    // √à√∑√Ü¬Æ ¬µ¬ø√Ä√õ √à¬Æ¬∑√º...
     int iHitActRATE;
 
     iHitActRATE = iDamage * (1 + (RANDOM(100)) + 100) / (pDEF->Get_AVOID() + 40) / 14;

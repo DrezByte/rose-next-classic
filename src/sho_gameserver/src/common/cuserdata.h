@@ -331,6 +331,8 @@ struct tagSkillAbility {
         m_nSkillINDEX[1] = 12; // 줍기
         m_nSkillINDEX[2] = 16; // 일반공격
         m_nSkillINDEX[3] = 20; // 거래신청
+
+        /*
         m_nSkillINDEX[4] = 49; // 화남
         m_nSkillINDEX[5] = 50; // 박수
         m_nSkillINDEX[6] = 48; // 절규
@@ -341,6 +343,7 @@ struct tagSkillAbility {
         m_nSkillINDEX[11] = 41; // 인사
         m_nSkillINDEX[12] = 181; // 인사
         m_nSkillINDEX[13] = 22; // 본인 타겟팅
+        */
     }
 };
 

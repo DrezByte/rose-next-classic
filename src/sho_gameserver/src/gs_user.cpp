@@ -648,6 +648,8 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
         this->AddCur_BonusPOINT((short)(this->Get_LEVEL() * 0.8) + 10);
 
         for (short nD = 0; nD < g_TblSkillPoint.m_nDataCnt; nD++) {
+            // Original formula: this->AddCur_SkillPOINT( (short)( ( this->Get_LEVEL() + 4 ) * 0.5f
+            // ) - 1 );
             if (SP_LEVEL(nD) == this->Get_LEVEL()) {
                 this->AddCur_SkillPOINT(SP_POINT(nD));
                 break;
@@ -736,6 +738,15 @@ classUSER::Dead(CObjCHAR* pKiller) {
 
 bool
 classUSER::Do_SelfSKILL(short nSkillIDX) {
+    if (this->GetCur_RIDE_MODE()) {
+        short nSkillType = SKILL_TYPE(nSkillIDX);
+        if (nSkillType >= SKILL_TYPE_03 && nSkillType <= SKILL_TYPE_07)
+            return false;
+
+        if (nSkillType == SKILL_TYPE_17)
+            return false;
+    }
+
     if (this->Skill_ActionCondition(nSkillIDX)) {
         // 실제 필요 수치 소모 적용...
         if (this->SetCMD_Skill2SELF(nSkillIDX)) {
@@ -749,6 +760,15 @@ classUSER::Do_SelfSKILL(short nSkillIDX) {
 
 bool
 classUSER::Do_TargetSKILL(int iTargetObject, short nSkillIDX) {
+    if (this->GetCur_RIDE_MODE()) {
+        short nSkillType = SKILL_TYPE(nSkillIDX);
+        if (nSkillType >= SKILL_TYPE_03 && nSkillType <= SKILL_TYPE_07)
+            return false;
+
+        if (nSkillType == SKILL_TYPE_17)
+            return false;
+    }
+
     CObjCHAR* pDestCHAR = g_pObjMGR->Get_ClientCharOBJ(iTargetObject, false /* true */);
     if (pDestCHAR) {
         if (!this->Skill_IsPassFilter(pDestCHAR, nSkillIDX))
@@ -944,14 +964,8 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
     /// 쿨타임 적용..
     DWORD dwCurTime;
     short nCoolTimeType;
-    dwCurTime = this->GetCurAbsSEC();
-    nCoolTimeType = USEITEM_COOLTIME_TYPE(pITEM->m_nItemNo);
-    if (nCoolTimeType) {
-        if (dwCurTime - this->m_dwCoolTIME[nCoolTimeType]
-            <= static_cast<DWORD>(USEITEM_COOLTIME_DELAY(pITEM->m_nItemNo))) {
-            return true;
-        }
-    }
+    dwCurTime = 0;
+    nCoolTimeType = 0;
 
     int iValue = GetCur_AbilityValue(USEITEM_NEED_DATA_TYPE(pITEM->m_nItemNo));
     if (AT_CURRENT_PLANET == USEITEM_NEED_DATA_TYPE(pITEM->m_nItemNo)) {
@@ -2047,12 +2061,6 @@ classUSER::Recv_cli_REVIVE_REQ(BYTE btReviveTYPE, bool bApplyPenalty, bool bSkip
                 // 저장된 존의 행성과 죽은 존의 행성이 같으면 부활존으로 ....
                 nZoneNO = this->m_nReviveZoneNO;
                 PosREVIVE = this->m_PosREVIVE;
-
-                if (ZONE_REVIVE_ZONENO(this->m_nZoneNO)) {
-                    nZoneNO = ZONE_REVIVE_ZONENO(this->m_nZoneNO);
-                    PosREVIVE.x = ZONE_REVIVE_X_POS(this->m_nZoneNO) * 1000.f;
-                    PosREVIVE.y = ZONE_REVIVE_Y_POS(this->m_nZoneNO) * 1000.f;
-                }
 
                 PosREVIVE.x += (RANDOM(1001) - 500); // 랜덤 5미터..
                 PosREVIVE.y += (RANDOM(1001) - 500);
@@ -3628,8 +3636,7 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
 
                 fSUC_POINT[0] = (nITEM_DIF + 35) * (nITEM_QUAL + 15) / 16.f;
                 fPRO_POINT[0] =
-                    (nMAT_QUAL * (nRand + 71)
-                        * ((GetCur_CON() / GetCur_LEVEL()) * 100.f + nITEM_DIF / 2.f + 430)
+                    (nMAT_QUAL * (nRand + 71) * (0.5f * this->GetCur_CON() + nITEM_DIF / 2.f + 530)
                         * Get_WorldPROD())
                     / 800000.f;
                 nPLUS =
@@ -3638,9 +3645,9 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
             }
             case 1: {
                 fSUC_POINT[1] = (nITEM_DIF + 15) * (nITEM_QUAL + 140) / (nNUM_MAT + 3) / 4.f;
-                fPRO_POINT[1] = ((nMAT_QUAL + nITEM_DIF / 2.f) * (nRand + 101)
-                                    * ((this->GetCur_CON() / this->GetCur_LEVEL()) * 100.f
-                                        + nMAT_QUAL * 2 + 600))
+                fPRO_POINT[1] = ((nMAT_QUAL + nITEM_DIF / 2.f) * (nRand + 96)
+                                    * (0.5f * this->GetCur_CON() + SKILL_LEVEL(nSkillIDX) * 6
+                                        + nMAT_QUAL * 2 + 770))
                     / (nNUM_MAT + 7) / 1600.f;
 
                 nPLUS += (short)((fPRO_POINT[1] - fSUC_POINT[1]) * 20 / (fPRO_POINT[1]));
@@ -3648,9 +3655,9 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
             }
             case 2: {
                 fSUC_POINT[2] = (nITEM_DIF + 90) * (nITEM_QUAL + 30) / (nNUM_MAT + 3) / 4.f;
-                fPRO_POINT[2] =
-                    ((fPRO_POINT[0] / 6.f + nITEM_QUAL) * (nRand + 81)
-                        * ((GetCur_CON() / GetCur_LEVEL()) * 100.f + nMAT_QUAL * 2 + 500))
+                fPRO_POINT[2] = ((fPRO_POINT[0] / 6.f + nITEM_QUAL) * (nRand + 81)
+                                    * (0.3f * this->GetCur_CON() + SKILL_LEVEL(nSkillIDX) * 5
+                                        + nMAT_QUAL * 2 + 600))
                     / (nNUM_MAT + 7) / 2000.f;
 
                 nPLUS += (short)((fPRO_POINT[2] - fSUC_POINT[2]) * 10 / (fPRO_POINT[2]));
@@ -3683,6 +3690,9 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
                 NEWLOG_FAILED);
 #endif
 
+            this->m_nCreateItemEXP =
+                1 + (short)((this->Get_LEVEL() + 50) * fPRO_POINT[0] * (nNUM_MAT + 4) / 1300.f);
+
             return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_FAILED, nI, fPRO_POINT);
         }
     }
@@ -3711,10 +3721,10 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
                 sOutITEM.m_bIsAppraisal = 1;
                 break;
             case 2: // 계산
-                iTEMP = (int)(((GetCur_SENSE() / GetCur_LEVEL()) * 40.f + 400)
+                iTEMP = (int)((this->GetCur_SENSE() + 400 - this->Get_LEVEL() * 0.7f)
                         * (nPLUS * 1.8f
                             + ITEM_QUALITY(sOutITEM.GetTYPE(), sOutITEM.GetItemNO()) * 0.4f + 8)
-                        * 0.2f / (RANDOM(100) + 51)
+                        * 0.2f / (RANDOM(100) + 50)
                     - 100);
 
                 if (iTEMP >= 1) {
@@ -3725,11 +3735,11 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
             case 0: {
                 // 아이템 옵션
                 iTEMP = 1 + RANDOM(100);
-                int iITEM_OP =
-                    (int)((((GetCur_SENSE() / Get_LEVEL() / 2.f) * 50.f + 220) * (nPLUS + 20) * 0.4f
-                              + nITEM_DIF * 35 - 1600 - iTEMP)
-                            / (iTEMP + 17)
-                        - 85);
+                int iITEM_OP = (int)(((this->GetCur_SENSE() + 220 - this->Get_LEVEL() / 2.f)
+                                         * (nPLUS + 20) * 0.4f
+                                     + nITEM_DIF * 35 - 1600 - iTEMP)
+                        / (iTEMP + 17)
+                    - 85);
                 if (iITEM_OP > 0) {
                     sOutITEM.m_bIsAppraisal = 1; // 감정 받은걸루...
                     int iMod =
@@ -3764,6 +3774,10 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
     if (nI <= 0) {
         this->Save_ItemToFILED(sOutITEM); // 제조시 인벤토리가 추가가 불가능해서 밖에 30분간 보관...
     }
+
+    this->m_nCreateItemEXP = 1
+        + (short)((this->Get_LEVEL() + 35) * (fPRO_POINT[0] + this->Get_LEVEL()) * (nNUM_MAT + 4)
+            * (nITEM_DIF + 20) / 23000.f);
 
     return this->Send_gsv_CREATE_ITEM_REPLY(RESULT_CREATE_ITEM_SUCCESS, nI, fPRO_POINT, &sOutITEM);
 }
@@ -5632,8 +5646,7 @@ classUSER::Recv_cli_SKILL_LEVELUP_REQ(t_PACKET* pPacket) {
         pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
     if (RESULT_SKILL_LEVELUP_SUCCESS == btResult) {
         // 05.05.25 스킬 렙업시 줄리 소모...
-        int iNeedZuly =
-            SKILL_LEVELUP_NEED_ZULY(pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX) * 100;
+        int iNeedZuly = 0;
 
         if (this->GetCur_MONEY() < iNeedZuly) {
             btResult = RESULT_SKILL_LEVELUP_OUTOFZULY;
@@ -5748,16 +5761,6 @@ classUSER::Recv_cli_SELF_SKILL(t_PACKET* pPacket) {
     }
 
     short nSkillIDX = this->m_Skills.m_nSkillINDEX[pPacket->m_cli_SELF_SKILL.m_btSkillSLOT];
-    if (SKILL_AVAILBLE_STATUS(nSkillIDX) && !(m_btRideATTR & SKILL_AVAILBLE_STATUS(nSkillIDX)))
-        return true;
-
-    if (SKILL_RELOAD_TYPE(nSkillIDX)) {
-        if (SKILL_RELOAD_SECOND(nSkillIDX)
-            > dwCurTime - this->m_dwLastSkillGroupSpeelTIME[SKILL_RELOAD_TYPE(nSkillIDX)]) {
-            return true;
-        }
-    }
-
     if (SKILL_RELOAD_SECOND(nSkillIDX)
         > dwCurTime - this->m_dwLastSkillSpellTIME[pPacket->m_cli_SELF_SKILL.m_btSkillSLOT]) {
         return true;
@@ -5811,15 +5814,6 @@ classUSER::Recv_cli_TARGET_SKILL(t_PACKET* pPacket) {
     }
 
     short nSkillIDX = this->m_Skills.m_nSkillINDEX[pPacket->m_cli_TARGET_SKILL.m_btSkillSLOT];
-    if (SKILL_AVAILBLE_STATUS(nSkillIDX) && !(m_btRideATTR & SKILL_AVAILBLE_STATUS(nSkillIDX)))
-        return true;
-
-    if (SKILL_RELOAD_TYPE(nSkillIDX)) {
-        if (SKILL_RELOAD_SECOND(nSkillIDX)
-            > dwCurTime - this->m_dwLastSkillGroupSpeelTIME[SKILL_RELOAD_TYPE(nSkillIDX)]) {
-            return true;
-        }
-    }
 
     if (SKILL_RELOAD_SECOND(nSkillIDX)
         > dwCurTime - this->m_dwLastSkillSpellTIME[pPacket->m_cli_TARGET_SKILL.m_btSkillSLOT]) {
@@ -5871,15 +5865,6 @@ classUSER::Recv_cli_POSITION_SKILL(t_PACKET* pPacket) {
         return false;
 
     short nSkillIDX = this->m_Skills.m_nSkillINDEX[pPacket->m_cli_POSITION_SKILL.m_btSkillSLOT];
-    if (SKILL_AVAILBLE_STATUS(nSkillIDX) && !(m_btRideATTR & SKILL_AVAILBLE_STATUS(nSkillIDX)))
-        return true;
-
-    if (SKILL_RELOAD_TYPE(nSkillIDX)) {
-        if (SKILL_RELOAD_SECOND(nSkillIDX)
-            > dwCurTime - this->m_dwLastSkillGroupSpeelTIME[SKILL_RELOAD_TYPE(nSkillIDX)]) {
-            return true;
-        }
-    }
 
     if (SKILL_RELOAD_SECOND(nSkillIDX)
         > dwCurTime - this->m_dwLastSkillSpellTIME[pPacket->m_cli_POSITION_SKILL.m_btSkillSLOT]) {

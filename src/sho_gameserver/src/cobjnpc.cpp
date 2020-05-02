@@ -38,7 +38,7 @@ CObjMOB::Init(CZoneTHREAD* pZONE,
 
     m_fRunAniSPEED = 1.0f;
 
-    m_nCritical = (short)(NPC_LEVEL(m_nCharIdx) * 2.5f);
+    m_nCritical = (short)(NPC_LEVEL(m_nCharIdx) * 0.6f);
 
     m_fScale = NPC_SCALE(m_nCharIdx) / 100.f;
     m_iOriMaxHP = NPC_LEVEL(m_nCharIdx) * NPC_HP(m_nCharIdx);
@@ -571,17 +571,12 @@ CObjSUMMON::SetCallerOBJ(int iOwnerOBJ,
 
     short nSkillLEV = SKILL_LEVEL(nSkillIDX);
 
-    if (NPC_FACE_ICON(m_nCharIdx)) {
-        m_iOriMaxHP = NPC_HP(m_nCharIdx);
-    } else {
-        m_iOriMaxHP = (int)(NPC_HP(m_nCharIdx) + pOwnerAVT->Get_MaxHP() * 0.8f);
-    }
-
-    m_iOriATK = (int)(CObjMOB::GetOri_ATK() + pOwnerAVT->Get_ATK() * (nSkillLEV * 5 + 75) * 0.01f);
-    m_iOriHIT = (int)(CObjMOB::GetOri_HIT() + pOwnerAVT->Get_HIT());
-    m_iOriDEF = (int)(CObjMOB::GetOri_DEF() + pOwnerAVT->Get_DEF());
-    m_iOriRES = (int)(CObjMOB::GetOri_RES() + pOwnerAVT->Get_RES());
-    m_iOriAVOID = (int)(CObjMOB::GetOri_AVOID() + pOwnerAVT->Get_AVOID());
+    m_iOriMaxHP = (int)(NPC_HP(m_nCharIdx) * (nSkillLEV + 16) * (iOwnerLEVEL + 85) / 2600.f);
+    m_iOriATK = (int)(CObjMOB::GetOri_ATK() * (nSkillLEV + 22) * (iOwnerLEVEL + 100) / 4000.f);
+    m_iOriHIT = (int)(CObjMOB::GetOri_HIT() * (nSkillLEV + 30) * (iOwnerLEVEL + 50) / 3200.f);
+    m_iOriDEF = (int)(CObjMOB::GetOri_DEF() * (nSkillLEV + 30) * (iOwnerLEVEL + 80) / 4400.f);
+    m_iOriRES = (int)(CObjMOB::GetOri_RES() * (nSkillLEV + 24) * (iOwnerLEVEL + 90) / 3600.f);
+    m_iOriAVOID = (int)(CObjMOB::GetOri_AVOID() * (nSkillLEV + 22) * (iOwnerLEVEL + 90) / 3400.f);
     this->Set_HP(m_iOriMaxHP);
 }
 

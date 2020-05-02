@@ -625,7 +625,7 @@ CParty::Send_PartyUserLIST(classUSER* pUSER, DWORD dwUserTAG) {
 BYTE
 CParty::Add_PartyUSER(classUSER* pUSER) {
     // 05.05.25 대만 오베이후는 파티원은 무조건 5명 !!!
-    short nMaxUser = 6;
+    short nMaxUser = this->m_btPartyLEV / 5 + 4;
 
     // 기존 유저에게 새로운 유저 들왔다고 전송...
     classPACKET* pCPacket = Packet_AllocNLock();

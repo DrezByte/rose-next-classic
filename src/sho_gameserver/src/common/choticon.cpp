@@ -9,14 +9,6 @@
 void
 CHotICONS::Init() {
     ::ZeroMemory(m_IconLIST, MAX_HOT_ICONS * sizeof(tagHotICON));
-
-    short nDefKey[] = {0, 1, 3, 12, 11, 7, 5, 8, -2};
-    for (short nI = 0; nDefKey[nI] != -2; nI++) {
-        if (nDefKey[nI] >= 0) {
-            m_IconLIST[nI].m_cType = SKILL_ICON;
-            m_IconLIST[nI].m_nSlotNo = nDefKey[nI];
-        }
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
