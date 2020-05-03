@@ -8581,9 +8581,14 @@ classUSER::send_update_stats_all() {
     flatbuffers::FlatBufferBuilder builder;
     builder.ForceDefaults(true);
 
-    Packets::UpdateStatsBuilder rep(builder);
-    rep.add_move_speed(1000); // TODO: Build actual stats
+    Packets::StatsBuilder stats_builder(builder);
+    stats_builder.add_move_speed(1000); // TODO: Build actual stats
     // this->stats.move_speed = 1000; // TODO: Magoo
+    const auto stats = stats_builder.Finish();
+
+    Packets::UpdateStatsBuilder rep(builder);
+    rep.add_target_id(this->Get_INDEX());
+    rep.add_stats(stats);
     const auto pak = rep.Finish();
 
     return this->send_packet_from_offset(builder, pak, Packets::PacketType::UpdateStats);
@@ -8594,8 +8599,13 @@ classUSER::send_update_move_speed(uint16_t move_speed) {
     flatbuffers::FlatBufferBuilder builder;
     builder.ForceDefaults(true);
 
+    Packets::StatsBuilder stats_builder(builder);
+    stats_builder.add_move_speed(move_speed);
+    const auto stats = stats_builder.Finish();
+
     Packets::UpdateStatsBuilder rep(builder);
-    rep.add_move_speed(move_speed);
+    rep.add_target_id(this->Get_INDEX());
+    rep.add_stats(stats);
     const auto pak = rep.Finish();
 
     return this->send_packet_from_offset(builder, pak, Packets::PacketType::UpdateStats);

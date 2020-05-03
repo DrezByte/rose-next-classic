@@ -1,6 +1,6 @@
 namespace Rose.Network.Packets;
 
-table UpdateStats {
+table Stats {
 	str: uint16;
 	dex: uint16;
 	int: uint16;
@@ -25,6 +25,11 @@ table UpdateStats {
 
 	stat_points: uint16;
 	skill_points: uint16;
+}
+
+table UpdateStats {
+	target_id: uint32;
+	stats: Stats;
 }
 
 root_type UpdateStats;

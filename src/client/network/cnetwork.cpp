@@ -758,16 +758,36 @@ CNetwork::recv_update_stats(Packet& p) {
         return;
     }
 
-    auto req = p.packet_data()->data_as_UpdateStats();
-    if (!req) {
+    const Packets::UpdateStats* req = p.packet_data()->data_as_UpdateStats();
+    if (!req || !req->stats()) {
         return;
     }
 
-    if (flatbuffers::IsFieldPresent(req, Packets::UpdateStats::VT_MOVE_SPEED)) {
-        g_pAVATAR->stats.move_speed = req->move_speed();
+    uint32_t target_id = req->target_id();
+    const Packets::Stats* stats = req->stats();
+    if (!stats) {
+        return;
     }
 
-    g_pAVATAR->UpdateAbility();
+    CObjAVT* target = g_pObjMGR->Get_ClientCharAVT(target_id, false);
+    if (!target) {
+        return;
+    }
+
+    if (target->IsA(OBJ_USER)) {
+        target = g_pAVATAR;
+    }
+
+    if (flatbuffers::IsFieldPresent(stats, Packets::Stats::VT_MOVE_SPEED)) {
+        target->stats.move_speed = stats->move_speed();
+    }
+    if (flatbuffers::IsFieldPresent(stats, Packets::Stats::VT_ATTACK_SPEED)) {
+        target->stats.attack_speed = stats->attack_speed();
+    }
+
+    if (target->IsA(OBJ_USER)) {
+        g_pAVATAR->UpdateAbility();
+    }
 }
 
 void
@@ -786,8 +806,7 @@ CNetwork::send_char_create_req(const std::string& name,
     Gender gender,
     Job job) {
 
-    bool valid_job =
-        (job == Job::Visitor || is_first_job(job));
+    bool valid_job = (job == Job::Visitor || is_first_job(job));
 
     if (name.empty() || face_id <= 0 || hair_id <= 0 || !valid_job) {
         return;
