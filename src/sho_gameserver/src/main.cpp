@@ -68,16 +68,12 @@ main(int argc, char** argv) {
     LOG_INFO("Initializing the server");
     g_instance = CLIB_GameSRV::InitInstance(console_handle, config);
 
-    LOG_INFO("Connecting to other servers");
-    g_instance->ConnectSERVER((char*)config.database.ip.c_str(),
-        (char*)config.database.name.c_str(),
-        (char*)config.database.username.c_str(),
-        (char*)config.database.password.c_str(),
-        (char*)config.database.username.c_str(),
-        (char*)config.database.password.c_str(),
-        (char*)config.worldserver.ip.c_str(),
-        config.worldserver.server_port
-    );
+    LOG_INFO("Connecting to the database");
+    bool db_connected = g_instance->connect_database();
+    if (!db_connected) {
+        LOG_ERROR("Failed to connec to the database");
+        return shutdown();
+    }
 
     LOG_INFO("Initializing all maps");
     g_instance->InitLocalZone(true);
@@ -88,9 +84,6 @@ main(int argc, char** argv) {
     int high_age = 0;
 
     g_instance->Start(console_window,
-        (char*)config.gameserver.server_name.c_str(),
-        (char*)config.gameserver.ip.c_str(),
-        config.gameserver.port,
         channel_no,
         low_age,
         high_age);

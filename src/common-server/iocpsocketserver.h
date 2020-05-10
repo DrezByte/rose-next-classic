@@ -23,7 +23,6 @@ protected:
     CIOCP m_IOCP;
     DWORD m_dwWorkerThreadCNT;
     DWORD m_dwMaxSocketCNT;
-    CStrVAR m_ServerName;
     CIPv4Addr m_RefuseIP;
 
     IOCPSocketAcceptTHREAD* m_pAcceptTHREAD;
@@ -42,8 +41,6 @@ public:
     ~IOCPSocketSERVER();
 
     bool Add_RefuseIP(char* szIPFrom, char* szIPTo) { return m_RefuseIP.Add(szIPFrom, szIPTo); }
-
-    char* GetServerNAME() { return this->m_ServerName.Get(); }
 
     virtual iocpSOCKET* AllocClientSOCKET() = 0; // 메모리할당
     virtual void InitClientSOCKET(iocpSOCKET* pCLIENT) { /* nop */

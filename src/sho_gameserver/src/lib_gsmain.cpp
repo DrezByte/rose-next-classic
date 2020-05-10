@@ -830,49 +830,24 @@ CLIB_GameSRV::CheckZoneToLocal(short nZoneNO, bool bChecked) {
 
 //-------------------------------------------------------------------------------------------------
 bool
-CLIB_GameSRV::ConnectSERVER(char* szDBServerIP,
-    char* szDBName,
-    char* szDBUser,
-    char* szDBPassword,
-    char* szLogUser,
-    char* szLogPW,
-    char* szLoginServerIP,
-    int iLoginServerPort) {
-    if (NULL == this->GetInstance())
+CLIB_GameSRV::connect_database() {
+    if (!this->GetInstance()) {
         return false;
-
-    m_LoginServerIP.Set(szLoginServerIP);
-    m_iLoginServerPORT = iLoginServerPort;
-
-    //	char *szDBUser     = "icarus";
-    //	char *szDBPassword = "1111";
-
-    m_DBServerIP.Set(szDBServerIP);
-    m_DBName.Set(szDBName);
-    m_DBUser.Set(szDBUser);
-    m_DBPassword.Set(szDBPassword);
-
-    if (*szLogUser == '?') {
-        m_LogUser.Set(szDBUser);
-        m_LogPW.Set(szDBPassword);
-    } else {
-        m_LogUser.Set(szLogUser);
-        m_LogPW.Set(szLogPW);
     }
 
-    g_pThreadSQL = new GS_CThreadSQL; // suspend 모드로 시작됨.
-    if (!g_pThreadSQL->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
-            szDBServerIP,
-            szDBUser,
-            szDBPassword,
-            szDBName,
+    g_pThreadSQL = new GS_CThreadSQL;
+    if (!g_pThreadSQL->Connect(USE_ODBC,
+            (char*)this->config.database.ip.c_str(),
+            (char*)this->config.database.username.c_str(),
+            (char*)this->config.database.password.c_str(),
+            (char*)this->config.database.name.c_str(),
             32,
             1024 * 8)) {
         return false;
     }
     g_pThreadSQL->Resume();
 
-    std::string log_db = szDBName;
+    std::string log_db = this->config.database.name;
     if (log_db.back() == '\0') {
         log_db.pop_back();
     }
@@ -880,9 +855,9 @@ CLIB_GameSRV::ConnectSERVER(char* szDBServerIP,
 
     g_pThreadLOG = new GS_CThreadLOG;
     if (!g_pThreadLOG->Connect(USE_ODBC,
-            szDBServerIP,
-            m_LogUser.Get(),
-            m_LogPW.Get(),
+            (char*)this->config.database.ip.c_str(),
+            (char*)this->config.database.username.c_str(),
+            (char*)this->config.database.password.c_str(),
             (char*)log_db.c_str(),
             32,
             1024 * 8)) {
@@ -892,11 +867,11 @@ CLIB_GameSRV::ConnectSERVER(char* szDBServerIP,
 
     g_pThreadGUILD = new CThreadGUILD(32, 16);
     if (!g_pThreadGUILD
-        || !g_pThreadGUILD->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
-            (char*)szDBServerIP,
-            szDBUser,
-            szDBPassword,
-            szDBName,
+        || !g_pThreadGUILD->Connect(USE_ODBC,
+            (char*)this->config.database.ip.c_str(),
+            (char*)this->config.database.username.c_str(),
+            (char*)this->config.database.password.c_str(),
+            (char*)this->config.database.name.c_str(),
             32,
             1024 * 8)) {
         return false;
@@ -909,38 +884,27 @@ CLIB_GameSRV::ConnectSERVER(char* szDBServerIP,
 //-------------------------------------------------------------------------------------------------
 bool
 CLIB_GameSRV::Start(HWND hMainWND,
-    char* szServerName,
-    char* szClientListenIP,
-    int iClientListenPort,
     BYTE btChannelNO,
     BYTE btLowAge,
     BYTE btHighAge) {
     srand(timeGetTime());
 
-    if (_strnicmp(szServerName, "TEST", 4))
-        m_bTestServer = false;
-
+    m_bTestServer = false;
     m_dwUserLIMIT = MAX_ZONE_USER_BUFF;
 
     g_pSockLSV->Init(CSocketWND::GetInstance()->GetWindowHandle(),
-        m_LoginServerIP.Get(),
-        m_iLoginServerPORT,
+        (char*)this->config.worldserver.ip.c_str(),
+        this->config.worldserver.server_port,
         WM_LSVSOCK_MSG);
-    this->ConnectToLSV();
 
+    this->ConnectToLSV();
     this->ConnectToLOG();
 
     m_hMainWND = hMainWND;
 
-    m_iListenPortNO = iClientListenPort;
-    m_ServerNAME.Set(szServerName);
     m_btChannelNO = btChannelNO;
     m_btLowAGE = btLowAge;
     m_btHighAGE = btHighAge;
-    m_ServerIP.Set(szClientListenIP);
-
-    LogString(0xfff, "sizeof(classUSER)	== %d \n", sizeof(classUSER));
-    LogString(0xfff, "sizeof(tagQuestData) == %d \n", sizeof(tagQuestData));
 
     COMPILE_TIME_ASSERT(sizeof(t_PACKETHEADER) == 6);
     COMPILE_TIME_ASSERT(sizeof(tagITEM) == (6 + sizeof(__int64)));
@@ -961,12 +925,6 @@ CLIB_GameSRV::Start(HWND hMainWND,
     this->Shutdown();
     g_dwStartTIME = classTIME::GetCurrentAbsSecond();
 
-    LogString(LOG_NORMAL,
-        "Size : %d / %d / %d \n",
-        sizeof(t_PACKETHEADER),
-        sizeof(t_PACKET),
-        sizeof(classPACKET));
-
     g_pObjMGR = new CObjMNG(MAX_GAME_OBJECTS);
     g_pZoneLIST = CZoneLIST::Instance();
 
@@ -978,7 +936,7 @@ CLIB_GameSRV::Start(HWND hMainWND,
         new CTimer(m_hMainWND, GS_TIMER_WORLD_TIME, WORLD_TIME_TICK, (TIMERPROC)GS_TimerProc);
     m_pWorldTIMER->Start();
 
-    g_pUserLIST->Active(m_iListenPortNO, MAX_ZONE_USER_BUFF, 5 * 60); // 5분 대기.
+    g_pUserLIST->Active(config.gameserver.port, MAX_ZONE_USER_BUFF, 5 * 60); // 5분 대기.
 
     return true;
 }

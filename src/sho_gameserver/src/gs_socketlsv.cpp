@@ -66,15 +66,15 @@ GS_lsvSOCKET::Send_zws_SERVER_INFO() {
     pCPacket->m_HEADER.m_wType = ZWS_SERVER_INFO;
     pCPacket->m_HEADER.m_nSize = sizeof(zws_SERVER_INFO);
 
-    pCPacket->m_zws_SERVER_INFO.m_wPortNO = (short)pGSV->GetListenPort();
+    pCPacket->m_zws_SERVER_INFO.m_wPortNO = static_cast<uint16_t>(pGSV->config.gameserver.port);
     pCPacket->m_zws_SERVER_INFO.m_dwSeed = pGSV->GetRandomSeed();
 
     pCPacket->m_zws_SERVER_INFO.m_Channel.m_btChannelNO = (short)pGSV->GetChannelNO();
     pCPacket->m_zws_SERVER_INFO.m_Channel.m_btLowAGE = pGSV->GetLowAGE();
     pCPacket->m_zws_SERVER_INFO.m_Channel.m_btHighAGE = pGSV->GetHighAGE();
 
-    pCPacket->AppendString(pGSV->GetServerName()); // 채널이름이다!!!
-    pCPacket->AppendString(pGSV->GetServerIP());
+    pCPacket->AppendString((char*)pGSV->config.gameserver.server_name.c_str()); // 채널이름이다!!!
+    pCPacket->AppendString((char*)pGSV->config.gameserver.ip.c_str());
 
     m_SockLSV.Packet_Register2SendQ(pCPacket);
     Packet_ReleaseNUnlock(pCPacket);
@@ -411,7 +411,7 @@ GS_lsvSOCKET::Send_wls_CHANNEL_LIST() {
 
     tagCHANNEL_SRV sChannel = {1, 0, 0, 0};
     pCPacket->AppendData(&sChannel, sizeof(tagCHANNEL_SRV));
-    pCPacket->AppendString(pGSV->GetServerName());
+    pCPacket->AppendString((char*)pGSV->config.gameserver.server_name.c_str());
 
     m_SockLSV.Packet_Register2SendQ(pCPacket);
 

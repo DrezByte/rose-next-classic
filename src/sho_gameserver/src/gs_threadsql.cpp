@@ -283,11 +283,6 @@ GS_CThreadSQL::IO_ZoneDATA(CZoneTHREAD* pZONE, bool bSave) {
     pPacket->m_wType = SQL_ZONE_DATA;
     pPacket->m_nSize = sizeof(sql_ZONE_DATA) + pPacket->m_nDataSIZE;
 
-    /*
-        m_TmpSTR.Printf ("%s_EC_Zone%d_%s", CLIB_GameSRV::GetInstance()->GetServerName(),
-       pZONE->Get_ZoneNO(), pZONE->Get_NAME() ); CSqlTHREAD::Add_SqlPACKET(pZONE->Get_ZoneNO(),
-       m_TmpSTR.Get(), (BYTE*)pPacket, pPacket->m_nSize);
-    */
     CSqlTHREAD::Add_SqlPACKET(pZONE->Get_ZoneNO(),
         pZONE->Get_NAME(),
         (BYTE*)pPacket,
@@ -296,11 +291,6 @@ GS_CThreadSQL::IO_ZoneDATA(CZoneTHREAD* pZONE, bool bSave) {
     SAFE_DELETE_ARRAY(pPacket);
     return true;
 }
-
-/*
-#define	ZONE_VAR_NPCOBJ			"%s_NPC_%s"
-#define ZONE_VAR_EVENTOBJ		"%s_EVT_%s"
-*/
 
 bool
 GS_CThreadSQL::IO_NpcObjDATA(CObjNPC* pObjNPC, bool bSave) {
@@ -316,7 +306,9 @@ GS_CThreadSQL::IO_NpcObjDATA(CObjNPC* pObjNPC, bool bSave) {
     pPacket->m_btDataTYPE = (bSave) ? SQL_ZONE_DATA_NPCOBJ_SAVE : SQL_ZONE_DATA_NPCOBJ_LOAD;
     ::CopyMemory(pPacket->m_btZoneDATA, pObjNPC->m_pVAR, pPacket->m_nDataSIZE);
 
-    m_TmpSTR.Printf("%s_NPC_%s", CLIB_GameSRV::GetInstance()->GetServerName(), pObjNPC->Get_NAME());
+    m_TmpSTR.Printf("%s_NPC_%s",
+        CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(),
+        pObjNPC->Get_NAME());
 
     CSqlTHREAD::Add_SqlPACKET(pObjNPC->Get_CharNO(),
         m_TmpSTR.Get(),
@@ -341,7 +333,7 @@ GS_CThreadSQL::IO_EventObjDATA(CObjEVENT* pObjEVENT, bool bSave) {
     ::CopyMemory(pPacket->m_btZoneDATA, pObjEVENT->m_pVAR, pPacket->m_nDataSIZE);
 
     m_TmpSTR.Printf("%s_EVT_%s",
-        CLIB_GameSRV::GetInstance()->GetServerName(),
+        CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(),
         pObjEVENT->Get_NAME());
 
     CSqlTHREAD::Add_SqlPACKET(pObjEVENT->Get_ID(),
@@ -522,7 +514,7 @@ GS_CThreadSQL::Add_LoginACCOUNT(char* szAccount) {
     if (0 == ::Get_ServerLangTYPE()) {
         if (this->db->ExecSQL("INSERT tblGS_LogIN (txtACCOUNT, txtServerIP) VALUES(\'%s\',\'%s\');",
                 szAccount,
-                CLIB_GameSRV::GetInstance()->GetServerIP())
+                CLIB_GameSRV::GetInstance()->config.gameserver.ip.c_str())
             < 1) {
             // ¿À·ù ¶Ç´Â ¸¸µé¾îÁø°ÍÀÌ ¾ø´Ù.
             g_LOG.CS_ODS(LOG_NORMAL,
@@ -1284,7 +1276,9 @@ GS_CThreadSQL::Proc_LOAD_ZONE_DATA(int iZoneNO) {
     CZoneTHREAD* pZONE = g_pZoneLIST->GetZONE(iZoneNO);
     assert(pZONE);
 
-    m_TmpSTR.Printf(ZONE_VAR_ECONOMY, CLIB_GameSRV::GetInstance()->GetServerName(), iZoneNO);
+    m_TmpSTR.Printf(ZONE_VAR_ECONOMY,
+        CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(),
+        iZoneNO);
 
     this->db->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
         MQ_PARAM_STR,
@@ -1335,7 +1329,7 @@ GS_CThreadSQL::Proc_LOAD_ZONE_DATA(int iZoneNO) {
 //-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Proc_SAVE_ZONE_DATA(int iZoneNO, sql_ZONE_DATA* pSqlZONE) {
-    m_TmpSTR.Printf(ZONE_VAR_ECONOMY, CLIB_GameSRV::GetInstance()->GetServerName(), iZoneNO);
+    m_TmpSTR.Printf(ZONE_VAR_ECONOMY, CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(), iZoneNO);
 
     this->db->BindPARAM(1, pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
 

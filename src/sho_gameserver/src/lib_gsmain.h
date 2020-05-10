@@ -46,20 +46,6 @@ private:
     CTimer* m_pWorldTIMER; ///< 월드 타이머
     bool* m_pCheckedLocalZONE;
 
-    CStrVAR m_ServerNAME; ///< 설정된 서버 이름
-    CStrVAR m_ServerIP; ///< 서버 IP
-    int m_iListenPortNO; ///< 사용자 접속 포트번호
-
-    CStrVAR m_DBServerIP; ///< 디비 서버 IP
-    CStrVAR m_DBName; ///< 디비 네임
-    CStrVAR m_DBUser; ///< 디비 사용자
-    CStrVAR m_DBPassword; ///< 디비 사용자 비밀번호
-    CStrVAR m_LogUser;
-    CStrVAR m_LogPW;
-
-    CStrVAR m_LoginServerIP; ///< sho_ws에 접속할 IP
-    int m_iLoginServerPORT; ///< sho_ws에 접속할 port no
-
     DWORD m_dwRandomSEED;
 
     BYTE m_btChannelNO; ///< 동작중인 채널 번호
@@ -104,19 +90,9 @@ private:
     friend VOID CALLBACK GS_TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 public:
-    bool ConnectSERVER(char* szDBServerIP,
-        char* szDBName,
-        char* szDBUser,
-        char* szDBPW,
-        char* szLogUser,
-        char* szLogPW,
-        char* szLoginServerIP,
-        int iLoginServerPort);
+    bool connect_database();
 
     bool Start(HWND hMainWND,
-        char* szServerName,
-        char* szClientListenIP,
-        int iClientListenPort,
         BYTE btChannelNO,
         BYTE btLowAge,
         BYTE btHighAge);
@@ -127,9 +103,6 @@ public:
     char* GetZoneName(short nZoneNO);
     bool IsLocalCheckedZONE(short nZoneNO) { return m_pCheckedLocalZONE[nZoneNO]; }
 
-    char* GetServerName() { return m_ServerNAME.Get(); }
-    char* GetServerIP() { return m_ServerIP.Get(); }
-    int GetListenPort() { return m_iListenPortNO; }
     DWORD GetRandomSeed() { return m_dwRandomSEED; }
     DWORD GetMaxStats() { return m_dwMaxStats; }
     DWORD GetMaxLevel() { return m_dwMaxLevel; }

@@ -20,7 +20,6 @@ IOCPSocketSERVER::IOCPSocketSERVER(char* szName,
     bool bManageSocketVerify):
     CCriticalSection(4000) {
     m_bManageSocketVerify = bManageSocketVerify;
-    m_ServerName.Set(szName);
 
     SYSTEM_INFO sSystemInfo;
     ::GetSystemInfo(&sSystemInfo);
@@ -167,17 +166,6 @@ IOCPSocketSERVER::CloseIdleSCOKET(DWORD dwIdleMilliSec) {
                 continue;
             }
             if (dwCurTime - pNode->m_VALUE->m_dwConnTIME >= dwIdleMilliSec) {
-                // Â©¶ó ??? ...
-                // if ( pNode->m_VALUE->OnIdelCLOSE() )
-                {
-                    g_LOG.CS_ODS(0xffff,
-                        "Close Idle SOCK:: %s:%d=%d-%d, %s\n",
-                        this->GetServerNAME(),
-                        dwCurTime - pNode->m_VALUE->m_dwConnTIME,
-                        dwCurTime,
-                        pNode->m_VALUE->m_dwConnTIME,
-                        pNode->m_VALUE->Get_IP());
-
                     pNode->m_VALUE->CloseSocket();
                     pNode->m_VALUE->m_pSockNODE = NULL;
                     pDelNode = pNode;
@@ -185,7 +173,6 @@ IOCPSocketSERVER::CloseIdleSCOKET(DWORD dwIdleMilliSec) {
                     this->m_SocketLIST.DeleteNFree(pDelNode);
                     continue;
                 }
-            }
             pNode = pNode->GetNext();
         }
     }
