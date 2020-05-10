@@ -57,9 +57,6 @@ private:
     CStrVAR m_LogUser;
     CStrVAR m_LogPW;
 
-    CStrVAR m_AccountServerIP; ///< sho_as俊 立加且 IP
-    int m_iAccountServerPORT; ///< sho_as俊 立加且 port no
-
     CStrVAR m_LoginServerIP; ///< sho_ws俊 立加且 IP
     int m_iLoginServerPORT; ///< sho_ws俊 立加且 port no
 
@@ -94,9 +91,6 @@ private:
     bool ConnectToLSV();
     void DisconnectFromLSV();
 
-    bool ConnectToASV();
-    void DisconnectFromASV();
-
     bool ConnectToLOG();
     void DisconnectFromLOG();
 
@@ -117,9 +111,7 @@ public:
         char* szLogUser,
         char* szLogPW,
         char* szLoginServerIP,
-        int iLoginServerPort,
-        char* szLogServerIP,
-        int iLogServerPortNO);
+        int iLoginServerPort);
 
     bool Start(HWND hMainWND,
         char* szServerName,
@@ -173,7 +165,6 @@ public:
 #define GS_TIMER_LSV 1
 #define GS_TIMER_LOG 2
 #define GS_TIMER_WORLD_TIME 3
-#define GS_TIMER_ASV 4
 
 #define RECONNECT_TIME_TICK 10000 // 10 sec
 

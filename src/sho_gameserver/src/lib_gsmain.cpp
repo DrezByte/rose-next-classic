@@ -11,7 +11,6 @@
 #include "CThreadGUILD.h"
 #include "GS_ListUSER.h"
 #include "GS_PARTY.h"
-#include "GS_SocketASV.h"
 #include "GS_SocketLSV.h"
 #include "IO_AI.h"
 #include "IO_PAT.h"
@@ -92,7 +91,6 @@ CMotionLIST g_MotionFILE;
 CPartyBUFF* g_pPartyBUFF;
 
 GS_lsvSOCKET* g_pSockLSV = NULL;
-GS_asvSOCKET* g_pSockASV = NULL;
 
 GS_CThreadSQL* g_pThreadSQL = NULL;
 GS_CThreadLOG* g_pThreadLOG = NULL;
@@ -123,14 +121,6 @@ GS_TimerProc(HWND hwnd /* handle to window */,
     UINT_PTR idEvent /* timer identifier */,
     DWORD dwTime /* current system time */) {
     switch (idEvent) {
-        case GS_TIMER_ASV: {
-            CLIB_GameSRV* pGS = CLIB_GameSRV::GetInstance();
-            if (pGS) {
-                pGS->ConnectToASV();
-            }
-            break;
-        }
-
         case GS_TIMER_LSV: {
             CLIB_GameSRV* pGS = CLIB_GameSRV::GetInstance();
             if (pGS) {
@@ -198,10 +188,7 @@ GetServerStartTIME() {
     return g_dwStartTIME;
 }
 
-//-------------------------------------------------------------------------------------------------
 #define WM_LSVSOCK_MSG (WM_SOCKETWND_MSG + 0)
-#define WM_ASVSOCK_MSG (WM_SOCKETWND_MSG + 1)
-//#define	WM_LOGSOCK_MSG	( WM_SOCKETWND_MSG+1 )
 
 #define USE_MY_SQL_AGENT 0
 
@@ -243,7 +230,6 @@ CLIB_GameSRV::~CLIB_GameSRV() {
     m_pInstance = NULL;
 
     SAFE_DELETE(g_pSockLSV);
-    SAFE_DELETE(g_pSockASV);
 
     Free_BasicDATA();
     g_pCharDATA->Destroy();
@@ -291,7 +277,6 @@ CLIB_GameSRV::init(HINSTANCE hInstance, const ServerConfig& config) {
     ::ZeroMemory(g_iUserCount, sizeof(int) * USERCNT_MAX);
 
     g_pSockLSV = new GS_lsvSOCKET;
-    g_pSockASV = new GS_asvSOCKET;
 
     //	g_pSockLOG = new GS_logSOCKET( USE_MY_SQL_AGENT );
 
@@ -302,7 +287,6 @@ CLIB_GameSRV::init(HINSTANCE hInstance, const ServerConfig& config) {
     CSocketWND* pSockWND = CSocketWND::InitInstance(hInstance, 2);
     if (pSockWND) {
         pSockWND->AddSocket(&g_pSockLSV->m_SockLSV, WM_LSVSOCK_MSG);
-        pSockWND->AddSocket(&g_pSockASV->m_SockASV, WM_ASVSOCK_MSG);
     }
 
     this->InitLocalZone(true);
@@ -853,14 +837,9 @@ CLIB_GameSRV::ConnectSERVER(char* szDBServerIP,
     char* szLogUser,
     char* szLogPW,
     char* szLoginServerIP,
-    int iLoginServerPort,
-    char* szAccountServerIP,
-    int iAccountServerPortNO) {
+    int iLoginServerPort) {
     if (NULL == this->GetInstance())
         return false;
-
-    m_AccountServerIP.Set(szAccountServerIP);
-    m_iAccountServerPORT = iAccountServerPortNO;
 
     m_LoginServerIP.Set(szLoginServerIP);
     m_iLoginServerPORT = iLoginServerPort;
@@ -949,11 +928,6 @@ CLIB_GameSRV::Start(HWND hMainWND,
         WM_LSVSOCK_MSG);
     this->ConnectToLSV();
 
-    g_pSockASV->Init(CSocketWND::GetInstance()->GetWindowHandle(),
-        m_AccountServerIP.Get(),
-        m_iAccountServerPORT,
-        WM_ASVSOCK_MSG);
-    this->ConnectToASV();
     this->ConnectToLOG();
 
     m_hMainWND = hMainWND;
@@ -1046,15 +1020,6 @@ CLIB_GameSRV::ConnectToLSV() {
 void
 CLIB_GameSRV::DisconnectFromLSV() {
     g_pSockLSV->Disconnect();
-}
-
-bool
-CLIB_GameSRV::ConnectToASV() {
-    return g_pSockASV->Connect();
-}
-void
-CLIB_GameSRV::DisconnectFromASV() {
-    g_pSockASV->Disconnect();
 }
 
 //-------------------------------------------------------------------------------------------------

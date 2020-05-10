@@ -55,9 +55,6 @@
     <ClInclude Include="src\gs_party.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gs_socketasv.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\gs_socketlsv.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -211,9 +208,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gs_party.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gs_socketasv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gs_socketlsv.cpp">

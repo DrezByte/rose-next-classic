@@ -2,7 +2,6 @@
 
 #include "GS_ListUSER.h"
 #include "GS_Party.h"
-#include "GS_SocketASV.h"
 #include "GS_SocketLSV.h"
 #include "GS_ThreadSQL.h"
 #include "IO_Quest.h"
@@ -276,9 +275,6 @@ CUserLIST::Add_ACCOUNT(int iSocketIDX, t_PACKET* pRecvPket, char* szAccount) {
 
     if (pUSER->Send_srv_JOIN_SERVER_REPLY(pRecvPket, szAccount)) {
         if (RESULT_CONFIRM_ACCOUNT_OK == pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_btResult) {
-            // 우선 이곳에서 계정 서버에 계정 추가 전송...
-            g_pSockASV->Send_zws_ADD_ACCOUNT(szAccount, pUSER->Get_MD5PW(), pUSER->Get_IP());
-
             // 존에서 빠진 사용자 리스트에 등록...
             g_pUserLIST->Add_NullZONE(&pUSER->m_ZoneNODE);
 

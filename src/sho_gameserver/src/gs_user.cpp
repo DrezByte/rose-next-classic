@@ -8,7 +8,6 @@
 #include "DEF_STB.h"
 #include "GS_ListUSER.h"
 #include "GS_Party.h"
-#include "GS_SocketASV.h"
 #include "GS_SocketLSV.h"
 #include "GS_ThreadLOG.h"
 #include "GS_ThreadSQL.h"
@@ -7491,14 +7490,12 @@ classUSER::Send_srv_ERROR(WORD wErrCODE) {
     Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
-/// 네트웍 연결 상태 확인
+
 bool
 classUSER::Recv_cli_ALIVE() {
-    g_pSockASV->Send_cli_ALIVE(this->Get_ACCOUNT());
     return this->Send_srv_ERROR(0);
 }
 
-/// 클랜 관련 명령::: 개인서버 테스트용
 bool
 classUSER::Recv_cli_CLAN_COMMAND(t_PACKET* pPacket) {
     if (GCMD_CREATE == pPacket->m_cli_CLAN_COMMAND.m_btCMD) {

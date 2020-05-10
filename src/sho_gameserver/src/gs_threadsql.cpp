@@ -6,7 +6,6 @@
 #include "CSLList.h"
 #include "CThreadGUILD.h"
 #include "GS_ListUSER.h"
-#include "GS_SocketASV.h"
 #include "GS_SocketLSV.h"
 #include "GS_ThreadLOG.h"
 #include "GS_ThreadSQL.h"
@@ -603,33 +602,13 @@ GS_CThreadSQL::Execute() {
 
         while (pUsrNODE = m_RunUserLIST.GetHeadNode()) {
             if (pUsrNODE->DATA.m_pUSER->Get_NAME()) {
-                /*
-                    if ( pUsrNODE->DATA.m_btLogOutMODE ) {
-                        LogString (0xffff, "		%d UPDATE %s:%s DATA \n",
-                   pUsrNODE->DATA.m_btLogOutMODE, pUsrNODE->DATA.m_pUSER->Get_ACCOUNT(),
-                   pUsrNODE->DATA.m_pUSER->Get_NAME() );
-                    }
-                */
                 this->UpdateUserRECORD(pUsrNODE->DATA.m_pUSER);
             }
 
             if (pUsrNODE->DATA.m_btLogOutMODE) {
                 if (pUsrNODE->DATA.m_pUSER->Get_ACCOUNT()) {
-                    // ·Î±×ÀÎ ¼­¹ö¿¡ ·Î±×¾Æ¿ô or ¼­¹ö ÀÌµ¿ Á¤º¸ Àü¼Û.
-                    g_pSockASV->Send_zas_SUB_ACCOUNT(pUsrNODE->DATA.m_pUSER->Get_ACCOUNT(),
-                        pUsrNODE->DATA.m_btLogOutMODE,
-                        pUsrNODE->DATA.m_pUSER->Get_LEVEL(),
-                        pUsrNODE->DATA.m_pUSER->m_nZoneNO);
                     switch (pUsrNODE->DATA.m_btLogOutMODE) {
-                            /*
-                                case LOGOUT_MODE_WARP		:
-                                    // g_pThreadLOG->Whne_LogWARP( pUsrNODE->DATA.m_pUSER );
-                                    g_pSockLSV->Send_gsv_WARP_USER( pUsrNODE->DATA.m_pUSER );
-                                    #pragma COMPILE_TIME_MSG( "TODO:: ÀÌ»óÅÂ¿¡¼­ »¶³ª¼­ Á¢¼ÓÀÌ
-                               ²÷±â¸é ·Î±×ÀÎ ¼­¹ö°¡ ¾Ë¼ö ÀÖ³ª???" ) break;
-                            */
                         case LOGOUT_MODE_CHARLIST:
-// ÆÄÆ¼´Â Å»ÅðµÇ¼­ ¿Â´Ù...
 #ifdef __NEW_LOG
                             g_pThreadLOG->When_LogInOrOut(pUsrNODE->DATA.m_pUSER, NEWLOG_LOGOUT);
 #else

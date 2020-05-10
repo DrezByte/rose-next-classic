@@ -76,10 +76,7 @@ main(int argc, char** argv) {
         (char*)config.database.username.c_str(),
         (char*)config.database.password.c_str(),
         (char*)config.worldserver.ip.c_str(),
-        config.worldserver.server_port,
-        (char*)config.loginserver.ip.c_str(),
-        // config.loginserver.server_port,
-        19005 // Dummy value because actually connecting to that socket crashes the game server
+        config.worldserver.server_port
     );
 
     LOG_INFO("Initializing all maps");
