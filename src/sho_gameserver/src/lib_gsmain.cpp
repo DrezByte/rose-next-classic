@@ -23,9 +23,7 @@
 #include "rose/common/common_interface.h"
 
 #define TEST_ZONE_NO 100
-#define DB_INI_STRING 30
 
-// 최대 게임 객체수 ( 사용자 포함 )
 #define MAX_GAME_OBJECTS 65535
 #define DEF_GAME_USER_POOL_SIZE 8192
 #define INC_GAME_USER_POOL_SIZE 1024
@@ -36,7 +34,7 @@
 #define INC_SEND_IO_POOL_SIZE 8192
 #define DEF_SEND_IO_POOL_SIZE 32768
 
-//-------------------------------------------------------------------------------------------------
+
 STBDATA g_TblHAIR;
 STBDATA g_TblFACE;
 STBDATA g_TblARMOR;
@@ -69,8 +67,8 @@ STBDATA g_TblZONE;
 
 STBDATA* g_pTblSTBs[ITEM_TYPE_RIDE_PART + 1];
 
-STBDATA g_TblAVATAR; // 아바타 초기 설정 데이타..
-STBDATA g_TblSTATE; /// 캐릭터의 상태를 변경하는 정보.
+STBDATA g_TblAVATAR;
+STBDATA g_TblSTATE;
 
 STBDATA g_TblUnion;
 STBDATA g_TblClass;
@@ -78,8 +76,6 @@ STBDATA g_TblItemGRADE;
 
 STBDATA g_TblSkillPoint;
 STBDATA g_TblATTR;
-
-// classMYSQL       g_MySQL;
 
 CObjMNG* g_pObjMGR = NULL;
 CAI_LIST g_AI_LIST;
@@ -108,12 +104,10 @@ FILE* g_fpTXT = NULL;
 
 using namespace Rose::Common;
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+#define USE_MY_SQL_AGENT 0
+#define WM_LSVSOCK_MSG (WM_SOCKETWND_MSG + 0)
 #define WORLD_TIME_TICK 10000 // 10 sec
 
-enum eUserCntIDX { USERCNT_HG = 0, USERCNT_EX, USERCNT_BB, USERCNT_GL, USERCNT_MAX };
-int g_iUserCount[USERCNT_MAX];
 
 VOID CALLBACK
 GS_TimerProc(HWND hwnd /* handle to window */,
@@ -125,14 +119,6 @@ GS_TimerProc(HWND hwnd /* handle to window */,
             CLIB_GameSRV* pGS = CLIB_GameSRV::GetInstance();
             if (pGS) {
                 pGS->ConnectToLSV();
-            }
-            break;
-        }
-
-        case GS_TIMER_LOG: {
-            CLIB_GameSRV* pGS = CLIB_GameSRV::GetInstance();
-            if (pGS) {
-                pGS->ConnectToLOG();
             }
             break;
         }
@@ -155,42 +141,11 @@ GS_TimerProc(HWND hwnd /* handle to window */,
     };
 }
 
-//-------------------------------------------------------------------------------------------------
 void
 WriteLOG(char* szMSG) {
     LOG_INFO(szMSG);
 }
 
-#define TAG_HG 0x4840 // @H G
-#define TAG_EX 0x4540 // @E X
-#define TAG_BB 0x4240 // @B B
-#define TAG_GL 0x4740 // @G L
-
-void
-IncUserCNT(int iUserCNT, classUSER* pUSER) {
-    LOG_INFO("User connected, total count: %d", iUserCNT);
-}
-
-void
-DecUserCNT(int iUserCNT, classUSER* pUSER) {
-    LOG_INFO("User disconnected, total count: %d", iUserCNT);
-}
-
-#include "../SHO_GS.ver"
-
-DWORD
-GetServerBuildNO() {
-    return BUILD_NUM;
-}
-DWORD g_dwStartTIME = 0;
-DWORD
-GetServerStartTIME() {
-    return g_dwStartTIME;
-}
-
-#define WM_LSVSOCK_MSG (WM_SOCKETWND_MSG + 0)
-
-#define USE_MY_SQL_AGENT 0
 
 CLIB_GameSRV::CLIB_GameSRV() {
 #if !defined(__SERVER)
@@ -211,7 +166,7 @@ CLIB_GameSRV::~CLIB_GameSRV() {
         g_pThreadSQL->Free();
         SAFE_DELETE(g_pThreadSQL);
     }
-    if (g_pThreadLOG) { // 항상 g_pThreadSQL보다 뒤에...
+    if (g_pThreadLOG) {
         g_pThreadLOG->Free();
         SAFE_DELETE(g_pThreadLOG);
     }
@@ -222,7 +177,6 @@ CLIB_GameSRV::~CLIB_GameSRV() {
     }
 
     DisconnectFromLSV();
-    DisconnectFromLOG();
 
     SAFE_DELETE(g_pUserLIST);
     SAFE_DELETE(g_pPartyBUFF);
@@ -260,7 +214,6 @@ CLIB_GameSRV::init(HINSTANCE hInstance, const ServerConfig& config) {
         this->config.gameserver.data_dir.push_back('\\');
     }
 
-    m_bTestServer = true;
     m_iLangTYPE = this->config.gameserver.language;
     m_pCheckedLocalZONE = NULL;
     m_pWorldTIMER = NULL;
@@ -273,8 +226,6 @@ CLIB_GameSRV::init(HINSTANCE hInstance, const ServerConfig& config) {
     g_pCharDATA = CCharDatLIST::Instance();
 
     Load_BasicDATA();
-
-    ::ZeroMemory(g_iUserCount, sizeof(int) * USERCNT_MAX);
 
     g_pSockLSV = new GS_lsvSOCKET;
 
@@ -889,7 +840,6 @@ CLIB_GameSRV::Start(HWND hMainWND,
     BYTE btHighAge) {
     srand(timeGetTime());
 
-    m_bTestServer = false;
     m_dwUserLIMIT = MAX_ZONE_USER_BUFF;
 
     g_pSockLSV->Init(CSocketWND::GetInstance()->GetWindowHandle(),
@@ -898,7 +848,6 @@ CLIB_GameSRV::Start(HWND hMainWND,
         WM_LSVSOCK_MSG);
 
     this->ConnectToLSV();
-    this->ConnectToLOG();
 
     m_hMainWND = hMainWND;
 
@@ -923,7 +872,6 @@ CLIB_GameSRV::Start(HWND hMainWND,
     COMPILE_TIME_ASSERT(IS_UNSIGNED(DWORD));
 
     this->Shutdown();
-    g_dwStartTIME = classTIME::GetCurrentAbsSecond();
 
     g_pObjMGR = new CObjMNG(MAX_GAME_OBJECTS);
     g_pZoneLIST = CZoneLIST::Instance();
@@ -980,27 +928,6 @@ CLIB_GameSRV::DisconnectFromLSV() {
     g_pSockLSV->Disconnect();
 }
 
-//-------------------------------------------------------------------------------------------------
-bool
-CLIB_GameSRV::ConnectToLOG() {
-    //	return g_pSockLOG->Connect();
-    return true;
-}
-void
-CLIB_GameSRV::DisconnectFromLOG() {
-    //	g_pSockLOG->Disconnect ();
-}
-
-//-------------------------------------------------------------------------------------------------
-void
-CLIB_GameSRV::Send_ANNOUNCE(short nZoneNO, char* szMsg) {
-    if (nZoneNO)
-        g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT(nZoneNO, szMsg, NULL);
-    else
-        g_pZoneLIST->Send_gsv_ANNOUNCE_CHAT(szMsg, NULL);
-}
-
-//-------------------------------------------------------------------------------------------------
 void
 CLIB_GameSRV::Set_UserLIMIT(DWORD dwUserLimit) {
     m_dwUserLIMIT = dwUserLimit;
@@ -1009,5 +936,3 @@ CLIB_GameSRV::Set_UserLIMIT(DWORD dwUserLimit) {
         g_pSockLSV->Send_srv_USER_LIMIT(dwUserLimit);
     }
 }
-
-//-------------------------------------------------------------------------------------------------

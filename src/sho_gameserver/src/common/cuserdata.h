@@ -13,16 +13,9 @@
 #include "rose/common/game_config.h"
 
 #pragma warning(disable : 4201)
-//#define FRAROSE
-//-------------------------------------------------------------------------------------------------
 
 #ifdef __BORLANDC__
     #include <crtdbg.h>
-#endif
-
-#ifdef __SERVER
-extern DWORD Get_ServerMaxStats();
-extern DWORD Get_ServerMaxLevel();
 #endif
 
 #pragma pack(push, 1)

@@ -156,43 +156,26 @@ char* l_szAbility[] = {"STR",
 
 DWORD
 classUSER::A_Cheater() {
-    if (CLIB_GameSRV::GetInstance()->IsTestServer()) {
-        // 테섭 : 마스타, 개발자
-        return this->m_dwRIGHT & (RIGHT_MASTER | RIGHT_DEV);
-    } else {
-        // 본섭 : 마스타
-        return this->m_dwRIGHT & RIGHT_MASTER;
-    }
+    return this->m_dwRIGHT & RIGHT_MASTER;
 }
+
 DWORD
 classUSER::B_Cheater() {
-    if (CLIB_GameSRV::GetInstance()->IsTestServer()) {
-        // 테섭 : 마스타, 개발자, 마스타gm, 일반gm
-        return this->m_dwRIGHT & (RIGHT_MASTER | RIGHT_DEV | RIGHT_MG | RIGHT_NG);
-    } else {
-        // 본섭 : 마스타, 마스타gm,
-        return this->m_dwRIGHT & (RIGHT_MASTER | RIGHT_MG);
-    }
+    return this->m_dwRIGHT & (RIGHT_MASTER | RIGHT_MG);
 }
+
 DWORD
 classUSER::C_Cheater() {
-    // 마스터, 개발자, 마스타gm, 일반 gm
     return this->m_dwRIGHT & (RIGHT_MASTER | RIGHT_DEV | RIGHT_MG | RIGHT_NG);
 }
+
 DWORD
 classUSER::GM_Cheater() {
-    if (CLIB_GameSRV::GetInstance()->IsTestServer()) {
-        // 테섭 : 마스타, 개발자, 마스타gm, 일반gm
-        return this->m_dwRIGHT & (RIGHT_MASTER | RIGHT_DEV | RIGHT_MG | RIGHT_NG);
-    } else {
-        // 본섭 : 마스타, 마스타gm,
-        return this->m_dwRIGHT & (RIGHT_MASTER | RIGHT_MG | RIGHT_NG);
-    }
+    return this->m_dwRIGHT & (RIGHT_MASTER | RIGHT_MG | RIGHT_NG);
 }
 
 DWORD
 classUSER::TWGM_Cheater() {
-    // kchs : 2005-08-17 , 512와 256와 중간 권한
     return this->m_dwRIGHT & (RIGHT_TWG | RIGHT_MG | RIGHT_DEV | RIGHT_MASTER);
 }
 

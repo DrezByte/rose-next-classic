@@ -59,7 +59,6 @@ public:
     void Send_zws_ACCOUNT_LIST(CClientSOCKET* pSrvSocket, bool bSendIP);
 
     void Send_cli_STRESS_TEST(classPACKET* pCPacket);
-    void Save_AllUSER();
 
     int Get_AccountCNT() { return m_pHashACCOUNT->GetCount(); }
     bool Kick_ACCOUNT(char* szAccount);
@@ -106,7 +105,4 @@ public:
 
 extern CUserLIST* g_pUserLIST;
 
-void Save_AllUSER();
-
-//---------------------------------------------------------------------------
 #endif

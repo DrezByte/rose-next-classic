@@ -9,11 +9,7 @@
 
 using namespace Rose;
 
-extern void IncUserCNT(int iUserCNT, classUSER* pUSER);
-extern void DecUserCNT(int iUserCNT, classUSER* pUSER);
 
-//-------------------------------------------------------------------------------------------------
-// Worker Thread °¹¼ö = CPU * 2 + 2
 CUserLIST::CUserLIST(UINT uiInitDataCNT, UINT uiIncDataCNT):
     CDataPOOL<classUSER>("CUserPOOL", uiInitDataCNT, uiIncDataCNT), m_csHashACCOUNT(4000),
     m_csHashCHAR(4000), m_csNullZONE(4000), IOCPSocketSERVER("GS_SocketSERVER", 2, 2, true) {
@@ -110,8 +106,6 @@ CUserLIST::DeleteUSER(classUSER* pUSER, BYTE btLogOutMODE) {
                 pUSER->Get_IP());
         }
         pUSER->m_HashACCOUNT = 0;
-
-        ::DecUserCNT(m_pHashACCOUNT->GetCount(), pUSER);
     }
     m_csHashACCOUNT.Unlock();
     g_pThreadSQL->Add_BackUpUSER(pUSER, btLogOutMODE);
@@ -285,7 +279,6 @@ CUserLIST::Add_ACCOUNT(int iSocketIDX, t_PACKET* pRecvPket, char* szAccount) {
 
             m_csHashACCOUNT.Lock();
             m_pHashACCOUNT->Insert(pUSER->m_HashACCOUNT, pUSER);
-            ::IncUserCNT(m_pHashACCOUNT->GetCount(), pUSER);
             m_csHashACCOUNT.Unlock();
 
             t_PACKET* pSelCharPket = (t_PACKET*)new BYTE[256];
@@ -430,24 +423,4 @@ CUserLIST::Send_cli_STRESS_TEST(classPACKET* pCPacket) {
             ((classUSER*)pSocket)->SendPacket(pCPacket);
         }
     }
-}
-
-void
-CUserLIST::Save_AllUSER() {
-    iocpSOCKET* pSocket;
-
-    for (DWORD dwI = 0; dwI < this->GetMaxSocketCOUNT(); dwI++) {
-        pSocket = this->GetSOCKET(dwI);
-        if (pSocket) {
-            g_pThreadSQL->UpdateUserRECORD((classUSER*)pSocket);
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-void
-Save_AllUSER() {
-    g_LOG.CS_ODS(0xfff, ">>>>>>>>>>>>>>>>> Start Save_AllUSER()\n");
-    g_pUserLIST->Save_AllUSER();
-    g_LOG.CS_ODS(0xfff, "<<<<<<<<<<<<<<<<< End Save_AllUSER()\n");
 }

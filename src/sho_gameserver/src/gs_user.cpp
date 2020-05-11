@@ -7068,14 +7068,15 @@ classUSER::Recv_mon_SERVER_LIST_REQ(t_PACKET* pPacket) {
     pCPacket->m_HEADER.m_wType = GSV_SERVER_LIST_REPLY;
     pCPacket->m_HEADER.m_nSize = sizeof(srv_SERVER_LIST_REPLY);
 
-    pCPacket->m_srv_SERVER_LIST_REPLY.m_dwBuildNO = GetServerBuildNO();
-    pCPacket->m_srv_SERVER_LIST_REPLY.m_dwStartTIME = GetServerStartTIME();
+    pCPacket->m_srv_SERVER_LIST_REPLY.m_dwBuildNO = 0;
+    pCPacket->m_srv_SERVER_LIST_REPLY.m_dwStartTIME = 0;
     pCPacket->m_srv_SERVER_LIST_REPLY.m_nServerCNT = 0;
 
     this->Send_Start(*pCPacket);
     Packet_ReleaseNUnlock(pCPacket);
     return true;
 }
+
 /// 모니터링 툴에 사용자수 전송
 bool
 classUSER::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
