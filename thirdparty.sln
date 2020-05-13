@@ -47,6 +47,19 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "thirdparty\zlib.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "flatc", "thirdparty\flatc.vcxproj", "{24E884F0-7A32-3DC3-94B4-5DBC45DCA12F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpgport", "thirdparty\libpgport.vcxproj", "{AB1B1C1E-821A-437A-B177-1625ECD89C5B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE17871B-DA8D-420B-8856-15B8EF06F3DF} = {CE17871B-DA8D-420B-8856-15B8EF06F3DF}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpq", "thirdparty\libpq.vcxproj", "{630580B3-665C-4269-AE64-27BA8BD3A016}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE17871B-DA8D-420B-8856-15B8EF06F3DF} = {CE17871B-DA8D-420B-8856-15B8EF06F3DF}
+		{AB1B1C1E-821A-437A-B177-1625ECD89C5B} = {AB1B1C1E-821A-437A-B177-1625ECD89C5B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpqcommon", "thirdparty\libpqcommon.vcxproj", "{CE17871B-DA8D-420B-8856-15B8EF06F3DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|x86 = debug|x86
@@ -105,6 +118,18 @@ Global
 		{24E884F0-7A32-3DC3-94B4-5DBC45DCA12F}.debug|x86.Build.0 = Debug|Win32
 		{24E884F0-7A32-3DC3-94B4-5DBC45DCA12F}.release|x86.ActiveCfg = release|Win32
 		{24E884F0-7A32-3DC3-94B4-5DBC45DCA12F}.release|x86.Build.0 = release|Win32
+		{AB1B1C1E-821A-437A-B177-1625ECD89C5B}.debug|x86.ActiveCfg = Debug|Win32
+		{AB1B1C1E-821A-437A-B177-1625ECD89C5B}.debug|x86.Build.0 = Debug|Win32
+		{AB1B1C1E-821A-437A-B177-1625ECD89C5B}.release|x86.ActiveCfg = Release|Win32
+		{AB1B1C1E-821A-437A-B177-1625ECD89C5B}.release|x86.Build.0 = Release|Win32
+		{630580B3-665C-4269-AE64-27BA8BD3A016}.debug|x86.ActiveCfg = Debug|Win32
+		{630580B3-665C-4269-AE64-27BA8BD3A016}.debug|x86.Build.0 = Debug|Win32
+		{630580B3-665C-4269-AE64-27BA8BD3A016}.release|x86.ActiveCfg = Release|Win32
+		{630580B3-665C-4269-AE64-27BA8BD3A016}.release|x86.Build.0 = Release|Win32
+		{CE17871B-DA8D-420B-8856-15B8EF06F3DF}.debug|x86.ActiveCfg = Debug|Win32
+		{CE17871B-DA8D-420B-8856-15B8EF06F3DF}.debug|x86.Build.0 = Debug|Win32
+		{CE17871B-DA8D-420B-8856-15B8EF06F3DF}.release|x86.ActiveCfg = Release|Win32
+		{CE17871B-DA8D-420B-8856-15B8EF06F3DF}.release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
