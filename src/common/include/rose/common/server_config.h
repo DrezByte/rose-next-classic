@@ -11,13 +11,20 @@
 namespace Rose {
 namespace Common {
 struct DatabaseConfig {
+    std::string connection_string;
     std::string ip;
     uint32_t port;
     std::string name;
     std::string username;
     std::string password;
 
-    DatabaseConfig(): ip("127.0.0.1"), port(1433), name("SHO"), username("seven"), password("tpqmsgkcm") {}
+    DatabaseConfig():
+        connection_string("postgres://postgres:postgres@localhost/rose-next"),
+        ip("127.0.0.1"),
+        port(1433),
+        name("SHO"),
+        username("seven"),
+        password("tpqmsgkcm") {}
 };
 
 struct LoginServerConfig {
@@ -102,6 +109,7 @@ public:
             return false;
         }
 
+        this->get_str("database", "connection_string", this->database.connection_string);
         this->get_str("database", "ip", this->database.ip);
         this->get_uint32("database", "port", this->database.port);
         this->get_str("database", "name", this->database.name);

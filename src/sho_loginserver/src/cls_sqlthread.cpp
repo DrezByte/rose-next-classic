@@ -7,6 +7,7 @@
 #include "CLS_SqlTHREAD.h"
 #include "blockLIST.h"
 
+using namespace Rose::Database;
 using namespace Rose::Network;
 
 IMPLEMENT_INSTANCE(CLS_SqlTHREAD)
@@ -122,33 +123,23 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
         return false;
     }
 
-    const char* query = "SELECT password, access_level FROM account WHERE username=?";
-    this->db->bind_string(1, req->username()->c_str());
+    const char* stmt = "SELECT password, access_level FROM account WHERE username=$1";
 
-    if (!this->db->execute(query)) {
+    QueryResult res = this->db_pg.query(stmt, {req->username()->c_str()});
+    if (!res.is_ok()) {
         LOG_ERROR("Failed to query account info for username: (%s)", req->username()->c_str());
-        for (const std::string& msg: this->db->get_error_messages()) {
-            LOG_WARN(msg.c_str());
-        }
+        LOG_ERROR(this->db_pg.last_error_message());
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_FAILED);
         return false;
     }
 
-    FetchResult fetch_result = this->db->fetch();
-    if (fetch_result == FetchResult::NoData) {
+    if (res.data.size() == 0) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
         return false;
-    } else if (fetch_result == FetchResult::Error) {
-        LOG_ERROR("Failed to fetch account info for username: (%s)", req->username()->c_str());
-        for (const std::string& msg: this->db->get_error_messages()) {
-            LOG_WARN(msg.c_str());
-        }
-        g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_FAILED);
-        return false;
     }
 
-    std::string password = this->db->get_string(1);
-    int access_level = this->db->get_int32(2);
+    std::string password = res.value(0, 0);
+    int access_level = std::stoi(res.value(0, 1));
 
     if (access_level < this->minimum_access_level) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_NO_RIGHT_TO_CONNECT);
