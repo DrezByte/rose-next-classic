@@ -7,6 +7,7 @@
 #include "CDLList.h"
 #include "PacketHEADER.h"
 
+#include "rose/database/database.h"
 #include "rose/network/packet.h"
 
 #include <queue>
@@ -34,6 +35,7 @@ struct QueuedPacket {
 
 class CSqlTHREAD: public classTHREAD {
 public:
+    Rose::Database::Client db_pg;
     std::unique_ptr<classODBC> db;
 
     std::mutex queue_mutex;

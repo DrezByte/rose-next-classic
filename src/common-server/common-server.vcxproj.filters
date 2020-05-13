@@ -14,9 +14,8 @@
     <Filter Include="Source Files\IOCPSocketServer">
       <UniqueIdentifier>{12f5c710-1b75-4303-8bdd-3fec02629155}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{90d92c17-7e1e-4843-9897-57c67e780acc}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    <Filter Include="Source Files\database">
+      <UniqueIdentifier>{6efeaa57-0b02-4d4b-a470-b54fc09b12fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +51,9 @@
     </ClCompile>
     <ClCompile Include="iocpSocketSERVER.cpp">
       <Filter>Source Files\IOCPSocketServer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\database.cpp">
+      <Filter>Source Files\database</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,10 +94,13 @@
       <Filter>Source Files\IOCPSocketServer</Filter>
     </ClInclude>
     <ClInclude Include="CDataPOOL.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="classINDEX.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rose\database\database.h">
+      <Filter>Source Files\database</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

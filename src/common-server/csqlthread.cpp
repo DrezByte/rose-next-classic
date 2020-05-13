@@ -6,6 +6,7 @@
 #include "classUTIL.h"
 
 #include "rose/common/log.h"
+#include "rose/common/server_config.h"
 #include "rose/network/packet.h"
 
 #include <queue>
