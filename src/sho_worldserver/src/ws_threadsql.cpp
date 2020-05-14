@@ -10,6 +10,8 @@
 #include "rose/common/game_config.h"
 #include "rose/common/game_types.h"
 
+#include <regex>
+
 using namespace Rose;
 using namespace Rose::Common;
 using namespace Rose::Network;
@@ -865,8 +867,11 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
         return false;
     }
 
-    bool name_valid =
-        req->name()->size() > 3 && req->name()->size() <= GameStaticConfig::MAX_CHARACTER_NAME;
+    std::regex name_re("^[a-zA-Z0-9_-]+$");
+    bool name_valid = req->name()->size() > 3
+        && req->name()->size() <= GameStaticConfig::MAX_CHARACTER_NAME
+        && std::regex_match(req->name()->c_str(), name_re);
+
     bool face_valid = req->face_id() > 0 && req->face_id() < g_TblFACE.m_nDataCnt;
     bool hair_valid = req->hair_id() > 0 && req->hair_id() < g_TblHAIR.m_nDataCnt;
 
