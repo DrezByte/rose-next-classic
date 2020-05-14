@@ -151,9 +151,6 @@
     <ClInclude Include="src\srv_common\cthreadlog.h">
       <Filter>Source Files\srv_common</Filter>
     </ClInclude>
-    <ClInclude Include="src\srv_common\cthreadmsgr.h">
-      <Filter>Source Files\srv_common</Filter>
-    </ClInclude>
     <ClInclude Include="src\srv_common\cworldvar.h">
       <Filter>Source Files\srv_common</Filter>
     </ClInclude>
@@ -170,6 +167,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common-server\include\cthreadguild.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common-server\include\cthreadmsgr.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -303,9 +303,6 @@
     <ClCompile Include="src\srv_common\cthreadlog.cpp">
       <Filter>Source Files\srv_common</Filter>
     </ClCompile>
-    <ClCompile Include="src\srv_common\cthreadmsgr.cpp">
-      <Filter>Source Files\srv_common</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\status_effects.cpp">
       <Filter>Source Files</Filter>
@@ -314,6 +311,9 @@
       <Filter>Common Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common-server\src\cthreadguild.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common-server\src\cthreadmsgr.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>

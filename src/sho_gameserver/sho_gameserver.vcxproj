@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common-server\include\cthreadguild.h" />
+    <ClInclude Include="..\common-server\include\cthreadmsgr.h" />
     <ClInclude Include="..\common\calculation.h" />
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h" />
     <ClInclude Include="..\common\net_prototype.h" />
@@ -56,7 +57,6 @@
     <ClInclude Include="src\srv_common\cchatroom.h" />
     <ClInclude Include="src\srv_common\cobjvar.h" />
     <ClInclude Include="src\srv_common\cthreadlog.h" />
-    <ClInclude Include="src\srv_common\cthreadmsgr.h" />
     <ClInclude Include="src\srv_common\cworldvar.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\zonefile.h" />
@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common-server\src\cthreadguild.cpp" />
+    <ClCompile Include="..\common-server\src\cthreadmsgr.cpp" />
     <ClCompile Include="..\common\calculation.cpp" />
     <ClCompile Include="src\ai_lib\ai_action.cpp" />
     <ClCompile Include="src\ai_lib\ai_condition.cpp" />
@@ -107,7 +108,6 @@
     <ClCompile Include="src\object.cpp" />
     <ClCompile Include="src\srv_common\cchatroom.cpp" />
     <ClCompile Include="src\srv_common\cthreadlog.cpp" />
-    <ClCompile Include="src\srv_common\cthreadmsgr.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Create</PrecompiledHeader>
