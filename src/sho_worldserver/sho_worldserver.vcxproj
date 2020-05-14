@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common-server\src\cthreadguild.cpp" />
     <ClCompile Include="..\common\cchatroom.cpp" />
     <ClCompile Include="..\common\cinventory.cpp" />
     <ClCompile Include="..\common\citem.cpp" />
-    <ClCompile Include="..\common\cthreadguild.cpp" />
     <ClCompile Include="..\common\cthreadlog.cpp" />
     <ClCompile Include="..\common\cthreadmsgr.cpp" />
     <ClCompile Include="..\common\etc_math.cpp" />
@@ -33,10 +33,10 @@
     <ClCompile Include="src\ws_zonelist.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common-server\include\cthreadguild.h" />
     <ClInclude Include="..\common\cchatroom.h" />
     <ClInclude Include="..\common\cinventory.h" />
     <ClInclude Include="..\common\citem.h" />
-    <ClInclude Include="..\common\cthreadguild.h" />
     <ClInclude Include="..\common\cthreadlog.h" />
     <ClInclude Include="..\common\cthreadmsgr.h" />
     <ClInclude Include="..\common\etc_math.h" />

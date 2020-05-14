@@ -42,6 +42,9 @@ public:
 
     void DeleteUSER(classUSER* pUSER, BYTE btLogOutMODE /* =LOGOUT_MODE_LEFT */);
 
+    bool SendPacketToSocketIDX(int socket_id, classPACKET& p) {
+        return this->SendPacketToSocketIDX(socket_id, &p);
+    }
     bool SendPacketToSocketIDX(int iClientSocketIDX, classPACKET* pCPacket);
 
     void Send_wsv_CREATE_CHAR(int iSocketIDX, BYTE btResult);

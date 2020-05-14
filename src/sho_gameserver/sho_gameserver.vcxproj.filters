@@ -148,9 +148,6 @@
     <ClInclude Include="src\srv_common\cobjvar.h">
       <Filter>Source Files\srv_common</Filter>
     </ClInclude>
-    <ClInclude Include="src\srv_common\cthreadguild.h">
-      <Filter>Source Files\srv_common</Filter>
-    </ClInclude>
     <ClInclude Include="src\srv_common\cthreadlog.h">
       <Filter>Source Files\srv_common</Filter>
     </ClInclude>
@@ -170,6 +167,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\calculation.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common-server\include\cthreadguild.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -300,9 +300,6 @@
     <ClCompile Include="src\srv_common\cchatroom.cpp">
       <Filter>Source Files\srv_common</Filter>
     </ClCompile>
-    <ClCompile Include="src\srv_common\cthreadguild.cpp">
-      <Filter>Source Files\srv_common</Filter>
-    </ClCompile>
     <ClCompile Include="src\srv_common\cthreadlog.cpp">
       <Filter>Source Files\srv_common</Filter>
     </ClCompile>
@@ -314,6 +311,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\calculation.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common-server\src\cthreadguild.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>

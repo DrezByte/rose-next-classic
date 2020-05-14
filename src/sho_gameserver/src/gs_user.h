@@ -585,7 +585,9 @@ public:
     void AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
         classPACKET* pCPacket);
 
+    bool SendPacket(classPACKET& p) { return this->SendPacket(&p); }
     inline bool SendPacket(classPACKET* pCPacket) { return this->Send_Start(*pCPacket); }
+
     bool SendPacketToPARTY(classPACKET* pCPacket) {
         if (this->GetPARTY())
             return m_pPartyBUFF->SendToPartyMembers(pCPacket);
