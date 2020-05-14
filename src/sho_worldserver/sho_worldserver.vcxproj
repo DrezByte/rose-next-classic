@@ -35,6 +35,7 @@
   <ItemGroup>
     <ClInclude Include="..\common-server\include\cthreadguild.h" />
     <ClInclude Include="..\common-server\include\cthreadmsgr.h" />
+    <ClInclude Include="..\common-server\include\cworldvar.h" />
     <ClInclude Include="..\common\cchatroom.h" />
     <ClInclude Include="..\common\cinventory.h" />
     <ClInclude Include="..\common\citem.h" />

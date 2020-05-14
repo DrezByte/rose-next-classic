@@ -151,9 +151,6 @@
     <ClInclude Include="src\srv_common\cthreadlog.h">
       <Filter>Source Files\srv_common</Filter>
     </ClInclude>
-    <ClInclude Include="src\srv_common\cworldvar.h">
-      <Filter>Source Files\srv_common</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h">
       <Filter>Common Files</Filter>
     </ClInclude>
@@ -170,6 +167,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common-server\include\cthreadmsgr.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common-server\include\cworldvar.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

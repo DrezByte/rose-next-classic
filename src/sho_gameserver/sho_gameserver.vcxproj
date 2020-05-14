@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="..\common-server\include\cthreadguild.h" />
     <ClInclude Include="..\common-server\include\cthreadmsgr.h" />
+    <ClInclude Include="..\common-server\include\cworldvar.h" />
     <ClInclude Include="..\common\calculation.h" />
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h" />
     <ClInclude Include="..\common\net_prototype.h" />
@@ -57,7 +58,6 @@
     <ClInclude Include="src\srv_common\cchatroom.h" />
     <ClInclude Include="src\srv_common\cobjvar.h" />
     <ClInclude Include="src\srv_common\cthreadlog.h" />
-    <ClInclude Include="src\srv_common\cworldvar.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\zonefile.h" />
     <ClInclude Include="src\zonelist.h" />
