@@ -9,12 +9,18 @@
 
 #include "rose/common/game_config.h"
 #include "rose/common/game_types.h"
+#include "rose/database/database.h"
+
+#include "nlohmann/json.hpp"
 
 #include <regex>
 
 using namespace Rose;
 using namespace Rose::Common;
+using namespace Rose::Database;
 using namespace Rose::Network;
+
+using json = nlohmann::json;
 
 #ifdef __EUROPE // Oct. 6 2005 추가 (권형근)
     #define MAX_CHAR_PER_USER 3
@@ -164,10 +170,7 @@ CWS_ThreadSQL::Execute() {
 
     CDLList<tagQueryDATA>::tagNODE* pSqlNODE;
 
-    g_LOG.CS_ODS(0xffff,
-        ">  > >> CWS_ThreadSQL::Execute() ThreadID: %d(0x%x)\n",
-        this->ThreadID,
-        this->ThreadID);
+    LOG_TRACE("Start CWS_ThreadSQL::Execute(), ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 
     while (TRUE) {
         if (!this->Terminated) {
@@ -201,12 +204,9 @@ CWS_ThreadSQL::Execute() {
     int iCnt = m_AddPACKET.GetNodeCount();
     _ASSERT(iCnt == 0);
 
-    g_LOG.CS_ODS(0xffff,
-        "<<<< CWS_ThreadSQL::Execute() ThreadID: %d(0x%x)\n",
-        this->ThreadID,
-        this->ThreadID);
+    LOG_TRACE("End CWS_ThreadSQL::Execute(), ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 }
-//-------------------------------------------------------------------------------------------------
+
 bool
 CWS_ThreadSQL::Add_SqlPacketWithACCOUNT(CWS_Client* pUSER, t_PACKET* pPacket) {
     return CSqlTHREAD::Add_SqlPACKET((int)pUSER->m_iSocketIDX,
@@ -214,6 +214,7 @@ CWS_ThreadSQL::Add_SqlPacketWithACCOUNT(CWS_Client* pUSER, t_PACKET* pPacket) {
         (BYTE*)pPacket,
         pPacket->m_HEADER.m_nSize);
 }
+
 bool
 CWS_ThreadSQL::Add_SqlPacketWithAVATAR(CWS_Client* pUSER, t_PACKET* pPacket) {
     return CSqlTHREAD::Add_SqlPACKET((int)pUSER->m_iSocketIDX,
@@ -222,7 +223,6 @@ CWS_ThreadSQL::Add_SqlPacketWithAVATAR(CWS_Client* pUSER, t_PACKET* pPacket) {
         pPacket->m_HEADER.m_nSize);
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CWS_ThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
     switch (pSqlPACKET->m_pPacket->m_wType) {
@@ -262,8 +262,6 @@ CWS_ThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
 struct tagDelCHAR {
     DWORD m_dwDBID;
     CStrVAR m_Name;
@@ -604,48 +602,27 @@ CWS_ThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-#define WSVAR_TBL_BLOB 2
 bool
-CWS_ThreadSQL::Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN) {
-    this->db->MakeQuery((char*)"SELECT * FROM tblWS_VAR WHERE txtNAME=",
-        MQ_PARAM_STR,
-        WORLD_VAR,
-        MQ_PARAM_END);
-    if (!this->db->QuerySQLBuffer()) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
+CWS_ThreadSQL::Load_WORLDVAR(int16_t* buffer, size_t count) {
+    const char* stmt = "SELECT data FROM worldvar WHERE name = $1";
+
+    QueryResult res = this->db_pg.query(stmt, {WORLD_VAR});
+    if (!res.is_ok()) {
+        std::string msg = this->db_pg.last_error_message();
+        LOG_ERROR("Failed to load world var: %s", msg.c_str());
         return false;
     }
 
-    if (!this->db->GetNextRECORD()) {
-        // insert !!!
-        this->db->BindPARAM(1, pVarBUFF, nBuffLEN);
+    if (res.row_count != 1) {
+        LOG_ERROR("Found too many world var rows: %d", res.row_count);
+        return false;
+    }
 
-        this->db->MakeQuery((char*)"INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
-            MQ_PARAM_STR,
-            WORLD_VAR,
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_STR,
-            g_pThreadLOG->GetCurDateTimeSTR(),
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_BINDIDX,
-            1,
-            MQ_PARAM_ADDSTR,
-            ");",
-            MQ_PARAM_END);
-        if (this->db->ExecSQLBuffer() < 1) {
-            g_LOG.CS_ODS(LOG_NORMAL,
-                (char*)"SQL Exec ERROR:: INSERT %s : %s \n",
-                WORLD_VAR,
-                this->db->GetERROR());
-            return true;
-        }
-    } else {
-        BYTE* pDATA = this->db->GetDataPTR(WSVAR_TBL_BLOB);
+    json j = json::parse(res.value(0, 0));
+    size_t c = min(j.size(), count);
 
-        ::CopyMemory(pVarBUFF, pDATA, nBuffLEN);
+    for (size_t i = 0; i < c; ++i) {
+        buffer[i] = j[i].get<int16_t>();
     }
 
     return true;
@@ -673,32 +650,38 @@ CWS_ThreadSQL::Save_WorldVAR(BYTE* pVarBUFF, short nBuffLEN) {
 
 bool
 CWS_ThreadSQL::Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE) {
-    this->db->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
+    // First bytes are "time" in CWorldVar, we want to get just the var list
+    size_t offset = 4;
 
-    this->db->MakeQuery((char*)"UPDATE tblWS_VAR SET dateUPDATE=",
-        MQ_PARAM_STR,
-        g_pThreadLOG->GetCurDateTimeSTR(),
-        MQ_PARAM_ADDSTR,
-        ",binDATA=",
-        MQ_PARAM_BINDIDX,
-        1,
-        MQ_PARAM_ADDSTR,
-        "WHERE txtNAME=",
-        MQ_PARAM_STR,
-        WORLD_VAR,
-        MQ_PARAM_END);
-    if (this->db->ExecSQLBuffer() < 0) {
-        // 고치기 실패 !!!
-        g_LOG.CS_ODS(LOG_NORMAL,
-            "SQL Exec ERROR:: UPDATE %s %s \n",
-            WORLD_VAR,
-            this->db->GetERROR());
+    size_t count = (pSqlZONE->m_nDataSIZE - offset) / sizeof(int16_t);
+    if (count <= 0) {
+        return false;
+    }
+
+    if (count > MAX_WORLD_VAR_CNT) {
+        count = MAX_WORLD_VAR_CNT;
+    }
+
+    int16_t* buffer = reinterpret_cast<int16_t*>(pSqlZONE->m_btZoneDATA + offset);
+
+    json j = json::array();
+    for (size_t i = 0; i < count; ++i) {
+        j.push_back(buffer[i]);
+    }
+
+    const char* stmt = "INSERT INTO worldvar (name, data) VALUES ($1, $2)"
+                       "ON CONFLICT (name) DO UPDATE SET data=$2";
+
+    QueryResult res = this->db_pg.query(stmt, {WORLD_VAR, j.dump()});
+    if (!res.is_ok()) {
+        std::string msg = this->db_pg.last_error_message();
+        LOG_ERROR("Failed to save WORLDVAR: %s", msg.c_str());
+        return false;
     }
 
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
     t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;

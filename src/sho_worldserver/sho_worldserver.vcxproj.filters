@@ -79,9 +79,6 @@
     <ClInclude Include="..\common-server\include\cthreadmsgr.h">
       <Filter>Common Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common-server\include\cworldvar.h">
-      <Filter>Common Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">

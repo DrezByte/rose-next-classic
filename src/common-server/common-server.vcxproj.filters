@@ -55,6 +55,9 @@
     <ClCompile Include="src\database.cpp">
       <Filter>Source Files\database</Filter>
     </ClCompile>
+    <ClCompile Include="src\cworldvar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="blockLIST.h">
@@ -101,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="include\rose\database\database.h">
       <Filter>Source Files\database</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cworldvar.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

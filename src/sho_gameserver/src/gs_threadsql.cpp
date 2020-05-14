@@ -13,6 +13,14 @@
 #include "ZoneLIST.h"
 #include "classTIME.h"
 
+#include "rose/database/database.h"
+
+#include "nlohmann/json.hpp"
+
+using namespace Rose::Database;
+
+using json = nlohmann::json;
+
 #define MAX_CHAR_PER_USER 5
 #define DELETE_CHAR_WAIT_TIME (5 * 60) //	7ÀÏ 24½Ã°£ 60ºÐ 60ÃÊ
 
@@ -343,27 +351,7 @@ GS_CThreadSQL::IO_EventObjDATA(CObjEVENT* pObjEVENT, bool bSave) {
     SAFE_DELETE_ARRAY(pPacket);
     return true;
 }
-bool
-GS_CThreadSQL::Save_WorldVAR(BYTE* pVarBUFF, short nBuffLEN) {
-    sql_ZONE_DATA* pPacket;
 
-    pPacket = (sql_ZONE_DATA*)new BYTE[sizeof(sql_ZONE_DATA) + nBuffLEN];
-
-    pPacket->m_nDataSIZE = nBuffLEN;
-
-    pPacket->m_wType = SQL_ZONE_DATA;
-    pPacket->m_nSize = sizeof(sql_ZONE_DATA) + pPacket->m_nDataSIZE;
-
-    pPacket->m_btDataTYPE = SQL_ZONE_DATA_WORLDVAR_SAVE;
-    ::CopyMemory(pPacket->m_btZoneDATA, pVarBUFF, pPacket->m_nDataSIZE);
-
-    CSqlTHREAD::Add_SqlPACKET(0, WORLD_VAR, (BYTE*)pPacket, pPacket->m_nSize);
-    SAFE_DELETE_ARRAY(pPacket);
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE) {
     if (pUSER->m_btLogOutMODE != btLogOutMODE) {
@@ -683,10 +671,6 @@ GS_CThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
                 case SQL_ZONE_DATA_NPCOBJ_SAVE:
                 case SQL_ZONE_DATA_EVENTOBJ_SAVE:
                     Proc_SAVE_OBJVAR(pSqlPACKET);
-                    break;
-
-                case SQL_ZONE_DATA_WORLDVAR_SAVE:
-                    Proc_SAVE_WORLDVAR(pSqlZONE);
                     break;
             }
             break;
@@ -1451,81 +1435,6 @@ GS_CThreadSQL::Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-bool
-GS_CThreadSQL::Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN) {
-    //	this->db->MakeQuery( "SELECT binDATA FROM tblWS_VAR WHERE txtNAME=",
-    this->db->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
-        MQ_PARAM_STR,
-        WORLD_VAR,
-        MQ_PARAM_END);
-    if (!this->db->QuerySQLBuffer()) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-        return false;
-    }
-
-    if (!this->db->GetNextRECORD()) {
-        // insert !!!
-        this->db->BindPARAM(1, pVarBUFF, nBuffLEN);
-
-        this->db->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
-            MQ_PARAM_STR,
-            WORLD_VAR,
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_STR,
-            g_pThreadLOG->GetCurDateTimeSTR(),
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_BINDIDX,
-            1,
-            MQ_PARAM_ADDSTR,
-            ");",
-            MQ_PARAM_END);
-        if (this->db->ExecSQLBuffer() < 1) {
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "SQL Exec ERROR:: INSERT %s : %s \n",
-                WORLD_VAR,
-                this->db->GetERROR());
-            return true;
-        }
-    } else {
-        BYTE* pDATA = this->db->GetDataPTR(WSVAR_TBL_BLOB);
-
-        ::CopyMemory(pVarBUFF, pDATA, nBuffLEN);
-    }
-
-    return true;
-}
-
-bool
-GS_CThreadSQL::Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE) {
-    this->db->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
-
-    this->db->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
-        MQ_PARAM_STR,
-        g_pThreadLOG->GetCurDateTimeSTR(),
-        MQ_PARAM_ADDSTR,
-        ",binDATA=",
-        MQ_PARAM_BINDIDX,
-        1,
-        MQ_PARAM_ADDSTR,
-        "WHERE txtNAME=",
-        MQ_PARAM_STR,
-        WORLD_VAR,
-        MQ_PARAM_END);
-    if (this->db->ExecSQLBuffer() < 0) {
-        // °íÄ¡±â ½ÇÆÐ !!!
-        g_LOG.CS_ODS(LOG_NORMAL,
-            "SQL Exec ERROR:: UPDATE %s %s \n",
-            WORLD_VAR,
-            this->db->GetERROR());
-    }
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
     t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;

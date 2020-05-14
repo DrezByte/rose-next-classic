@@ -13,7 +13,6 @@
   <ItemGroup>
     <ClInclude Include="..\common-server\include\cthreadguild.h" />
     <ClInclude Include="..\common-server\include\cthreadmsgr.h" />
-    <ClInclude Include="..\common-server\include\cworldvar.h" />
     <ClInclude Include="..\common\calculation.h" />
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h" />
     <ClInclude Include="..\common\net_prototype.h" />
@@ -168,7 +167,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__SERVER;Ndebug;WIN32;_LIB;__USE_CHEAT;_PA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -211,7 +210,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\Common;$(SolutionDir)src\common\include;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__SERVER;_debug;WIN32;_LIB;__USE_CHEAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

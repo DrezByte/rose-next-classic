@@ -108,7 +108,7 @@ public:
     bool Add_SqlPacketWithACCOUNT(CWS_Client* pUSER, t_PACKET* pPacket);
     bool Add_SqlPacketWithAVATAR(CWS_Client* pUSER, t_PACKET* pPacket);
 
-    bool Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN);
+    bool Load_WORLDVAR(int16_t* buffer, size_t count);
     bool Save_WorldVAR(BYTE* pVarBUFF, short nBuffLEN);
 };
 extern CWS_ThreadSQL* g_pThreadSQL;

@@ -237,6 +237,11 @@ SHO_WS::connect_database(DatabaseConfig& config) {
             1024 * 8)) {
         return false;
     }
+    if (!g_pThreadSQL->db_pg.connect(config.connection_string)) {
+        std::string error_message = g_pThreadSQL->db_pg.last_error_message();
+        LOG_ERROR("Failed to connect to the database: %s", error_message.c_str());
+        return false;
+    }
     g_pThreadSQL->Resume();
 
     g_pThreadLOG = new CThreadLOG;
@@ -275,7 +280,7 @@ SHO_WS::connect_database(DatabaseConfig& config) {
     }
     g_pThreadGUILD->Resume();
 
-    g_pThreadSQL->Load_WORLDVAR(g_ZoneLIST.m_pVAR, sizeof(tagWorldVAR));
+    g_pThreadSQL->Load_WORLDVAR(g_ZoneLIST.m_nWorldVAR, MAX_WORLD_VAR_CNT);
 
     return true;
 }

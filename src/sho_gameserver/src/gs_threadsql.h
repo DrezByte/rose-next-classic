@@ -108,8 +108,6 @@ private:
     bool Proc_LOAD_OBJVAR(tagQueryDATA* pSqlPACKET);
     bool Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET);
 
-    bool Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE);
-
     bool Proc_cli_MEMO(tagQueryDATA* pSqlPACKET);
 
     bool Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET);
@@ -131,8 +129,6 @@ public:
     bool IO_ZoneDATA(CZoneTHREAD* pZONE, bool bSave = false);
     bool IO_NpcObjDATA(CObjNPC* pObjNPC, bool bSave = false);
     bool IO_EventObjDATA(CObjEVENT* pObjEVENT, bool bSave = false);
-    bool Save_WorldVAR(BYTE* pVarBUFF, short nBuffLEN);
-    bool Load_WORLDVAR(BYTE* pVarBUFF, short nBuffLEN);
 
     bool Add_SqlPacketWithACCOUNT(classUSER* pUSER, t_PACKET* pPacket);
     bool Add_SqlPacketWithAVATAR(classUSER* pUSER, t_PACKET* pPacket);

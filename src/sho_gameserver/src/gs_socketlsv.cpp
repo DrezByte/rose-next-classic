@@ -101,10 +101,8 @@ GS_lsvSOCKET::Send_srv_SET_WORLD_VAR(short nVarIDX, short nValue) {
 }
 void
 GS_lsvSOCKET::Recv_srv_SET_WORLD_VAR() {
-    if (m_pRecvPket->m_srv_SET_WORLD_VAR.m_nVarIDX < 0) {
-        // 전체 변수 업데이트...
-        g_pZoneLIST->Reset_WorldVAR((BYTE*)(m_pRecvPket->m_srv_SET_WORLD_VAR.m_nValue));
-    } else {
+    short var_idx = m_pRecvPket->m_srv_SET_WORLD_VAR.m_nVarIDX;
+    if ( var_idx > 0 && var_idx < MAX_WORLD_VAR_CNT) {
         g_pZoneLIST->CWorldVAR::Set_WorldVAR(m_pRecvPket->m_srv_SET_WORLD_VAR.m_nVarIDX,
             m_pRecvPket->m_srv_SET_WORLD_VAR.m_nValue[0]);
     }
