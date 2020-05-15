@@ -613,9 +613,21 @@ CWS_ThreadSQL::Load_WORLDVAR(int16_t* buffer, size_t count) {
         return false;
     }
 
-    if (res.row_count != 1) {
+    if (res.row_count > 1) {
         LOG_ERROR("Found too many world var rows: %d", res.row_count);
         return false;
+    }
+
+    if (res.row_count == 0) {
+        // Pad by 4-bytes which is "time" in CWorldVar
+        int16_t* new_buffer = new int16_t[count + 2];
+        new_buffer[0] = 0;
+        new_buffer[1] = 0;
+        std::memcpy(&new_buffer[2], buffer, count);
+        this->Save_WorldVAR(reinterpret_cast<uint8_t*>(new_buffer), (count + 2) * sizeof(int16_t));
+
+        LOG_INFO("World var not found, default values saved");
+        return true;
     }
 
     json j = json::parse(res.value(0, 0));
