@@ -138,8 +138,8 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
         return false;
     }
 
-    std::string password = res.value(0, 0);
-    int access_level = std::stoi(res.value(0, 1));
+    std::string password = res.get_string(0, 0);
+    int access_level = res.get_int32(0, 1);
 
     if (access_level < this->minimum_access_level) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_NO_RIGHT_TO_CONNECT);

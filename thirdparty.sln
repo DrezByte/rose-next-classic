@@ -60,6 +60,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpq", "thirdparty\libpq.v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpqcommon", "thirdparty\libpqcommon.vcxproj", "{CE17871B-DA8D-420B-8856-15B8EF06F3DF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fmt", "thirdparty\fmt.vcxproj", "{443FDD34-05CA-4B49-A64B-A3E23EC1E7AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|x86 = debug|x86
@@ -130,6 +132,10 @@ Global
 		{CE17871B-DA8D-420B-8856-15B8EF06F3DF}.debug|x86.Build.0 = Debug|Win32
 		{CE17871B-DA8D-420B-8856-15B8EF06F3DF}.release|x86.ActiveCfg = Release|Win32
 		{CE17871B-DA8D-420B-8856-15B8EF06F3DF}.release|x86.Build.0 = Release|Win32
+		{443FDD34-05CA-4B49-A64B-A3E23EC1E7AA}.debug|x86.ActiveCfg = Debug|Win32
+		{443FDD34-05CA-4B49-A64B-A3E23EC1E7AA}.debug|x86.Build.0 = Debug|Win32
+		{443FDD34-05CA-4B49-A64B-A3E23EC1E7AA}.release|x86.ActiveCfg = Release|Win32
+		{443FDD34-05CA-4B49-A64B-A3E23EC1E7AA}.release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

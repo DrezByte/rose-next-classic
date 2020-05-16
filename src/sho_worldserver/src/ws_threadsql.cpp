@@ -36,32 +36,6 @@ using json = nlohmann::json;
 
 #define DATA_VER_2 2
 
-enum AVTTBL_COL_IDX {
-    AVTTBL_CHARID = 0,
-    AVTTBL_ACCOUNT,
-    AVTTBL_NAME = 2,
-    AVTTBL_LEVEL,
-    AVTTBL_MONEY,
-    AVTTBL_RIGHT,
-    AVTTBL_BASIC_ETC = 6,
-    AVTTBL_BASIC_INFO,
-    AVTTBL_BASIC_ABILITY,
-    AVTTBL_GROW_ABILITY,
-    AVTTBL_SKILL_ABILITY,
-    AVTTBL_QUEST = 11,
-    AVTTBL_INVENTORY,
-    AVTTBL_HOTICON,
-    AVTTBL_DELETE_TIME,
-    AVTTBL_WISHLIST,
-    AVTTBL_OPTION = 16,
-    AVTTBL_JOB_NO,
-    AVTTBL_REG_TIME,
-    AVTTBL_PARTY_IDX,
-    AVTTBL_ITEM_SN,
-    AVTTBL_DATA_VER
-};
-
-//-------------------------------------------------------------------------------------------------
 CWS_ThreadSQL::CWS_ThreadSQL(): CSqlTHREAD(true) {
     COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) <= 384);
 #ifdef __KCHS_BATTLECART__
@@ -270,245 +244,168 @@ struct tagDelCHAR {
 bool
 CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
 
-    this->db->MakeQuery((char*)"SELECT name, basic_etc, basic_info, grow_ability, delete_by_int "
-                               "FROM character WHERE account_name=",
-        MQ_PARAM_STR,
-        pSqlPACKET->m_Name.Get(),
-        MQ_PARAM_END);
+    const char* stmt = "SELECT id, name, level, job_id, gender_id, face_id, hair_id, delete_by "
+                       "FROM character WHERE "
+                       "account_username=$1";
 
-    if (!this->db->QuerySQLBuffer()) {
-        // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-        return false;
-    }
-    if (!this->db->QuerySQLBuffer()) {
-        // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
+    std::string username = pSqlPACKET->m_Name.Get();
+    QueryResult res = this->db_pg.query(stmt, {username});
+    if (!res.is_ok()) {
+        std::string msg = this->db_pg.last_error_message();
+        LOG_ERROR("Error getting character list for account %s: %s", username.c_str(), msg.c_str());
         return false;
     }
 
     classPACKET pCPacket = classPACKET();
-
     pCPacket.m_HEADER.m_wType = WSV_CHAR_LIST;
     pCPacket.m_HEADER.m_nSize = sizeof(wsv_CHAR_LIST);
+
+    size_t char_count = min(res.row_count, GameStaticConfig::MAX_CHARACTERS);
     pCPacket.m_wsv_CHAR_LIST.m_btCharCNT = 0;
 
-    if (this->db->GetNextRECORD()) {
-        tagBasicINFO* pBI;
-        tagBasicETC* pBE;
-        tagGrowAbility* pGA;
-        tagCHARINFO sCHAR;
-        char* szCharName;
-        short nC = 0, nPlatinumCharCNT = 0;
-        CSLList<tagDelCHAR> DelList;
-        CSLList<tagDelCHAR>::tagNODE* pNode;
-        DWORD dwDelSEC, dwCurAbsSEC = classTIME::GetCurrentAbsSecond();
-        do {
-            if (this->db->GetStrPTR(0)) {
-                szCharName = this->db->GetStrPTR(0);
-                dwDelSEC = this->db->GetInteger(4);
+    std::vector<std::string> delete_list;
+    DateTime now = std::chrono::system_clock::now();
 
-                if (dwDelSEC && dwCurAbsSEC >= dwDelSEC) {
-                    // 삭제...
-                    pNode = new CSLList<tagDelCHAR>::tagNODE;
-                    pNode->m_VALUE.m_Name.Set(szCharName);
-                    // pNode->m_VALUE.m_dwDBID = this->db->GetInteger( 5 );
-                    DelList.AppendNode(pNode);
-                } else {
-                    if (dwDelSEC) {
-                        // 삭제 대기...
-                        dwDelSEC -= dwCurAbsSEC;
-                    }
+    for (size_t idx = 0; idx < char_count; ++idx) {
+        std::string char_id = res.get_string(idx, 0);
+        std::string char_name = res.get_string(idx, 1);
+        int level = res.get_int32(idx, 2);
+        int job_id = res.get_int32(idx, 3);
+        int gender_id = res.get_int32(idx, 4);
+        int face_id = res.get_int32(idx, 5);
+        int hair_id = res.get_int32(idx, 6);
+        DateTime delete_by = res.get_datetime(idx, 7);
 
-                    pCPacket.AppendString(szCharName);
+        int64_t delete_seconds_remaining = 0;
 
-                    pBE = (tagBasicETC*)this->db->GetDataPTR(1);
-                    pBI = (tagBasicINFO*)this->db->GetDataPTR(2);
-                    pGA = (tagGrowAbility*)this->db->GetDataPTR(3);
-#ifdef __KCHS_BATTLECART__
-                    short nDataVER = this->db->GetInteger16(5);
-#endif
-                    sCHAR.m_btCharRACE = pBE->m_btCharRACE;
-                    sCHAR.m_nJOB = pBI->m_nClass;
-                    sCHAR.m_nLEVEL = pGA->m_nLevel;
-                    sCHAR.m_dwRemainSEC = dwDelSEC;
-#ifdef __INC_PLATINUM
-    #ifdef __KCHS_BATTLECART__
-                    if (nDataVER < DATA_VER_2)
-                        sCHAR.m_btIsPlatinumCHAR = *((BYTE*)(&pBE->m_RideITEM[RIDE_PART_ARMS]));
-                    else
-                        sCHAR.m_btIsPlatinumCHAR = pBE->m_btCharSlotNO;
-    #else
-                    sCHAR.m_btIsPlatinumCHAR = pBE->m_btCharSlotNO;
-    #endif
-#endif
-                    if (pBE->m_btCharSlotNO)
-                        nPlatinumCharCNT++;
-                    pCPacket.AppendData(&sCHAR, sizeof(tagCHARINFO));
-                    pCPacket.AppendData(pBE->m_PartITEM, sizeof(tagPartITEM) * MAX_BODY_PART);
-
-                    pCPacket.m_wsv_CHAR_LIST.m_btCharCNT++;
-                }
+        bool delete_by_null = res.get_null(idx, 7);
+        if (!delete_by_null) {
+            if (delete_by <= now) {
+                delete_list.push_back(char_id);
+                continue;
             }
-        } while (this->db->GetNextRECORD() && ++nC < MAX_CHAR_PER_USER);
 
-        if (g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket)) {
-            CWS_Client* pFindUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-            if (pFindUSER) {
-                pFindUSER->m_nPlatinumCharCNT = nPlatinumCharCNT;
+            delete_seconds_remaining =
+                std::chrono::duration_cast<std::chrono::seconds>(delete_by - now).count();
+        }
+
+        tagCHARINFO char_info;
+        char_info.m_btCharRACE = gender_id;
+        char_info.m_nJOB = job_id;
+        char_info.m_nLEVEL = level;
+        char_info.m_dwRemainSEC = delete_seconds_remaining;
+        char_info.m_btIsPlatinumCHAR = false;
+
+        tagPartITEM equipment[MAX_BODY_PART];
+        std::fill_n(equipment, MAX_BODY_PART, tagPartITEM{});
+
+        equipment[BODY_PART_FACE].m_nItemNo = face_id;
+        equipment[BODY_PART_HAIR].m_nItemNo = hair_id;
+
+        QueryResult equip_res =
+            this->db_pg.query("SELECT equipment.slot, item.game_data_id"
+                              " FROM equipment INNER JOIN item ON equipment.item_id = item.id"
+                              " WHERE equipment.character_id = $1",
+                {char_id});
+
+        if (!equip_res.is_ok()) {
+            LOG_DEBUG("Equipment query failed: %s", equip_res.error_message());
+            continue;
+        }
+
+        for (size_t row_idx = 0; row_idx < equip_res.row_count; ++row_idx) {
+            int slot = equip_res.get_int32(row_idx, 0);
+            int game_data_id = equip_res.get_int32(row_idx, 1);
+
+            if (slot >= 0 && slot < MAX_BODY_PART) {
+                equipment[slot].m_nItemNo = game_data_id;
             }
         }
 
-        pNode = DelList.GetHeadNode();
-        while (pNode) {
-            long iResultSP = -99;
-            SDWORD cbSize1 = SQL_NTS;
-            this->db->SetParam_long(1, iResultSP, cbSize1);
+        pCPacket.AppendString((char*)char_name.c_str());
+        pCPacket.AppendData(&char_info, sizeof(tagCHARINFO));
+        pCPacket.AppendData(equipment, sizeof(tagPartITEM) * MAX_BODY_PART);
+        pCPacket.m_wsv_CHAR_LIST.m_btCharCNT += 1;
+    }
 
-            const char* query = "DELETE FROM character WHERE name=\'%s\'";
-            if (this->db->QuerySQL((char*)query, pNode->m_VALUE.m_Name.Get())) {
-                while (this->db->GetMoreRESULT()) {
-                    if (this->db->BindRESULT()) {
-                        if (this->db->GetNextRECORD()) {
-                            ;
-                        }
-                    }
-                }
-                if (0 != iResultSP) {
-                    // 디비프로시져 삭제 실패...
-                    g_LOG.CS_ODS(LOG_NORMAL,
-                        "SP Return ERROR Code:%d (ws_DeleteCHAR:%s):: %s \n",
-                        iResultSP,
-                        pNode->m_VALUE.m_Name.Get(),
-                        this->db->GetERROR());
-                }
-            } else {
-                // 삭제 실패.;
-                g_LOG.CS_ODS(LOG_NORMAL,
-                    "Exec ERROR(ws_DeleteCHAR:%s):: %s \n",
-                    pNode->m_VALUE.m_Name.Get(),
-                    this->db->GetERROR());
-            }
+    CWS_Client* pFindUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
+    if (pFindUSER) {
+        pFindUSER->m_nPlatinumCharCNT = 0;
+    }
+    g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
 
-            DelList.DeleteHeadNFree();
-            pNode = DelList.GetHeadNode();
-        };
-    } else {
-        // 이 서버에는 등록된 케릭터가 없다.
-        CWS_Client* pFindUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-        if (pFindUSER) {
-            pFindUSER->m_nPlatinumCharCNT = 0;
+    if (delete_list.size() > 0) {
+        std::string q = "DELETE FROM character WHERE id IN ($1)";
+
+        QueryResult delete_res = this->db_pg.query(q, delete_list);
+        if (!delete_res.is_ok()) {
+            LOG_ERROR("Failed to delete character(s): %s", delete_res.error_message());
         }
-        g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
     }
 
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
-    /*
-        존 번호에 해당되는 존서버로 이동하라고 ...
-    */
-    t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
+    t_PACKET* packet = (t_PACKET*)pSqlPACKET->m_pPacket;
 
-    short nOffset = sizeof(cli_SELECT_CHAR), nOutStrLen;
-    char* pCharName = Packet_GetStringPtr(pPacket, nOffset, nOutStrLen);
-    if (!pCharName) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: CharName == NULL \n");
+    short offset = sizeof(cli_SELECT_CHAR);
+    short strlen = 0;
+    char* char_name = Packet_GetStringPtr(packet, offset, strlen);
+    if (!char_name) {
         return false;
     }
 
-    if (nOutStrLen > MAX_AVATAR_NAME) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Proc_cli_SELECT_CHAR:: CharName == '%s'\n", pCharName);
+    if (strlen == 0 || strlen > GameStaticConfig::MAX_CHARACTER_NAME) {
         return false;
     }
 
-    {
-        bool m_Injected = false;
-        for (int i = 0; i < strlen(pCharName); i++) {
-            if (!m_Injected) {
-                if (pCharName[i] == '\'') {
-                    if (pCharName[i + 1] == ';') {
-                        g_LOG.CS_ODS(LOG_NORMAL,
-                            "Proc_cli_SELECT_CHAR: 715 SQL Injection Recv'd and filtered\n");
-                        m_Injected = true;
-                        pCharName[i] = '\0';
-                    }
-                }
-            } else {
-                pCharName[i] = 0x00;
-            }
-        }
-    }
-
-    // 케릭터의 소유자인지 판단...
-    this->db->MakeQuery((char*)"SELECT account_name, basic_etc, id FROM "
-                               "character WHERE name=",
-        MQ_PARAM_STR,
-        pCharName,
-        MQ_PARAM_END);
-    if (!this->db->QuerySQLBuffer()) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-        return false;
-    }
-    if (!this->db->GetNextRECORD()) {
-        // 케릭터 없다.
-        g_LOG.CS_ODS(LOG_NORMAL, "Char[ %s ] not found ...\n", pCharName);
+    const char* stmt = "SELECT id, account_username, map_id FROM character WHERE name=$1";
+    QueryResult res = this->db_pg.query(stmt, {char_name});
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to select character with name %s: %s", char_name, res.error_message());
         return false;
     }
 
-    char* szCharOWNER = this->db->GetStrPTR(0);
-    tagBasicETC* pBE = (tagBasicETC*)this->db->GetDataPTR(1);
-    short nDataVER = DATA_VER_2;
+    if (!res.row_count == 1) {
+        return false;
+    }
 
-    CWS_Client* pUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-    if (pUSER) {
-#ifdef __KCHS_BATTLECART__
-        BYTE btCharSlotNO =
-            nDataVER < DATA_VER_2 ? *((BYTE*)(&pBE->m_RideITEM[4])) : pBE->m_btCharSlotNO;
-#else
-        BYTE btCharSlotNO = pBE->m_btCharSlotNO;
-#endif
-        if (btCharSlotNO) {
-            // 플레티넘 케릭이면 ???
-            if (0 == (pUSER->m_dwPayFLAG & PLAY_FLAG_EXTRA_CHAR)) {
-                // 뭐냐 ???
-                pUSER->CloseSocket();
-                return false;
-            }
-        }
-        pUSER->m_dwDBID = this->db->GetInteger(2);
-        pUSER->ClanINIT();
+    CWS_Client* user = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
+    if (!user) {
+        return false;
+    }
 
-        short nZoneNO = pBE->m_nZoneNO;
-        if (!_strcmpi(pUSER->Get_ACCOUNT(), szCharOWNER)) {
-            // 존이 0 이면 ...디폴트 존으로..
-            g_pUserLIST->Add_CHAR(pUSER, pCharName);
-            if (pUSER->Send_wsv_MOVE_SERVER(
-                    (0 == nZoneNO) ? AVATAR_ZONE(pBE->m_btCharRACE) : nZoneNO)) {
-                // 도착한 쪽지 체크...
-                this->db->MakeQuery((char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=",
-                    MQ_PARAM_STR,
-                    pCharName,
-                    MQ_PARAM_END);
-                if (!this->db->QuerySQLBuffer()) {
-                    g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-                    return true;
-                }
+    std::string char_id = res.get_string(0, 0);
+    std::string account_username = res.get_string(0, 1);
+    int map_id = res.get_int32(0, 2);
 
-                if (this->db->GetNextRECORD() && this->db->GetInteger(0) > 0) {
-                    // 쪽지 갯수...
-                    g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG,
-                        MEMO_REQ_RECEIVED_CNT,
-                        this->db->GetInteger(0));
-                }
-            }
-        }
-    } // else 접속 끊겼다.
+    if (_strcmpi(user->Get_ACCOUNT(), account_username.c_str()) != 0) {
+        return false;
+    }
 
-    return false;
+    g_pUserLIST->Add_CHAR(user, char_name);
+
+    user->m_dwDBID = std::stoi(char_id);
+    user->ClanINIT();
+
+    if (!user->Send_wsv_MOVE_SERVER(map_id)) {
+        return false;
+    }
+
+    const char* mail_stmt = "SELECT COUNT(*) FROM character_mail WHERE to_character_id=$1";
+    QueryResult mail_res = this->db_pg.query(mail_stmt, {char_id});
+    if (!mail_res.is_ok()) {
+        LOG_ERROR("Failed to get mail count for character %s: %s",
+            char_name,
+            mail_res.error_message());
+        return false;
+    }
+
+    g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REQ_RECEIVED_CNT, mail_res.get_int32(0, 0));
+
+    return true;
 }
 
 bool
@@ -555,6 +452,7 @@ CWS_ThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
         dwReaminSEC = dwDelWaitTime;
     }
 
+    // TODO: Instantly delete the character if they are the master of a clan???
     if (this->db->QuerySQL((char*)"{call ws_ClanCharGET(\'%s\')}", pCharName)) {
         if (this->db->GetNextRECORD()) {
             // 클랜 있다.
@@ -630,7 +528,7 @@ CWS_ThreadSQL::Load_WORLDVAR(int16_t* buffer, size_t count) {
         return true;
     }
 
-    json j = json::parse(res.value(0, 0));
+    json j = json::parse(res.get_string(0, 0));
     size_t c = min(j.size(), count);
 
     for (size_t i = 0; i < c; ++i) {
@@ -906,6 +804,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
 
     std::string account_name = client->Get_ACCOUNT();
 
+    // Check character count
     query = "SELECT COUNT(*) from character WHERE account_name=?";
     this->db->bind_string(1, account_name);
 

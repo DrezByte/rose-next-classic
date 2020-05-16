@@ -2,7 +2,28 @@
 
 #include <libpq-fe.h>
 
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
 namespace Rose::Database {
+
+std::optional<DateTime>
+parse_datetime_str(const std::string& s) {
+    // Visual studio bug if format string is longer than stream
+    // https://developercommunity.visualstudio.com/content/problem/18311/stdget-time-asserts-with-istreambuf-iterator-is-no.html
+    if (s.size() < 19) {
+        return std::nullopt;
+    }
+    std::tm t = {};
+    std::istringstream ss(s);
+    ss >> std::get_time(&t, "%Y-%m-%d %H:%M:%S");
+    if (ss.fail()) {
+        return std::nullopt;
+    }
+    const std::time_t tt = std::mktime(&t);
+    return std::chrono::system_clock::from_time_t(tt);
+}
 
 void
 PgConnDeleter::operator()(PGconn* c) {
@@ -73,12 +94,31 @@ QueryResult::row(size_t row_idx) {
 }
 
 std::string
-QueryResult::value(size_t row_idx, size_t col_idx) {
+QueryResult::get_string(size_t row_idx, size_t col_idx) {
     const size_t val_idx = (row_idx * this->col_count) + col_idx;
     if (val_idx >= this->data.size()) {
         return "";
     }
     return this->data.at(val_idx);
+}
+
+int32_t
+QueryResult::get_int32(size_t row_idx, size_t col_idx) {
+    try {
+        return std::stoi(this->get_string(row_idx, col_idx));
+    } catch (...) {
+        return 0;
+    }
+}
+
+DateTime
+QueryResult::get_datetime(size_t row_idx, size_t col_idx) {
+    return parse_datetime_str(this->get_string(row_idx, col_idx)).value_or(DateTime());
+}
+
+bool
+QueryResult::get_null(size_t row_idx, size_t col_idx) {
+    return this->get_string(row_idx, col_idx).empty();
 }
 
 /*

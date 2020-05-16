@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <optional>
 #include <string>
@@ -12,6 +13,10 @@ typedef struct pg_conn PGconn;
 typedef struct pg_result PGresult;
 
 namespace Rose::Database {
+
+using DateTime = std::chrono::time_point<std::chrono::system_clock>;
+
+std::optional<DateTime> parse_datetime_str(const std::string& s);
 
 struct PgConnDeleter {
     void operator()(PGconn* c);
@@ -53,7 +58,10 @@ public:
     QueryResultRow row(size_t idx);
 
     /// Get a value from the query result by row and column index
-    std::string value(size_t row_idx, size_t col_idx);
+    std::string get_string(size_t row_idx, size_t col_idx);
+    int32_t get_int32(size_t row_idx, size_t col_idx);
+    DateTime get_datetime(size_t row_idx, size_t col_idx);
+    bool get_null(size_t row_idx, size_t col_idx);
 };
 
 /// Database client
@@ -78,4 +86,4 @@ public:
     /// Execute a query and get the results
     QueryResult query(const std::string& statement, const std::vector<std::string>& params);
 };
-}
+} // namespace Rose::Database

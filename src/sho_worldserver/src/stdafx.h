@@ -49,6 +49,8 @@
     #include "CClientSOCKET.h"
     #include "CSocketWND.h"
 
+    #include "fmt/core.h"
+
 typedef classSTB CGameSTB;
 
 //{{AFX_INSERT_LOCATION}}
