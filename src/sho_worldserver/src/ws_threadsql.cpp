@@ -9,6 +9,7 @@
 
 #include "rose/common/game_config.h"
 #include "rose/common/game_types.h"
+#include "rose/common/util.h"
 #include "rose/database/database.h"
 
 #include "nlohmann/json.hpp"
@@ -19,17 +20,10 @@ using namespace Rose;
 using namespace Rose::Common;
 using namespace Rose::Database;
 using namespace Rose::Network;
+using namespace Rose::Util;
 
 using json = nlohmann::json;
 
-#ifdef __EUROPE // Oct. 6 2005 추가 (권형근)
-    #define MAX_CHAR_PER_USER 3
-#else
-    #define MAX_CHAR_PER_USER 5
-#endif
-
-//#define	MAX_CREATE_CHAR_PER_USER	3
-#define MAX_CREATE_CHAR_PER_USER MAX_CHAR_PER_USER
 #define MAX_AVATAR_NAME 20
 
 #define DELETE_CHAR_WAIT_TIME (60 * 60) //	60분
@@ -596,136 +590,156 @@ bool
 CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
     t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
 
+    std::string char_name = pSqlPACKET->m_Name.Get();
+    if (char_name.empty()) {
+        return false;
+    }
+
+    classUSER* user = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
+    if (!user) {
+        return false;
+    }
+    std::string user_id = std::to_string(user->Get_DBID());
+
     switch (pPacket->m_cli_MEMO.m_btTYPE) {
         case MEMO_REQ_RECEIVED_CNT: {
-            if (!this->db->QuerySQL((char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
-                    pSqlPACKET->m_Name.Get())) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
+            const char* stmt = "SELECT COUNT(*) FROM character, character_mail WHERE "
+                               "character.id=$1 AND character.id=character_mail.to_character_id";
+
+            QueryResult res = this->db_pg.query(stmt, {user_id});
+            if (!res.is_ok()) {
+                LOG_ERROR("Failed to get mail count for character %s: %s",
+                    char_name.c_str(),
+                    res.error_message());
                 return false;
             }
             g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG,
                 MEMO_REPLY_RECEIVED_CNT,
-                this->db->GetInteger(0));
+                res.get_int32(0, 0));
             return true;
         }
 
         case MEMO_REQ_CONTENTS: {
-            // 한번에 5개의 쪽지 읽음
-            if (!this->db->QuerySQL((char*)"SELECT TOP 5 dwDATE, txtFROM, txtMEMO FROM tblWS_MEMO "
-                                           "WHERE txtNAME=\'%s\' ORDER BY dwDATE ASC",
-                    pSqlPACKET->m_Name.Get())) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
+            const char* stmt = "SELECT cm.id, cm.sent, cm.message, "
+                               "from_char.name as from_character_name "
+                               "FROM character_mail AS cm "
+                               "LEFT JOIN character as from_char ON from_char.id = cm.from_character_id "
+                               "LEFT JOIN character as to_char ON to_char.id = cm.to_character_id "
+                               "WHERE to_char.id = $1";
+
+            QueryResult res = this->db_pg.query(stmt, {user_id});
+            if (!res.is_ok()) {
+                LOG_ERROR("Failed to get mail for character %s: %s",
+                    user->Get_DBID(),
+                    res.error_message());
                 return false;
             }
-            // EX: delete top 2 from `tblgs_error` where txtACCOUNT='gmsho004' order by dateREG ASC
-            if (this->db->GetNextRECORD()) {
-                classPACKET pCPacket = classPACKET();
 
-                pCPacket.m_HEADER.m_wType = WSV_MEMO;
-                pCPacket.m_HEADER.m_nSize = sizeof(wsv_MEMO);
-                pCPacket.m_wsv_MEMO.m_btTYPE = MEMO_REPLY_CONTENTS;
+            classPACKET packet = classPACKET();
+            packet.m_HEADER.m_wType = WSV_MEMO;
+            packet.m_HEADER.m_nSize = sizeof(wsv_MEMO);
+            packet.m_wsv_MEMO.m_btTYPE = MEMO_REPLY_CONTENTS;
 
-                DWORD dwDate, *pDW;
-                char *szFrom, *szMemo;
-                int iMemoCNT = 0;
-                do {
-                    iMemoCNT++;
-                    dwDate = (DWORD)this->db->GetInteger(0);
-                    szFrom = this->db->GetStrPTR(1);
-                    szMemo = this->db->GetStrPTR(2, false);
+            std::vector<std::string> delete_list;
+            for (size_t idx = 0; idx < res.row_count; ++idx) {
+                std::string mail_id = res.get_string(idx, 0);
+                DateTime sent = res.get_datetime(idx, 1);
+                std::string message = res.get_string(idx, 2);
+                std::string from = res.get_string(idx, 3);
 
-                    pDW = (DWORD*)(&pCPacket.m_pDATA[pCPacket.m_HEADER.m_nSize]);
-                    pCPacket.m_HEADER.m_nSize += 4;
-                    *pDW = dwDate;
-                    pCPacket.AppendString(szFrom);
-                    pCPacket.AppendString(szMemo);
+                int32_t* pDW = reinterpret_cast<int32_t*>(&packet.m_pDATA[packet.m_HEADER.m_nSize]);
+                packet.m_HEADER.m_nSize += 4;
+                *pDW = time_since_win_epoch(sent).count();
+                packet.AppendString(const_cast<char*>(from.c_str()));
+                packet.AppendString(const_cast<char*>(message.c_str()));
 
-                    if (pCPacket.m_HEADER.m_nSize > MAX_PACKET_SIZE - 270) {
-                        // 꽉찼다... 전송
-                        g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
+                if (packet.m_HEADER.m_nSize > MAX_PACKET_SIZE - 270) {
+                    // 꽉찼다... 전송
+                    g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, packet);
 
-                        pCPacket = classPACKET();
-                        pCPacket.m_HEADER.m_wType = WSV_MEMO;
-                        pCPacket.m_HEADER.m_nSize = sizeof(wsv_MEMO);
-                        pCPacket.m_wsv_MEMO.m_btTYPE = MEMO_REPLY_CONTENTS;
-                    }
-                } while (this->db->GetNextRECORD());
-
-                g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
-
-                if (this->db->ExecSQL(
-                        (char*)"DELETE FROM tblWS_MEMO WHERE (intSN IN (SELECT TOP %d intSN FROM "
-                               "tblWS_MEMO WHERE txtNAME=\'%s\' ORDER BY dwDATE ASC))",
-                        iMemoCNT,
-                        pSqlPACKET->m_Name.Get())
-                    < 1) {
-                    // 오류 또는 삭제된것이 없다.
-                    g_LOG.CS_ODS(LOG_NORMAL,
-                        "Exec ERROR(DELETE_MEMO):: %s \n",
-                        this->db->GetERROR());
-                    return true;
+                    packet = classPACKET();
+                    packet.m_HEADER.m_wType = WSV_MEMO;
+                    packet.m_HEADER.m_nSize = sizeof(wsv_MEMO);
+                    packet.m_wsv_MEMO.m_btTYPE = MEMO_REPLY_CONTENTS;
                 }
-            } // else 쪽지 없다.
-            break;
-        }
-        case MEMO_REQ_SEND: {
-            short nOffset = sizeof(cli_MEMO);
-            char* szTargetCHAR;
 
-            szTargetCHAR = Packet_GetStringPtr(pPacket, nOffset);
-            if (!szTargetCHAR || strlen(szTargetCHAR) < 1) {
-                // 잘못된 케릭 이름
+                delete_list.push_back(mail_id);
+            }
+
+            g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, packet);
+
+            // Delete mail sent to the client from the database
+            if (delete_list.size() > 0) {
+                const char* delete_stmt = "DELETE FROM character_mail WHERE id IN ($1)";
+                QueryResult delete_res = this->db_pg.query(delete_stmt, {delete_list});
+                if (!delete_res.is_ok()) {
+                    LOG_ERROR("Failed to delete mail for character %s: %s",
+                        char_name.c_str(),
+                        delete_res.error_message());
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        case MEMO_REQ_SEND: {
+            short offset = sizeof(cli_MEMO);
+            char* target_char = Packet_GetStringPtr(pPacket, offset);
+
+            if (!target_char || strlen(target_char) < 1) {
                 g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_INVALID_TARGET);
                 return true;
             }
-            char* szMemo = Packet_GetStringPtr(pPacket, nOffset);
-            if (!szMemo || strlen(szTargetCHAR) < 2) {
-                // 쪽지 내용 오류.
+
+            const char* stmt = "SELECT id FROM character WHERE character.name=$1";
+            QueryResult res = this->db_pg.query(stmt, {target_char});
+            if (!res.is_ok()) {
+                LOG_ERROR("Failed to get character id for character %s: %s",
+                    target_char,
+                    res.error_message());
+                return false;
+            }
+
+            if (res.row_count == 0) {
+                g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_INVALID_TARGET);
+                return true;
+            }
+
+            std::string target_char_id = res.get_string(0, 0);
+
+            char* message = Packet_GetStringPtr(pPacket, offset);
+            if (!message || strlen(message) < 2) {
                 g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_INVALID_CONTENT);
                 return true;
             }
 
-#define MAX_RECV_MEMO_CNT 50
-            // 대상 케릭이 몇개의 보관된 쪽지가 있냐?
-            if (!this->db->QuerySQL((char*)"SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
-                    szTargetCHAR)) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
+            const char* count_stmt =
+                "SELECT COUNT(*) FROM character, character_mail WHERE "
+                "character.name=$1 AND character.id=character_mail.to_character_id";
+
+            QueryResult count_res = this->db_pg.query(count_stmt, {target_char});
+            if (!count_res.is_ok()) {
+                LOG_ERROR("Failed to get mail count for character %s: %s",
+                    target_char,
+                    count_res.error_message());
                 return false;
             }
-            if (this->db->GetNextRECORD() && this->db->GetInteger(0) > MAX_RECV_MEMO_CNT) {
-                // MAX_RECV_MEMO_CNT 개 이상의 쪽지를 보유 하고 있다면...
+
+            if (count_res.get_int32(0, 0) > GameStaticConfig::MAX_MAIL_MESSAGES) {
                 g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_FULL_MEMO);
                 return true;
             }
 
-            // 쪽지 저장..
-            DWORD dwCurAbsSEC = classTIME::GetCurrentAbsSecond();
-            this->db->MakeQuery(
-                (char*)"INSERT tblWS_MEMO (dwDATE, txtNAME, txtFROM, txtMEMO) VALUES(",
-                MQ_PARAM_INT,
-                dwCurAbsSEC,
-                MQ_PARAM_ADDSTR,
-                ",",
-                MQ_PARAM_STR,
-                szTargetCHAR,
-                MQ_PARAM_ADDSTR,
-                ",",
-                MQ_PARAM_STR,
-                pSqlPACKET->m_Name.Get(),
-                MQ_PARAM_ADDSTR,
-                ",",
-                MQ_PARAM_STR,
-                szMemo,
-                MQ_PARAM_ADDSTR,
-                ");",
-                MQ_PARAM_END);
-            if (this->db->ExecSQLBuffer() < 1) {
-                // 만들기 실패 !!!
-                g_LOG.CS_ODS(LOG_NORMAL,
-                    "SQL Exec ERROR:: INSERT MEMO:%s : %s \n",
+            const char* add_stmt = "INSERT INTO character_mail (to_character_id, "
+                                   "from_character_id, message) VALUES ($1)";
+
+            QueryResult add_res = this->db_pg.query(stmt, {target_char_id, user_id, message});
+            if (!add_res.is_ok()) {
+                LOG_ERROR("Failed to add character mail from %s to %s: %s",
                     pSqlPACKET->m_Name.Get(),
-                    this->db->GetERROR());
-                return true;
+                    target_char_id,
+                    add_res.error_message())
+                return false;
             }
 
             g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_OK);

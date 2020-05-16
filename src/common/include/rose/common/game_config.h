@@ -10,6 +10,8 @@ const uint16_t MAX_STAT = 300;
 
 const int MAX_CHARACTER_NAME = 20;
 const int MAX_CHARACTERS = 5;
+
+const int MAX_MAIL_MESSAGES = 50;
 }; // namespace GameStaticConfig
 
 namespace Common {

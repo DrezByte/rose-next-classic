@@ -2,7 +2,6 @@
 
 #include <chrono>
 #include <memory>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -12,11 +11,12 @@ struct pg_result;
 typedef struct pg_conn PGconn;
 typedef struct pg_result PGresult;
 
+// Forward declaration for Rose::Util
+namespace Rose::Util {
+    using DateTime = std::chrono::time_point<std::chrono::system_clock>;
+}
+
 namespace Rose::Database {
-
-using DateTime = std::chrono::time_point<std::chrono::system_clock>;
-
-std::optional<DateTime> parse_datetime_str(const std::string& s);
 
 struct PgConnDeleter {
     void operator()(PGconn* c);
@@ -60,7 +60,7 @@ public:
     /// Get a value from the query result by row and column index
     std::string get_string(size_t row_idx, size_t col_idx);
     int32_t get_int32(size_t row_idx, size_t col_idx);
-    DateTime get_datetime(size_t row_idx, size_t col_idx);
+    Rose::Util::DateTime get_datetime(size_t row_idx, size_t col_idx);
     bool get_null(size_t row_idx, size_t col_idx);
 };
 

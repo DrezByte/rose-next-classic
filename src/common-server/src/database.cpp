@@ -1,29 +1,11 @@
 #include "rose/database/database.h"
+#include "rose/common/util.h"
 
 #include <libpq-fe.h>
 
-#include <ctime>
-#include <iomanip>
-#include <sstream>
+using namespace Rose::Util;
 
 namespace Rose::Database {
-
-std::optional<DateTime>
-parse_datetime_str(const std::string& s) {
-    // Visual studio bug if format string is longer than stream
-    // https://developercommunity.visualstudio.com/content/problem/18311/stdget-time-asserts-with-istreambuf-iterator-is-no.html
-    if (s.size() < 19) {
-        return std::nullopt;
-    }
-    std::tm t = {};
-    std::istringstream ss(s);
-    ss >> std::get_time(&t, "%Y-%m-%d %H:%M:%S");
-    if (ss.fail()) {
-        return std::nullopt;
-    }
-    const std::time_t tt = std::mktime(&t);
-    return std::chrono::system_clock::from_time_t(tt);
-}
 
 void
 PgConnDeleter::operator()(PGconn* c) {
