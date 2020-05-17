@@ -12,6 +12,9 @@ const int MAX_CHARACTER_NAME = 20;
 const int MAX_CHARACTERS = 5;
 
 const int MAX_MAIL_MESSAGES = 50;
+
+const int DELETE_TIME_SEC = 3600; // 1-hour
+
 }; // namespace GameStaticConfig
 
 namespace Common {

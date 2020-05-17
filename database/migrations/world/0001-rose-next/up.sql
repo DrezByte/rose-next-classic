@@ -11,11 +11,11 @@ CREATE TABLE character
     -- Stats
     level smallint NOT NULL DEFAULT 1,
     exp int NOT NULL DEFAULT 0,
-    hp int NOT NULL DEFAULT 100,
-    mp int NOT NULL DEFAULT 100,
+    hp int NOT NULL DEFAULT 50,
+    mp int NOT NULL DEFAULT 40,
     stamina int NOT NULL DEFAULT 5000,
-    max_hp int NOT NULL DEFAULT 100,
-    max_mp int NOT NULL DEFAULT 100,
+    max_hp int NOT NULL DEFAULT 50,
+    max_mp int NOT NULL DEFAULT 40,
     max_stamina int NOT NULL DEFAULT 5000,
     str smallint NOT NULL DEFAULT 15,
     dex smallint NOT NULL DEFAULT 15,
@@ -23,6 +23,7 @@ CREATE TABLE character
     con smallint NOT NULL DEFAULT 10,
     cha smallint NOT NULL DEFAULT 10,
     sen smallint NOT NULL DEFAULT 10,
+    skills jsonb NOT NULL DEFAULT '[11, 12, 16, 19, 20, 21]'::jsonb,
     -- Economy
     money bigint NOT NULL DEFAULT 0,
     storage_money bigint NOT NULL DEFAULT 0,

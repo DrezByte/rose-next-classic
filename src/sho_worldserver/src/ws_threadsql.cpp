@@ -24,10 +24,6 @@ using namespace Rose::Util;
 
 using json = nlohmann::json;
 
-#define MAX_AVATAR_NAME 20
-
-#define DELETE_CHAR_WAIT_TIME (60 * 60) //	60분
-
 #define DATA_VER_2 2
 
 CWS_ThreadSQL::CWS_ThreadSQL(): CSqlTHREAD(true) {
@@ -329,7 +325,8 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
     g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
 
     if (delete_list.size() > 0) {
-        std::string q = "DELETE FROM character WHERE id IN ($1)";
+        std::string q =
+            fmt::format("DELETE FROM character WHERE id IN ({})", param_list(delete_list.size()));
 
         QueryResult delete_res = this->db_pg.query(q, delete_list);
         if (!delete_res.is_ok()) {
@@ -406,87 +403,45 @@ bool
 CWS_ThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
     t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
 
-    short nOffset = sizeof(cli_DELETE_CHAR), nOutStrLen;
-    char* pCharName = Packet_GetStringPtr(pPacket, nOffset, nOutStrLen);
-    if (!pCharName || !pSqlPACKET->m_Name.Get()) {
+    short offset = sizeof(cli_DELETE_CHAR);
+    short str_len = 0;
+    std::string char_name = Packet_GetStringPtr(pPacket, offset, str_len);
+    if (char_name.empty()) {
         return false;
     }
 
-    if (nOutStrLen > MAX_AVATAR_NAME) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Proc_cli_SELECT_CHAR:: CharName == '%s'\n", pCharName);
+    if (char_name.size() > GameStaticConfig::MAX_CHARACTER_NAME) {
         return false;
     }
 
-    {
-        bool m_Injected = false;
-        for (int i = 0; i < strlen(pCharName); i++) {
-            if (!m_Injected) {
-                if (pCharName[i] == '\'') {
-                    if (pCharName[i + 1] == ';') {
-                        g_LOG.CS_ODS(LOG_NORMAL,
-                            "Proc_cli_DELETE_CHAR: 714 SQL Injection Recv'd and filtered\n");
-                        m_Injected = true;
-                        pCharName[i] = '\0';
-                    }
-                }
-            } else {
-                pCharName[i] = 0x00;
-            }
-        }
-    }
+    DateTime delete_by =
+        std::chrono::system_clock::now() + std::chrono::seconds(GameStaticConfig::DELETE_TIME_SEC);
 
-    DWORD dwCurAbsSEC = 0, dwReaminSEC = 0;
+    QueryParam delete_by_param;
+    int delete_remaining_sec = 0;
 
     if (pPacket->m_cli_DELETE_CHAR.m_bDelete) {
-        // 삭제 대기
-        DWORD dwDelWaitTime;
-
-        dwDelWaitTime = DELETE_CHAR_WAIT_TIME;
-        dwCurAbsSEC = classTIME::GetCurrentAbsSecond() + dwDelWaitTime;
-        dwReaminSEC = dwDelWaitTime;
+        delete_by_param = to_datetime_str(delete_by);
+        delete_remaining_sec = GameStaticConfig::DELETE_TIME_SEC;
     }
 
-    // TODO: Instantly delete the character if they are the master of a clan???
-    if (this->db->QuerySQL((char*)"{call ws_ClanCharGET(\'%s\')}", pCharName)) {
-        if (this->db->GetNextRECORD()) {
-            // 클랜 있다.
-            int iClanPOS = this->db->GetInteger(2);
-            if (iClanPOS >= GPOS_MASTER) {
-                classUSER* pFindUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-                if (pFindUSER) {
-                    classPACKET pCPacket = classPACKET();
-                    pCPacket.m_HEADER.m_wType = WSV_DELETE_CHAR;
-                    pCPacket.m_HEADER.m_nSize = sizeof(wsv_DELETE_CHAR);
+    const char* stmt = "UPDATE character SET delete_by=$1 WHERE account_username=$2 AND name=$3";
+    QueryResult res =
+        this->db_pg.queryb(stmt, {delete_by_param, pSqlPACKET->m_Name.Get(), char_name});
 
-                    pCPacket.m_wsv_DELETE_CHAR.m_dwDelRemainTIME = 0xffffffff;
-                    pCPacket.AppendString(pCharName);
-                    pFindUSER->Send_Start(pCPacket);
-                }
-                return true;
-            }
-        }
-    }
-
-    if (this->db->ExecSQL((char*)"UPDATE character SET delete_by_int=%u WHERE account_name=\'%s\' "
-                                 "AND name=\'%s\'",
-            dwCurAbsSEC,
-            pSqlPACKET->m_Name.Get(),
-            pCharName)
-        < 1) {
-        // 오류 또는 삭제된것이 없다.
-        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR());
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to delete character %s: %s", char_name.c_str(), res.error_message());
+        return false;
     }
 
     CWS_Client* pFindUSER = (CWS_Client*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
     if (pFindUSER) {
-        g_pThreadLOG->When_CharacterLOG(pFindUSER, pCharName, NEWLOG_DEL_START_CHAR);
-
         classPACKET pCPacket = classPACKET();
         pCPacket.m_HEADER.m_wType = WSV_DELETE_CHAR;
         pCPacket.m_HEADER.m_nSize = sizeof(wsv_DELETE_CHAR);
 
-        pCPacket.m_wsv_DELETE_CHAR.m_dwDelRemainTIME = dwReaminSEC;
-        pCPacket.AppendString(pCharName);
+        pCPacket.m_wsv_DELETE_CHAR.m_dwDelRemainTIME = delete_remaining_sec;
+        pCPacket.AppendString(const_cast<char*>(char_name.c_str()));
 
         pFindUSER->Send_Start(pCPacket);
     }
@@ -620,12 +575,13 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
         }
 
         case MEMO_REQ_CONTENTS: {
-            const char* stmt = "SELECT cm.id, cm.sent, cm.message, "
-                               "from_char.name as from_character_name "
-                               "FROM character_mail AS cm "
-                               "LEFT JOIN character as from_char ON from_char.id = cm.from_character_id "
-                               "LEFT JOIN character as to_char ON to_char.id = cm.to_character_id "
-                               "WHERE to_char.id = $1";
+            const char* stmt =
+                "SELECT cm.id, cm.sent, cm.message, "
+                "from_char.name as from_character_name "
+                "FROM character_mail AS cm "
+                "LEFT JOIN character as from_char ON from_char.id = cm.from_character_id "
+                "LEFT JOIN character as to_char ON to_char.id = cm.to_character_id "
+                "WHERE to_char.id = $1";
 
             QueryResult res = this->db_pg.query(stmt, {user_id});
             if (!res.is_ok()) {
@@ -654,7 +610,6 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 packet.AppendString(const_cast<char*>(message.c_str()));
 
                 if (packet.m_HEADER.m_nSize > MAX_PACKET_SIZE - 270) {
-                    // 꽉찼다... 전송
                     g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, packet);
 
                     packet = classPACKET();
@@ -670,7 +625,8 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
             // Delete mail sent to the client from the database
             if (delete_list.size() > 0) {
-                const char* delete_stmt = "DELETE FROM character_mail WHERE id IN ($1)";
+                std::string delete_stmt = fmt::format("DELETE FROM character_mail WHERE id IN ({})",
+                    param_list(delete_list.size()));
                 QueryResult delete_res = this->db_pg.query(delete_stmt, {delete_list});
                 if (!delete_res.is_ok()) {
                     LOG_ERROR("Failed to delete mail for character %s: %s",
@@ -731,7 +687,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
             }
 
             const char* add_stmt = "INSERT INTO character_mail (to_character_id, "
-                                   "from_character_id, message) VALUES ($1)";
+                                   "from_character_id, message) VALUES ($1, $2, $3)";
 
             QueryResult add_res = this->db_pg.query(stmt, {target_char_id, user_id, message});
             if (!add_res.is_ok()) {
@@ -782,6 +738,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     bool face_valid = req->face_id() > 0 && req->face_id() < g_TblFACE.m_nDataCnt;
     bool hair_valid = req->hair_id() > 0 && req->hair_id() < g_TblHAIR.m_nDataCnt;
 
+    const char* char_name = req->name()->c_str();
     Gender gender = gender_from(req->gender_id());
     Job job = job_from(req->job_id());
 
@@ -793,20 +750,15 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     }
 
     // Check if the name already exists
-    std::string query = "SELECT COUNT(*) FROM character WHERE name=?";
-    this->db->bind_string(1, req->name()->str());
-
-    if (!this->db->execute(query)) {
+    const char* stmt = "SELECT COUNT(*) FROM character WHERE name=$1";
+    QueryResult res = this->db_pg.query(stmt, {char_name});
+    if (!res.is_ok() || res.row_count != 1) {
+        LOG_ERROR("Failed to count characters with name '%s': %s", char_name, res.error_message());
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
         return false;
     }
 
-    if (this->db->fetch() != FetchResult::Ok) {
-        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
-        return false;
-    }
-
-    if (this->db->get_int32(1) != 0) {
+    if (res.get_int32(0, 0) != 0) {
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_DUP_NAME);
         return false;
     }
@@ -818,86 +770,115 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
 
     std::string account_name = client->Get_ACCOUNT();
 
-    // Check character count
-    query = "SELECT COUNT(*) from character WHERE account_name=?";
-    this->db->bind_string(1, account_name);
-
-    if (!this->db->execute(query)) {
-        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+    // Check the user has enough slots for a new character
+    const char* count_stmt = "SELECT COUNT (*) from character WHERE account_username=$1";
+    QueryResult count_res = this->db_pg.query(stmt, {account_name});
+    if (!count_res.is_ok() || count_res.row_count != 1) {
+        LOG_ERROR("Failed to count characters for username '%s': %s",
+            account_name.c_str(),
+            res.error_message());
         return false;
     }
 
-    if (this->db->fetch() != FetchResult::Ok) {
-        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
-        return false;
-    }
-
-    int char_count = this->db->get_int32(1);
+    int char_count = res.get_int32(0, 0);
     if (char_count >= GameStaticConfig::MAX_CHARACTERS) {
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_NO_MORE_SLOT);
         return false;
-    }
+    };
 
     const int gender_id = static_cast<int>(gender);
+    const int job_id = static_cast<int>(job);
     const int start_map_id = AVATAR_ZONE(gender_id);
+    tPOINTF start_pos = g_ZoneLIST.Get_StartPOS(start_map_id);
 
-    tagBasicETC& basic_etc = m_pDefaultBE[gender_id];
-
-    basic_etc.m_btCharSlotNO = 0; // Premium slots?
-    basic_etc.m_btCharRACE = gender_id;
-    basic_etc.m_nZoneNO = start_map_id;
-    basic_etc.m_PosSTART = g_ZoneLIST.Get_StartPOS(start_map_id);
-    basic_etc.m_nReviveZoneNO = start_map_id;
-    basic_etc.m_PosREVIVE = g_ZoneLIST.Get_StartRevivePOS(start_map_id);
-    basic_etc.m_PartITEM[BODY_PART_FACE].m_nItemNo = req->face_id();
-    basic_etc.m_PartITEM[BODY_PART_HAIR].m_nItemNo = req->hair_id();
-
-    tagBasicINFO basic_info;
-    basic_info.Init(0, req->face_id(), req->hair_id());
-    basic_info.m_nClass = req->job_id();
+    std::vector<std::string> params{
+        account_name,
+        char_name,
+        std::to_string(gender_id),
+        std::to_string(job_id),
+        std::to_string(req->face_id()),
+        std::to_string(req->hair_id()),
+        // Start Spawn
+        std::to_string(start_map_id),
+        std::to_string(start_pos.x),
+        std::to_string(start_pos.y),
+        // Town Respawn
+        std::to_string(start_map_id),
+        std::to_string(start_pos.x),
+        std::to_string(start_pos.y),
+    };
 
     CInventory& inv = m_pDefaultINV[gender_id];
     tagBasicAbility& basic_ability = m_pDefaultBA[gender_id];
 
-    query = "INSERT INTO character (account_name, name, basic_etc, "
-            "basic_info, basic_ability, grow_ability, skill_ability, inventory, "
-            "face_id, hair_id, gender_id, map_id, respawn_x, respawn_y, "
-            "town_respawn_id, town_respawn_x, town_respawn_y, job_id)"
-            "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    QueryResult trans_res = this->db_pg.query("BEGIN", {});
+    if (!trans_res.is_ok()) {
+        LOG_ERROR("Failed to begin transaction when creating '%s': %s", char_name, trans_res.error_message());
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
 
-    this->db->bind_string(1, account_name);
-    this->db->bind_string(2, req->name()->str());
-    this->db->bind_binary(3, reinterpret_cast<uint8_t*>(&basic_etc), sizeof(tagBasicETC));
-    this->db->bind_binary(4, reinterpret_cast<uint8_t*>(&basic_info), sizeof(tagBasicINFO));
-    this->db->bind_binary(5, reinterpret_cast<uint8_t*>(&basic_ability), sizeof(tagBasicAbility));
-    this->db->bind_binary(6, reinterpret_cast<uint8_t*>(&m_sGA), sizeof(tagGrowAbility));
-    this->db->bind_binary(7, reinterpret_cast<uint8_t*>(&m_sSA), sizeof(tagSkillAbility));
-    this->db->bind_binary(8, reinterpret_cast<uint8_t*>(&inv), sizeof(CInventory));
-    this->db->bind_int16(9, basic_info.m_cFaceIDX);
-    this->db->bind_int16(10, basic_info.m_cHairIDX);
-    this->db->bind_int16(11, basic_etc.m_btCharRACE);
-    this->db->bind_int16(12, basic_etc.m_nZoneNO);
-    this->db->bind_float(13, basic_etc.m_PosSTART.x);
-    this->db->bind_float(14, basic_etc.m_PosSTART.y);
-    this->db->bind_int16(15, basic_etc.m_nReviveZoneNO);
-    this->db->bind_float(16, basic_etc.m_PosREVIVE.x);
-    this->db->bind_float(17, basic_etc.m_PosREVIVE.y);
-    this->db->bind_int32(18, static_cast<int>(job));
+    std::string char_stmt = fmt::format(
+        "INSERT INTO character (account_username, name, gender_id, job_id, face_id, hair_id, "
+        "map_id, respawn_x, respawn_y, town_respawn_id, town_respawn_x, town_respawn_y) "
+        "VALUES ({}) "
+        "RETURNING id",
+        param_list(params.size()));
 
-    if (!this->db->execute(query)) {
-        LOG_ERROR("Failed to insert character %s for account %s",
-            req->name()->c_str(),
-            account_name.c_str());
+    QueryResult char_res = this->db_pg.query(char_stmt, params);
+    if (!char_res.is_ok()) {
+        LOG_ERROR("Failed to create character '%s' for username '%s': %s",
+            char_name,
+            account_name.c_str(),
+            char_res.error_message());
 
-        for (const std::string& error: this->db->get_error_messages()) {
-            LOG_ERROR(error.c_str());
+        trans_res = this->db_pg.query("ROLLBACK", {});
+        if (!trans_res.is_ok()) {
+            LOG_ERROR("Failed to rollback transaction when creating '%s': %s",
+                char_name,
+                trans_res.error_message());
         }
 
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
         return false;
     }
 
-    g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_OK, char_count + 1);
+    if (!char_res.row_count == 1) {
+        LOG_ERROR("No ID returned for inserted character '%s'", char_name);
 
+        trans_res = this->db_pg.query("ROLLBACK", {});
+        if (!trans_res.is_ok()) {
+            LOG_ERROR("Failed to rollback transaction when creating '%s': %s",
+                char_name,
+                trans_res.error_message());
+        }
+
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
+
+     std::string char_id = char_res.get_string(0, 0);
+
+    // TODO: Add equipment
+    tagBasicETC;
+    m_pDefaultBE[gender_id];
+
+    // TODO: Add default inventory + default money
+    CInventory;
+    m_pDefaultINV[gender_id];
+
+    // TODO: Add default stats
+    tagBasicAbility;
+    m_pDefaultBA[gender_id];
+
+    trans_res = this->db_pg.query("COMMIT", {});
+    if (!trans_res.is_ok()) {
+        LOG_ERROR("Failed to commit transaction when creating '%s': %s",
+            char_name,
+            trans_res.error_message());
+        return false;
+    }
+
+    g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_OK, char_count + 1);
     return true;
 }

@@ -13,6 +13,9 @@ using DateTime = std::chrono::time_point<std::chrono::system_clock>;
 /// Parse a timestamp string (i.e. "%Y-%m-%d %H:%M:%S") into a datetime
 std::optional<DateTime> parse_datetime_str(const std::string& s);
 
+/// Create a timestamp string from a datetime
+std::string to_datetime_str(const DateTime& dt);
+
 /// Get duration since windows epoch (January 1, 1601)
 std::chrono::system_clock::duration time_since_win_epoch(
     const std::chrono::time_point<std::chrono::system_clock>& t);

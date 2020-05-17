@@ -6,6 +6,20 @@
 using namespace Rose::Util;
 
 namespace Rose::Database {
+const int POSTGRES_TEXT_FORMAT = 0;
+const int POSTGRES_BINARY_FORMAT = 1;
+
+std::string
+param_list(size_t count) {
+    std::string s;
+    for (size_t i = 1; i <= count; ++i) {
+        if (i != 1) {
+            s += ", ";
+        }
+        s += "$" + std::to_string(i);
+    }
+    return s;
+}
 
 void
 PgConnDeleter::operator()(PGconn* c) {
@@ -18,7 +32,23 @@ PgResultDeleter::operator()(PGresult* r) {
 };
 
 /*
-    Query Result
+    Query Param
+*/
+QueryParam::QueryParam(): type(QueryParamType::Null){};
+
+QueryParam::QueryParam(const std::string& s): type(QueryParamType::String) {
+    data.assign(s.begin(), s.end());
+    data.push_back(0);
+}
+
+QueryParam::QueryParam(const char* s): type(QueryParamType::String) {
+    std::string str(s);
+    data.assign(str.begin(), str.end());
+    data.push_back(0);
+}
+
+/*
+Query Result
 */
 QueryResult::QueryResult(PGresult* res): res(res) {
     this->row_count = PQntuples(this->res.get());
@@ -136,7 +166,35 @@ Client::query(const std::string& statement, const std::vector<std::string>& para
         c_params.data(),
         nullptr,
         nullptr,
-        0);
+        POSTGRES_TEXT_FORMAT);
+
+    QueryResult res(pg_res);
+    return res;
+}
+
+QueryResult
+Client::queryb(const std::string& statement, const std::vector<QueryParam>& params) {
+    std::vector<int> formats(params.size(), POSTGRES_TEXT_FORMAT);
+    std::vector<const char*> data;
+    std::vector<int> lengths;
+    for (const QueryParam& param: params) {
+        if (param.type == QueryParamType::Null) {
+            data.push_back(nullptr);
+            lengths.push_back(0);
+            continue;
+        }
+        data.push_back(reinterpret_cast<const char*>(param.data.data()));
+        lengths.push_back(param.data.size());
+    }
+
+    PGresult* pg_res = PQexecParams(this->conn.get(),
+        statement.c_str(),
+        params.size(),
+        nullptr,
+        data.data(),
+        lengths.data(),
+        formats.data(),
+        POSTGRES_TEXT_FORMAT);
 
     QueryResult res(pg_res);
     return res;

@@ -13,10 +13,14 @@ typedef struct pg_result PGresult;
 
 // Forward declaration for Rose::Util
 namespace Rose::Util {
-    using DateTime = std::chrono::time_point<std::chrono::system_clock>;
+using DateTime = std::chrono::time_point<std::chrono::system_clock>;
 }
 
 namespace Rose::Database {
+
+/// Builds a list of bind params as a string
+/// e.g. param_list(4) => "$1, $2, $3, $4"
+std::string param_list(size_t count);
 
 struct PgConnDeleter {
     void operator()(PGconn* c);
@@ -31,6 +35,21 @@ using PgResultPtr = std::unique_ptr<PGresult, PgResultDeleter>;
 
 using QueryResultRow = std::vector<std::string>;
 using QueryResultRows = std::vector<QueryResultRow>;
+
+enum class QueryParamType {
+    Null,
+    String,
+};
+
+/// QueryParam that contains extra information about the parameter
+struct QueryParam {
+    QueryParamType type;
+    std::vector<uint8_t> data;
+
+    QueryParam();
+    QueryParam(const std::string& s);
+    QueryParam(const char* s);
+};
 
 /// Result from a query
 class QueryResult {
@@ -83,7 +102,10 @@ public:
     /// Get the last error message  from the connection
     const char* last_error_message();
 
-    /// Execute a query and get the results
+    /// Execute a query and get the results using string params
     QueryResult query(const std::string& statement, const std::vector<std::string>& params);
+
+    /// Execute a query and get the results using binary params
+    QueryResult queryb(const std::string& statement, const std::vector<QueryParam>& params);
 };
 } // namespace Rose::Database

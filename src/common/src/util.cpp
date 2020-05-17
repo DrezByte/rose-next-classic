@@ -37,6 +37,19 @@ parse_datetime_str(const std::string& s) {
     return std::chrono::system_clock::from_time_t(tt);
 }
 
+std::string
+to_datetime_str(const DateTime& dt) {
+    std::time_t tt = std::chrono::system_clock::to_time_t(dt);
+    std::tm* t = std::gmtime(&tt);
+
+    std::stringstream ss;
+    ss << std::put_time(t, "%Y-%m-%d %H:%M:%S") << "+00";
+    if (ss.fail()) {
+        return "";
+    }
+    return ss.str();
+}
+
 std::chrono::system_clock::duration
 time_since_win_epoch(const std::chrono::time_point<std::chrono::system_clock>& t) {
     return t.time_since_epoch() + std::chrono::seconds(116444736000000000);
