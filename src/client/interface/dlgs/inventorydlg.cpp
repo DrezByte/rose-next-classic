@@ -21,7 +21,7 @@
 #include "../Command/UICommand.h"
 #include "../Command/DragCommand.h"
 
-#include "../../Common/CInventory.h"
+#include "CInventory.h"
 #include "../../Common/IO_STB.h"
 #include "../../Network/CNetwork.h"
 #include "../../System/CGame.h"

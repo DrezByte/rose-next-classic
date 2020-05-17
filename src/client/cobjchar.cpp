@@ -30,7 +30,7 @@
 #include "Misc/GameUtil.h"
 #include "CommandFilter.h"
 #include "../GameProc/DelayedExp.h"
-#include "../common/CInventory.h"
+#include "CInventory.h"
 #include "system/System_Func.h"
 
 #include "rose/common/status_effect/status_effect_flag.h"

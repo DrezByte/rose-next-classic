@@ -187,6 +187,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\calculation.cpp" />
+    <ClCompile Include="..\common\src\cinventory.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CClientStorage.cpp" />
     <ClCompile Include="CommandFilter.cpp" />
@@ -503,7 +504,6 @@
     <ClCompile Include="BULLET.CPP" />
     <ClCompile Include="Common\CEconomy.cpp" />
     <ClCompile Include="Common\CHotICON.cpp" />
-    <ClCompile Include="Common\CInventory.cpp" />
     <ClCompile Include="Common\CItem.cpp" />
     <ClCompile Include="Common\CObjAI.cpp" />
     <ClCompile Include="Common\CQuest.cpp" />
@@ -540,6 +540,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\calculation.h" />
+    <ClInclude Include="..\common\include\cinventory.h" />
     <ClInclude Include="..\common\net_prototype.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CClientStorage.h" />
@@ -873,7 +874,6 @@
     <ClInclude Include="BULLET.H" />
     <ClInclude Include="Common\CEconomy.h" />
     <ClInclude Include="Common\CHotICON.h" />
-    <ClInclude Include="Common\CInventory.h" />
     <ClInclude Include="Common\CItem.h" />
     <ClInclude Include="Common\CObjAI.h" />
     <ClInclude Include="Common\CQuest.h" />

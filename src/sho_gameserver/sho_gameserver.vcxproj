@@ -14,6 +14,7 @@
     <ClInclude Include="..\common-server\include\cthreadguild.h" />
     <ClInclude Include="..\common-server\include\cthreadmsgr.h" />
     <ClInclude Include="..\common\calculation.h" />
+    <ClInclude Include="..\common\include\cinventory.h" />
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h" />
     <ClInclude Include="..\common\net_prototype.h" />
     <ClInclude Include="src\ai_lib\cai_file.h" />
@@ -29,7 +30,6 @@
     <ClInclude Include="src\cobjnpc.h" />
     <ClInclude Include="src\common\ceconomy.h" />
     <ClInclude Include="src\common\choticon.h" />
-    <ClInclude Include="src\common\cinventory.h" />
     <ClInclude Include="src\common\citem.h" />
     <ClInclude Include="src\common\cobjai.h" />
     <ClInclude Include="src\common\cquest.h" />
@@ -66,6 +66,7 @@
     <ClCompile Include="..\common-server\src\cthreadguild.cpp" />
     <ClCompile Include="..\common-server\src\cthreadmsgr.cpp" />
     <ClCompile Include="..\common\calculation.cpp" />
+    <ClCompile Include="..\common\src\cinventory.cpp" />
     <ClCompile Include="src\ai_lib\ai_action.cpp" />
     <ClCompile Include="src\ai_lib\ai_condition.cpp" />
     <ClCompile Include="src\ai_lib\cai_file.cpp" />
@@ -81,7 +82,6 @@
     <ClCompile Include="src\cobjnpc.cpp" />
     <ClCompile Include="src\common\ceconomy.cpp" />
     <ClCompile Include="src\common\choticon.cpp" />
-    <ClCompile Include="src\common\cinventory.cpp" />
     <ClCompile Include="src\common\citem.cpp" />
     <ClCompile Include="src\common\cobjai.cpp" />
     <ClCompile Include="src\common\cquest.cpp" />

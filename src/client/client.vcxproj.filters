@@ -1043,9 +1043,6 @@
     <ClCompile Include="Common\CHotICON.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\CInventory.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\CItem.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -1149,6 +1146,9 @@
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="..\common\calculation.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\src\cinventory.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2140,9 +2140,6 @@
     <ClInclude Include="Common\CHotICON.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\CInventory.h">
-      <Filter>Source Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\CItem.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
@@ -2246,6 +2243,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\net_prototype.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\include\cinventory.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

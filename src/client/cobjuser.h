@@ -4,7 +4,7 @@
 #ifndef __COBJUSER_H
 #define __COBJUSER_H
 #include "CObjCHAR.h"
-#include "Common\CInventory.h"
+#include "CInventory.h"
 #include "Common\CUserDATA.h"
 #include "Interface\\TypeResource.h"
 #include "Interface/SlotContainer/CSkillSlot.h"

@@ -4,7 +4,7 @@
 
 #include "../object.h"
 #include "../common/io_stb.h"
-#include "../common/cinventory.h"
+#include "cinventory.h"
 
 #include "../interface/typeresource.h"
 #include "../interface/dlgs/ChattingDlg.h"

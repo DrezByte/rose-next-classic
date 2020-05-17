@@ -4,7 +4,7 @@
 #include "../CDragItem.h"
 #include "../icon/ciconitem.h"
 #include "../command/uicommand.h"
-#include "../../common/cinventory.h"
+#include "cinventory.h"
 #include "../../gamedata/event/cteventseparate.h"
 #include "../../gamedata/cseparate.h"
 #include "../../gamecommon/item.h"

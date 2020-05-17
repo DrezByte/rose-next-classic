@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include ".\citemslot.h"
-#include "common/CInventory.h"
+#include "CInventory.h"
 #include "../../gamecommon/Item.h"
 #include "../../gamecommon/itemcommand.h"
 #include "../../gamedata/event/cteventitem.h"
