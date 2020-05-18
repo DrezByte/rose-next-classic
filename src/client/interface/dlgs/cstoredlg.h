@@ -2,7 +2,7 @@
 #define _STOREDLG_
 
 #include "tgamectrl/tdialog.h"
-#include "../../Common/CItem.h"
+#include "citem.h"
 #include "../../gamecommon/IObserver.h"
 #include "subclass/cslot.h"
 #include "../../GameData/CStore.h"

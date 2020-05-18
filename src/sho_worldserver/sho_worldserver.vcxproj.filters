@@ -17,9 +17,6 @@
     <ClCompile Include="..\common\cchatroom.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\citem.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\etc_math.cpp">
       <Filter>common</Filter>
     </ClCompile>
@@ -41,6 +38,9 @@
     <ClCompile Include="..\common\src\cinventory.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\src\citem.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cws_account.h" />
@@ -54,9 +54,6 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\cchatroom.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\citem.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\etc_math.h">
@@ -80,6 +77,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\include\datatype.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\include\citem.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

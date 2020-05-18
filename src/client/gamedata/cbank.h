@@ -2,7 +2,7 @@
 #define _CBank_
 
 #include "../gamecommon/CObservable.h"
-#include "../common/citem.h"
+#include "citem.h"
 
 #include <map>
 const int g_iSlotCountPerPage = 40; ///ÆäÀÌÁö´ç ½½·Ô °¹¼ö

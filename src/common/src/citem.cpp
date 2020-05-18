@@ -1,7 +1,7 @@
 #include "stdAFX.h"
 
 #include "CItem.h"
-#include "IO_STB.h"
+#include "Common/IO_STB.h"
 
 #ifndef __SERVER
     #include "CInventory.h"
@@ -95,20 +95,36 @@ tagBaseITEM::Init(int iItem, unsigned int uiQuantity) {
 
 //-------------------------------------------------------------------------------------------------
 bool
-tagBaseITEM::IsValidITEM() {
-    if (0 == this->GetTYPE() || 0 == this->GetItemNO())
+tagBaseITEM::IsValidITEM(DWORD wType, DWORD wItemNO) {
+    if (0 == wType || 0 == wItemNO)
         return false;
 
-    if (this->GetTYPE() > ITEM_TYPE_RIDE_PART)
+    if (wType > ITEM_TYPE_RIDE_PART)
         return false;
-    if (NULL == g_pTblSTBs[this->GetTYPE()])
+    if (NULL == g_pTblSTBs[wType])
         return false;
 
-    if (this->GetItemNO() >= g_pTblSTBs[this->GetTYPE()]->m_nDataCnt)
+    if (wItemNO >= g_pTblSTBs[wType]->m_nDataCnt)
         return false;
 
     return true;
 }
+//-------------------------------------------------------------------------------------------------
+// bool tagBaseITEM::IsValidITEM ()
+//{
+//	if ( 0 == this->GetTYPE() || 0 == this->GetItemNO() )
+//		return false;
+//
+//	if ( this->GetTYPE() > ITEM_TYPE_RIDE_PART )
+//		return false;
+//	if ( NULL == g_pTblSTBs[ this->GetTYPE() ] )
+//		return false;
+//
+//	if ( this->GetItemNO() >= g_pTblSTBs[ this->GetTYPE() ]->m_nDataCnt )
+//		return false;
+//
+//	return true;
+//}
 
 //-------------------------------------------------------------------------------------------------
 bool
@@ -119,7 +135,7 @@ tagBaseITEM::IsEnableKEEPING() {
     // 0인것만 은행에 보관 가능함...
     // 계정으로 공유되는 창고기 때문에 다른 케릭으로 아이템이 전이 안되도록...
     return (0 == ITEM_USE_RESTRICTION(this->m_cType, this->m_nItemNo)
-        || ITEM_ENABLE_KEEPING & ITEM_USE_RESTRICTION(this->m_cType, this->m_nItemNo));
+        || (ITEM_ENABLE_KEEPING & ITEM_USE_RESTRICTION(this->m_cType, this->m_nItemNo)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -297,23 +313,6 @@ tagBaseITEM::GettingMESSAGE() {
 
     return NULL;
 }
-
-char*
-tagBaseITEM::GettingMESSAGE_Party(const char* paryName_) {
-    if (m_cType == ITEM_TYPE_MONEY) {
-        return CStr::Printf(STR_GETTING_MONEY_PARTY, paryName_, m_uiMoney);
-    } else if (IsEnableDupCNT()) {
-        return CStr::Printf(STR_GETTING_ITEMS_PARTY,
-            paryName_,
-            ITEM_NAME(m_cType, m_nItemNo),
-            GetQuantity());
-    } else {
-        // 장비..
-        return CStr::Printf(STR_GETTING_ITEM_PARTY, paryName_, ITEM_NAME(m_cType, m_nItemNo));
-    }
-    return NULL;
-}
-
 #endif
 #ifndef __SERVER
 char*
@@ -359,9 +358,7 @@ tagBaseITEM::SubtractQuestMESSAGE() {
     if (m_cType == ITEM_TYPE_MONEY)
         return CStr::Printf(F_STR_QUEST_SUBTRACT_MONEY, m_uiMoney);
     else if (IsEnableDupCNT())
-        return CStr::Printf(F_STR_QUEST_SUBTRACT_ITEMS,
-            ITEM_NAME(m_cType, m_nItemNo),
-            m_uiQuantity);
+        return CStr::Printf(F_STR_QUEST_SUBTRACT_ITEMS, ITEM_NAME(m_cType, m_nItemNo), m_uiQuantity);
     else
         return CStr::Printf(F_STR_QUEST_SUBTRACT_ITEM, ITEM_NAME(m_cType, m_nItemNo));
 
@@ -415,8 +412,7 @@ tagBaseITEM::GetHitRate() {
     if (m_cType != ITEM_TYPE_WEAPON)
         return 0;
 
-    return (int)(((float)ITEM_QUALITY(m_cType, m_nItemNo) * 0.6) + ((float)m_cDurability * 0.8)
-        - 15.0f);
+    return ITEM_QUALITY(m_cType, m_nItemNo) * 0.6 + m_cDurability * 0.8 - 15;
 }
 
 int
@@ -429,7 +425,7 @@ tagBaseITEM::GetAvoidRate() {
         case ITEM_TYPE_BOOTS:
         case ITEM_TYPE_KNAPSACK:
         case ITEM_TYPE_SUBWPN:
-            iRet = (int)((float)m_cDurability * 0.3f);
+            iRet = m_cDurability * 0.3;
             break;
         default:
             iRet = 0;
@@ -470,11 +466,19 @@ tagBaseITEM::IsEnableSeparate() {
 
     if (GetTYPE() == ITEM_TYPE_GEM) ///보석은 분리가 불가능하다
         return false;
+    if (GetTYPE() == ITEM_TYPE_NATURAL)
+        return false;
+    if (GetTYPE() == ITEM_TYPE_USE)
+        return false;
 
-    if (HasSocket() && GetGemNO() > 300) ///재밍된 경우
+    if (HasSocket() && GetGemNO()) ///재밍된 경우
         return true;
 
+    #ifdef _NEWBREAK
+    if (ITEM_DECOMPOSITION_NUMBER(GetTYPE(), GetItemNO()))
+    #else
     if (ITEM_PRODUCT_IDX(GetTYPE(), GetItemNO()))
+    #endif
         return true;
 
     return false;
@@ -532,7 +536,8 @@ tagBaseITEM::IsEnableAppraisal() {
         return false;
 
     bool b = IsEquipITEM();
-    if (IsEquipITEM() && m_nGEM_OP && m_nGEM_OP <= 300 && m_bIsAppraisal == 0)
+    if (IsEquipITEM() && m_nGEM_OP && /* m_nGEM_OP <= 300*/ m_bHasSocket == 0
+        && m_bIsAppraisal == 0)
         return true;
 
     return false;
@@ -544,8 +549,7 @@ int
 tagBaseITEM::GetUpgradeCost() {
     if (!IsEnableUpgrade())
         return 0;
-    return (int)(GetGrade() * (GetGrade() + 1) * ITEM_QUALITY(GetTYPE(), GetItemNO())
-        * (ITEM_QUALITY(GetTYPE(), GetItemNO()) + 20) * 0.2f);
+    return (GetGrade() + 2) * (GetGrade() + 5) * (ITEM_QUALITY(GetTYPE(), GetItemNO()) + 20) * 0.6;
     //	return ITEM_QUALITY( GetTYPE(), GetItemNO() ) * 10 + GetGrade() * 100 ;
 }
 
@@ -563,7 +567,7 @@ tagBaseITEM::GetAppraisalCost() {
         return 0;
 
     __int64 i64BasePrice = ITEM_BASE_PRICE(GetTYPE(), GetItemNO());
-    return (int)((i64BasePrice + 10000) * (GetDurability() + 50) / 10000);
+    return (i64BasePrice + 10000) * (GetDurability() + 50) / 10000;
 }
 
 const char*

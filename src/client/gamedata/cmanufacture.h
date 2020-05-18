@@ -3,7 +3,7 @@
 #include "CRequireMaterial.h"
 #include "../gamecommon/cobservable.h"
 #include "../gamecommon/iobserver.h"
-#include "../common/citem.h"
+#include "citem.h"
 
 #include <utility>
 #include <string>

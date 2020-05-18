@@ -2,7 +2,7 @@
 #define _CPrivateStore_
 #include "../GameCommon/CObservable.h"
 #include "../GameCommon/IObserver.h"
-#include "../Common/CItem.h"
+#include "citem.h"
 #include "../Common/CUserData.h"
 #include "Net_Prototype.h"
 class CItem;

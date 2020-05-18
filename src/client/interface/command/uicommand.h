@@ -1,7 +1,7 @@
 #ifndef _UICOMMAND_
 #define _UICOMMAND_
 
-#include "../../common/CItem.h"
+#include "citem.h"
 #include "net_prototype.h"
 #include "tgamectrl/tcommand.h"
 

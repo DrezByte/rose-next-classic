@@ -6,7 +6,7 @@
 #include "dlgs/CMsgBox.h"
 #include "command/CTCmdOpenDlg.h"
 
-#include "../common/citem.h"
+#include "citem.h"
 #include "../Game.h"
 
 #include "tgamectrl/TGameCtrl.h"

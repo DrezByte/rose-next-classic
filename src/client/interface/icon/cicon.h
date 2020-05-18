@@ -1,7 +1,7 @@
 #ifndef _CICON_
 #define _CICON_
 
-#include "../../Common/CItem.h"
+#include "citem.h"
 #include "tgamectrl/tobject.h"
 #include "../CInfo.h"
 //----------------------------------------------------------------------------------------------------

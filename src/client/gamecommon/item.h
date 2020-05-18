@@ -2,7 +2,7 @@
 #define _CItem_
 
 #include <list>
-#include "../Common/CItem.h"
+#include "citem.h"
 #include "tgamectrl/tobject.h"
 #include "../interface/CInfo.h"
 

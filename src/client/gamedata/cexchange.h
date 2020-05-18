@@ -2,7 +2,7 @@
 #define _CExchange_
 #include "../gamecommon/CObservable.h"
 #include "../gamecommon/IObserver.h"
-#include "../common/citem.h"
+#include "citem.h"
 
 #define MAX_EXCHANGE_ROW 2
 #define MAX_EXCHANGE_COL 5

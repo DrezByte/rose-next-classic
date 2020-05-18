@@ -1,31 +1,26 @@
 #ifndef __CITEM_H
 #define __CITEM_H
 #pragma warning(disable : 4201)
-//-------------------------------------------------------------------------------------------------
-/*
-돈(MONEY)	지정번호 : 40	(0 ~ 999,999)
-아이템 종류(ITEM_CLASS)		(1 ~ 20)		: 5  bit  0~31
-아아템 번호(ITEM_ID)		(0 ~ 999)		: 10 bit  0~1023
-
-재밍 번호1(JAMMING1)		(0~120)			: 7  bit  0~127
-재밍 번호2(JAMMING2)		(0~120)         : 7  bit  0~127
-재밍 번호3(JAMMING3)		(0~120)         : 7  bit  0~127
-
-강화 등급(RESMELT)			(0~9)			: 4  bit  0~15		장비 아이템일 경우만..
-품질(QUALITY)				(0~120)			: 7  bit  0~127		장비 아이템일 경우만..
-개수(QUANTITY)				(1~999)			: 10 bit  0~1023	소모, 기타 아이템일 경우
-
-  장비 : 5 + 10 + 21 + 11 ==> 15+33 : 48   6 bytes
-  기타 : 5 + 10 + 10      ==> 15+10
-  돈   : 5 + 10 + xx
-*/
 
 #include "datatype.h"
 
 #define MAX_ITEM_LIFE 1000
+// #define __ITEM_MAX
 
 #define MAX_DUP_ITEM_QUANTITY 999
 #pragma pack(push, 1)
+#ifdef __ITEM_MAX
+
+struct tagPartITEM {
+    unsigned int m_nItemNo : 26; // 0~1023	아아템 번호(ITEM_ID)		(0 ~ 999)
+    unsigned int m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션
+                                // 번호(m_bHasSocket==0)
+    unsigned int m_bHasSocket : 1; // 0~1		보석 소켓 여부
+    unsigned int m_cGrade : 4; // 0~15		등급						(0~9)
+};
+
+#else
+
 struct tagPartITEM {
     unsigned int m_nItemNo : 10; // 0~1023	아아템 번호(ITEM_ID)		(0 ~ 999)
     unsigned int m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션
@@ -34,11 +29,128 @@ struct tagPartITEM {
     unsigned int m_cGrade : 4; // 0~15		등급						(0~9)
 };
 
+#endif
+
 #ifndef __SERVER
     #define tagITEM tagBaseITEM
 #endif
-// 총 48 bits, 6 bytes
+
+int getItemNo(int iFullItemNo);
+int getItemType(int iFullItemNo);
+int setItemFullNo(int iItemType, int iItemNo);
+
+// 총 64 bits, 8 bytes
 struct tagBaseITEM {
+#ifdef __ITEM_MAX
+
+    union {
+        // 장비 아이템 구조
+        struct {
+            // LSB ::
+            // 아래 둘중 하나는 비트 늘려도 됨.
+            unsigned int m_cType : 5; // 0~31		아이템 종류(ITEM_CLASS)		(1 ~ 20)
+            unsigned int m_nItemNo : 26; // 0~1023	아아템 번호(ITEM_ID)		(0 ~ 999999)
+            unsigned int m_bCreated : 1; // 0~1		제조된 아이템인가 ?
+
+            unsigned int
+                m_nGEM_OP : 9; // 0~512	보석번호(m_bHasSocket==1) 또는 옵션 번호(m_bHasSocket==0)
+            unsigned int m_cDurability : 7; // 0~127	내구도
+
+            unsigned int m_nLife : 10; // 0~1023	수명
+            unsigned int m_bHasSocket : 1; // 0~1		보석 소켓 여부
+            unsigned int m_bIsAppraisal : 1; // 0~1		옵션 검증 여부
+            unsigned int m_cGrade : 4; // 0~15		등급						(0~9)
+
+            // 32 + 16 + 16 => 64
+            // MSB ::
+        };
+
+        // 소모, 기타 아이템 구조
+        struct {
+            unsigned int m_cType_1 : 5; // 0~31		아이템 종류(ITEM_CLASS)		(1 ~ 20)
+            unsigned int m_nItemNo_1 : 26; // 0~1023	아아템 번호(ITEM_ID)		(0 ~ 999)
+            unsigned int __dummy_0 : 1;
+
+            unsigned int m_uiQuantity : 32; // 갯수(돈)
+        };
+
+        // 돈 아이템 구조
+        struct {
+            unsigned int m_cType_2 : 5; // 0~31
+            unsigned int m_nReserved1 : 26;
+            unsigned int __dummy_0 : 1;
+
+            unsigned int m_uiMoney : 32;
+        };
+
+        struct {
+            unsigned int
+                m_wHeader : 32; //서버는 m_dwHeader인데 고칠곳이 많아서 이름은 수정하지 않았다.
+            unsigned int m_dwBody : 32;
+        };
+
+        struct {
+            unsigned int m_dwLSB;
+            unsigned int m_dwMSB;
+        };
+
+        unsigned int m_dwITEM;
+    };
+
+    #ifdef __ITEM_TIME_LIMMIT
+
+    struct {
+        DWORD dwPickOutTime;
+        WORD wPeriod;
+    };
+
+    // 1970년 1월 1일 0시 0분 0초부터 2007년 01월 01일 0시 0분 0초까지의 시간을 초단위로
+    time_t tagBaseITEM::get_basicTime() {
+        time_t basic_t;
+        struct tm t;
+
+        // 2007년 01월 01일 0시 0분 0초 기준
+        t.tm_year = 2007 - 1900;
+        t.tm_mon = 1 - 1;
+        t.tm_mday = 1;
+        t.tm_hour = 0;
+        t.tm_min = 0;
+        t.tm_sec = 0;
+        basic_t = mktime(&t);
+
+        return basic_t;
+    }
+
+    //적용시간
+    tm tagBaseITEM::get_startTime() {
+        time_t long_time = (dwPickOutTime) + get_basicTime();
+        struct tm l = *localtime(&long_time);
+        l.tm_year += 1900;
+        l.tm_mon += 1;
+        return l;
+    }
+
+    //소멸시간
+    tm tagBaseITEM::get_endTime() {
+        time_t long_time = (dwPickOutTime) + get_basicTime() + (wPeriod)*3600;
+
+        struct tm l = *localtime(&long_time);
+        // struct tm l = *gmtime( &long_time );
+
+        l.tm_year += 1900;
+        l.tm_mon += 1;
+        if (l.tm_min) {
+            l.tm_hour += 1;
+            l.tm_min = 0;
+            l.tm_sec = 0;
+        }
+        return l;
+    }
+
+    #endif
+
+#else
+
     union {
         // 장비 아이템 구조
         struct {
@@ -94,15 +206,33 @@ struct tagBaseITEM {
 
         DWORD m_dwITEM;
     };
+#endif
 
     void Init(int iItem, unsigned int uiQuantity = 1);
-    void Clear() { m_dwLSB = m_wMSB = 0; }
 
-    unsigned short GetTYPE() { return m_cType; }
+#ifdef __ITEM_MAX
+    void Clear() {
+        m_dwLSB = m_dwMSB = 0;
+    #ifdef __ITEM_TIME_LIMMIT
+        dwPickOutTime = wPeriod = 0;
+    #endif
+    }
+    unsigned int GetItemNO() { return m_nItemNo; }
+    bool IsEmpty() { return (0 == m_wHeader); }
+    unsigned int GetHEADER() {
+        return (m_wHeader & 0x7fffffff);
+    } // m_bCreated :: 헤더 비교시 제조비트 없이...
+#else
+    void Clear() { m_dwLSB = m_wMSB = 0; }
     unsigned short GetItemNO() { return m_nItemNo; }
+    bool IsEmpty() { return (0 == m_wHeader); }
     unsigned short GetHEADER() {
         return (m_wHeader & 0x7fff);
     } // m_bCreated :: 헤더 비교시 제조비트 없이...
+
+#endif
+
+    unsigned short GetTYPE() { return m_cType; }
 
     unsigned short GetGrade() { return m_cGrade; }
     unsigned short GetOption() { return m_nGEM_OP; }
@@ -111,8 +241,6 @@ struct tagBaseITEM {
     unsigned short GetLife() { return m_nLife; }
     unsigned short GetDurability() { return m_cDurability; }
     unsigned int GetMoney() { return m_uiMoney; }
-
-    bool IsEmpty() { return (0 == m_wHeader); }
 
     bool IsAppraisal() { return (0 != m_bIsAppraisal); }
     bool HasSocket() { return (0 != m_bHasSocket); }
@@ -218,11 +346,19 @@ struct tagITEM: public tagBaseITEM {
     }
 
     #ifndef __BORLANDC__
+        #ifdef __ITEM_MAX
+    void operator=(tagBaseITEM& rBASE) {
+        m_dwLSB = rBASE.m_dwLSB;
+        m_dwMSB = rBASE.m_dwMSB;
+        m_iSN = 0;
+    }
+        #else
     void operator=(tagBaseITEM& rBASE) {
         m_wLSB = rBASE.m_wLSB;
         m_dwMSB = rBASE.m_dwMSB;
         m_iSN = 0;
     }
+        #endif
     #endif
 };
 #endif

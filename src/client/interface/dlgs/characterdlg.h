@@ -3,7 +3,7 @@
 #define _CHARACTER_DLG_H
 
 #include "tgamectrl/tdialog.h"
-#include "../../Common/CItem.h"
+#include "citem.h"
 #include "DataType.h"
 
 /**

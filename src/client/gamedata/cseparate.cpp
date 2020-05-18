@@ -2,7 +2,7 @@
 
 #include ".\cseparate.h"
 #include "../GameCommon/Item.h"
-#include "../Common/CItem.h"
+#include "citem.h"
 #include "../Common/IO_STB.h"
 #include "../Network/CNetwork.h"
 #include "event/CTEventItem.h"

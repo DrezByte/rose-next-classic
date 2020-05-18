@@ -12,7 +12,7 @@
 #include "../JCommandState.h"
 #include "skill.h"
 #include "../GameProc/UseItemDelay.h"
-#include "../Common/CItem.h"
+#include "citem.h"
 #include "../IO_Event.h"
 
 // Item base command에서 필요한 글로벌 함수들

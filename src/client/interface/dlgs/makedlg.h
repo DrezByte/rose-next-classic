@@ -3,7 +3,7 @@
 
 #include "tgamectrl/tdialog.h"
 #include "tgamectrl/tcontaineritem.h"
-#include "../../Common/CItem.h"
+#include "citem.h"
 #include "../../gamedata/cmanufacture.h"
 #include "DataType.h"
 #include "../../gamecommon/item.h"

@@ -3,7 +3,7 @@
 
 #include "../GameCommon/CObservable.h"
 #include "../GameCommon/IObserver.h"
-#include "../Common/CItem.h"
+#include "citem.h"
 #include "../interface/dlgs/subclass/CSlot.h"
 #include "event/CTEventSeparate.h"
 #include <vector>

@@ -97,9 +97,6 @@
     <ClInclude Include="src\common\choticon.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\citem.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\cobjai.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
@@ -167,6 +164,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\include\datatype.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\include\citem.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -249,9 +249,6 @@
     <ClCompile Include="src\common\choticon.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\citem.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\cobjai.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -311,6 +308,9 @@
       <Filter>Common Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\src\cinventory.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\src\citem.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #ifndef _CTCMDNUMBERINPUT_
 #define _CTCMDNUMBERINPUT_
 #include "tgamectrl/tcommand.h"
-#include "../../Common/CItem.h"
+#include "citem.h"
 
 /// Item이동시 숫자입력이 요구될수 있는 처리에 대한 Command
 class CTCmdNumberInput: public CTCommand {

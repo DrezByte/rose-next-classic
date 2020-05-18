@@ -12,7 +12,7 @@
 #include "../Icon/CIconItem.h"
 #include "../Icon/CIconDialog.h"
 
-#include "../../Common/CItem.h"
+#include "citem.h"
 #include "../../Common/IO_Pat.h"
 #include "../../GameData/CManufacture.h"
 #include "../../GameData/CSeparate.h"

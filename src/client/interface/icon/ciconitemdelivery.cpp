@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include ".\ciconitemdelivery.h"
-#include "../../Common/CItem.h"
+#include "citem.h"
 #include "../../GameCommon/Item.h"
 #include "../io_imageres.h"
 #include "../CTDrawImpl.h"

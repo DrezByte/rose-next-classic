@@ -9,7 +9,7 @@
 #include "../slotcontainer/CItemSlot.h"
 #include "../../GameCommon/Item.h"
 #include "../../Common/IO_STB.h"
-#include "../../Common/CItem.h"
+#include "citem.h"
 #include "../../System/CGame.h"
 #include "../command/uicommand.h"
 #include "../../GameProc/UseItemDelay.h"

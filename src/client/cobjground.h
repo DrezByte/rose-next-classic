@@ -4,7 +4,7 @@
 #ifndef __COBJGROUND_H
 #define __COBJGROUND_H
 #include "CObjFIXED.h"
-#include "Common\CItem.h"
+#include "citem.h"
 
 ///
 /// 필드 아이템...

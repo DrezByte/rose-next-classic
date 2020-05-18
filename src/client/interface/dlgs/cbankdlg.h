@@ -2,7 +2,7 @@
 #define _CBANKDLG_
 
 #include "tgamectrl/tdialog.h"
-#include "../../Common/CItem.h"
+#include "citem.h"
 #include "../../gamedata/cbank.h"
 #include "../../gamecommon/iobserver.h"
 #include "subclass/CSlot.h"
