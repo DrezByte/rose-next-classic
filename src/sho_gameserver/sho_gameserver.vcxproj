@@ -15,6 +15,7 @@
     <ClInclude Include="..\common-server\include\cthreadmsgr.h" />
     <ClInclude Include="..\common\calculation.h" />
     <ClInclude Include="..\common\include\cinventory.h" />
+    <ClInclude Include="..\common\include\datatype.h" />
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h" />
     <ClInclude Include="..\common\net_prototype.h" />
     <ClInclude Include="src\ai_lib\cai_file.h" />
@@ -35,7 +36,6 @@
     <ClInclude Include="src\common\cquest.h" />
     <ClInclude Include="src\common\cregenarea.h" />
     <ClInclude Include="src\common\cuserdata.h" />
-    <ClInclude Include="src\common\datatype.h" />
     <ClInclude Include="src\common\io_ai.h" />
     <ClInclude Include="src\common\io_motion.h" />
     <ClInclude Include="src\common\io_pat.h" />

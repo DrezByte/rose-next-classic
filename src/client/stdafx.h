@@ -54,7 +54,7 @@ typedef LPDIRECT3DVERTEXBUFFER9 LPD3DVERTEXBUFFER;
 #include "io_terrain.h"
 
 #include "util\CVector.h"
-#include "common\DataTYPE.h"
+#include "DataTYPE.h"
 
 #include "util\CD3DUtil.h"
 #include "util\classSTR.h"

@@ -541,6 +541,7 @@
   <ItemGroup>
     <ClInclude Include="..\common\calculation.h" />
     <ClInclude Include="..\common\include\cinventory.h" />
+    <ClInclude Include="..\common\include\datatype.h" />
     <ClInclude Include="..\common\net_prototype.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CClientStorage.h" />
@@ -879,7 +880,6 @@
     <ClInclude Include="Common\CQuest.h" />
     <ClInclude Include="Common\CRegenAREA.h" />
     <ClInclude Include="Common\CUserDATA.h" />
-    <ClInclude Include="Common\DataTYPE.h" />
     <ClInclude Include="Common\IO_AI.H" />
     <ClInclude Include="Common\IO_Motion.h" />
     <ClInclude Include="Common\Io_pat.h" />

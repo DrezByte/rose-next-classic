@@ -151,8 +151,12 @@
 
 #ifndef __DATATYPE_H
 #define __DATATYPE_H
+#pragma once
 //-------------------------------------------------------------------------------------------------
-//#define FRAROSE
+
+#ifndef __SERVER
+#include "util/cvector.h"
+#endif
 
 #define BONE_IDX_PELVIS 0
 #define BONE_IDX_HEAD 4
@@ -323,16 +327,42 @@ enum t_eRidePART {
     RIDE_PART_BODY = 0,
     RIDE_PART_ENGINE,
     RIDE_PART_LEG,
-#ifndef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
-    RIDE_PART_ARMS,
-#else
+
+#if defined(_GBC)
     RIDE_PART_ABIL,
     RIDE_PART_ARMS,
+#else
+    RIDE_PART_ARMS,
 #endif
-    MAX_RIDING_PART
-};
 
+    MAX_RIDING_PART
+
+};
+/*
+#ifdef _NEWUI
+
+enum t_InvTYPE
+{
+    INV_WEAPON			= 0,
+    INV_USE,
+    INV_ETC,
+    INV_MILEAGE_AVATA,
+
+    INV_TYPE_SIZE,
+
+    INV_RIDING			= INV_TYPE_SIZE,
+    INV_ETC_PAT,
+    INV_MILEAGE_PAT,
+
+    MAX_INV_TYPE,
+};
+#else
+*/
 enum t_InvTYPE { INV_WEAPON = 0, INV_USE, INV_ETC, INV_RIDING, MAX_INV_TYPE };
+/*
+#endif
+*/
+
 #define INVENTORY_PAGE_SIZE (5 * 6)
 #define INVENTORY_TOTAL_SIZE \
     (MAX_EQUIP_IDX + MAX_SHOT_TYPE + MAX_INV_TYPE * INVENTORY_PAGE_SIZE + MAX_RIDING_PART)
@@ -600,7 +630,6 @@ enum t_AbilityINDEX {
     AT_DROP_BOOST = 107,
     AT_EXP_NONE = 108,
 #endif
-
     AT_MAX
 };
 
@@ -695,6 +724,7 @@ enum eING_TYPE {
 
     ING_TAUNT, // 유지 : 타운트
     ING_REVIVE, // 유지 : 부활
+    ING_GODDESS,
 
     ING_MAX_STATUS
 };
@@ -854,4 +884,21 @@ extern const float g_fMaxDistance;
 
 #define PAT_DEFAULT_HP 1000 // PAT HP의 기본 값
 //-------------------------------------------------------------------------------------------------
+#endif
+
+#ifndef __SERVER
+constexpr ZZ_COLOR
+zz_color_argb(int a, int r, int g, int b) {
+    return (((a)&0xff) << 24) | (((r)&0xff) << 16) | (((g)&0xff) << 8) | ((b)&0xff);
+}
+
+const ZZ_COLOR zz_color_red = zz_color_argb(255, 255, 0, 0);
+const ZZ_COLOR zz_color_green = zz_color_argb(255, 0, 255, 0);
+const ZZ_COLOR zz_color_blue = zz_color_argb(255, 0, 0, 255);
+const ZZ_COLOR zz_color_black = zz_color_argb(255, 0, 0, 0);
+const ZZ_COLOR zz_color_white = zz_color_argb(255, 255, 255, 255);
+const ZZ_COLOR zz_color_yellow = zz_color_argb(255, 255, 255, 0);
+const ZZ_COLOR zz_color_gray = zz_color_argb(255, 150, 150, 150);
+const ZZ_COLOR zz_color_violet = zz_color_argb(255, 255, 0, 255);
+const ZZ_COLOR zz_color_Oorange = zz_color_argb(255, 255, 128, 0);
 #endif

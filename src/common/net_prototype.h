@@ -1,15 +1,13 @@
 #ifndef __NET_PROTOTYPE_H
 #define __NET_PROTOTYPE_H
 
-#ifdef __SERVER
-    #include "DataTYPE.h"
+#include "datatype.h"
 
+#ifdef __SERVER
     #include "CUserDATA.h"
     #include "PacketHEADER.h"
     #include "classHASH.h"
 #else
-    #include "../common/DataTYPE.h"
-
     #include "../common/CUserDATA.h"
     #include "../util/PacketHEADER.h"
     #include "../util/classHASH.h"

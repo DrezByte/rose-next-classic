@@ -3,7 +3,7 @@
 
 #include "Util/JSingleton.h"
 #include "util/classstr.h"
-#include "common/datatype.h"
+#include "datatype.h"
 
 #include <string>
 

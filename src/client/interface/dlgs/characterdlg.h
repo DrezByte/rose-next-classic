@@ -4,7 +4,7 @@
 
 #include "tgamectrl/tdialog.h"
 #include "../../Common/CItem.h"
-#include "../../Common/DataType.h"
+#include "DataType.h"
 
 /**
  * 캐릭터 정보를 보여주기 위한 다이얼로그

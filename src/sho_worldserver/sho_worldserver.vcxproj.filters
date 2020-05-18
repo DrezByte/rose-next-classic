@@ -79,6 +79,9 @@
     <ClInclude Include="..\common\include\cinventory.h">
       <Filter>Common Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\include\datatype.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">

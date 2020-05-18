@@ -112,9 +112,6 @@
     <ClInclude Include="src\common\cuserdata.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\datatype.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\io_ai.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
@@ -167,6 +164,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\include\cinventory.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\include\datatype.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

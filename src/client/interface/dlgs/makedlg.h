@@ -5,7 +5,7 @@
 #include "tgamectrl/tcontaineritem.h"
 #include "../../Common/CItem.h"
 #include "../../gamedata/cmanufacture.h"
-#include "../../Common/DataType.h"
+#include "DataType.h"
 #include "../../gamecommon/item.h"
 #include "../../gamecommon/iobserver.h"
 #include "SubClass/CSlot.h"

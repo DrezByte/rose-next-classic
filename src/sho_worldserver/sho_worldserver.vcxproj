@@ -40,6 +40,7 @@
     <ClInclude Include="..\common\cthreadlog.h" />
     <ClInclude Include="..\common\etc_math.h" />
     <ClInclude Include="..\common\include\cinventory.h" />
+    <ClInclude Include="..\common\include\datatype.h" />
     <ClInclude Include="..\common\io_pat.h" />
     <ClInclude Include="..\common\io_skill.h" />
     <ClInclude Include="src\cws_account.h" />
