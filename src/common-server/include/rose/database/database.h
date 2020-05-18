@@ -18,6 +18,11 @@ using DateTime = std::chrono::time_point<std::chrono::system_clock>;
 
 namespace Rose::Database {
 
+constexpr const char*
+PG_BOOL(bool b) {
+    return b ? "TRUE" : "FALSE";
+};
+
 /// Builds a list of bind params as a string
 /// e.g. param_list(4) => "$1, $2, $3, $4"
 std::string param_list(size_t count);
@@ -107,5 +112,8 @@ public:
 
     /// Execute a query and get the results using binary params
     QueryResult queryb(const std::string& statement, const std::vector<QueryParam>& params);
+
+    /// Execute batch query
+    QueryResult batch(const std::string& statement);
 };
 } // namespace Rose::Database

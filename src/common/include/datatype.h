@@ -224,8 +224,6 @@ typedef tPOINTF t_POSITION;
     #define FACE_EXPRESSION_COUNT 7
     #define HAIR_TYPE_COUNT 5
 
-//*************************************************************************************************
-/// 보여주기 위한 모델 번호..
 enum t_CharPART {
     BODY_PART_FACE = 0, // 0 link to bone
     BODY_PART_HAIR = 1,
@@ -243,7 +241,8 @@ enum t_CharPART {
     BODY_PART_WEAPON_R = 8, // 8 link to dummy
     BODY_PART_WEAPON_L = 9,
 
-    MAX_BODY_PART = 10
+    MAX_BODY_PART = 10,
+    BODY_PART_INVALID = 999,
 };
 #endif
 
@@ -902,3 +901,26 @@ const ZZ_COLOR zz_color_gray = zz_color_argb(255, 150, 150, 150);
 const ZZ_COLOR zz_color_violet = zz_color_argb(255, 255, 0, 255);
 const ZZ_COLOR zz_color_Oorange = zz_color_argb(255, 255, 128, 0);
 #endif
+
+// Maps an inventory slot position to an equipment position
+// i.e. t_EquipINDEX to t_CharPART
+constexpr size_t
+equip2part(size_t equip_idx) {
+    if (equip_idx == 0 || equip_idx > EQUIP_IDX_WEAPON_L) {
+        return BODY_PART_INVALID;
+    }
+
+    const size_t map[] = {
+        BODY_PART_INVALID, // EQUIP_IDX_NULL
+        BODY_PART_FACE_ITEM, // EQUIP_IDX_FACE_ITEM
+        BODY_PART_HAIR, // EQUIP_IDX_HELMET
+        BODY_PART_ARMOR, // EQUIP_IDX_ARMOR
+        BODY_PART_KNAPSACK, // EQUIP_IDX_KNAPSACK
+        BODY_PART_GAUNTLET, // EQUIP_IDX_GAUNTLET
+        BODY_PART_BOOTS, // EQUIP_IDX_BOOTS
+        BODY_PART_WEAPON_R, // EQUIP_IDX_WEAPON_R
+        BODY_PART_WEAPON_L, // EQUIP_IDX_WEAPON_L
+    };
+
+    return map[equip_idx];
+}

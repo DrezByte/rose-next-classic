@@ -293,13 +293,13 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
         equipment[BODY_PART_HAIR].m_nItemNo = hair_id;
 
         QueryResult equip_res =
-            this->db_pg.query("SELECT equipment.slot, item.game_data_id"
-                              " FROM equipment INNER JOIN item ON equipment.item_id = item.id"
-                              " WHERE equipment.character_id = $1",
+            this->db_pg.query("SELECT inventory.slot, item.game_data_id "
+                              "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
+                              "WHERE inventory.owner_id = $1",
                 {char_id});
 
         if (!equip_res.is_ok()) {
-            LOG_DEBUG("Equipment query failed: %s", equip_res.error_message());
+            LOG_DEBUG("Inventory query failed: %s", equip_res.error_message());
             continue;
         }
 
@@ -308,7 +308,8 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
             int game_data_id = equip_res.get_int32(row_idx, 1);
 
             if (slot >= 0 && slot < MAX_BODY_PART) {
-                equipment[slot].m_nItemNo = game_data_id;
+                const size_t part_idx = equip2part(slot);
+                equipment[part_idx].m_nItemNo = game_data_id;
             }
         }
 
@@ -385,7 +386,7 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    const char* mail_stmt = "SELECT COUNT(*) FROM character_mail WHERE to_character_id=$1";
+    const char* mail_stmt = "SELECT COUNT(*) FROM mail WHERE recipient_id=$1";
     QueryResult mail_res = this->db_pg.query(mail_stmt, {char_id});
     if (!mail_res.is_ok()) {
         LOG_ERROR("Failed to get mail count for character %s: %s",
@@ -558,8 +559,8 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
     switch (pPacket->m_cli_MEMO.m_btTYPE) {
         case MEMO_REQ_RECEIVED_CNT: {
-            const char* stmt = "SELECT COUNT(*) FROM character, character_mail WHERE "
-                               "character.id=$1 AND character.id=character_mail.to_character_id";
+            const char* stmt = "SELECT COUNT(*) FROM character, mail WHERE "
+                               "character.id=$1 AND character.id=mail.recipient_id";
 
             QueryResult res = this->db_pg.query(stmt, {user_id});
             if (!res.is_ok()) {
@@ -575,13 +576,12 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
         }
 
         case MEMO_REQ_CONTENTS: {
-            const char* stmt =
-                "SELECT cm.id, cm.sent, cm.message, "
-                "from_char.name as from_character_name "
-                "FROM character_mail AS cm "
-                "LEFT JOIN character as from_char ON from_char.id = cm.from_character_id "
-                "LEFT JOIN character as to_char ON to_char.id = cm.to_character_id "
-                "WHERE to_char.id = $1";
+            const char* stmt = "SELECT cm.id, cm.sent, cm.message, "
+                               "from_char.name as from_character_name "
+                               "FROM mail AS cm "
+                               "LEFT JOIN character as from_char ON from_char.id = cm.sender_id "
+                               "LEFT JOIN character as to_char ON to_char.id = cm.recipient_id "
+                               "WHERE to_char.id = $1";
 
             QueryResult res = this->db_pg.query(stmt, {user_id});
             if (!res.is_ok()) {
@@ -625,7 +625,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
             // Delete mail sent to the client from the database
             if (delete_list.size() > 0) {
-                std::string delete_stmt = fmt::format("DELETE FROM character_mail WHERE id IN ({})",
+                std::string delete_stmt = fmt::format("DELETE FROM mail WHERE id IN ({})",
                     param_list(delete_list.size()));
                 QueryResult delete_res = this->db_pg.query(delete_stmt, {delete_list});
                 if (!delete_res.is_ok()) {
@@ -669,9 +669,8 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 return true;
             }
 
-            const char* count_stmt =
-                "SELECT COUNT(*) FROM character, character_mail WHERE "
-                "character.name=$1 AND character.id=character_mail.to_character_id";
+            const char* count_stmt = "SELECT COUNT(*) FROM character, mail WHERE "
+                                     "character.name=$1 AND character.id=mail.recipient_id";
 
             QueryResult count_res = this->db_pg.query(count_stmt, {target_char});
             if (!count_res.is_ok()) {
@@ -686,8 +685,8 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                 return true;
             }
 
-            const char* add_stmt = "INSERT INTO character_mail (to_character_id, "
-                                   "from_character_id, message) VALUES ($1, $2, $3)";
+            const char* add_stmt = "INSERT INTO mail (recipient_id, "
+                                   "sender_id, message) VALUES ($1, $2, $3)";
 
             QueryResult add_res = this->db_pg.query(stmt, {target_char_id, user_id, message});
             if (!add_res.is_ok()) {
@@ -777,6 +776,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
         LOG_ERROR("Failed to count characters for username '%s': %s",
             account_name.c_str(),
             res.error_message());
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
         return false;
     }
 
@@ -798,6 +798,14 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
         std::to_string(job_id),
         std::to_string(req->face_id()),
         std::to_string(req->hair_id()),
+        std::to_string(AVATAR_MONEY(gender_id)),
+        // Stats
+        std::to_string(AVATAR_STR(gender_id)),
+        std::to_string(AVATAR_DEX(gender_id)),
+        std::to_string(AVATAR_INT(gender_id)),
+        std::to_string(AVATAR_CON(gender_id)),
+        std::to_string(AVATAR_CHARM(gender_id)),
+        std::to_string(AVATAR_SENSE(gender_id)),
         // Start Spawn
         std::to_string(start_map_id),
         std::to_string(start_pos.x),
@@ -809,17 +817,20 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     };
 
     CInventory& inv = m_pDefaultINV[gender_id];
-    tagBasicAbility& basic_ability = m_pDefaultBA[gender_id];
 
     QueryResult trans_res = this->db_pg.query("BEGIN", {});
     if (!trans_res.is_ok()) {
-        LOG_ERROR("Failed to begin transaction when creating '%s': %s", char_name, trans_res.error_message());
+        LOG_ERROR("Failed to begin transaction when creating '%s': %s",
+            char_name,
+            trans_res.error_message());
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
         return false;
     }
 
     std::string char_stmt = fmt::format(
-        "INSERT INTO character (account_username, name, gender_id, job_id, face_id, hair_id, "
+        "INSERT INTO character (account_username, name, "
+        "gender_id, job_id, face_id, hair_id, money, "
+        "str, dex, intt, sen, con, cha, "
         "map_id, respawn_x, respawn_y, town_respawn_id, town_respawn_x, town_respawn_y) "
         "VALUES ({}) "
         "RETURNING id",
@@ -857,25 +868,52 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
         return false;
     }
 
-     std::string char_id = char_res.get_string(0, 0);
+    std::string char_id = char_res.get_string(0, 0);
 
-    // TODO: Add equipment
-    tagBasicETC;
-    m_pDefaultBE[gender_id];
+    std::string bulk;
+    for (size_t i = 0; i < INVENTORY_TOTAL_SIZE; ++i) {
+        tagITEM item = m_pDefaultINV[gender_id].m_ItemLIST[i];
+        if (item.GetTYPE() == 0) {
+            continue;
+        }
 
-    // TODO: Add default inventory + default money
-    CInventory;
-    m_pDefaultINV[gender_id];
+        bulk += fmt::format("INSERT INTO item (game_data_id, type_id, stat_id, grade, durability, "
+                            "lifespan, appraisal, socket) VALUES ({}, {}, {}, {}, {}, {}, {}, {});",
+            std::to_string(item.GetItemNO()),
+            std::to_string(item.GetTYPE()),
+            std::to_string(item.GetGemNO()),
+            std::to_string(item.GetGrade()),
+            std::to_string(item.GetDurability()),
+            std::to_string(item.GetLife()),
+            PG_BOOL(item.IsAppraisal()),
+            PG_BOOL(item.HasSocket()));
 
-    // TODO: Add default stats
-    tagBasicAbility;
-    m_pDefaultBA[gender_id];
+        bulk += fmt::format(
+            "INSERT INTO inventory (owner_id, item_id, slot, quantity) VALUES ({}, currval('item_id_seq'), {}, {});", char_id, i, item.GetQuantity());
+    }
+
+    QueryResult bulk_res = this->db_pg.batch(bulk);
+    if (!bulk_res.is_ok()) {
+        LOG_ERROR("Failed to insert default items for character '%s': %s",
+            char_name,
+            bulk_res.error_message());
+
+        trans_res = this->db_pg.query("ROLLBACK", {});
+        if (!trans_res.is_ok()) {
+            LOG_ERROR("Failed to rollback transaction when creating '%s': %s",
+                char_name,
+                trans_res.error_message());
+        }
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
+        return false;
+    }
 
     trans_res = this->db_pg.query("COMMIT", {});
     if (!trans_res.is_ok()) {
         LOG_ERROR("Failed to commit transaction when creating '%s': %s",
             char_name,
             trans_res.error_message());
+        g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
         return false;
     }
 

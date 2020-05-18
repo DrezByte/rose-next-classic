@@ -273,15 +273,15 @@ struct tagBaseITEM {
 
     t_eSHOT GetShotTYPE();
     t_EquipINDEX GetEquipPOS();
-#ifdef __SERVER
-    unsigned int GetQuantity() { return m_uiQuantity; }
-#else
-    unsigned int GetQuantity();
-    short Subtract(tagITEM& sITEM); // 주어진 아이템 만큼 덜어 내고 빠진결과는 sITEM에 들어 있다.
-    void SubtractOnly(tagITEM& sITEM); // 주어진 아이템 만큼 덜어 낸다.
 
-    bool IsEnableAppraisal(); ///감정가능한 아이템인가?
-    bool IsEnableExchange(); // 버리기가 가능한 아이템인가 ?
+    unsigned int GetQuantity();
+
+#ifndef __SERVER
+    short Subtract(tagITEM& sITEM);
+    void SubtractOnly(tagITEM& sITEM);
+
+    bool IsEnableAppraisal();
+    bool IsEnableExchange();
     bool IsEnableSeparate();
     bool IsEnableUpgrade();
     bool HasLife();
@@ -292,10 +292,10 @@ struct tagBaseITEM {
     char* GettingMESSAGE_Party(const char* partyName_);
     char* GettingQuestMESSAGE();
     char* SubtractQuestMESSAGE();
-    ///소모탄아이템의 ShotType을 얻기
+
     static t_eSHOT GetNaturalBulletType(int iItemNo);
     t_eSHOT GetBulletType();
-    ///명중력
+
     int GetHitRate();
     int GetAvoidRate();
     bool IsEqual(int iType, int iItemNo);

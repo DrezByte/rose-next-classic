@@ -248,9 +248,6 @@ tagBaseITEM::GetEquipPOS() {
     return MAX_EQUIP_IDX;
 }
 
-//-------------------------------------------------------------------------------------------------
-#ifndef __SERVER
-/// 2004 / 6 /17 : Client에서는 수량 없는 아이템일경우에는 항상 0 or 1을 리턴하도록 수정
 unsigned int
 tagBaseITEM::GetQuantity() {
     if (IsEnableDupCNT())
@@ -261,7 +258,6 @@ tagBaseITEM::GetQuantity() {
 
     return 1;
 }
-#endif
 
 //-------------------------------------------------------------------------------------------------
 #ifndef __SERVER

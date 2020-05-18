@@ -199,4 +199,10 @@ Client::queryb(const std::string& statement, const std::vector<QueryParam>& para
     QueryResult res(pg_res);
     return res;
 }
+
+QueryResult
+Client::batch(const std::string& statement) {
+    return QueryResult(PQexec(this->conn.get(), statement.c_str()));
+}
+
 } // namespace Rose::Database
