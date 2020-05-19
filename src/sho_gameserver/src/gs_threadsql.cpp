@@ -21,242 +21,35 @@ using namespace Rose::Database;
 
 using json = nlohmann::json;
 
-#define MAX_CHAR_PER_USER 5
-#define DELETE_CHAR_WAIT_TIME (5 * 60) //	7ÀÏ 24½Ã°£ 60ºÐ 60ÃÊ
-
-enum LOGINTBL_COL_IDX {
-    LGNTBL_USERINFO = 0,
-    LGNTBL_ACCOUNT,
-    LGNTBL_PASSWORD,
-    LGNTBL_LAST_CONNECT,
-    LGNTBL_ENABLE,
-    LGNTBL_REG_DATE
-};
-
-enum AVTTBL_COL_IDX {
-    AVTTBL_CHARID = 0,
-    AVTTBL_ACCOUNT,
-    AVTTBL_NAME = 2,
-    AVTTBL_LEVEL,
-    AVTTBL_MONEY,
-    AVTTBL_RIGHT,
-    AVTTBL_BASIC_ETC = 6,
-    AVTTBL_BASIC_INFO,
-    AVTTBL_BASIC_ABILITY,
-    AVTTBL_GROW_ABILITY,
-    AVTTBL_SKILL_ABILITY,
-    AVTTBL_QUEST = 11,
-    AVTTBL_INVENTORY,
-    AVTTBL_HOTICON,
-    AVTTBL_DELETE_TIME,
-    AVTTBL_WISHLIST,
-    AVTTBL_OPTION = 16,
-    AVTTBL_JOB_NO,
-    AVTTBL_REG_TIME,
-    AVTTBL_PARTY_IDX,
-    AVTTBL_ITEM_SN,
-    AVTTBL_DATA_VER
-};
-
 enum BANKTBL_COL_IDX { BANKTBL_ACCOUNT = 0, BANKTBL_ITEMS, BANKTBL_REWARD, BANKTLB_PASSWORD };
 
-enum MEMOTBL_COL_IDX { MEMOTBL_MEMOID = 0, MEMOTBL_DATE, MEMOTBL_NAME, MEMOTBL_FROM, MEMOTBL_MEMO };
-
-//-------------------------------------------------------------------------------------------------
-// suspend mode·Î ½ÃÀÛ, spinlock¼³Á¤...
 GS_CThreadSQL::GS_CThreadSQL(): CSqlTHREAD(true), m_csUserLIST(4000), m_TmpSTR(512) {
     COMPILE_TIME_ASSERT(4 == sizeof(void*));
 
-#ifdef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
-    COMPILE_TIME_ASSERT(MAX_RIDING_PART == 5);
-#else
     COMPILE_TIME_ASSERT(MAX_RIDING_PART == 4);
-#endif
+
     COMPILE_TIME_ASSERT(sizeof(tagBasicETC) <= 96); // db field size
     COMPILE_TIME_ASSERT(sizeof(tagBasicINFO) <= 32);
     COMPILE_TIME_ASSERT(sizeof(tagBasicAbility) <= 48);
-#ifdef FRAROSE
-    COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) <= 394);
-#else
     COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) <= 384);
-#endif
     COMPILE_TIME_ASSERT(sizeof(tagSkillAbility) <= 240);
     COMPILE_TIME_ASSERT(sizeof(CInventory) <= 2048);
     COMPILE_TIME_ASSERT(sizeof(tagBankData) <= 2576);
     COMPILE_TIME_ASSERT(sizeof(tagQuestData) < 1000);
 
     COMPILE_TIME_ASSERT(sizeof(tagITEM) == (6 + 8));
-#ifdef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
-    COMPILE_TIME_ASSERT(sizeof(CInventory) == (140 * 14 + 8)); // 1954
-#else
     COMPILE_TIME_ASSERT(sizeof(CInventory) == (139 * 14 + 8)); // 1954
-#endif
 
     COMPILE_TIME_ASSERT(sizeof(m_sBE) == sizeof(tagBasicETC));
-    COMPILE_TIME_ASSERT(sizeof(m_sBI) == sizeof(tagBasicINFO));
-#ifdef FRAROSE
-    COMPILE_TIME_ASSERT(sizeof(m_sGB) == MAX_GRAW_ABILITY_BUFF); // sizeof( tagGrowAbility	) );
-#else
-    COMPILE_TIME_ASSERT(sizeof(m_sGB) == MAX_GRAW_ABILITY_BUFF); // sizeof( tagGrowAbility	) );
-#endif
-    COMPILE_TIME_ASSERT(sizeof(m_sSA) == sizeof(tagSkillAbility));
-    COMPILE_TIME_ASSERT(sizeof(m_sQD) == sizeof(tagQuestData));
     COMPILE_TIME_ASSERT(sizeof(tagHotICON) == sizeof(WORD));
 
     m_bWaiting = false;
-    m_sGB.Init();
-    m_sSA.Init();
-    m_sQD.Init();
     m_HotICON.Init();
     m_sEmptyBANK.Init();
-
-    m_pDefaultBE = NULL;
-    m_pDefaultINV = NULL;
-
-    m_nDefaultDataCNT = g_TblAVATAR.m_nDataCnt;
-    if (m_nDefaultDataCNT > 0) {
-        m_pDefaultBE = new tagBasicETC[m_nDefaultDataCNT];
-        m_pDefaultINV = new CInventory[m_nDefaultDataCNT];
-        m_pDefaultBA = new tagBasicAbility[m_nDefaultDataCNT];
-
-        short nR, nJ;
-        for (nR = 0; nR < m_nDefaultDataCNT; nR++) {
-            m_pDefaultBA[nR].m_nSTR = AVATAR_STR(nR);
-            m_pDefaultBA[nR].m_nDEX = AVATAR_DEX(nR);
-            m_pDefaultBA[nR].m_nINT = AVATAR_INT(nR);
-            m_pDefaultBA[nR].m_nCON = AVATAR_CON(nR);
-            m_pDefaultBA[nR].m_nCHARM = AVATAR_CHARM(nR);
-            m_pDefaultBA[nR].m_nSENSE = AVATAR_SENSE(nR);
-
-            m_pDefaultBE[nR].Init();
-            assert(AVATAR_ZONE(nR) > 0);
-
-            m_pDefaultINV[nR].Clear();
-            m_pDefaultINV[nR].m_i64Money = AVATAR_MONEY(nR);
-
-            // ÃÊ±â ÀåÀÛ ¾ÆÀÌÅÛ...
-            m_pDefaultINV[nR].SetInventory(EQUIP_IDX_FACE_ITEM, AVATAR_FACEITEM(nR));
-            m_pDefaultINV[nR].SetInventory(EQUIP_IDX_HELMET, AVATAR_HELMET(nR));
-            m_pDefaultINV[nR].SetInventory(EQUIP_IDX_ARMOR, AVATAR_ARMOR(nR));
-            m_pDefaultINV[nR].SetInventory(EQUIP_IDX_KNAPSACK, AVATAR_BACKITEM(nR));
-            m_pDefaultINV[nR].SetInventory(EQUIP_IDX_GAUNTLET, AVATAR_GAUNTLET(nR));
-            m_pDefaultINV[nR].SetInventory(EQUIP_IDX_BOOTS, AVATAR_BOOTS(nR));
-            m_pDefaultINV[nR].SetInventory(EQUIP_IDX_WEAPON_R, AVATAR_WEAPON(nR));
-            m_pDefaultINV[nR].SetInventory(EQUIP_IDX_WEAPON_L, AVATAR_SUBWPN(nR));
-
-            // ÃÊ±â Àåºñ ¾ÆÀÌÅÛ
-            for (nJ = 0; nJ < 10; nJ++)
-                m_pDefaultINV[nR].SetInventory(
-                    (INV_WEAPON * INVENTORY_PAGE_SIZE) + nJ + MAX_EQUIP_IDX,
-                    AVATAR_ITEM_WEAPON(nR, nJ));
-
-            // ÃÊ±â ¼Ò¸ð ¾ÆÀÌÅÛ
-            for (nJ = 0; nJ < 5; nJ++) {
-                m_pDefaultINV[nR].SetInventory((INV_USE * INVENTORY_PAGE_SIZE) + nJ + MAX_EQUIP_IDX,
-                    AVATAR_ITEM_USE(nR, nJ),
-                    AVATAR_ITEM_USECNT(nR, nJ));
-            }
-
-            // ÃÊ±â ±âÅ¸ ¾ÆÀÌÅÛ
-            for (nJ = 0; nJ < 5; nJ++) {
-                m_pDefaultINV[nR].SetInventory((INV_ETC * INVENTORY_PAGE_SIZE) + nJ + MAX_EQUIP_IDX,
-                    AVATAR_ITEM_ETC(nR, nJ),
-                    AVATAR_ITEM_ETCCNT(nR, nJ));
-            }
-
-            //	m_pDefaultBE[ nR ].m_nPartItemIDX[ BODY_PART_FACE		] = m_pDefaultINV[ nR
-            //].m_ItemEQUIP[ nI ].m_nItemNo; 	m_pDefaultBE[ nR ].m_nPartItemIDX[ BODY_PART_HAIR
-            //] = m_pDefaultINV[ nR ].m_ItemEQUIP[ nI ].m_nItemNo;
-            m_pDefaultBE[nR].SetPartITEM(BODY_PART_HELMET,
-                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_HELMET]);
-            m_pDefaultBE[nR].SetPartITEM(BODY_PART_ARMOR,
-                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_ARMOR]);
-            m_pDefaultBE[nR].SetPartITEM(BODY_PART_GAUNTLET,
-                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_GAUNTLET]);
-            m_pDefaultBE[nR].SetPartITEM(BODY_PART_BOOTS,
-                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_BOOTS]);
-            m_pDefaultBE[nR].SetPartITEM(BODY_PART_FACE_ITEM,
-                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_FACE_ITEM]);
-            m_pDefaultBE[nR].SetPartITEM(BODY_PART_KNAPSACK,
-                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_KNAPSACK]);
-            m_pDefaultBE[nR].SetPartITEM(BODY_PART_WEAPON_R,
-                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_R]);
-            m_pDefaultBE[nR].SetPartITEM(BODY_PART_WEAPON_L,
-                m_pDefaultINV[nR].m_ItemEQUIP[EQUIP_IDX_WEAPON_L]);
-        }
-    }
 }
 
-__fastcall GS_CThreadSQL::~GS_CThreadSQL() {
-    SAFE_DELETE_ARRAY(m_pDefaultBA);
-    SAFE_DELETE_ARRAY(m_pDefaultBE);
-    SAFE_DELETE_ARRAY(m_pDefaultINV);
-}
+__fastcall GS_CThreadSQL::~GS_CThreadSQL() {}
 
-//-------------------------------------------------------------------------------------------------
-bool
-GS_CThreadSQL::Sql_TEST() {
-    DWORD dwCurAbsSEC = classTIME::GetCurrentAbsSecond();
-
-    // UPDATE tblGS_AVATAR SET ZoneNO=xxx WHERE Name='icarus_test';
-    char* pCharName = "icarus";
-
-    /*
-    Create Procedure spGetImage
-    @id int
-    As
-    SELECT ImageId, ImageDescription, ImagePath
-    FROM tblImages
-    WHERE ImageId = @id
-
-    "{ ? = CALL dbo.spGetImage;1 (?) }"
-    */
-    ::SQLCloseCursor(this->db->m_hSTMT1);
-
-    long lReturn = -1;
-    SDWORD cbParm1 = SQL_NTS;
-    if (!this->db->SetParam_long(1, lReturn, cbParm1)) {
-        g_LOG.CS_ODS(LOG_NORMAL, "shit~~~~~ %s \n", this->db->GetERROR());
-    }
-    //	this->db->BindPARAM( 1, (BYTE*)pCharName,			strlen(pCharName)		);
-
-    //	if ( this->db->MakeQuery("{call sho_test( ? ) }" ) < 0 ) {
-    if (!this->db->QuerySQL("{?=call sho_test( \'%s\' ) }", pCharName)) {
-        //	if ( this->db->ExecSQL("{ call sho_test( %s ) }", pCharName ) < 0 ) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR());
-    }
-
-    /*
-        while( this->db->GetNextRECORD() ) {
-            g_LOG.CS_ODS(LOG_NORMAL, "%d  call result:: %s, %s \n", lReturn, this->db->GetStrPTR(0),
-       this->db->GetStrPTR(1) );
-        }
-    */
-    ::SQLMoreResults(this->db->m_hSTMT1); // != SQL_NO_DATA
-
-    int iii = lReturn;
-
-    g_LOG.CS_ODS(LOG_NORMAL, "RESULT:: %d   \n", lReturn);
-
-    /*
-        this->db->MakeQuery("UPDATE tblGS_AVATAR SET dwDelTIME=",
-                                                        MQ_PARAM_INT,   dwCurAbsSEC,
-                    MQ_PARAM_ADDSTR, "WHERE txtNAME=",	MQ_PARAM_STR,	pCharName,	MQ_PARAM_END);
-        if ( this->db->ExecSQLBuffer() < 0 ) {
-            // °íÄ¡±â ½ÇÆÐ !!!
-            g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR() );
-            return true;
-        }
-    */
-
-    if (this->db->GetRecordCNT() != 1) {
-        // °íÄ¥ ·¹ÄÚµå°¡ ¾ø´Ù.
-    }
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Add_SqlPacketWithACCOUNT(classUSER* pUSER, t_PACKET* pPacket) {
     return CSqlTHREAD::Add_SqlPACKET((int)pUSER->m_iSocketIDX,
@@ -380,6 +173,7 @@ GS_CThreadSQL::Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE) {
 //-------------------------------------------------------------------------------------------------
 #define BEGINNER_ZONE_LEVEL 5
 #define BEGINNER_ZONE_NO 20
+
 bool
 GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
     // update character DB !!!
@@ -486,46 +280,6 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
 }
 
 void
-GS_CThreadSQL::Clear_LoginTABLE() {
-    //	GS_LogINÅ×ÀÌºí¿¡¼­ ÇöÀç¼­¹ö ipÀÎ ·¹ÄÚµå ¸ðµÎ »èÁ¦...
-    if (0 == ::Get_ServerLangTYPE()) {
-        if (this->db->ExecSQL("DELETE FROM tblGS_LogIN;") < 1) {
-            // ¿À·ù ¶Ç´Â ¸¸µé¾îÁø°ÍÀÌ ¾ø´Ù.
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "Exec ERROR in Clear_LoginTABLE:: %s \n",
-                this->db->GetERROR());
-        }
-    }
-}
-void
-GS_CThreadSQL::Add_LoginACCOUNT(char* szAccount) {
-    if (0 == ::Get_ServerLangTYPE()) {
-        if (this->db->ExecSQL("INSERT tblGS_LogIN (txtACCOUNT, txtServerIP) VALUES(\'%s\',\'%s\');",
-                szAccount,
-                CLIB_GameSRV::GetInstance()->config.gameserver.ip.c_str())
-            < 1) {
-            // ¿À·ù ¶Ç´Â ¸¸µé¾îÁø°ÍÀÌ ¾ø´Ù.
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "Exec ERROR in Add_LoginACCOUNT(%s):: %s \n",
-                szAccount,
-                this->db->GetERROR());
-        }
-    }
-}
-void
-GS_CThreadSQL::Sub_LoginACCOUNT(char* szAccount) {
-    if (0 == ::Get_ServerLangTYPE() && NULL != szAccount) {
-        if (this->db->ExecSQL("DELETE FROM tblGS_LogIN WHERE txtACCOUNT=\'%s\';", szAccount) < 1) {
-            // ¿À·ù ¶Ç´Â ¸¸µé¾îÁø°ÍÀÌ ¾ø´Ù.
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "Exec ERROR in Sub_LoginACCOUNT(%s):: %s \n",
-                szAccount,
-                this->db->GetERROR());
-        }
-    }
-}
-
-void
 GS_CThreadSQL::Execute() {
     //	this->SetPriority( THREAD_PRIORITY_ABOVE_NORMAL );	// Priority 1 point above the priority
     // class
@@ -535,8 +289,6 @@ GS_CThreadSQL::Execute() {
     classDLLNODE<tagSqlUSER>* pUsrNODE;
 
     LOG_DEBUG("GS_CThreadSQL::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
-
-    this->Clear_LoginTABLE();
 
     while (TRUE) {
         if (!this->Terminated) {
@@ -595,9 +347,6 @@ GS_CThreadSQL::Execute() {
                             g_pThreadLOG->When_LogOUT(pUsrNODE->DATA.m_pUSER);
 #endif
 
-                            // GS_LogIN Å×ÀÌºí¿¡ °èÁ¤»èÁ¦....
-                            this->Sub_LoginACCOUNT(pUsrNODE->DATA.m_pUSER->Get_ACCOUNT());
-
                             g_pSockLSV->Send_gsv_CHANGE_CHAR(pUsrNODE->DATA.m_pUSER);
                             break;
 
@@ -618,9 +367,6 @@ GS_CThreadSQL::Execute() {
 #endif
                             g_pSockLSV->Send_zws_SUB_ACCOUNT(pUsrNODE->DATA.m_pUSER->m_dwWSID,
                                 pUsrNODE->DATA.m_pUSER->Get_ACCOUNT());
-
-                            // GS_LogIN Å×ÀÌºí¿¡ °èÁ¤»èÁ¦....
-                            this->Sub_LoginACCOUNT(pUsrNODE->DATA.m_pUSER->Get_ACCOUNT());
                     }
                 }
                 g_pUserLIST->FreeClientSOCKET(pUsrNODE->DATA.m_pUSER);
@@ -630,8 +376,6 @@ GS_CThreadSQL::Execute() {
         }
     }
 
-    this->Clear_LoginTABLE();
-
     int iCnt = m_AddPACKET.GetNodeCount();
     assert(iCnt == 0);
 
@@ -640,7 +384,6 @@ GS_CThreadSQL::Execute() {
         this->ThreadID);
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
     switch (pSqlPACKET->m_pPacket->m_wType) {
@@ -686,13 +429,6 @@ GS_CThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-struct tagDelCHAR {
-    DWORD m_dwDBID;
-    CStrVAR m_Name;
-};
-
-//-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
@@ -731,11 +467,6 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     if (pUSER) {
         classPACKET* pCPacket = Packet_AllocNLock();
         if (pCPacket) {
-            // 정상 처리...
-            // Get_ACCOUNT == this->db->GetStrPTR( Account ) ???
-#ifdef __KCHS_BATTLECART__
-            short nDataVER = this->db->GetInteger16(AVTTBL_DATA_VER);
-#endif
             pUSER->m_dwDBID = this->db->GetInteger(0);
 
             pUSER->Set_NAME(pCharName);
@@ -746,14 +477,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
             pBE = (tagBasicETC*)this->db->GetDataPTR(1);
 
             pUSER->m_nCharRACE = pBE->m_btCharRACE;
-#ifdef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
-            if (nDataVER < DATA_VER_2) {
-                pUSER->m_btPlatinumCHAR = *((BYTE*)(&pBE->m_RideITEM[RIDE_PART_ARMS]));
-            } else
-                pUSER->m_btPlatinumCHAR = pBE->m_btCharSlotNO;
-#else
             pUSER->m_btPlatinumCHAR = pBE->m_btCharSlotNO;
-#endif
 
             CZoneTHREAD* pZONE = g_pZoneLIST->GetZONE(pBE->m_nZoneNO);
             if (pZONE) {
@@ -795,14 +519,8 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
             // 일정 주기로 사용자 정보 저장하기 위해서..
             pUSER->m_dwBackUpTIME = pZONE->GetCurrentTIME();
 
-            if (pBE->m_nReviveZoneNO <= 0) {
-                // 역시 버그로 인해 부활존이 없으면...
-                pUSER->m_nReviveZoneNO = m_pDefaultBE[pBE->m_btCharRACE].m_nReviveZoneNO;
-                pUSER->m_PosREVIVE = m_pDefaultBE[pBE->m_btCharRACE].m_PosREVIVE;
-            } else {
-                pUSER->m_nReviveZoneNO = pBE->m_nReviveZoneNO;
-                pUSER->m_PosREVIVE = pBE->m_PosREVIVE;
-            }
+            pUSER->m_nReviveZoneNO = pBE->m_nReviveZoneNO;
+            pUSER->m_PosREVIVE = pBE->m_PosREVIVE;
 
             ::CopyMemory(pUSER->m_PartITEM, pBE->m_PartITEM, sizeof(tagPartITEM) * MAX_BODY_PART);
 
@@ -999,9 +717,6 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
             pUSER->m_dwLoginTIME = this->m_dwCurTIME;
 
-            // GS_LogIN 테이블에...계정 등록...
-            this->Add_LoginACCOUNT(pUSER->Get_ACCOUNT());
-
 #ifdef __NEW_LOG
             g_pThreadLOG->When_LogInOrOut(pUSER, NEWLOG_LOGIN);
 #else
@@ -1030,90 +745,6 @@ tPOINTF s_BeginnerPOS[MAX_BEGINNER_POS] = {{530500, 539500},
 #define BEGINNER_ZONE 20
 #define ADVENTURE_ZONE 22
 
-bool
-GS_CThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
-    t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
-
-    short nOffset = sizeof(cli_DELETE_CHAR);
-    char* pCharName = Packet_GetStringPtr(pPacket, nOffset);
-    if (!pCharName || !pSqlPACKET->m_Name.Get()) {
-        return false;
-    }
-
-    DWORD dwCurAbsSEC = 0, dwReaminSEC = 0;
-    if (pPacket->m_cli_DELETE_CHAR.m_bDelete) {
-        // »èÁ¦ ´ë±â
-        dwCurAbsSEC = classTIME::GetCurrentAbsSecond() + DELETE_CHAR_WAIT_TIME;
-        dwReaminSEC = DELETE_CHAR_WAIT_TIME;
-    }
-
-    if (this->db->QuerySQL("{call ws_ClanCharGET(\'%s\')}", pCharName)) {
-        if (this->db->GetNextRECORD()) {
-            // Å¬·£ ÀÖ´Ù.
-            int iClanPOS = this->db->GetInteger(2);
-            if (iClanPOS >= GPOS_MASTER) {
-                classUSER* pFindUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-                classPACKET* pCPacket = Packet_AllocNLock();
-                if (pFindUSER && pCPacket) {
-                    pCPacket->m_HEADER.m_wType = WSV_DELETE_CHAR;
-                    pCPacket->m_HEADER.m_nSize = sizeof(wsv_DELETE_CHAR);
-
-                    pCPacket->m_wsv_DELETE_CHAR.m_dwDelRemainTIME = 0xffffffff;
-                    pCPacket->AppendString(pCharName);
-                    pFindUSER->Send_Start(*pCPacket);
-
-                    Packet_ReleaseNUnlock(pCPacket);
-                }
-                return true;
-            }
-        }
-    }
-
-    if (this->db->ExecSQL(
-            "UPDATE character SET delete_by_int=%u WHERE account_name=\'%s\' AND name=\'%s\'",
-            dwCurAbsSEC,
-            pSqlPACKET->m_Name.Get(),
-            pCharName)
-        < 1) {
-        // ¿À·ù ¶Ç´Â »èÁ¦µÈ°ÍÀÌ ¾ø´Ù.
-        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR());
-    }
-    /*
-    this->db->MakeQuery("DELETE FROM tblGS_AVATAR WHERE txtACCOUNT=",
-                                                    MQ_PARAM_STR,	pSqlPACKET->m_Name.Get(),	//
-    account MQ_PARAM_ADDSTR,	" AND txtNAME=",	MQ_PARAM_STR,	pCharName, MQ_PARAM_END ); if (
-    this->db->ExecSQLBuffer() < 1 ) {
-        // ¿À·ù ¶Ç´Â »èÁ¦µÈ°ÍÀÌ ¾ø´Ù.
-        g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR() );
-        return true;
-    }
-    */
-    classUSER* pFindUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-    if (pFindUSER) {
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_CharacterLOG(pFindUSER, pCharName, NEWLOG_DEL_START_CHAR);
-#else
-        g_pThreadLOG->When_DeleteCHAR(pFindUSER, pCharName);
-#endif
-
-        classPACKET* pCPacket = Packet_AllocNLock();
-        if (pCPacket) {
-            pCPacket->m_HEADER.m_wType = WSV_DELETE_CHAR;
-            pCPacket->m_HEADER.m_nSize = sizeof(wsv_DELETE_CHAR);
-
-            pCPacket->m_wsv_DELETE_CHAR.m_dwDelRemainTIME = dwReaminSEC;
-            pCPacket->AppendString(pCharName);
-
-            pFindUSER->Send_Start(*pCPacket);
-
-            Packet_ReleaseNUnlock(pCPacket);
-        }
-    }
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
     t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
@@ -1313,7 +944,9 @@ GS_CThreadSQL::Proc_LOAD_ZONE_DATA(int iZoneNO) {
 //-------------------------------------------------------------------------------------------------
 bool
 GS_CThreadSQL::Proc_SAVE_ZONE_DATA(int iZoneNO, sql_ZONE_DATA* pSqlZONE) {
-    m_TmpSTR.Printf(ZONE_VAR_ECONOMY, CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(), iZoneNO);
+    m_TmpSTR.Printf(ZONE_VAR_ECONOMY,
+        CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(),
+        iZoneNO);
 
     this->db->BindPARAM(1, pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
 
@@ -1430,166 +1063,6 @@ GS_CThreadSQL::Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET) {
             "SQL Exec ERROR:: UPDATE %s %s \n",
             pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
             this->db->GetERROR());
-    }
-
-    return true;
-}
-
-bool
-GS_CThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
-    t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
-
-    switch (pPacket->m_cli_MEMO.m_btTYPE) {
-        case MEMO_REQ_RECEIVED_CNT: {
-            if (!this->db->QuerySQL("SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
-                    pSqlPACKET->m_Name.Get())) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-                return false;
-            }
-            g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG,
-                MEMO_REPLY_RECEIVED_CNT,
-                this->db->GetInteger(0));
-            return true;
-        }
-
-        case MEMO_REQ_CONTENTS: {
-            // ÇÑ¹ø¿¡ 5°³ÀÇ ÂÊÁö ÀÐÀ½
-            if (!this->db->QuerySQL("{call ws_GetMEMO(\'%s\')}", pSqlPACKET->m_Name.Get())) {
-                /*
-                if ( !this->db->QuerySQL("SELECT TOP 5 dwDATE, txtFROM, txtMEMO FROM tblWS_MEMO
-                WHERE txtNAME=\'%s\' ORDER BY dwDATE ASC", pSqlPACKET->m_Name.Get() ) ) {
-                */
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-                return false;
-            }
-            // EX: delete top 2 from `tblgs_error` where txtACCOUNT='gmsho004' order by dateREG ASC
-            if (this->db->GetNextRECORD()) {
-                classPACKET* pCPacket = Packet_AllocNLock();
-                if (!pCPacket)
-                    return false;
-
-                pCPacket->m_HEADER.m_wType = WSV_MEMO;
-                pCPacket->m_HEADER.m_nSize = sizeof(wsv_MEMO);
-                pCPacket->m_wsv_MEMO.m_btTYPE = MEMO_REPLY_CONTENTS;
-
-                DWORD dwDate, *pDW;
-                char *szFrom, *szMemo;
-                int iMemoCNT = 0;
-                do {
-                    iMemoCNT++;
-                    dwDate = (DWORD)this->db->GetInteger(0);
-                    szFrom = this->db->GetStrPTR(1);
-                    szMemo = this->db->GetStrPTR(2, false);
-
-                    pDW = (DWORD*)(&pCPacket->m_pDATA[pCPacket->m_HEADER.m_nSize]);
-                    pCPacket->m_HEADER.m_nSize += 4;
-                    *pDW = dwDate;
-                    pCPacket->AppendString(szFrom);
-                    pCPacket->AppendString(szMemo);
-
-                    if (pCPacket->m_HEADER.m_nSize > MAX_PACKET_SIZE - 270) {
-                        // ²ËÃ¡´Ù... Àü¼Û
-                        g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
-                        Packet_ReleaseNUnlock(pCPacket);
-
-                        pCPacket = Packet_AllocNLock();
-                        if (!pCPacket)
-                            return false;
-
-                        pCPacket->m_HEADER.m_wType = WSV_MEMO;
-                        pCPacket->m_HEADER.m_nSize = sizeof(wsv_MEMO);
-                        pCPacket->m_wsv_MEMO.m_btTYPE = MEMO_REPLY_CONTENTS;
-                    }
-                } while (this->db->GetNextRECORD());
-
-                g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
-                Packet_ReleaseNUnlock(pCPacket);
-
-                /*
-                DELETE FROM tblWS_MEMO WHERE (intSN IN (SELECT TOP 2 intSN FROM tblWS_MEMO WHERE
-                txtNAME = 'navi' ORDER BY dwDATE ASC))
-                */
-                if (this->db->ExecSQL(
-                        "DELETE FROM tblWS_MEMO WHERE (intSN IN (SELECT TOP %d intSN FROM "
-                        "tblWS_MEMO WHERE txtNAME=\'%s\' ORDER BY dwDATE ASC))",
-                        iMemoCNT,
-                        pSqlPACKET->m_Name.Get())
-                    < 1) {
-                    // ¿À·ù ¶Ç´Â »èÁ¦µÈ°ÍÀÌ ¾ø´Ù.
-                    g_LOG.CS_ODS(LOG_NORMAL, "Exec ERROR:: %s \n", this->db->GetERROR());
-                    return true;
-                }
-            } // else ÂÊÁö ¾ø´Ù.
-            break;
-        }
-        case MEMO_REQ_SEND: {
-            /*
-                jeddli¿¡°Ô ¿Â ¸Þ½ÃÁö °¹¼ö ±¸ÇÏ±â. Á¶°Ç xxxx´Â tblgs_avatar¿¡ Á¸ÀçÇØ¾ß ÇÔ
-                =========================================================================================================
-                SELECT count(*) FROM tblws_memo LEFT JOIN tblgs_avatar ON
-               tblws_memo.txtNAME=tblgs_avatar.txtNAME WHERE tblgs_avatar.txtNAME='xxxx';
-            */
-            short nOffset = sizeof(cli_MEMO);
-            char* szTargetCHAR;
-
-            szTargetCHAR = Packet_GetStringPtr(pPacket, nOffset);
-            if (!szTargetCHAR || strlen(szTargetCHAR) < 1) {
-                // Àß¸øµÈ ÄÉ¸¯ ÀÌ¸§
-                g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_INVALID_TARGET);
-                return true;
-            }
-            char* szMemo = Packet_GetStringPtr(pPacket, nOffset);
-            if (!szMemo || strlen(szTargetCHAR) < 4) {
-                // ÂÊÁö ³»¿ë ¿À·ù.
-                g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_INVALID_CONTENT);
-                return true;
-            }
-
-#define MAX_RECV_MEMO_CNT 50
-            // ´ë»ó ÄÉ¸¯ÀÌ ¸î°³ÀÇ º¸°üµÈ ÂÊÁö°¡ ÀÖ³Ä?
-            if (!this->db->QuerySQL("SELECT Count(*) FROM tblWS_MEMO WHERE txtNAME=\'%s\';",
-                    szTargetCHAR)) {
-                g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-                return false;
-            }
-            if (this->db->GetNextRECORD() && this->db->GetInteger(0) > MAX_RECV_MEMO_CNT) {
-                // MAX_RECV_MEMO_CNT °³ ÀÌ»óÀÇ ÂÊÁö¸¦ º¸À¯ ÇÏ°í ÀÖ´Ù¸é...
-                g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_FULL_MEMO);
-                return true;
-            }
-
-            // ÂÊÁö ÀúÀå..
-            DWORD dwCurAbsSEC = classTIME::GetCurrentAbsSecond();
-            this->db->MakeQuery("INSERT tblWS_MEMO (dwDATE, txtNAME, txtFROM, txtMEMO) VALUES(",
-                MQ_PARAM_INT,
-                dwCurAbsSEC,
-                MQ_PARAM_ADDSTR,
-                ",",
-                MQ_PARAM_STR,
-                szTargetCHAR,
-                MQ_PARAM_ADDSTR,
-                ",",
-                MQ_PARAM_STR,
-                pSqlPACKET->m_Name.Get(),
-                MQ_PARAM_ADDSTR,
-                ",",
-                MQ_PARAM_STR,
-                szMemo,
-                MQ_PARAM_ADDSTR,
-                ");",
-                MQ_PARAM_END);
-            if (this->db->ExecSQLBuffer() < 1) {
-                // ¸¸µé±â ½ÇÆÐ !!!
-                g_LOG.CS_ODS(LOG_NORMAL,
-                    "SQL Exec ERROR:: INSERT MEMO:%s : %s \n",
-                    pSqlPACKET->m_Name.Get(),
-                    this->db->GetERROR());
-                return true;
-            }
-
-            g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REPLY_SEND_OK);
-            return true;
-        }
     }
 
     return true;

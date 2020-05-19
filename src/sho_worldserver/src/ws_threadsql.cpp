@@ -24,25 +24,11 @@ using namespace Rose::Util;
 
 using json = nlohmann::json;
 
-#define DATA_VER_2 2
-
 CWS_ThreadSQL::CWS_ThreadSQL(): CSqlTHREAD(true) {
     COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) <= 384);
-#ifdef __KCHS_BATTLECART__
-    COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) == 383);
-    COMPILE_TIME_ASSERT(sizeof(CInventory) == (140 * 14 + 8)); // 1954
-    COMPILE_TIME_ASSERT(MAX_RIDING_PART == 5);
-#else
     COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) == 383);
     COMPILE_TIME_ASSERT(sizeof(CInventory) == (139 * 14 + 8)); // 1954
     COMPILE_TIME_ASSERT(MAX_RIDING_PART == 4);
-#endif
-
-    m_sGA.Init();
-    m_sSA.Init();
-    //	m_sQD.Init ();
-    //	m_HotICON.Init ();
-    m_sEmptyBANK.Init();
 
     m_pDefaultBE = NULL;
     m_pDefaultINV = NULL;
@@ -225,11 +211,6 @@ CWS_ThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
 
     return true;
 }
-
-struct tagDelCHAR {
-    DWORD m_dwDBID;
-    CStrVAR m_Name;
-};
 
 bool
 CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {

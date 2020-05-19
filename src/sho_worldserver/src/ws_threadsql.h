@@ -1,7 +1,6 @@
-#ifndef __WS_THREADSQL_H
-#define __WS_THREADSQL_H
+#pragma once
+
 #include "CSqlTHREAD.h"
-//-------------------------------------------------------------------------------------------------
 
 #pragma pack(push, 1)
 struct tagBasicETC3 {
@@ -80,15 +79,6 @@ private:
     CInventory* m_pDefaultINV;
     tagBasicAbility* m_pDefaultBA;
 
-    tagBasicETC m_sBE;
-    tagBasicINFO m_sBI;
-    tagGrowAbility m_sGA;
-    tagSkillAbility m_sSA;
-    //	tagQuestData		m_sQD;
-    //	CHotICONS			m_HotICON;
-    tagBankData m_sEmptyBANK;
-
-    // inherit virtual function from CSqlTHREAD...
     bool Run_SqlPACKET(tagQueryDATA* pSqlPACKET);
     void Execute();
 
@@ -112,6 +102,3 @@ public:
     bool Save_WorldVAR(BYTE* pVarBUFF, short nBuffLEN);
 };
 extern CWS_ThreadSQL* g_pThreadSQL;
-
-//-------------------------------------------------------------------------------------------------
-#endif

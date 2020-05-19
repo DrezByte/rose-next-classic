@@ -1986,28 +1986,6 @@ classUSER::Recv_cli_SELECT_CHAR(t_PACKET* pPacket,
     return g_pThreadSQL->Add_SqlPacketWithACCOUNT(this, pPacket);
 }
 
-//-------------------------------------------------------------------------------------------------
-/// 케릭터 삭제 요청처리 :: 개인 서버에서만 사용됨
-bool
-classUSER::Recv_cli_DELETE_CHAR(t_PACKET* pPacket) {
-    short nOffset = sizeof(cli_DELETE_CHAR);
-
-    char* pCharName = Packet_GetStringPtr(pPacket, nOffset);
-    if (!pCharName || !this->Get_ACCOUNT()) {
-        return false;
-    }
-
-#ifdef __NEW_LOG
-    g_pThreadLOG->When_CharacterLOG(this, pCharName, NEWLOG_DEL_START_CHAR);
-#else
-    g_pThreadLOG->When_DeleteCHAR(this, pCharName);
-#endif
-
-    return g_pThreadSQL->Add_SqlPacketWithACCOUNT(this, pPacket);
-}
-
-//-------------------------------------------------------------------------------------------------
-/// 클라이언트에서 존에 입장하겠다는 패킷
 bool
 classUSER::Recv_cli_JOIN_ZONE(t_PACKET* pPacket) {
     if (this->GetZONE() || this->Get_INDEX()) {

@@ -1,17 +1,8 @@
-/**
- * \ingroup SHO_GS
- * \file	GS_ThreadSQL.h
- * \brief	게임 디비서버와 연결,통신하는 클래스
- */
-#ifndef __GS_THREADSQL_H
-#define __GS_THREADSQL_H
+#pragma once
+
 #include "CSqlTHREAD.h"
-//-------------------------------------------------------------------------------------------------
 
 #pragma pack(push, 1)
-
-#define DATA_VER_2 2 // 배틀카트
-
 struct tagBasicETC {
     tPOINTF m_PosSTART;
     BYTE m_btCharRACE;
@@ -41,36 +32,13 @@ struct tagBasicETC {
         m_PartITEM[nPartIdx].m_bHasSocket = sITEM.m_bHasSocket;
     }
 };
-
 #pragma pack(pop)
 
 struct tagSqlUSER {
     BYTE m_btLogOutMODE;
     classUSER* m_pUSER;
 };
-#ifdef FRAROSE
-    #define MAX_GRAW_ABILITY_BUFF 394
-#else
-    #define MAX_GRAW_ABILITY_BUFF 384
-#endif
-struct tagGrowA_BUFF {
-    union {
-        tagGrowAbility m_sGA;
-        BYTE m_btBUFF[MAX_GRAW_ABILITY_BUFF];
-    };
-    void Init() {
-        ::ZeroMemory(m_btBUFF, MAX_GRAW_ABILITY_BUFF);
-        m_sGA.Init();
-    }
-};
 
-/**
- * \ingroup SHO_GS_LIB
- * \class	GS_CThreadSQL
- * \author	wookSang.Jo
- * \brief	케릭터 데이타를 디비서버에 읽고 쓰는 쓰래드 클래스
- *			디비연결및 처리 클래스인 CSqlTHREAD를 상속 받음
- */
 class GS_CThreadSQL: public CSqlTHREAD {
 private:
     bool m_bWaiting;
@@ -79,23 +47,11 @@ private:
     CCriticalSection m_csUserLIST;
     classDLLIST<tagSqlUSER> m_AddUserLIST;
     classDLLIST<tagSqlUSER> m_RunUserLIST;
-    //	classDLLIST< classUSER >	m_AddUserLIST;
-    //	classDLLIST< classUSER >	m_RunUserLIST;
-
-    short m_nDefaultDataCNT;
-    tagBasicETC* m_pDefaultBE;
-    CInventory* m_pDefaultINV;
-    tagBasicAbility* m_pDefaultBA;
 
     tagBasicETC m_sBE;
-    tagBasicINFO m_sBI;
-    tagGrowA_BUFF m_sGB;
-    tagSkillAbility m_sSA;
-    tagQuestData m_sQD;
     CHotICONS m_HotICON;
     tagBankData m_sEmptyBANK;
 
-    short m_nTmpWEIGHT;
     CStrVAR m_TmpSTR;
     DWORD m_dwCurTIME;
 
@@ -108,15 +64,8 @@ private:
     bool Proc_LOAD_OBJVAR(tagQueryDATA* pSqlPACKET);
     bool Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET);
 
-    bool Proc_cli_MEMO(tagQueryDATA* pSqlPACKET);
-
     bool Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET);
-    bool Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET);
-
-    void Clear_LoginTABLE();
-    void Add_LoginACCOUNT(char* szAccount);
-    void Sub_LoginACCOUNT(char* szAccount);
 
     void Execute();
 
@@ -133,7 +82,6 @@ public:
     bool Add_SqlPacketWithACCOUNT(classUSER* pUSER, t_PACKET* pPacket);
     bool Add_SqlPacketWithAVATAR(classUSER* pUSER, t_PACKET* pPacket);
     bool Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE = 0);
-    bool Sql_TEST();
 
     bool IsWaiting() { return m_bWaiting; }
     int WaitUserCNT() { return m_AddUserLIST.GetNodeCount(); }
@@ -141,6 +89,3 @@ public:
     bool UpdateUserRECORD(classUSER* pUSER);
 };
 extern GS_CThreadSQL* g_pThreadSQL;
-
-//-------------------------------------------------------------------------------------------------
-#endif
