@@ -2,7 +2,6 @@
 
 #include "CChatROOM.h"
 #include "CThreadGUILD.h"
-#include "CThreadLOG.h"
 #include "CThreadMSGR.h"
 #include "CWS_Client.h"
 #include "CWS_Server.h"
@@ -28,8 +27,6 @@ bool
 CWS_Client::IsHacking(const char* szDesc, const char* szFile, int iLine) {
     if (this->m_dwRIGHT == RIGHT_MASTER)
         return true;
-
-    g_pThreadLOG->When_ERROR(this, (char*)szFile, iLine, (char*)szDesc);
 
     g_LOG.CS_ODS(0xfff,
         "IsHacking[ID:%s, IP:%s Char:%s] %s() : %s, %d \n",

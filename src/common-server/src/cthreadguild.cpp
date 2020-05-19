@@ -1,13 +1,11 @@
 #include "stdAFX.h"
 
 #ifdef __SHO_WS
-    #include "CThreadLOG.h"
     #include "CWS_Client.h"
     #include "CWS_Server.h"
 #else
     #include "GS_ListUSER.h"
     #include "GS_SocketLSV.h"
-    #include "GS_ThreadLOG.h"
     #include "LIB_gsMAIN.h"
 #endif
 
@@ -222,13 +220,6 @@ CClan::AddClanSKILL(short nSkillNo) {
                         sizeof(tagClanBIN))) {
                     return false;
                 }
-                // skill log...
-                g_pThreadLOG->When_ws_CLAN((char*)"Clan master",
-                    (char*)"?",
-                    (char*)"?",
-                    this,
-                    NEWLOG_CLAN_ADD_SKILL_DONE,
-                    nSkillNo);
 
                 this->m_ClanBIN.m_SKILL[nI] = ClanBIN.m_SKILL[nI];
                 this->Send_UpdateInfo();
@@ -257,13 +248,6 @@ CClan::DelClanSKILL(short nSkillNo) {
                     sizeof(tagClanBIN))) {
                 return false;
             }
-            // skill log...
-            g_pThreadLOG->When_ws_CLAN((char*)"Clan master",
-                (char*)"?",
-                (char*)"?",
-                this,
-                NEWLOG_CLAN_DEL_SKILL,
-                nSkillNo);
 
             this->m_ClanBIN.m_SKILL[nI] = ClanBIN.m_SKILL[nI];
             this->Send_UpdateInfo();
@@ -388,14 +372,6 @@ CClan::Insert_MEMBER(BYTE btResult, CWS_Client* pMember, int iClanPos, char* szM
             if (g_pThreadGUILD->Query_InsertClanMember(pMember->Get_NAME(),
                     this->m_dwClanID,
                     iClanPos)) {
-
-                // 클랜 가입 로그...
-
-                g_pThreadLOG->When_ws_CLAN(pMember->Get_NAME(),
-                    pMember->Get_IP(),
-                    szMaster,
-                    this,
-                    NEWLOG_CLAN_JOIN_MEMBER);
 
                 pNode = m_ListUSER.AllocNAppend();
 
@@ -551,15 +527,6 @@ CClan::Adjust_MEMBER(t_HASHKEY HashCommander,
                     }
 
                     if (g_pThreadGUILD->Query_AdjustClanMember(szCharName, iAdjContr, iAdjPos)) {
-                        // 직위 변경 로그...
-                        g_pThreadLOG->When_ws_CLAN(szCharName,
-                            (char*)"?",
-                            szMaster,
-                            this,
-                            NEWLOG_CLAN_CHANGE_POSITION,
-                            pNode->m_VALUE.m_iPosition,
-                            pNode->m_VALUE.m_iPosition + iAdjPos);
-
                         this->m_nPosCNT[pNode->m_VALUE.m_iPosition]--; // 직위 이동
 
                         pNode->m_VALUE.m_iContribute += iAdjContr;
@@ -1234,11 +1201,6 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
                 CClan* pClan = this->Find_CLAN(pFindUSER->GetClanID());
                 if (pClan && pClan->m_ListUSER.GetNodeCount() < 2) {
                     if (this->Query_DeleteCLAN(pClan->m_Name.Get())) {
-                        g_pThreadLOG->When_ws_CLAN(pFindUSER->Get_NAME(),
-                            pFindUSER->Get_IP(),
-                            (char*)"Disband",
-                            pClan,
-                            NEWLOG_CLAN_DESTROYED);
                     } else {
                         pFindUSER->Send_wsv_CLAN_COMMAND(RESULT_CLAN_DESTROY_FAILED, NULL);
                     }
@@ -1321,12 +1283,6 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
                                             pAddStr,
                                             RESULT_CLAN_KICK,
                                             pClanOwner->Get_NAME())) {
-                                        // 추방 로그...
-                                        g_pThreadLOG->When_ws_CLAN(pAddStr,
-                                            pClanOwner->Get_IP(),
-                                            pClanOwner->Get_NAME(),
-                                            pClan,
-                                            NEWLOG_CLAN_KICK_MEMBER);
                                     }
                                 }
                                 break;
@@ -1423,12 +1379,6 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
                 CClan* pClan = this->Find_CLAN(pFindUSER->GetClanID());
                 if (pClan) {
                     if (pClan->Delete_MEMBER(0, pFindUSER->Get_NAME(), RESULT_CLAN_QUIT)) {
-                        // 탈퇴 로그...
-                        g_pThreadLOG->When_ws_CLAN(pFindUSER->Get_NAME(),
-                            pFindUSER->Get_IP(),
-                            (char*)"?",
-                            pClan,
-                            NEWLOG_CLAN_QUIT_MEMBER);
                     }
                 }
             }

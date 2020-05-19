@@ -1,7 +1,6 @@
 #include "stdAFX.h"
 
 #include "CThreadGUILD.h"
-#include "CThreadLOG.h"
 #include "CWS_Client.h"
 #include "IO_STB.h"
 #include "WS_ThreadSQL.h"
@@ -532,7 +531,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    classUSER* user = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
+    CWS_Client* user = static_cast<CWS_Client*>(g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG));
     if (!user) {
         return false;
     }

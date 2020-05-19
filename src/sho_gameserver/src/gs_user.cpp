@@ -9,7 +9,6 @@
 #include "GS_ListUSER.h"
 #include "GS_Party.h"
 #include "GS_SocketLSV.h"
-#include "GS_ThreadLOG.h"
 #include "GS_ThreadSQL.h"
 #include "GS_USER.h"
 #include "IO_Quest.h"
@@ -40,7 +39,6 @@ classUSER::~classUSER() {}
 //-------------------------------------------------------------------------------------------------
 bool
 classUSER::IsHacking(char* szDesc, char* szFile, int iLine) {
-    g_pThreadLOG->When_ERROR(this, szFile, iLine, szDesc);
     g_LOG.CS_ODS(0xfff,
         "IsHacking[ID:%s, IP:%s Char:%s] %s() : %s, %d \n",
         this->m_Account.Get(),
@@ -134,7 +132,6 @@ classUSER::AddClanSKILL(short nSkillNo) {
     if (MAX_CLAN_SKILL_SLOT == this->FindClanSKILL(nSkillNo, nSkillNo)) {
         // 등록된 스킬이 아니다...
         if (this->Send_gsv_ADJ_CLAN_VAR(CLVAR_ADD_SKILL, nSkillNo)) {
-            g_pThreadLOG->When_LearnSKILL(this, nSkillNo);
             return true;
         }
     }
@@ -148,7 +145,6 @@ classUSER::DelClanSKILL(short nSkillNo) {
 #ifdef MAX_CLAN_SKILL_SLOT
     if (MAX_CLAN_SKILL_SLOT != this->FindClanSKILL(nSkillNo, nSkillNo)) {
         if (this->Send_gsv_ADJ_CLAN_VAR(CLVAR_DEL_SKILL, nSkillNo)) {
-            // g_pThreadLOG->When_LearnSKILL( this, (-1) * nSkillIDX );
         }
     }
 #endif
@@ -200,10 +196,6 @@ classUSER::CheckClanCreateCondition(char cStep) {
                 break;
             }
 
-            g_pThreadLOG->When_gs_CLAN(this,
-                "Start Create",
-                NEWLOG_CLAN_CREATE_START); // 돈 빼기전에..
-
             this->LockSOCKET();
             this->Sub_CurMONEY(NEED_CLAN_CREATE_MONEY);
             this->m_iClanCreateMoney = NEED_CLAN_CREATE_MONEY;
@@ -224,17 +216,10 @@ classUSER::CheckClanCreateCondition(char cStep) {
             this->m_iClanCreateMoney = 0;
             this->UnlockSOCKET();
 
-            g_pThreadLOG->When_gs_CLAN(this,
-                (bResult) ? "Success Create" : szTmp,
-                (bResult) ? NEWLOG_CLAN_CREATE_SUCCESS : NEWLOG_CLAN_CREATE_FAILED);
             break;
         }
 
         case 2: // 생성 실패
-            g_pThreadLOG->When_gs_CLAN(this,
-                "Failed Create",
-                NEWLOG_CLAN_CREATE_FAILED); // 돈 복구한 후에...
-
             this->LockSOCKET();
             this->Add_CurMONEY(this->m_iClanCreateMoney);
             this->m_iClanCreateMoney = 0;
@@ -371,9 +356,6 @@ classUSER::Check_CheatCODE(char* szCode) {
     }
 
     short nRet = this->Parse_CheatCODE(szCode);
-    if (nRet > CHEAT_NOLOG) {
-        g_pThreadLOG->When_CheatCODE(this, szCode);
-    }
     return nRet;
 }
 
@@ -561,11 +543,6 @@ classUSER::Save_ItemToFILED(tagITEM& sDropITEM, int iRemainTime) {
             NULL); // 사용자 드롭.
         pObjITEM->m_iRemainTIME = iRemainTime; // 30분간 유효 하도록...
 
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_ObjItemLOG(LIA_DROP, this, pObjITEM);
-#else
-        g_pThreadLOG->When_DropITEM(this, pObjITEM);
-#endif
         this->GetZONE()->Add_DIRECT(pObjITEM); // 드롭 아이템
     }
 }
@@ -663,7 +640,6 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
     }
 
     if (bLevelUp) {
-        g_pThreadLOG->When_LevelUP(this, iExp);
         this->Send_gsv_LEVELUP(this->Get_LEVEL() - nBeforeLEV);
         if (g_pUserLIST->Get_LevelUpTRIGGER(this->Get_LEVEL()))
             this->Do_QuestTRIGGER(g_pUserLIST->Get_LevelUpTRIGGER(this->Get_LEVEL()));
@@ -689,9 +665,6 @@ classUSER::Dead(CObjCHAR* pKiller) {
                 this->Do_QuestTRIGGER(this->GetZONE()->Get_HashDeadTRIGGER());
         }
     }
-
-    // 사용자가 죽을때 남기는 로그...
-    g_pThreadLOG->When_DieBY(pKiller, (classUSER*)this);
 
     if (this->m_iLinkedCartObjIDX) {
         classUSER* pUSER = g_pObjMGR->Get_UserOBJ(this->m_iLinkedCartObjIDX);
@@ -1608,9 +1581,6 @@ classUSER::Send_gsv_SKILL_LEARN_REPLY(short nSkillIDX, bool bCheckCOND) {
     if (btResult == RESULT_SKILL_LEARN_SUCCESS) {
         nSkillSLOT = this->Skill_FindEmptySlot(nSkillIDX);
         if (nSkillSLOT >= 0) {
-            // 스킬 습득...
-            g_pThreadLOG->When_LearnSKILL(this, nSkillIDX);
-
             switch (this->Skill_LEARN(nSkillSLOT, nSkillIDX, bCheckCOND)) {
                 case 0x03:
                     this->Cal_BattleAbility();
@@ -3092,50 +3062,15 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
 
                     iTotValue = iPriceEA * pITEM->GetQuantity();
 
-#ifdef __NEW_LOG
-                    g_pThreadLOG->When_TagItemLOG(LIA_SELL2NPC,
-                        this,
-                        pITEM,
-                        pITEM->GetQuantity(),
-                        iTotValue);
-#else
-                    g_pThreadLOG->When_NpcTRADE(this,
-                        pITEM,
-                        pCharNPC,
-                        "Sell2NPC",
-                        iTotValue,
-                        pITEM->GetQuantity());
-#endif
-
                     this->ClearITEM(pSellITEMs[nC].m_btInvIDX);
                 } else {
                     this->GetZONE()->SellITEMs(pITEM, pSellITEMs[nC].m_wDupCNT);
 
                     iTotValue = iPriceEA * pSellITEMs[nC].m_wDupCNT;
-#ifdef __NEW_LOG
-                    g_pThreadLOG->When_TagItemLOG(LIA_SELL2NPC,
-                        this,
-                        pITEM,
-                        pSellITEMs[nC].m_wDupCNT,
-                        iTotValue);
-#else
-                    g_pThreadLOG->When_NpcTRADE(this,
-                        pITEM,
-                        pCharNPC,
-                        "Sell2NPC",
-                        iTotValue,
-                        pSellITEMs[nC].m_wDupCNT);
-#endif
-
                     pITEM->m_uiQuantity -= pSellITEMs[nC].m_wDupCNT;
                 }
             } else {
                 iTotValue = iPriceEA;
-#ifdef __NEW_LOG
-                g_pThreadLOG->When_TagItemLOG(LIA_SELL2NPC, this, pITEM, 1, iTotValue);
-#else
-                g_pThreadLOG->When_NpcTRADE(this, pITEM, pCharNPC, "Sell2NPC", iTotValue, 1);
-#endif
                 this->ClearITEM(pSellITEMs[nC].m_btInvIDX);
             }
             this->Add_CurMONEY(abs(iTotValue));
@@ -3194,40 +3129,8 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
 
         // 소모...
         if (btUnionIDX) {
-// 구입한 아이템 로그를 남김...
-#ifdef __NEW_LOG
-            g_pThreadLOG->When_TagItemLOG(LIA_BUYFROMUNION,
-                this,
-                &sBuyITEM,
-                pBuyITEMs[nC].m_wDupCNT,
-                iTotValue,
-                NULL,
-                true);
-#else
-            g_pThreadLOG->When_NpcTRADE(this,
-                &sBuyITEM,
-                pCharNPC,
-                "BuyFromUNION",
-                iTotValue,
-                pBuyITEMs[nC].m_wDupCNT);
-#endif
             this->SubCur_JoHapPOINT(btUnionIDX, iTotValue);
         } else {
-// 구입한 아이템 로그를 남김...
-#ifdef __NEW_LOG
-            g_pThreadLOG->When_TagItemLOG(LIA_BUYFROMNPC,
-                this,
-                &sBuyITEM,
-                pBuyITEMs[nC].m_wDupCNT,
-                iTotValue);
-#else
-            g_pThreadLOG->When_NpcTRADE(this,
-                &sBuyITEM,
-                pCharNPC,
-                "BuyFromNPC",
-                iTotValue,
-                pBuyITEMs[nC].m_wDupCNT);
-#endif
             this->Sub_CurMONEY(iTotValue);
         }
 
@@ -3657,16 +3560,6 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
         this->Sub_ITEM(nInvIDX, sUsedITEM[nI]);
 
         if (fPRO_POINT[nI] < fSUC_POINT[nI]) {
-// 실패...
-#ifdef __NEW_LOG
-            g_pThreadLOG->When_CreateOrDestroyITEM(this,
-                NULL,
-                sUsedITEM,
-                nUsedCNT,
-                NEWLOG_CREATE,
-                NEWLOG_FAILED);
-#endif
-
             this->m_nCreateItemEXP =
                 1 + (short)((this->Get_LEVEL() + 50) * fPRO_POINT[0] * (nNUM_MAT + 4) / 1300.f);
 
@@ -3734,17 +3627,6 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
         // 무조건 1개 제조된다...
         sOutITEM.m_uiQuantity = 1;
     }
-
-#ifdef __NEW_LOG
-    g_pThreadLOG->When_CreateOrDestroyITEM(this,
-        &sOutITEM,
-        sUsedITEM,
-        nUsedCNT,
-        NEWLOG_CREATE,
-        NEWLOG_SUCCESS);
-#else
-    g_pThreadLOG->When_CreatedITEM(this, &sOutITEM);
-#endif
 
     // sOutITEM 인벤토리에 넣고 성공 전송.
     nI = this->Add_ITEM(sOutITEM);
@@ -3933,15 +3815,6 @@ classUSER::Recv_cli_DROP_ITEM(t_PACKET* pPacket) {
             PosSET.y = this->m_PosCUR.y + RANDOM(201) - 100;
 
             pObjITEM->InitItemOBJ(this, PosSET, this->m_PosSECTOR, sDropITEM); // 사용자 드롭.
-
-#ifdef __NEW_LOG
-            if (ITEM_TYPE_MONEY == sDropITEM.m_cType)
-                g_pThreadLOG->When_TagItemLOG(LIA_DROP, this, NULL, 0, sDropITEM.m_uiMoney);
-            else
-                g_pThreadLOG->When_TagItemLOG(LIA_DROP, this, &sDropITEM, 0, 0);
-#else
-            g_pThreadLOG->When_DropITEM(this, pObjITEM);
-#endif
             this->GetZONE()->Add_DIRECT(pObjITEM); // 드롭 아이템
         }
     }
@@ -3983,12 +3856,6 @@ classUSER::Pick_ITEM(CObjITEM* pITEM) {
         // 습득시 바로 소모되는 아이템...
         this->Use_pITEM(&pITEM->m_ITEM);
 
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_ObjItemLOG(LIA_PICK, this, pITEM);
-#else
-        g_pThreadLOG->When_PickITEM(this, pITEM);
-#endif
-
         pITEM->m_iRemainTIME = -1; // Pick_ITEM:: 습득시 돈 삭제되도록...
         pITEM->m_bDropperIsUSER = false;
 
@@ -4018,11 +3885,6 @@ classUSER::Pick_ITEM(CObjITEM* pITEM) {
                                     .m_nInventoryListNO] /* pITEM->m_ITEM */); // 필드에서 습득시...
         }
 
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_ObjItemLOG(LIA_PICK, this, pITEM);
-#else
-        g_pThreadLOG->When_PickITEM(this, pITEM);
-#endif
         if (!pITEM->m_bDropperIsUSER) {
             // 사용자가 버린 아이템이 아니라면...
             this->Check_ItemEventMSG(pITEM->m_ITEM);
@@ -4231,8 +4093,6 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
                     goto _RETURN; // bResult = true기때문에 짤리진 않는다.;
                 }
                 if (pSourITEM->GetQuantity() > MAX_DUP_ITEM_QUANTITY) {
-                    // 해킹에 의해 999개이상 옮겨 놓은 아이템이라면 삭제...
-                    g_pThreadLOG->When_ItemHACKING(this, pSourITEM, "ItemHACK");
                     this->m_Inventory.m_i64Money = 0;
                     pSourITEM->Clear();
                     goto _RETURN; // bResult = true기때문에 짤리진 않는다.;
@@ -4282,16 +4142,8 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
             }
 
             if (nToSlotIDX < 0) {
-                // 실패 :: Add_ITEM 스롯번호의 아이템을 대체 해버리기때문에...사용하면 안됨 !!!
-                // this->Add_ITEM( pPacket->m_cli_MOVE_ITEM.m_btFromIDX, sMoveITEM );
                 *pSourITEM = sOriITEM;
             } else {
-#ifdef __NEW_LOG
-                g_pThreadLOG->When_TagItemLOG(LIA_DEPOSIT, this, &sMoveITEM, 0);
-#else
-                g_pThreadLOG->When_DEPOSIT(this, &sMoveITEM);
-#endif
-
                 if (pPacket->m_cli_MOVE_ITEM.m_MoveITEM.IsEnableDupCNT()) {
                     if (iDupCnt != pPacket->m_cli_MOVE_ITEM.m_MoveITEM.GetQuantity())
                         iFee = CCal::Get_StorageFEE(
@@ -4335,8 +4187,6 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
 
             if (pSourITEM->IsEnableDupCNT()) {
                 if (pSourITEM->GetQuantity() > MAX_DUP_ITEM_QUANTITY) {
-                    // 해킹에 의해 999개이상 옮겨 놓은 아이템이라면 삭제...
-                    g_pThreadLOG->When_ItemHACKING(this, pSourITEM, "BankHACK");
                     this->m_Inventory.m_i64Money = 0;
                     pSourITEM->Clear();
                     goto _RETURN;
@@ -4358,15 +4208,7 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
             this->m_Bank.Sub_ITEM(pPacket->m_cli_MOVE_ITEM.m_btFromIDX, sMoveITEM);
             nToSlotIDX = this->Add_ITEM(sMoveITEM);
             if (nToSlotIDX < 0) {
-                // 실패 :: Add_ITEM 스롯번호의 아이템을 대체 해버리기때문에...사용하면 안됨 !!!
-                // this->m_Bank.Add_ITEM( pPacket->m_cli_MOVE_ITEM.m_btFromIDX, sMoveITEM );
                 *pSourITEM = sOriITEM;
-            } else {
-#ifdef __NEW_LOG
-                g_pThreadLOG->When_TagItemLOG(LIA_WITHDRAW, this, &sLogITEM, 0, 0, 0, true);
-#else
-                g_pThreadLOG->When_WithDRAW(this, &sMoveITEM);
-#endif
             }
 
             pCPacket->m_HEADER.m_nSize = sizeof(gsv_MOVE_ITEM);
@@ -4519,15 +4361,6 @@ classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
 
     this->SetCur_BonusPOINT(this->GetCur_BonusPOINT() - nNeedPoints);
 
-    /* kchs-modify
-    2. 캐릭터 스탯
-    1) 스탯 변동
-    ① 변동된 스탯의 종류 및 소모 포인트
-    ② 날짜/시간/ IP/좌표*/
-    g_pThreadLOG->When_ChangeABILITY(this,
-        pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO,
-        nNeedPoints);
-
     classPACKET* pCPacket = Packet_AllocNLock();
 
     pCPacket->m_HEADER.m_wType = GSV_USE_BPOINT_REPLY;
@@ -4599,12 +4432,6 @@ classUSER::RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket) 
         if (this->m_TradeITEM[nI].m_Item.GetTYPE()) {
             // 아이템 줬다.. 빼자 !!!
             this->Sub_ITEM(m_TradeITEM[nI].m_nInvIDX, m_TradeITEM[nI].m_Item);
-#ifdef __NEW_LOG
-            g_pThreadLOG
-                ->When_TagItemLOG(LIA_GIVE, this, &m_TradeITEM[nI].m_Item, 0, 0, pTradeUSER);
-#else
-            g_pThreadLOG->When_GiveITEM(this, &m_TradeITEM[nI].m_Item, pTradeUSER, nI);
-#endif
 
             // 변경된 인벤토리
             pCPacket->m_gsv_SET_MONEYnINV.m_sInvITEM[pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
@@ -4619,20 +4446,6 @@ classUSER::RemoveTradeItemFromINV(classUSER* pTradeUSER, classPACKET* pCPacket) 
         // 돈줬다... 빼자 !!!
         this->Sub_ITEM(m_TradeITEM[TRADE_MONEY_SLOT_NO].m_nInvIDX,
             m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item);
-
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_TagItemLOG(LIA_GIVE,
-            this,
-            NULL,
-            0,
-            m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item.GetMoney(),
-            pTradeUSER);
-#else
-        g_pThreadLOG->When_GiveITEM(this,
-            &m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item,
-            pTradeUSER,
-            TRADE_MONEY_SLOT_NO);
-#endif
     }
 }
 
@@ -4646,16 +4459,7 @@ classUSER::AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
         if (pTradeUSER->m_TradeITEM[nI].m_Item.GetTYPE()) {
             // 더하자 !!!
             nInvIDX = this->Add_ITEM(pTradeUSER->m_TradeITEM[nI].m_Item);
-#ifdef __NEW_LOG
-            g_pThreadLOG->When_TagItemLOG(LIA_RECV,
-                this,
-                &pTradeUSER->m_TradeITEM[nI].m_Item,
-                0,
-                0,
-                pTradeUSER);
-#else
-            g_pThreadLOG->When_RecvITEM(this, &pTradeUSER->m_TradeITEM[nI].m_Item, pTradeUSER, nI);
-#endif
+
             // 변경된 인벤토리
             if (nInvIDX > 0) {
                 pCPacket->m_gsv_SET_MONEYnINV.m_sInvITEM[pCPacket->m_gsv_SET_MONEYnINV.m_btItemCNT]
@@ -4674,19 +4478,6 @@ classUSER::AddTradeItemToINV(classUSER* pTradeUSER /*tagTradeITEM *pTradeITEM*/,
     if (pTradeUSER->m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item.GetTYPE()) {
         // 돈 받았음..
         this->Add_ITEM(pTradeUSER->m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item);
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_TagItemLOG(LIA_RECV,
-            this,
-            NULL,
-            0,
-            pTradeUSER->m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item.GetMoney(),
-            pTradeUSER);
-#else
-        g_pThreadLOG->When_RecvITEM(this,
-            &pTradeUSER->m_TradeITEM[TRADE_MONEY_SLOT_NO].m_Item,
-            pTradeUSER,
-            TRADE_MONEY_SLOT_NO);
-#endif
     }
 }
 
@@ -5393,17 +5184,7 @@ classUSER::Recv_cli_P_STORE_BUY_REQ(t_PACKET* pPacket) {
                     .m_UpdatedITEM[pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT]
                     .m_SlotITEM = *pSlotITEM;
                 pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT++;
-
-// 개인 상점 거래 로그...
-#ifdef __NEW_LOG
-                g_pThreadLOG
-                    ->When_TagItemLOG(LIA_P2PTRADE, pStoreOWNER, &sSubITEM, 0, biNeedMoney, this);
-#else
-                g_pThreadLOG->When_P2PTRADE(pStoreOWNER, &sSubITEM, this, biNeedMoney);
-#endif
-            } /* else {
-                인벤토리 모자람... 이 아이템 거래 취소...
-            } */
+            }
         }
 
         this->Send_gsv_SET_MONEYnINV(pBuyerPacket); // 구매자는 인벤토리,돈 패킷으로 변경 정보 전송.
@@ -5564,17 +5345,7 @@ classUSER::Recv_cli_P_STORE_SELL_REQ(t_PACKET* pPacket) {
                     .m_UpdatedITEM[pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT]
                     .m_SlotITEM = *pWishITEM;
                 pStorePacket->m_gsv_P_STORE_RESULT.m_btItemCNT++;
-
-// 개인 상점 거래 로그...
-#ifdef __NEW_LOG
-                g_pThreadLOG
-                    ->When_TagItemLOG(LIA_P2PTRADE, this, &sSubITEM, 0, dwNeedMoney, pStoreOWNER);
-#else
-                g_pThreadLOG->When_P2PTRADE(this, &sSubITEM, pStoreOWNER, dwNeedMoney);
-#endif
-            } /* else {
-                구매자 인벤 꽉참.. 거래에서 이 아이템 제외~~~
-            } */
+            }
         }
 
         this->Send_gsv_SET_MONEYnINV(pSellerPacket); // 판매자 인벤토리,돈 패킷으로 변경 정보 전송.
@@ -5628,15 +5399,7 @@ classUSER::Recv_cli_SKILL_LEVELUP_REQ(t_PACKET* pPacket) {
         if (this->GetCur_MONEY() < iNeedZuly) {
             btResult = RESULT_SKILL_LEVELUP_OUTOFZULY;
         } else {
-            this->SetCur_MONEY(this->GetCur_MONEY() - iNeedZuly); // 소모 비용 적용
-
-#ifdef __NEW_LOG
-            g_pThreadLOG->When_LearnSKILL(this,
-                pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
-#else
-            g_pThreadLOG->When_LevelUpSKILL(this,
-                pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX);
-#endif
+            this->SetCur_MONEY(this->GetCur_MONEY() - iNeedZuly);
 
             switch (this->Skill_LEARN(pPacket->m_cli_SKILL_LEVELUP_REQ.m_btSkillSLOT,
                 pPacket->m_cli_SKILL_LEVELUP_REQ.m_nNextLevelSkillIDX)) {
@@ -5917,8 +5680,6 @@ classUSER::Do_QuestTRIGGER(t_HASHKEY HashTRIGGER, short nSelectReward) {
     this->m_iLastEventNpcIDX = 0;
     switch (eResult) {
         case QST_RESULT_SUCCESS:
-            g_pThreadLOG->When_QuestLOG(this, HashTRIGGER, NEWLOG_QUEST_HASH_DONE);
-            // g_pThreadLOG->When_DoneQUEST( this, HashTRIGGER );
             return this->Send_gsv_QUEST_REPLY(RESULT_QUEST_REPLY_TRIGGER_SUCCESS,
                 0,
                 (int)HashTRIGGER);
@@ -5962,30 +5723,10 @@ classUSER::Do_QuestTRIGGER(t_HASHKEY HashTRIGGER, short nSelectReward) {
 bool
 classUSER::Recv_cli_QUEST_REQ(t_PACKET* pPacket) {
     switch (pPacket->m_cli_QUEST_REQ.m_btTYPE) {
-            // case TYPE_QUEST_REQ_ADD :
-            //	if ( this->Quest_Append( pPacket->m_cli_QUEST_REQ.m_btQuestSLOT,
-            // pPacket->m_cli_QUEST_REQ.m_iQuestID ) ) {
-            //		// 퀘스트 등록 로그...
-            //		#ifdef	__NEW_LOG
-            //			g_pThreadLOG->When_QuestLOG( this, pPacket->m_cli_QUEST_REQ.m_iQuestID,
-            // NEWLOG_QUEST_RECV ); 		#else 			g_pThreadLOG->When_RecvQUEST( this,
-            // pPacket->m_cli_QUEST_REQ.m_iQuestID ); 		#endif 		return
-            // this->Send_gsv_QUEST_REPLY( RESULT_QUEST_REPLY_ADD_SUCCESS,
-            // pPacket->m_cli_QUEST_REQ.m_btQuestSLOT, pPacket->m_cli_QUEST_REQ.m_iQuestID );
-            //	}
-            //	break;
-
         case TYPE_QUEST_REQ_DEL:
             if (this->Quest_Delete(pPacket->m_cli_QUEST_REQ.m_btQuestSLOT,
                     pPacket->m_cli_QUEST_REQ.m_iQuestID)) {
-// 퀘스트 포기 로그...
-#ifdef __NEW_LOG
-                g_pThreadLOG->When_QuestLOG(this,
-                    pPacket->m_cli_QUEST_REQ.m_iQuestID,
-                    NEWLOG_QUEST_GIVEUP);
-#else
-                g_pThreadLOG->When_GiveUpQUEST(this, pPacket->m_cli_QUEST_REQ.m_iQuestID);
-#endif
+
                 return this->Send_gsv_QUEST_REPLY(RESULT_QUEST_REPLY_DEL_SUCCESS,
                     pPacket->m_cli_QUEST_REQ.m_btQuestSLOT,
                     pPacket->m_cli_QUEST_REQ.m_iQuestID);
@@ -6546,9 +6287,6 @@ classUSER::Proc_CRAFT_GEMMING_REQ(t_PACKET* pPacket) {
         return this->Send_gsv_CRAFT_ITEM_RESULT(CRAFT_GEMMING_USED_SOCKET);
     }
 
-    // 재밍 로그..
-    g_pThreadLOG->When_GemmingITEM(this, pEquipITEM, pJewelITEM, NEWLOG_GEMMING, NEWLOG_SUCCESS);
-
     // 보석 박힌것은 자동 검증...
     pEquipITEM->m_nGEM_OP = pJewelITEM->GetItemNO();
     this->SetPartITEM(pPacket->m_cli_CRAFT_GEMMING_REQ.m_btEquipInvIDX);
@@ -6619,17 +6357,6 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
 
         if (RANDOM(100) + 1 + GEM_QUAL / 6 <= 30) { // 등급 감소
             if (GEM_QUAL <= 35) { // 보석 삭제
-// 로그:: 분해시 보석 삭제 됐음...
-#ifdef __NEW_LOG
-                g_pThreadLOG->When_GemmingITEM(this,
-                    pInITEM,
-                    NULL,
-                    NEWLOG_UNGEMMING,
-                    NEWLOG_FAILED);
-#else
-                g_pThreadLOG->When_UngemmingITEM(this, pInITEM, NULL);
-#endif
-
                 // 장비 아이템...
                 pInITEM->m_nGEM_OP = 0; // 장비에서 보석 삭제
                 pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[0].m_btInvIDX =
@@ -6649,12 +6376,6 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
         }
         sOutITEM.m_cType = ITEM_TYPE_GEM;
         sOutITEM.m_uiQuantity = 1;
-
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_GemmingITEM(this, pInITEM, &sOutITEM, NEWLOG_UNGEMMING, NEWLOG_SUCCESS);
-#else
-        g_pThreadLOG->When_UngemmingITEM(this, pInITEM, &sOutITEM);
-#endif
 
         pInITEM->m_nGEM_OP = 0; // 장비에서 보석 삭제
         pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[0].m_btInvIDX =
@@ -6773,17 +6494,6 @@ classUSER::Proc_CRAFT_BREAKUP_REQ(t_PACKET* pPacket, bool bUseMP) {
 
             sOutITEM.Init(PRODUCT_NEED_ITEM_NO(nProductIDX, nStep), 1);
         }
-
-#ifdef __NEW_LOG
-        g_pThreadLOG->When_CreateOrDestroyITEM(this,
-            pInITEM,
-            sOutLogITEM,
-            nOutLogCnt,
-            NEWLOG_BREAKUP,
-            NEWLOG_SUCCESS);
-#else
-        g_pThreadLOG->When_BreakupITEM(this, pInITEM);
-#endif
 
         // 분해된 아이템 제거...
         if (pInITEM->IsEnableDupCNT()) {
@@ -6913,11 +6623,6 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
 
         btResult = CRAFT_UPGRADE_SUCCESS;
         pInITEM->m_cGrade++;
-
-        g_pThreadLOG->When_UpgradeITEM(this,
-            pInITEM,
-            btBeforeGrade,
-            bUseMP ? NEWLOG_UPGRADE_SUC_WITH_SKILL : NEWLOG_UPGRADE_SUC_FROM_NPC);
     } else { // 실패 시 등급 감소
         // 내구도 변화.
         SUC = pInITEM->m_cDurability
@@ -6938,7 +6643,6 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
         else
             pInITEM->m_cGrade -= nStep;
 
-        g_pThreadLOG->When_UpgradeITEM(this, pInITEM, btBeforeGrade, NEWLOG_UPGRADE_FAILED);
     }
 
     pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[btOutCNT].m_btInvIDX =

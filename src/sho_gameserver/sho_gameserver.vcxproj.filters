@@ -58,9 +58,6 @@
     <ClInclude Include="src\gs_socketlsv.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gs_threadlog.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\gs_threadsql.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -139,9 +136,6 @@
     <ClInclude Include="src\srv_common\cobjvar.h">
       <Filter>Source Files\srv_common</Filter>
     </ClInclude>
-    <ClInclude Include="src\srv_common\cthreadlog.h">
-      <Filter>Source Files\srv_common</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\include\rose\common\rosenext_config.h">
       <Filter>Common Files</Filter>
     </ClInclude>
@@ -208,9 +202,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gs_socketlsv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\gs_threadlog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gs_threadsql.cpp">
@@ -289,9 +280,6 @@
       <Filter>Source Files\ai_lib</Filter>
     </ClCompile>
     <ClCompile Include="src\srv_common\cchatroom.cpp">
-      <Filter>Source Files\srv_common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\srv_common\cthreadlog.cpp">
       <Filter>Source Files\srv_common</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />

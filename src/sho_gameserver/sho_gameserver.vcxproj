@@ -47,7 +47,6 @@
     <ClInclude Include="src\gs_listuser.h" />
     <ClInclude Include="src\gs_party.h" />
     <ClInclude Include="src\gs_socketlsv.h" />
-    <ClInclude Include="src\gs_threadlog.h" />
     <ClInclude Include="src\gs_threadsql.h" />
     <ClInclude Include="src\gs_threadzone.h" />
     <ClInclude Include="src\gs_user.h" />
@@ -56,7 +55,6 @@
     <ClInclude Include="src\object.h" />
     <ClInclude Include="src\srv_common\cchatroom.h" />
     <ClInclude Include="src\srv_common\cobjvar.h" />
-    <ClInclude Include="src\srv_common\cthreadlog.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\zonefile.h" />
     <ClInclude Include="src\zonelist.h" />
@@ -97,7 +95,6 @@
     <ClCompile Include="src\gs_listuser.cpp" />
     <ClCompile Include="src\gs_party.cpp" />
     <ClCompile Include="src\gs_socketlsv.cpp" />
-    <ClCompile Include="src\gs_threadlog.cpp" />
     <ClCompile Include="src\gs_threadsql.cpp" />
     <ClCompile Include="src\gs_threadzone.cpp" />
     <ClCompile Include="src\gs_user.cpp" />
@@ -106,7 +103,6 @@
     <ClCompile Include="src\md5.cpp" />
     <ClCompile Include="src\object.cpp" />
     <ClCompile Include="src\srv_common\cchatroom.cpp" />
-    <ClCompile Include="src\srv_common\cthreadlog.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Create</PrecompiledHeader>

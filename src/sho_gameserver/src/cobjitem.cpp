@@ -3,16 +3,8 @@
 #include "LIB_gsMAIN.h"
 #include "OBJECT.h"
 #include "GS_ThreadZONE.h"
-#include "GS_ThreadLOG.h"
 
-//-------------------------------------------------------------------------------------------------
-/*
-CObjITEM::CObjITEM ()
-{
-    m_ITEM.m_nItemNo = 0;
-    m_ITEM.m_cType	 = 0;
-}
-*/
+
 CObjITEM::~CObjITEM() {
     //    LogString (0xffff, "CObjITEM::~CObjITEM :: ObjIDX: %d \n", this->Get_INDEX () );
 }
@@ -101,10 +93,6 @@ CObjITEM::Proc(void) {
     // 생성된후 일정 시간이 경과 되면 필드에서 삭제한다...
     m_iRemainTIME -= (this->GetZONE())->GetPassTIME();
     if (m_iRemainTIME < 0) {
-        if (m_bDropperIsUSER) {
-            g_pThreadLOG->When_DeletedITEM(this);
-        }
-
         return 0;
     }
 

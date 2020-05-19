@@ -4,7 +4,6 @@
 
 #include "CSocketWND.h"
 
-#include "GS_ThreadLOG.h"
 #include "GS_ThreadSQL.h"
 #include "GS_ThreadZONE.h"
 
@@ -89,8 +88,6 @@ CPartyBUFF* g_pPartyBUFF;
 GS_lsvSOCKET* g_pSockLSV = NULL;
 
 GS_CThreadSQL* g_pThreadSQL = NULL;
-GS_CThreadLOG* g_pThreadLOG = NULL;
-
 CThreadGUILD* g_pThreadGUILD = NULL;
 
 char g_szURL[MAX_PATH];
@@ -165,10 +162,6 @@ CLIB_GameSRV::~CLIB_GameSRV() {
     if (g_pThreadSQL) {
         g_pThreadSQL->Free();
         SAFE_DELETE(g_pThreadSQL);
-    }
-    if (g_pThreadLOG) {
-        g_pThreadLOG->Free();
-        SAFE_DELETE(g_pThreadLOG);
     }
 
     if (g_pThreadGUILD) {
@@ -797,24 +790,6 @@ CLIB_GameSRV::connect_database() {
         return false;
     }
     g_pThreadSQL->Resume();
-
-    std::string log_db = this->config.database.name;
-    if (log_db.back() == '\0') {
-        log_db.pop_back();
-    }
-    log_db += "_log";
-
-    g_pThreadLOG = new GS_CThreadLOG;
-    if (!g_pThreadLOG->Connect(USE_ODBC,
-            (char*)this->config.database.ip.c_str(),
-            (char*)this->config.database.username.c_str(),
-            (char*)this->config.database.password.c_str(),
-            (char*)log_db.c_str(),
-            32,
-            1024 * 8)) {
-        return false;
-    }
-    g_pThreadLOG->Resume();
 
     g_pThreadGUILD = new CThreadGUILD(32, 16);
     if (!g_pThreadGUILD

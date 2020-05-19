@@ -1,18 +1,11 @@
-//---------------------------------------------------------------------------
 #include "stdafx.h"
 
 #include "LIB_gsMAIN.h"
 #include "CObjCHAR.h"
 #include "GS_ThreadZONE.h"
 #include "ZoneLIST.h"
-//#include "CVector.h"
-//#include "CObjAVT.h"
-//#include "Calculation.h"
-//#include "GS_PARTY.h"
-//#include "GS_ThreadLOG.h"
-//#include "IO_Quest.h"
 
-//-------------------------------------------------------------------------------------------------
+
 CAI_OBJ*
 CObjCHAR::AI_FindFirstOBJ(tPOINTF& PosCENTER, int iDistance) {
     if (this->GetZONE())

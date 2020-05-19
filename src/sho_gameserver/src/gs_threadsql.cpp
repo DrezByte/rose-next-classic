@@ -7,7 +7,6 @@
 #include "CThreadGUILD.h"
 #include "GS_ListUSER.h"
 #include "GS_SocketLSV.h"
-#include "GS_ThreadLOG.h"
 #include "GS_ThreadSQL.h"
 #include "LIB_gsMAIN.h"
 #include "ZoneLIST.h"
@@ -257,9 +256,6 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
         return false;
     }
 
-    // TODO (Ralph): What does this do and can it be removed?
-    g_pThreadLOG->When_BackUP(pUSER, "CHAR");
-
     if (BANK_CHANGED != pUSER->m_btBankData) {
         return true;
     }
@@ -341,12 +337,6 @@ GS_CThreadSQL::Execute() {
                 if (pUsrNODE->DATA.m_pUSER->Get_ACCOUNT()) {
                     switch (pUsrNODE->DATA.m_btLogOutMODE) {
                         case LOGOUT_MODE_CHARLIST:
-#ifdef __NEW_LOG
-                            g_pThreadLOG->When_LogInOrOut(pUsrNODE->DATA.m_pUSER, NEWLOG_LOGOUT);
-#else
-                            g_pThreadLOG->When_LogOUT(pUsrNODE->DATA.m_pUSER);
-#endif
-
                             g_pSockLSV->Send_gsv_CHANGE_CHAR(pUsrNODE->DATA.m_pUSER);
                             break;
 
@@ -360,11 +350,6 @@ GS_CThreadSQL::Execute() {
                                 pUsrNODE->DATA.m_pUSER->m_pPartyBUFF->Unlock();
                             }
 
-#ifdef __NEW_LOG
-                            g_pThreadLOG->When_LogInOrOut(pUsrNODE->DATA.m_pUSER, NEWLOG_LOGOUT);
-#else
-                            g_pThreadLOG->When_LogOUT(pUsrNODE->DATA.m_pUSER);
-#endif
                             g_pSockLSV->Send_zws_SUB_ACCOUNT(pUsrNODE->DATA.m_pUSER->m_dwWSID,
                                 pUsrNODE->DATA.m_pUSER->Get_ACCOUNT());
                     }
@@ -584,8 +569,6 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
                 if (!pITEM->GetHEADER())
                     continue;
                 if (!pITEM->IsEquipITEM() || !pITEM->IsValidITEM()) {
-                    // 이상한 아이템이다...
-                    g_pThreadLOG->When_ItemHACKING(pUSER, pITEM, "ItemHACK");
                     pITEM->Clear();
                     continue;
                 }
@@ -604,7 +587,6 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
                 // 아이템 해킹 케릭인지 조사...
                 if (pITEM->IsEnableDupCNT()) {
                     if (pITEM->GetQuantity() > MAX_DUP_ITEM_QUANTITY) {
-                        g_pThreadLOG->When_ItemHACKING(pUSER, pITEM, "ItemHACK");
                         pUSER->m_Inventory.m_i64Money = 0;
                         pITEM->Clear();
                         continue;
@@ -716,12 +698,6 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
             pUSER->m_btBankData = BANK_UNLOADED;
 
             pUSER->m_dwLoginTIME = this->m_dwCurTIME;
-
-#ifdef __NEW_LOG
-            g_pThreadLOG->When_LogInOrOut(pUSER, NEWLOG_LOGIN);
-#else
-            g_pThreadLOG->When_LogIN(pUSER);
-#endif
 
             bResult = true;
         } else {
@@ -914,7 +890,7 @@ GS_CThreadSQL::Proc_LOAD_ZONE_DATA(int iZoneNO) {
             MQ_PARAM_ADDSTR,
             ",",
             MQ_PARAM_STR,
-            g_pThreadLOG->GetCurDateTimeSTR(),
+            "TODO: FIX ME, was: g_pThreadLOG->GetCurDateTimeSTR()",
             MQ_PARAM_ADDSTR,
             ",",
             MQ_PARAM_BINDIDX,
@@ -952,7 +928,7 @@ GS_CThreadSQL::Proc_SAVE_ZONE_DATA(int iZoneNO, sql_ZONE_DATA* pSqlZONE) {
 
     this->db->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
         MQ_PARAM_STR,
-        g_pThreadLOG->GetCurDateTimeSTR(),
+        "TODO FIX ME: WAS g_pThreadLOG->GetCurDateTimeSTR()",
         MQ_PARAM_ADDSTR,
         ",binDATA=",
         MQ_PARAM_BINDIDX,
@@ -1003,7 +979,7 @@ GS_CThreadSQL::Proc_LOAD_OBJVAR(tagQueryDATA* pSqlPACKET) {
             MQ_PARAM_ADDSTR,
             ",",
             MQ_PARAM_STR,
-            g_pThreadLOG->GetCurDateTimeSTR(),
+           "TODO FIX ME: WAS g_pThreadLOG->GetCurDateTimeSTR()",
             MQ_PARAM_ADDSTR,
             ",",
             MQ_PARAM_BINDIDX,
@@ -1047,7 +1023,7 @@ GS_CThreadSQL::Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET) {
 
     this->db->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
         MQ_PARAM_STR,
-        g_pThreadLOG->GetCurDateTimeSTR(),
+        "TODO FIX ME: WAS g_pThreadLOG->GetCurDateTimeSTR()",
         MQ_PARAM_ADDSTR,
         ",binDATA=",
         MQ_PARAM_BINDIDX,

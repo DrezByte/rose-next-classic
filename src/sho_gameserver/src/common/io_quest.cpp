@@ -6,7 +6,6 @@
 #include "CUserDATA.h"
 
 #include "ZoneLIST.h"
-#include "GS_ThreadLOG.h"
 
 extern short Get_WorldTIME();
 extern short Get_ServerChannelNO();
@@ -1109,17 +1108,6 @@ F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
                 return false;
             }
 
-            // pPARAM->m_pQUEST 보상되고 삭제됐다...
-#ifdef __SERVER
-    #ifdef __NEW_LOG
-            g_pThreadLOG->When_QuestLOG(pPARAM->m_pOWNER,
-                pPARAM->m_pQUEST->GetID(),
-                NEWLOG_QUEST_DONE);
-    #else
-            g_pThreadLOG->When_DoneQUEST(pPARAM->m_pOWNER, pPARAM->m_pQUEST->GetID());
-    #endif
-#endif
-
             pPARAM->m_pQUEST->Init(); // pREWD->m_Rewd000.iQuestSN;
             break;
 
@@ -1133,14 +1121,6 @@ F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
                     pPARAM->m_btQuestSLOT = (BYTE)nSlotNO;
                     pPARAM->m_pQUEST = &pPARAM->m_pOWNER->m_Quests.m_QUEST[nSlotNO];
                 }
-    // 퀘스트 등록 로그...
-    #ifdef __NEW_LOG
-                g_pThreadLOG->When_QuestLOG(pPARAM->m_pOWNER,
-                    pREWD->m_Rewd000.iQuestSN,
-                    NEWLOG_QUEST_RECV);
-    #else
-                g_pThreadLOG->When_RecvQUEST(pPARAM->m_pOWNER, pREWD->m_Rewd000.iQuestSN);
-    #endif
             }
 #endif
             break;
@@ -1160,18 +1140,6 @@ F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
                 return false;
             }
 
-#ifdef __SERVER
-    // 퀘스트 변경 로그...
-    #ifdef __NEW_LOG
-            g_pThreadLOG->When_QuestLOG(pPARAM->m_pOWNER,
-                pREWD->m_Rewd000.iQuestSN,
-                NEWLOG_QUEST_RECV);
-    #else
-            g_pThreadLOG->When_ChangedQUEST(pPARAM->m_pOWNER,
-                pPARAM->m_pQUEST->GetID(),
-                pREWD->m_Rewd000.iQuestSN);
-    #endif
-#endif
             pPARAM->m_pQUEST->SetID(pREWD->m_Rewd000.iQuestSN, false);
             break;
 
@@ -1189,18 +1157,6 @@ F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
                 return false;
             }
 
-#ifdef __SERVER
-    // 퀘스트 변경 로그...
-    #ifdef __NEW_LOG
-            g_pThreadLOG->When_QuestLOG(pPARAM->m_pOWNER,
-                pREWD->m_Rewd000.iQuestSN,
-                NEWLOG_QUEST_RECV);
-    #else
-            g_pThreadLOG->When_ChangedQUEST(pPARAM->m_pOWNER,
-                pPARAM->m_pQUEST->GetID(),
-                pREWD->m_Rewd000.iQuestSN);
-    #endif
-#endif
             pPARAM->m_pQUEST->Init();
             pPARAM->m_pQUEST->SetID(pREWD->m_Rewd000.iQuestSN, true);
             break;

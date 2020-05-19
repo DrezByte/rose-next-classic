@@ -3,9 +3,6 @@
 
 #include "CObjAVT.h"
 #include "GS_ThreadZONE.h"
-#include "GS_ThreadLOG.h"
-
-//-------------------------------------------------------------------------------------------------
 
 CObjAVT::CObjAVT() {
     m_pTargetNODE = new classDLLNODE<CObjAVT*>;
@@ -960,8 +957,6 @@ CObjAVT::Is_ALLIED(CAI_OBJ* pDestOBJ) {
 void
 CObjAVT::SetCur_UNION(char cValue) {
     if (cValue >= 0 && cValue < MAX_UNION_COUNT) {
-        g_pThreadLOG->When_ChangeUNION((classUSER*)this, this->GetCur_JOHAP(), cValue);
-        // Á¶ÇÕ º¯°æ
         this->m_BasicINFO.m_cUnion = cValue;
     }
 }
@@ -970,10 +965,6 @@ CObjAVT::SetCur_UNION(char cValue) {
 void
 CObjAVT::SetCur_JoHapPOINT(BYTE btUnionIDX, short nValue) {
     if (btUnionIDX >= 1) {
-        g_pThreadLOG->When_PointUNION((classUSER*)this,
-            btUnionIDX,
-            this->m_GrowAbility.m_nJoHapPOINT[btUnionIDX - 1],
-            nValue);
         this->m_GrowAbility.m_nJoHapPOINT[btUnionIDX - 1] = nValue;
     }
 }

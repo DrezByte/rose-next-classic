@@ -11,9 +11,6 @@
     <ClCompile Include="src\ws_socketlsv.cpp" />
     <ClCompile Include="src\ws_threadsql.cpp" />
     <ClCompile Include="src\ws_zonelist.cpp" />
-    <ClCompile Include="..\common\cthreadlog.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\cchatroom.cpp">
       <Filter>common</Filter>
     </ClCompile>
@@ -50,9 +47,6 @@
     <ClInclude Include="src\ws_socketlsv.h" />
     <ClInclude Include="src\ws_threadsql.h" />
     <ClInclude Include="src\ws_zonelist.h" />
-    <ClInclude Include="..\common\cthreadlog.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\cchatroom.h">
       <Filter>common</Filter>
     </ClInclude>

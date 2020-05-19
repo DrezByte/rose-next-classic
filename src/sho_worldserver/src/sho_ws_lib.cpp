@@ -1,6 +1,5 @@
 #include "stdAFX.h"
 
-#include "CThreadLOG.h"
 #include "CWS_Client.h"
 #include "CWS_Server.h"
 #include "IO_PAT.h"
@@ -60,7 +59,6 @@ WS_ZoneLIST g_ZoneLIST;
 SHO_WS* SHO_WS::m_pInstance = NULL;
 
 CWS_ThreadSQL* g_pThreadSQL = NULL;
-CThreadLOG* g_pThreadLOG = NULL;
 
 CWS_ListSERVER* g_pListSERVER = NULL;
 CWS_ListCLIENT* g_pUserLIST = NULL;
@@ -166,10 +164,6 @@ SHO_WS::~SHO_WS() {
         g_pThreadSQL->Free();
         SAFE_DELETE(g_pThreadSQL);
     }
-    if (g_pThreadLOG) {
-        g_pThreadLOG->Free();
-        SAFE_DELETE(g_pThreadLOG);
-    }
 
     if (g_pThreadMSGR) {
         g_pThreadMSGR->Free();
@@ -243,18 +237,6 @@ SHO_WS::connect_database(DatabaseConfig& config) {
         return false;
     }
     g_pThreadSQL->Resume();
-
-    g_pThreadLOG = new CThreadLOG;
-    if (!g_pThreadLOG->Connect(USE_ODBC,
-            ip,
-            m_LogDBUser.Get(),
-            m_LogDBPassword.Get(),
-            (char*)log_db.c_str(),
-            32,
-            1024 * 8)) {
-        return false;
-    }
-    g_pThreadLOG->Resume();
 
     g_pThreadMSGR = new CThreadMSGR(16384, 1024);
     if (!g_pThreadMSGR->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
