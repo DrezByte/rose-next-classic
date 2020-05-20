@@ -12,10 +12,13 @@
 #include "ZoneLIST.h"
 #include "classTIME.h"
 
+#include "rose/common/game_config.h"
 #include "rose/database/database.h"
 
 #include "nlohmann/json.hpp"
 
+using namespace Rose;
+using namespace Rose::Common;
 using namespace Rose::Database;
 
 using json = nlohmann::json;
@@ -169,8 +172,6 @@ GS_CThreadSQL::Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-#define BEGINNER_ZONE_LEVEL 5
 #define BEGINNER_ZONE_NO 20
 
 bool
@@ -418,308 +419,308 @@ bool
 GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
 
-#define MAX_AVATAR_NAME 20
-    short nOffset = sizeof(cli_SELECT_CHAR), nOutStrLen;
+    short nOffset = sizeof(cli_SELECT_CHAR);
+    short nOutStrLen = 0;
     char* pCharName = Packet_GetStringPtr(pPacket, nOffset, nOutStrLen);
     if (!pCharName || nOutStrLen < 4) {
         g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: CharName == NULL \n");
         return false;
     }
+#define MAX_AVATAR_NAME 20
 
     if (nOutStrLen > MAX_AVATAR_NAME) {
         g_LOG.CS_ODS(LOG_NORMAL, "Proc_cli_SELECT_CHAR:: CharName == '%s'\n", pCharName);
         return false;
     }
 
+    std::string char_name(pCharName);
+    if (char_name.empty() || char_name.size() > GameStaticConfig::MAX_CHARACTER_NAME) {
+        return false;
+    }
+
+    classUSER* user = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
+    if (!user) {
+        return false;
+    }
+
+    std::string account_username = user->Get_ACCOUNT();
+
     std::string query =
-        "SELECT id, basic_etc, basic_info, basic_ability, grow_ability, skill_ability, quest_data, "
-        "inventory, wish_list, hot_icon, party_id, item_serial FROM character WHERE name=\'%s\'";
+        "SELECT id, gender_id, job_id, face_id, hair_id, level, exp, hp, mp, stamina, max_hp, "
+        "max_mp, "
+        "max_stamina, str, dex, intt, con, cha, sen, stat_points, skill_points, money, "
+        "storage_money, map_id, "
+        "respawn_x, respawn_y, town_respawn_id, town_respawn_x, town_respawn_y, union_id, skills "
+        "FROM character "
+        "WHERE account_username=$1 AND name=$2";
 
-    // "SELECT * FROM tblGS_AVATAR WHERE txtNAME='xxxx';"
-    if (!this->db->QuerySQL((char*)query.c_str(), pCharName)) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
+    enum CharCol {
+        COL_ID = 0,
+        COL_GENDER_ID,
+        COL_JOB_ID,
+        COL_FACE_ID,
+        COL_HAIR_ID,
+        COL_LEVEL,
+        COL_EXP,
+        COL_HP,
+        COL_MP,
+        COL_STAMINA,
+        COL_MAX_HP,
+        COL_MAX_MP,
+        COL_MAX_STAMINA,
+        COL_STR,
+        COL_DEX,
+        COL_INT,
+        COL_CON,
+        COL_CHA,
+        COL_SEN,
+        COL_STAT_POINTS,
+        COL_SKILL_POINTS,
+        COL_MONEY,
+        COL_STORAGE_MONEY,
+        COL_MAP_ID,
+        COL_RESPAWN_X,
+        COL_RESPAWN_Y,
+        COL_TOWN_RESPAWN_ID,
+        COL_TOWN_RESPAWN_X,
+        COL_TOWN_RESPAWN_Y,
+        COL_UNION_ID,
+        COL_SKILLS,
+    };
+
+    QueryResult char_res = this->db_pg.query(query, {account_username, char_name});
+    if (!char_res.is_ok()) {
+        LOG_ERROR("Failed to get character '%s' for account '%s': %s",
+            account_username.c_str(),
+            char_name.c_str(),
+            char_res.error_message());
         return false;
     }
 
-    if (!this->db->GetNextRECORD()) {
-        // 케릭터 없다.
-        g_LOG.CS_ODS(LOG_NORMAL, "Char[ %s ] not found ...\n", pCharName);
+    if (char_res.row_count != 1) {
         return false;
     }
 
-    bool bResult;
-    classUSER* pUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-    if (pUSER) {
-        classPACKET* pCPacket = Packet_AllocNLock();
-        if (pCPacket) {
-            pUSER->m_dwDBID = this->db->GetInteger(0);
+    QueryResult equip_res =
+        this->db_pg.query("SELECT inventory.slot, item.game_data_id, item.type_id, item.stat_id, "
+                          "item.grade, item.durability, item.lifespan, item.appraisal, item.socket "
+                          "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
+                          "WHERE inventory.owner_id = $1",
+            {char_res.get_string(0, COL_ID)});
 
-            pUSER->Set_NAME(pCharName);
-            pUSER->Set_RNAME(pCharName);
-            g_pUserLIST->Add_CHAR(pUSER);
+    enum InvCol {
+        INV_COL_SLOT,
+        INV_COL_GAME_DATA_ID,
+        INV_COL_TYPE_ID,
+        INV_COL_STAT_ID,
+        INV_COL_GRADE,
+        INV_COL_DURABILITY,
+        INV_COL_LIFESPAN,
+        INV_COL_APPRAISAL,
+        INV_COL_SOCKET,
+    };
 
-            tagBasicETC* pBE;
-            pBE = (tagBasicETC*)this->db->GetDataPTR(1);
+    if (!equip_res.is_ok()) {
+        LOG_ERROR("Inventory query failed for character '%s': %s", equip_res.error_message());
+        return false;
+    }
 
-            pUSER->m_nCharRACE = pBE->m_btCharRACE;
-            pUSER->m_btPlatinumCHAR = pBE->m_btCharSlotNO;
+    tagBasicINFO basic_info;
+    basic_info.Init(0, 0, 0);
+    basic_info.m_cFaceIDX = char_res.get_int32(0, COL_FACE_ID);
+    basic_info.m_cHairIDX = char_res.get_int32(0, COL_HAIR_ID);
+    basic_info.m_nClass = char_res.get_int32(0, COL_JOB_ID);
+    basic_info.m_cUnion = char_res.get_int32(0, COL_UNION_ID);
 
-            CZoneTHREAD* pZONE = g_pZoneLIST->GetZONE(pBE->m_nZoneNO);
-            if (pZONE) {
-                pUSER->m_nZoneNO = pBE->m_nZoneNO;
+    tagBasicETC basic_etc;
+    basic_etc.Init();
+    basic_etc.m_btCharRACE = char_res.get_int32(0, COL_GENDER_ID);
+    basic_etc.m_nZoneNO = char_res.get_int32(0, COL_MAP_ID);
+    basic_etc.m_PosSTART.x = char_res.get_float(0, COL_RESPAWN_X);
+    basic_etc.m_PosSTART.y = char_res.get_float(0, COL_RESPAWN_Y);
+    basic_etc.m_nReviveZoneNO = char_res.get_int32(0, COL_TOWN_RESPAWN_ID);
+    basic_etc.m_PosREVIVE.x = char_res.get_float(0, COL_TOWN_RESPAWN_X);
+    basic_etc.m_PosREVIVE.y = char_res.get_float(0, COL_TOWN_RESPAWN_Y);
 
-                if (pBE->m_PosSTART.x == 0.f || pBE->m_PosSTART.y == 0.f) {
-                    /// 샷다운시 존이 모두 삭제되어 가까운 부활 위치를 못찾아 0으로 셋팅磯
-                    /// ... 2.26
-                    pBE->m_PosSTART = pZONE->Get_StartRevivePOS();
-                } else {
-                    // 기본 현재 위치의 가장 가까운 부활 장소로...
-                    pBE->m_PosSTART = pZONE->Get_RevivePOS(pBE->m_PosSTART);
-                    pBE->m_PosSTART.x += (RANDOM(1001) - 500); // 랜덤 5미터..
-                    pBE->m_PosSTART.y += (RANDOM(1001) - 500);
-                }
+    basic_etc.m_PartITEM[BODY_PART_FACE].m_nItemNo = basic_info.m_cFaceIDX;
+    basic_etc.m_PartITEM[BODY_PART_HAIR].m_nItemNo = basic_info.m_cHairIDX;
 
-                pUSER->m_PosCUR = pBE->m_PosSTART;
-            } else {
-                // 혹시 버그로 인해 존이 삭제 되었을경우..
-                pUSER->m_nZoneNO = AVATAR_ZONE(pBE->m_btCharRACE);
-                pZONE = g_pZoneLIST->GetZONE(pUSER->m_nZoneNO);
-                if (!pZONE) // 존이 없을 경우 디폴트로 존 1을...
-                {
-                    pUSER->m_nZoneNO = 1;
-                    pZONE = g_pZoneLIST->GetZONE(pUSER->m_nZoneNO);
-                }
-                pUSER->m_PosCUR = pZONE->Get_StartPOS();
-            }
+    tagBasicAbility basic_ability;
+    basic_ability.Init();
+    basic_ability.m_nSTR = char_res.get_int32(0, COL_STR);
+    basic_ability.m_nDEX = char_res.get_int32(0, COL_DEX);
+    basic_ability.m_nINT = char_res.get_int32(0, COL_INT);
+    basic_ability.m_nCON = char_res.get_int32(0, COL_CON);
+    basic_ability.m_nCHARM = char_res.get_int32(0, COL_CHA);
+    basic_ability.m_nSENSE = char_res.get_int32(0, COL_SEN);
 
-            /// 2005. 08. 24 :: 임시로 클랜필드에서 접속할경우 2번존(주논폴리스) 부활위치로 강제
-            /// 이동
-            if (pUSER->m_nZoneNO >= 11 && pUSER->m_nZoneNO <= 13) {
-                int iJunonPolice = 2;
-                CZoneTHREAD* pZone2 = g_pZoneLIST->GetZONE(iJunonPolice);
-                pUSER->m_nZoneNO = pZone2->Get_ZoneNO();
-                pUSER->m_PosCUR = pZone2->Get_StartRevivePOS();
-            } // if ( pUSER->m_nZoneNO >= 11 && pUSER->m_nZoneNO <= 13 )
+    tagGrowAbility grow_ability;
+    grow_ability.Init();
+    grow_ability.m_nLevel = char_res.get_int32(0, COL_LEVEL);
+    grow_ability.m_lEXP = char_res.get_int32(0, COL_EXP);
+    grow_ability.m_nHP = char_res.get_int32(0, COL_HP);
+    grow_ability.m_nMP = char_res.get_int32(0, COL_MP);
+    grow_ability.m_nBonusPoint = char_res.get_int32(0, COL_STAT_POINTS);
+    grow_ability.m_nSkillPoint = char_res.get_int32(0, COL_SKILL_POINTS);
+    grow_ability.m_nSTAMINA = char_res.get_int32(0, COL_STAMINA);
 
-            // 일정 주기로 사용자 정보 저장하기 위해서..
-            pUSER->m_dwBackUpTIME = pZONE->GetCurrentTIME();
+    // TODO: In grow_ability
+    // short m_nJoHapPOINT[MAX_UNION_COUNT]; -- Unions?
+    // m_btBodySIZE / m_btHeadSIZE -- Would be fun to get these working!
+    // m_lPenalEXP -- What is this?
+    // m_nPKFlag -- What is this?
 
-            pUSER->m_nReviveZoneNO = pBE->m_nReviveZoneNO;
-            pUSER->m_PosREVIVE = pBE->m_PosREVIVE;
+    tagSkillAbility skill_ability;
+    skill_ability.Init();
 
-            ::CopyMemory(pUSER->m_PartITEM, pBE->m_PartITEM, sizeof(tagPartITEM) * MAX_BODY_PART);
+    tagQuestData quest_data;
+    quest_data.Init();
+    quest_data.CheckExpiredTIME();
 
-#ifdef __KCHS_BATTLECART__ // __OLD_DATA_COMPATIBLE__
-            if (nDataVER < DATA_VER_2) {
-                ::CopyMemory(pUSER->m_RideITEM,
-                    pBE->m_RideITEM,
-                    sizeof(tagPartITEM) * (MAX_RIDING_PART - 1));
-                ZeroMemory(&pUSER->m_RideITEM[RIDE_PART_ARMS], sizeof(tagPartITEM));
-            } else
-                ::CopyMemory(pUSER->m_RideITEM,
-                    pBE->m_RideITEM,
-                    sizeof(tagPartITEM) * MAX_RIDING_PART);
-#else
-            ::CopyMemory(pUSER->m_RideITEM, pBE->m_RideITEM, sizeof(tagPartITEM) * MAX_RIDING_PART);
-#endif
+    CInventory inventory;
+    inventory.Clear();
 
-            BYTE* pDATA;
-            pDATA = this->db->GetDataPTR(2);
-            ::CopyMemory(&pUSER->m_BasicINFO, pDATA, sizeof(tagBasicINFO));
+    tagWishLIST wish_list;
+    wish_list.Init();
 
-            pDATA = this->db->GetDataPTR(3);
-            ::CopyMemory(&pUSER->m_BasicAbility, pDATA, sizeof(tagBasicAbility));
+    CHotICONS hotbar_icons;
+    hotbar_icons.Init();
 
-            pDATA = this->db->GetDataPTR(4);
-            ::CopyMemory(&pUSER->m_GrowAbility, pDATA, sizeof(tagGrowAbility));
-#ifdef __KCHS_BATTLECART__
-            if (pUSER->GetCur_PatHP() > PAT_COOLTIME) // 이렇다는 얘기는 0 - 1 한 잘못 된 데이터
-                pUSER->SetCur_PatHP(0);
-#endif
-            // skill
-            pDATA = this->db->GetDataPTR(5);
-            ::CopyMemory(&pUSER->m_Skills, pDATA, sizeof(tagSkillAbility));
+    for (size_t row_idx = 0; row_idx < equip_res.row_count; ++row_idx) {
+        int slot = equip_res.get_int32(row_idx, INV_COL_SLOT);
 
-            // quest
-            pDATA = this->db->GetDataPTR(6);
-            if (pDATA) {
-                ::CopyMemory(&pUSER->m_Quests, pDATA, sizeof(tagQuestData));
-                pUSER->m_Quests.CheckExpiredTIME();
-            } else
-                pUSER->m_Quests.Init();
+        if (slot <= 0) {
+            continue;
+        }
 
-            // inventory...
-            pDATA = this->db->GetDataPTR(7);
-            ::CopyMemory(&pUSER->m_Inventory, pDATA, sizeof(CInventory));
+        const size_t part_idx = equip2part(slot);
+        if (part_idx >= BODY_PART_HELMET && part_idx < MAX_BODY_PART) {
+            tagPartITEM& part = basic_etc.m_PartITEM[part_idx];
+            part.m_nItemNo = equip_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
+            part.m_cGrade = equip_res.get_int32(row_idx, INV_COL_GRADE);
+            part.m_nGEM_OP = equip_res.get_int32(row_idx, INV_COL_STAT_ID);
+            part.m_bHasSocket = equip_res.get_bool(row_idx, INV_COL_SOCKET) ? 1 : 0;
+        }
 
-            // wish list
-            pDATA = this->db->GetDataPTR(8);
-            if (pDATA)
-                ::CopyMemory(&pUSER->m_WishLIST, pDATA, sizeof(tagWishLIST));
-            else
-                pUSER->m_WishLIST.Init();
+        // TODO: basic_etc tagPartITEM m_RideITEM[MAX_RIDING_PART];
 
-            pUSER->m_i64StartMoney = pUSER->GetCur_MONEY(); // 돈 변화량을 체크하기 위해서...
+        // TODO: Inventory
+    }
 
-            // 잘못된 아이템일 경우 삭제...
-            tagITEM* pITEM;
-            short nI;
-            for (nI = EQUIP_IDX_NULL + 1; nI < MAX_EQUIP_IDX; nI++) {
-                pITEM = &pUSER->m_Inventory.m_ItemLIST[nI];
-                if (!pITEM->GetHEADER())
-                    continue;
-                if (!pITEM->IsEquipITEM() || !pITEM->IsValidITEM()) {
-                    pITEM->Clear();
-                    continue;
-                }
-            }
-
-            for (nI = EQUIP_IDX_FACE_ITEM; nI < INVENTORY_TOTAL_SIZE; nI++) {
-                pITEM = &pUSER->m_Inventory.m_ItemLIST[nI];
-                if (!pITEM->GetHEADER())
-                    continue;
-
-                if (!pITEM->GetTYPE() || pITEM->GetTYPE() > ITEM_TYPE_RIDE_PART) {
-                    pITEM->Clear();
-                    continue;
-                }
-
-                // 아이템 해킹 케릭인지 조사...
-                if (pITEM->IsEnableDupCNT()) {
-                    if (pITEM->GetQuantity() > MAX_DUP_ITEM_QUANTITY) {
-                        pUSER->m_Inventory.m_i64Money = 0;
-                        pITEM->Clear();
-                        continue;
-                    }
-                } else if (pITEM->GetOption()) {
-                    if (pITEM->GetOption() >= g_TblGEMITEM.m_nDataCnt) {
-                        // 창고로 이동시 잘못됐던 버그 아이템이다...
-                        pITEM->m_nGEM_OP = 0;
-                    }
-                }
-                if (pITEM->GetItemNO() >= g_pTblSTBs[pITEM->GetTYPE()]->m_nDataCnt) {
-                    pITEM->Clear();
-                    continue;
-                }
-            }
-
-            pDATA = this->db->GetDataPTR(9);
-            if (pDATA)
-                ::CopyMemory(&pUSER->m_HotICONS, pDATA, sizeof(CHotICONS));
-            else
-                pUSER->m_HotICONS.Init();
-
-            COMPILE_TIME_ASSERT(sizeof(CHotICONS) == sizeof(tagHotICON) * MAX_HOT_ICONS);
-
-            DWORD dwPassMIN = 0;
-            DWORD dwDisMIN = 0;
-
-            if (pUSER->GetCur_STAMINA() > MAX_STAMINA)
-                pUSER->SetCur_STAMINA(MAX_STAMINA);
-
-            // 스킬 데이타에서 패시브 스킬에서 얻은 능력치들을 정리...
-            pUSER->InitPassiveSkill();
-
-            // 패킷을 보내기 전에 능력치를 계산해야 할듯...
-            // 아래 함수 실행중 클라이언트에서 패킷이 도착해서
-            // 진행되어 질수 있다... 운이 나쁘면 ㅡ,.ㅡ;
-            pUSER->UpdateAbility();
-            if (pUSER->Get_HP() <= 0) {
-                // 죽었다면 30% hp
-                pUSER->Set_HP(3 * pUSER->Get_MaxHP() / 10);
-            } else if (pUSER->Get_HP() > pUSER->Get_MaxHP())
-                pUSER->Set_HP(pUSER->Get_MaxHP());
-
-            pUSER->Set_ShotITEM(); // GS_CThreadSQL::Proc_cli_SELECT_CHAR
-
-            if (pPacket->m_cli_SELECT_CHAR.m_btCharNO) {
-                // 클라이언트에게 정보를 보내야 하는가 ???
-                pCPacket->m_HEADER.m_wType = GSV_SELECT_CHAR;
-                pCPacket->m_HEADER.m_nSize = sizeof(gsv_SELECT_CHAR);
-
-                pCPacket->m_gsv_SELECT_CHAR.m_btCharRACE = pBE->m_btCharRACE;
-                pCPacket->m_gsv_SELECT_CHAR.m_nZoneNO = pUSER->m_nZoneNO;
-                pCPacket->m_gsv_SELECT_CHAR.m_PosSTART = pUSER->m_PosCUR;
-                pCPacket->m_gsv_SELECT_CHAR.m_nReviveZoneNO = pUSER->m_nReviveZoneNO;
-                pCPacket->m_gsv_SELECT_CHAR.m_dwUniqueTAG = pUSER->m_dwDBID;
-
-                ::CopyMemory(pCPacket->m_gsv_SELECT_CHAR.m_PartITEM,
-                    pUSER->m_PartITEM,
-                    sizeof(tagPartITEM) * MAX_BODY_PART);
-
-                ::CopyMemory(&pCPacket->m_gsv_SELECT_CHAR.m_BasicINFO,
-                    &pUSER->m_BasicINFO,
-                    sizeof(tagBasicINFO));
-                ::CopyMemory(&pCPacket->m_gsv_SELECT_CHAR.m_BasicAbility,
-                    &pUSER->m_BasicAbility,
-                    sizeof(tagBasicAbility));
-
-#pragma COMPILE_TIME_MSG("********** 여기서는 tagGrowAbility도 크기가 바뀌었다 ...")
-                ::CopyMemory(&pCPacket->m_gsv_SELECT_CHAR.m_GrowAbility,
-                    &pUSER->m_GrowAbility,
-                    sizeof(tagGrowAbility));
-
-                ::CopyMemory(&pCPacket->m_gsv_SELECT_CHAR.m_Skill,
-                    &pUSER->m_Skills,
-                    sizeof(tagSkillAbility));
-                ::CopyMemory(&pCPacket->m_gsv_SELECT_CHAR.m_HotICONS,
-                    &pUSER->m_HotICONS,
-                    sizeof(CHotICONS));
-                pCPacket->AppendString(pUSER->Get_NAME());
-                COMPILE_TIME_ASSERT(sizeof(gsv_SELECT_CHAR) < MAX_PACKET_SIZE);
-                pUSER->SendPacket(pCPacket);
-
-                pUSER->Send_gsv_INVENTORYnQUEST_DATA();
-
-                // 파티번호가 있냐...
-                unsigned int iPartyIDX = (unsigned int)this->db->GetInteger(10);
-                if (iPartyIDX
-                    && dwPassMIN < 7) { // 튕기고 5분안에 재접이면(서번6분), 클라이언트에서 파장이
-                                        // 5분되면 자동 강퇴요청 해야됨
-                    g_pPartyBUFF->OnConnect(iPartyIDX, pUSER);
-                }
-
-                // 아이템 시리얼번호 초기값 갱신...
-                DWORD dwDBItemSN = this->db->GetInteger(11);
-                if (this->m_dwCurTIME >= dwDBItemSN)
-                    pUSER->m_dwItemSN = this->m_dwCurTIME;
-                else
-                    pUSER->m_dwItemSN = dwDBItemSN;
-            } else {
-                // 존에 참가하라는 패킷 전송...
-                pUSER->m_bRunMODE = pPacket->m_cli_SELECT_CHAR.m_btRunMODE;
-                pUSER->m_btRideMODE = pPacket->m_cli_SELECT_CHAR.m_btRideMODE;
-                pUSER->Send_gsv_TELEPORT_REPLY(pUSER->m_PosCUR, pUSER->m_nZoneNO);
-            }
-
-            Packet_ReleaseNUnlock(pCPacket);
-
-            pUSER->m_Bank.Init();
-            pUSER->m_btBankData = BANK_UNLOADED;
-
-            pUSER->m_dwLoginTIME = this->m_dwCurTIME;
-
-            bResult = true;
+    CZoneTHREAD* zone = g_pZoneLIST->GetZONE(basic_etc.m_nZoneNO);
+    if (zone) {
+        if (basic_etc.m_PosSTART.x == 0.0f || basic_etc.m_PosSTART.y == 0.0f) {
+            basic_etc.m_PosSTART = zone->Get_StartRevivePOS();
         } else {
-            // 패킷 할당 실패...
-            bResult = false;
+            basic_etc.m_PosSTART = zone->Get_RevivePOS(basic_etc.m_PosSTART);
+            basic_etc.m_PosSTART.x += (RANDOM(1001) - 500);
+            basic_etc.m_PosSTART.y += (RANDOM(1001) - 500);
         }
     } else {
-        // 접속 끊겼다.
-        bResult = false;
+        basic_etc.m_nZoneNO = AVATAR_ZONE(basic_etc.m_btCharRACE);
+        CZoneTHREAD* zone2 = g_pZoneLIST->GetZONE(basic_etc.m_nZoneNO);
+        if (!zone) {
+            basic_etc.m_nZoneNO = 1;
+            zone = g_pZoneLIST->GetZONE(basic_etc.m_nZoneNO);
+        }
+        basic_etc.m_PosSTART = zone->Get_StartPOS();
     }
-    return bResult;
+
+    user->Set_NAME(pCharName);
+    user->Set_RNAME(pCharName);
+    user->m_btPlatinumCHAR = false;
+    user->m_dwDBID = char_res.get_int32(0, COL_ID);
+    user->m_i64StartMoney = char_res.get_int32(0, COL_MONEY);
+    user->m_nCharRACE = basic_etc.m_btCharRACE;
+    user->m_nZoneNO = basic_etc.m_nZoneNO;
+    user->m_PosCUR = basic_etc.m_PosSTART;
+    user->m_nReviveZoneNO = basic_etc.m_nReviveZoneNO;
+    user->m_PosREVIVE = basic_etc.m_PosREVIVE;
+    user->m_dwBackUpTIME = zone->GetCurrentTIME();
+    user->m_dwItemSN = std::chrono::system_clock::now().time_since_epoch().count();
+
+    g_pUserLIST->Add_CHAR(user);
+
+    std::copy(&basic_etc.m_PartITEM[0],
+        &basic_etc.m_PartITEM[0] + MAX_BODY_PART,
+        &user->m_PartITEM[0]);
+
+    std::copy(&basic_etc.m_RideITEM[0],
+        &basic_etc.m_RideITEM[0] + MAX_RIDING_PART,
+        &user->m_RideITEM[0]);
+
+    user->m_BasicINFO.Init(0, 0, 0);
+    user->m_BasicAbility.Init();
+    user->m_GrowAbility.Init();
+    user->m_Skills.Init();
+    user->m_Quests.Init();
+    user->m_Inventory.Clear();
+    user->m_WishLIST.Init();
+    user->m_HotICONS.Init();
+
+    std::memcpy(&user->m_BasicINFO, &basic_info, sizeof(tagBasicINFO));
+    std::memcpy(&user->m_BasicAbility, &basic_ability, sizeof(tagBasicAbility));
+    std::memcpy(&user->m_GrowAbility, &grow_ability, sizeof(tagGrowAbility));
+    std::memcpy(&user->m_Skills, &skill_ability, sizeof(tagSkillAbility));
+    std::memcpy(&user->m_Quests, &quest_data, sizeof(tagQuestData));
+    std::memcpy(&user->m_Inventory, &inventory, sizeof(CInventory));
+    std::memcpy(&user->m_WishLIST, &wish_list, sizeof(tagWishLIST));
+    std::memcpy(&user->m_HotICONS, &hotbar_icons, sizeof(CHotICONS));
+
+    user->InitPassiveSkill();
+    user->UpdateAbility();
+    user->Set_ShotITEM();
+
+    if (user->GetCur_STAMINA() > MAX_STAMINA) {
+        user->SetCur_STAMINA(MAX_STAMINA);
+    }
+
+    if (user->Get_HP() <= 0) {
+        user->Set_HP(3 * user->Get_MaxHP() / 10);
+    } else if (user->Get_HP() > user->Get_MaxHP()) {
+        user->Set_HP(user->Get_MaxHP());
+    }
+
+    std::shared_ptr<classPACKET> p = std::make_shared<classPACKET>();
+    if (pPacket->m_cli_SELECT_CHAR.m_btCharNO) {
+        p->m_HEADER.m_wType = GSV_SELECT_CHAR;
+        p->m_HEADER.m_nSize = sizeof(gsv_SELECT_CHAR);
+
+        p->m_gsv_SELECT_CHAR.m_btCharRACE = basic_etc.m_btCharRACE;
+        p->m_gsv_SELECT_CHAR.m_nZoneNO = user->m_nZoneNO;
+        p->m_gsv_SELECT_CHAR.m_PosSTART = user->m_PosCUR;
+        p->m_gsv_SELECT_CHAR.m_nReviveZoneNO = user->m_nReviveZoneNO;
+        p->m_gsv_SELECT_CHAR.m_dwUniqueTAG = user->m_dwDBID;
+
+        std::copy(&basic_etc.m_PartITEM[0],
+            &basic_etc.m_PartITEM[0] + MAX_BODY_PART,
+            &p->m_gsv_SELECT_CHAR.m_PartITEM[0]);
+
+        std::memcpy(&p->m_gsv_SELECT_CHAR.m_BasicINFO, &basic_info, sizeof(tagBasicINFO));
+        std::memcpy(&p->m_gsv_SELECT_CHAR.m_BasicAbility, &basic_ability, sizeof(tagBasicAbility));
+        std::memcpy(&p->m_gsv_SELECT_CHAR.m_GrowAbility, &grow_ability, sizeof(tagGrowAbility));
+        std::memcpy(&p->m_gsv_SELECT_CHAR.m_Skill, &skill_ability, sizeof(tagSkillAbility));
+        std::memcpy(&p->m_gsv_SELECT_CHAR.m_HotICONS, &hotbar_icons, sizeof(CHotICONS));
+
+        p->AppendString(user->Get_NAME());
+
+        user->SendPacket(p.get());
+        user->Send_gsv_INVENTORYnQUEST_DATA();
+    } else {
+        user->m_bRunMODE = pPacket->m_cli_SELECT_CHAR.m_btRunMODE;
+        user->m_btRideMODE = pPacket->m_cli_SELECT_CHAR.m_btRideMODE;
+        user->Send_gsv_TELEPORT_REPLY(user->m_PosCUR, user->m_nZoneNO);
+    }
+
+    user->m_Bank.Init();
+    user->m_btBankData = BANK_UNLOADED;
+
+    user->m_dwLoginTIME = std::chrono::system_clock::now().time_since_epoch().count();
+
+    return true;
 }
 
-#define MAX_BEGINNER_POS 5
-tPOINTF s_BeginnerPOS[MAX_BEGINNER_POS] = {{530500, 539500},
-    {568700, 520222},
-    {568000, 473400},
-    {512100, 469900},
-    {499900, 515600}};
-
 #define BEGINNER_ZONE 20
-#define ADVENTURE_ZONE 22
 
 bool
 GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
@@ -852,13 +853,7 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
 
     return pUSER->Send_gsv_BANK_ITEM_LIST();
 }
-/*
-bool GS_CThreadSQL::Proc_cli_CHANGE_BANK_PASSWORD( tagQueryDATA *pSqlPACKET )
-{
-    xxxx
-}
-*/
-//-------------------------------------------------------------------------------------------------
+
 #define WSVAR_TBL_BLOB 2
 #define ZONE_VAR_ECONOMY "%s_EC_Zone%d"
 
@@ -979,7 +974,7 @@ GS_CThreadSQL::Proc_LOAD_OBJVAR(tagQueryDATA* pSqlPACKET) {
             MQ_PARAM_ADDSTR,
             ",",
             MQ_PARAM_STR,
-           "TODO FIX ME: WAS g_pThreadLOG->GetCurDateTimeSTR()",
+            "TODO FIX ME: WAS g_pThreadLOG->GetCurDateTimeSTR()",
             MQ_PARAM_ADDSTR,
             ",",
             MQ_PARAM_BINDIDX,

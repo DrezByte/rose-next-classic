@@ -287,7 +287,7 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
             int slot = equip_res.get_int32(row_idx, 0);
             int game_data_id = equip_res.get_int32(row_idx, 1);
 
-            if (slot >= 0 && slot < MAX_BODY_PART) {
+            if (slot >= 0 && slot < MAX_EQUIP_IDX) {
                 const size_t part_idx = equip2part(slot);
                 equipment[part_idx].m_nItemNo = game_data_id;
             }

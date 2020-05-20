@@ -2,6 +2,7 @@
 #include <crtdbg.h>
 #include <cstdint>
 #include <math.h>
+#include <memory>
 #include <string>
 #include <time.h>
 #include <vector>

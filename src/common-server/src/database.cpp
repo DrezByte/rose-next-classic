@@ -123,6 +123,30 @@ QueryResult::get_int32(size_t row_idx, size_t col_idx) {
     }
 }
 
+float
+QueryResult::get_float(size_t row_idx, size_t col_idx) {
+    try {
+        return std::stof(this->get_string(row_idx, col_idx));
+    } catch (...) {
+        return 0.0f;
+    }
+}
+
+double
+QueryResult::get_double(size_t row_idx, size_t col_idx) {
+    try {
+        return std::stod(this->get_string(row_idx, col_idx));
+    } catch (...) {
+        return 0.0;
+    }
+}
+
+bool
+QueryResult::get_bool(size_t row_idx, size_t col_idx) {
+    bool res = this->get_string(row_idx, col_idx) == "t";
+    return res;
+}
+
 DateTime
 QueryResult::get_datetime(size_t row_idx, size_t col_idx) {
     return parse_datetime_str(this->get_string(row_idx, col_idx)).value_or(DateTime());

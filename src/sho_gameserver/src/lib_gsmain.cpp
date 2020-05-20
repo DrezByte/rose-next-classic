@@ -789,6 +789,14 @@ CLIB_GameSRV::connect_database() {
             1024 * 8)) {
         return false;
     }
+
+    if (!g_pThreadSQL->db_pg.connect(this->config.database.connection_string)) {
+        std::string error_message = g_pThreadSQL->db_pg.last_error_message();
+        LOG_ERROR("Failed to connect to the database: %s", error_message.c_str());
+
+        g_pThreadSQL = NULL;
+        return false;
+    }
     g_pThreadSQL->Resume();
 
     g_pThreadGUILD = new CThreadGUILD(32, 16);

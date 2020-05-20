@@ -23,7 +23,8 @@ CREATE TABLE character
     con smallint NOT NULL DEFAULT 10,
     cha smallint NOT NULL DEFAULT 10,
     sen smallint NOT NULL DEFAULT 10,
-    skills jsonb NOT NULL DEFAULT '[11, 12, 16, 19, 20, 21]'::jsonb,
+    stat_points smallint NOT NULL DEFAULT 0,
+    skill_points smallint NOT NULL DEFAULT 0,
     -- Economy
     money bigint NOT NULL DEFAULT 0,
     storage_money bigint NOT NULL DEFAULT 0,
@@ -34,6 +35,9 @@ CREATE TABLE character
     town_respawn_id smallint NOT NULL DEFAULT(22),
     town_respawn_x real NOT NULL DEFAULT(577987.99),
     town_respawn_y real NOT NULL DEFAULT(515579.9805),
+    -- Other
+    union_id smallint NOT NULL DEFAULT 0,
+    skills jsonb NOT NULL DEFAULT '[11, 12, 16, 19, 20, 21]'::jsonb,
     -- Meta
     created TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     delete_by timestamptz,

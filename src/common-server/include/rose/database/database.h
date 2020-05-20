@@ -84,6 +84,9 @@ public:
     /// Get a value from the query result by row and column index
     std::string get_string(size_t row_idx, size_t col_idx);
     int32_t get_int32(size_t row_idx, size_t col_idx);
+    float get_float(size_t row_idx, size_t col_idx);
+    double get_double(size_t row_idx, size_t col_idx);
+    bool get_bool(size_t row_idx, size_t col_idx);
     Rose::Util::DateTime get_datetime(size_t row_idx, size_t col_idx);
     bool get_null(size_t row_idx, size_t col_idx);
 };
