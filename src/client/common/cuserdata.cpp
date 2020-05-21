@@ -4,9 +4,9 @@
 #include "CUserDATA.h"
 #include "Object.h"
 #include "calculation.h"
-#include "../util/classTIME.h"
 
 #ifndef __SERVER
+    #include "../util/classTIME.h"
     #include "IO_PAT.h"
     #include "NET_Prototype.h"
     #include "../Interface/Dlgs/ChattingDlg.h"
@@ -14,17 +14,15 @@
 #endif
 #define MAX_INT 0x07fffffff
 
-//-------------------------------------------------------------------------------------------------
 short
 tagBankData::Get_EmptySlot(short nStartSlotNO) {
-    for (short nI = nStartSlotNO; nI < BANKSLOT_TOTAL_SIZE; nI++)
+    for (short nI = nStartSlotNO; nI < BANKSLOT_TOTAL; nI++)
         if (0 == this->m_ItemLIST[nI].GetHEADER())
             return nI;
 
     return -1;
 }
 
-//-------------------------------------------------------------------------------------------------
 short
 tagBankData::Add_ITEM(tagITEM& sITEM) {
     if (0 == sITEM.GetTYPE() || sITEM.GetTYPE() >= ITEM_TYPE_MONEY) {
@@ -33,13 +31,13 @@ tagBankData::Add_ITEM(tagITEM& sITEM) {
 
     short nI;
     if (sITEM.GetTYPE() >= ITEM_TYPE_USE) {
-        // Áßº¹ µÉ¼ö ÀÖ´Â ¾ÆÀÌÅÛÀÌ´Ù.
-        for (nI = 0; nI < BANKSLOT_TOTAL_SIZE; nI++) {
+        // ÃÃŸÂºÂ¹ ÂµÃ‰Â¼Ã¶ Ã€Ã–Â´Ã‚ Â¾Ã†Ã€ÃŒÃ…Ã›Ã€ÃŒÂ´Ã™.
+        for (nI = 0; nI < BANKSLOT_TOTAL; nI++) {
             if (this->m_ItemLIST[nI].GetHEADER() != sITEM.GetHEADER())
                 continue;
 
             if (this->m_ItemLIST[nI].GetQuantity() + sITEM.GetQuantity() <= MAX_DUP_ITEM_QUANTITY) {
-                this->m_ItemLIST[nI].m_uiQuantity += sITEM.m_uiQuantity;
+                this->m_ItemLIST[nI].m_uiQuantity += sITEM.GetQuantity();
                 return nI;
             }
         }
@@ -57,8 +55,8 @@ tagBankData::Add_ITEM(tagITEM& sITEM) {
 short
 tagBankData::Add_ITEM(short nSlotNO, tagITEM& sITEM) {
     if (sITEM.GetTYPE() >= ITEM_TYPE_USE) {
-        // Áßº¹ µÉ¼ö ÀÖ´Â ¾ÆÀÌÅÛÀÌ´Ù.
-        this->m_ItemLIST[nSlotNO].m_uiQuantity += sITEM.m_uiQuantity;
+        // ÃÃŸÂºÂ¹ ÂµÃ‰Â¼Ã¶ Ã€Ã–Â´Ã‚ Â¾Ã†Ã€ÃŒÃ…Ã›Ã€ÃŒÂ´Ã™.
+        this->m_ItemLIST[nSlotNO].m_uiQuantity += sITEM.GetQuantity();
         return nSlotNO;
     }
 
@@ -74,20 +72,105 @@ tagBankData::Sub_ITEM(short nSlotNO, tagITEM& sITEM) {
     }
 
     if (sITEM.GetTYPE() >= ITEM_TYPE_USE) {
-        // Áßº¹ µÉ¼ö ÀÖ´Â ¾ÆÀÌÅÛÀÌ´Ù.
+        // ÃÃŸÂºÂ¹ ÂµÃ‰Â¼Ã¶ Ã€Ã–Â´Ã‚ Â¾Ã†Ã€ÃŒÃ…Ã›Ã€ÃŒÂ´Ã™.
 
         if (this->m_ItemLIST[nSlotNO].GetQuantity() > sITEM.GetQuantity()) {
-            this->m_ItemLIST[nSlotNO].m_uiQuantity -= sITEM.m_uiQuantity;
+            this->m_ItemLIST[nSlotNO].m_uiQuantity -= sITEM.GetQuantity();
             return nSlotNO;
         }
 
         sITEM.m_uiQuantity = this->m_ItemLIST[nSlotNO].GetQuantity();
     }
 
-    // ½½·Ô ºñ¿ò.
+    // Â½Â½Â·Ã” ÂºÃ±Â¿Ã².
     this->m_ItemLIST[nSlotNO].Clear();
 
     return nSlotNO;
+}
+
+void
+CUserDATA::Cal_AddAbility(tagITEM& sITEM, short nItemTYPE) {
+    if (sITEM.GetItemNO() < 1 || sITEM.GetLife() < 1) /// Â¾Ã†Ã€ÃŒÃ…Ã›Ã€ÃŒ Â¾Ã¸Â°Ã…Â³Âª Â¼Ã¶Â¸Ã­Ã€ÃŒ Â´Ã™Ã‡Ã‘Â°ÃÃ€Âº Ã…Ã«Â°Ãº~
+        return;
+
+    short nI, nC, nType, nValue;
+
+    // Â¿Ã‰Â¼Ã‡/Â¹ÃšÃˆÃ¹ ÂºÂ¸Â¼Â®Â¿Â¡ Â´Ã«Ã‡Ã˜Â¼Â­...
+    if (sITEM.GetGemNO() && (sITEM.IsAppraisal() || sITEM.HasSocket())) {
+        for (nI = 0; nI < 2; nI++) {
+            nC = sITEM.GetGemNO();
+            nType = GEMITEM_ADD_DATA_TYPE(nC, nI);
+            nValue = GEMITEM_ADD_DATA_VALUE(nC, nI);
+
+            _ASSERT(nType <= AT_MAX);
+
+            this->m_iAddValue[nType] += nValue;
+        }
+    }
+
+    for (nI = 0; nI < 2; nI++) {
+        nType = ITEM_NEED_UNION(nItemTYPE, sITEM.m_nItemNo, nI);
+        if (nType && (nType != this->GetCur_UNION()))
+            continue;
+
+        nType = ITEM_ADD_DATA_TYPE(nItemTYPE, sITEM.m_nItemNo, nI);
+        nValue = ITEM_ADD_DATA_VALUE(nItemTYPE, sITEM.m_nItemNo, nI);
+
+        this->m_iAddValue[nType] += nValue;
+    }
+}
+
+/// Â¾Ã†Ã€ÃŒÃ…Ã›Â¿Â¡ ÂºÃ™Ã€Âº ÃƒÃŸÂ°Â¡ Â´Ã‰Â·Ã‚Ã„Â¡ Â°Ã¨Â»Ãª.
+void
+CUserDATA::Cal_AddAbility() {
+    tagITEM sITEM;
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_FACE_ITEM);
+    Cal_AddAbility(sITEM, ITEM_TYPE_FACE_ITEM);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_HELMET);
+    Cal_AddAbility(sITEM, ITEM_TYPE_HELMET);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_ARMOR);
+    Cal_AddAbility(sITEM, ITEM_TYPE_ARMOR);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_KNAPSACK);
+    Cal_AddAbility(sITEM, ITEM_TYPE_KNAPSACK);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_GAUNTLET);
+    Cal_AddAbility(sITEM, ITEM_TYPE_GAUNTLET);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_BOOTS);
+    Cal_AddAbility(sITEM, ITEM_TYPE_BOOTS);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_WEAPON_R);
+    Cal_AddAbility(sITEM, ITEM_TYPE_WEAPON);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_WEAPON_L);
+    Cal_AddAbility(sITEM, ITEM_TYPE_SUBWPN);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_NECKLACE);
+    Cal_AddAbility(sITEM, ITEM_TYPE_JEWEL);
+
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_RING);
+    Cal_AddAbility(sITEM, ITEM_TYPE_JEWEL);
+
+    /// 2004/02/21 icarus ÃƒÃŸÂ°Â¡ : Â±ÃÂ°Ã‰Ã€ÃŒ 2Â¹Ã¸Ã‚Â° Â´Ã‰Â·Ã‚Ã„Â¡ Ã€Ã»Â¿Ã«Â¾ÃˆÂµÃ‡Â´Ã¸Â»Ã§Ã‡Ã—.
+    sITEM = this->Get_EquipITEM(EQUIP_IDX_EARRING);
+    Cal_AddAbility(sITEM, ITEM_TYPE_JEWEL);
+
+    if (this->GetCur_MOVE_MODE() > MOVE_MODE_RUN) {
+        // Ã…Â¾Â½Ã‚ Â¸Ã°ÂµÃ¥Ã€ÃÂ°Ã¦Â¿Ã¬ ÃƒÃ–Â´Ã« Â¹Â«Â°Ã” ÃÃµÂ°Â¡Ã„Â¡Â´Ã‚ Ã„Ã‰Â¸Â¯Ã…ÃÂ¿Â¡Â¼Â­ Â»ÃŒÂ¾Ã†Â¼Â­ Ã€Ã»Â¿Ã«.
+        int iCurAddWgt = this->m_iAddValue[AT_WEIGHT];
+        // Â¹Â«Â°Ã”Â»Â©Â°Ã­ ÃƒÃŠÂ±Ã¢ÃˆÂ­.
+        ::ZeroMemory(this->m_iAddValue, sizeof(int) * AT_MONEY);
+        this->m_iAddValue[AT_WEIGHT] = iCurAddWgt;
+
+        for (short nI = 0; nI < MAX_RIDING_PART; nI++) {
+            sITEM = this->m_Inventory.m_ItemRIDE[nI];
+            Cal_AddAbility(sITEM, ITEM_TYPE_RIDE_PART);
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -133,7 +216,7 @@ CUserDATA::Cal_BattleAbility() {
         if (pITEM->m_wHeader && pITEM->GetLife())
             iDefDura += pITEM->GetDurability();
 
-            ///<- 2005/7/25 Ä«Æ® ½Ã½ºÅÛ ÆÄÃ÷ Ãß°¡·Î ¼öÁ¤ : nAvy
+            ///<- 2005/7/25 Ã„Â«Ã†Â® Â½ÃƒÂ½ÂºÃ…Ã› Ã†Ã„ÃƒÃ· ÃƒÃŸÂ°Â¡Â·Ã Â¼Ã¶ÃÂ¤ : nAvy
             // pITEM = &this->m_Inventory.m_ItemRIDE[ RIDE_PART_ARMS ];
             // if ( pITEM->m_wHeader && pITEM->GetLife() )	iDefDura += pITEM->GetDurability();
 
@@ -153,20 +236,20 @@ CUserDATA::Cal_BattleAbility() {
     m_Battle.m_iDefDurabity = iDefDura;
 
     ::ZeroMemory(this->m_iAddValue, sizeof(int) * AT_MONEY);
-    // ÆĞ½Ãºê º¸Á¤¿µ¿ª Á¦¿Ü..
+    // Ã†ÃÂ½ÃƒÂºÃª ÂºÂ¸ÃÂ¤Â¿ÂµÂ¿Âª ÃÂ¦Â¿Ãœ..
     ::ZeroMemory(&this->m_iAddValue[AT_AFTER_PASSIVE_SKILL],
         sizeof(int) * (AT_MAX - AT_AFTER_PASSIVE_SKILL));
 
     ::ZeroMemory(this->m_nPassiveRate, sizeof(short) * AT_MONEY);
-    // ÆĞ½Ãºê º¸Á¤¿µ¿ª Á¦¿Ü..
+    // Ã†ÃÂ½ÃƒÂºÃª ÂºÂ¸ÃÂ¤Â¿ÂµÂ¿Âª ÃÂ¦Â¿Ãœ..
     ::ZeroMemory(&this->m_nPassiveRate[AT_AFTER_PASSIVE_SKILL],
         sizeof(short) * (AT_MAX - AT_AFTER_PASSIVE_SKILL));
 
     InitPassiveSkill();
-    // ¾ÆÀÌÅÛ¿¡ ºÙÀº Ãß°¡ ´É·ÂÄ¡ °è»ê
-    Cal_AddAbility(); // Ç×»ó ¾Õ¼­µµ·Ï !!!
+    // Â¾Ã†Ã€ÃŒÃ…Ã›Â¿Â¡ ÂºÃ™Ã€Âº ÃƒÃŸÂ°Â¡ Â´Ã‰Â·Ã‚Ã„Â¡ Â°Ã¨Â»Ãª
+    Cal_AddAbility(); // Ã‡Ã—Â»Ã³ Â¾Ã•Â¼Â­ÂµÂµÂ·Ã !!!
 
-    // ÆĞ½Ãºê ½ºÅ³ Ãß°¡ ´É·ÂÄ¡ °ªÀ» Ãß°¡ ´É·ÂÄ¡ °ª¿¡ Àû¿ë...
+    // Ã†ÃÂ½ÃƒÂºÃª Â½ÂºÃ…Â³ ÃƒÃŸÂ°Â¡ Â´Ã‰Â·Ã‚Ã„Â¡ Â°ÂªÃ€Â» ÃƒÃŸÂ°Â¡ Â´Ã‰Â·Ã‚Ã„Â¡ Â°ÂªÂ¿Â¡ Ã€Ã»Â¿Ã«...
     Cal_RecoverHP();
     Cal_RecoverMP();
     if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
@@ -178,7 +261,7 @@ CUserDATA::Cal_BattleAbility() {
         m_iAddValue[AT_SENSE] += m_PassiveAbilityFromValue[AT_SENSE - AT_STR];
     }
 
-    // Ãß°¡ ´É·ÂÄ¡ °è»êÀÌ ¿Ï·áµÈÈÄ Ã³¸® ÇØ¾ßµÊ...
+    // ÃƒÃŸÂ°Â¡ Â´Ã‰Â·Ã‚Ã„Â¡ Â°Ã¨Â»ÃªÃ€ÃŒ Â¿ÃÂ·Ã¡ÂµÃˆÃˆÃ„ ÃƒÂ³Â¸Â® Ã‡Ã˜Â¾ÃŸÂµÃŠ...
     Cal_MaxHP();
     Cal_MaxMP();
     Cal_ATTACK();
@@ -186,10 +269,10 @@ CUserDATA::Cal_BattleAbility() {
     Cal_DEFENCE();
     Cal_RESIST();
     Cal_MaxWEIGHT();
-    Cal_AvoidRATE(); // Cal_DEFENCEº¸´Ù µÚ¿¡ ¿À°Ô..
+    Cal_AvoidRATE(); // Cal_DEFENCEÂºÂ¸Â´Ã™ ÂµÃšÂ¿Â¡ Â¿Ã€Â°Ã”..
     Cal_CRITICAL();
 
-    /// ÇöÀç ¼ÒÁöÇÏ°í ÀÖ´Â ¾ÆÀÌÅÛµéÀÇ ¹«°Ô¸¦ °è»ê...
+    /// Ã‡Ã¶Ã€Ã§ Â¼Ã’ÃÃ¶Ã‡ÃÂ°Ã­ Ã€Ã–Â´Ã‚ Â¾Ã†Ã€ÃŒÃ…Ã›ÂµÃ©Ã€Ã‡ Â¹Â«Â°Ã”Â¸Â¦ Â°Ã¨Â»Ãª...
     m_Battle.m_nWEIGHT = 0;
     for (short nI = EQUIP_IDX_FACE_ITEM; nI < INVENTORY_TOTAL_SIZE; nI++) {
         m_Battle.m_nWEIGHT += m_Inventory.GetWEIGHT(nI);
@@ -204,7 +287,7 @@ CUserDATA::Cal_BattleAbility() {
         SetCur_MP(GetCur_MaxMP());
 
     if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
-        // ´ë¸¸ º¸Çà¸ğµå¸é...
+        // Â´Ã«Â¸Â¸ ÂºÂ¸Ã‡Ã Â¸Ã°ÂµÃ¥Â¸Ã©...
         int iCurAbility;
         for (short nI = 0; nI < BA_MAX; nI++) {
             iCurAbility = this->m_BasicAbility.m_nBasicA[nI] + m_iAddValue[AT_STR + nI];
@@ -215,14 +298,14 @@ CUserDATA::Cal_BattleAbility() {
     SetDef_IMMUNITY(0);
 
     switch (GetCur_JOB()) {
-        case CLASS_SOLDIER_121: // 2Â÷ ³ªÀÌÆ®
-        case CLASS_SOLDIER_122: // 2Â÷ Ã¨ÇÁ
-        case CLASS_MAGICIAN_221: // 2Â÷ ¸ŞÁö¼Ç
-        case CLASS_MAGICIAN_222: // 2Â÷ Å¬·¯¸¯
-        case CLASS_MIXER_321: // 2Â÷ ·¹ÀÌ´õ
-        case CLASS_MIXER_322: // 2Â÷ ½ºÄ«¿ìÆ®
-        case CLASS_MERCHANT_421: // 2Â÷ ºÎÁîÁÖ¾Æ
-        case CLASS_MERCHANT_422: // 2Â÷ ¾ÆÆ¼Àò
+        case CLASS_SOLDIER_121: // 2Ã‚Ã· Â³ÂªÃ€ÃŒÃ†Â®
+        case CLASS_SOLDIER_122: // 2Ã‚Ã· ÃƒÂ¨Ã‡Ã
+        case CLASS_MAGICIAN_221: // 2Ã‚Ã· Â¸ÃÃÃ¶Â¼Ã‡
+        case CLASS_MAGICIAN_222: // 2Ã‚Ã· Ã…Â¬Â·Â¯Â¸Â¯
+        case CLASS_MIXER_321: // 2Ã‚Ã· Â·Â¹Ã€ÃŒÂ´Ãµ
+        case CLASS_MIXER_322: // 2Ã‚Ã· Â½ÂºÃ„Â«Â¿Ã¬Ã†Â®
+        case CLASS_MERCHANT_421: // 2Ã‚Ã· ÂºÃÃÃ®ÃÃ–Â¾Ã†
+        case CLASS_MERCHANT_422: // 2Ã‚Ã· Â¾Ã†Ã†Â¼Ã€Ã²
             this->m_Battle.m_nMaxHP += 300;
             this->m_Battle.m_nATT += 30;
             this->m_Battle.m_nDEF += 25;
@@ -243,141 +326,54 @@ CUserDATA::Cal_RecoverMP() {
         + (short)(m_iAddValue[AT_RECOVER_MP] * this->GetPassiveSkillRate(AT_PSV_RECOVER_MP)
             / 100.f);
 }
-//-------------------------------------------------------------------------------------------------
-void
-CUserDATA::Cal_AddAbility(tagITEM& sITEM, short nItemTYPE) {
-    if (sITEM.GetItemNO() < 1 || sITEM.GetLife() < 1) /// ¾ÆÀÌÅÛÀÌ ¾ø°Å³ª ¼ö¸íÀÌ ´ÙÇÑ°ÍÀº Åë°ú~
-        return;
-
-    short nI, nC, nType, nValue;
-
-    // ¿É¼Ç/¹ÚÈù º¸¼®¿¡ ´ëÇØ¼­...
-    if (sITEM.GetGemNO() && (sITEM.IsAppraisal() || sITEM.HasSocket())) {
-        for (nI = 0; nI < 2; nI++) {
-            nC = sITEM.GetGemNO();
-            nType = GEMITEM_ADD_DATA_TYPE(nC, nI);
-            nValue = GEMITEM_ADD_DATA_VALUE(nC, nI);
-
-            _ASSERT(nType <= AT_MAX);
-
-            this->m_iAddValue[nType] += nValue;
-        }
-    }
-
-    for (nI = 0; nI < 2; nI++) {
-        nType = ITEM_NEED_UNION(nItemTYPE, sITEM.m_nItemNo, nI);
-        if (nType && (nType != this->GetCur_UNION()))
-            continue;
-
-        nType = ITEM_ADD_DATA_TYPE(nItemTYPE, sITEM.m_nItemNo, nI);
-        nValue = ITEM_ADD_DATA_VALUE(nItemTYPE, sITEM.m_nItemNo, nI);
-
-        this->m_iAddValue[nType] += nValue;
-    }
-}
-
-/// ¾ÆÀÌÅÛ¿¡ ºÙÀº Ãß°¡ ´É·ÂÄ¡ °è»ê.
-void
-CUserDATA::Cal_AddAbility() {
-    tagITEM sITEM;
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_FACE_ITEM);
-    Cal_AddAbility(sITEM, ITEM_TYPE_FACE_ITEM);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_HELMET);
-    Cal_AddAbility(sITEM, ITEM_TYPE_HELMET);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_ARMOR);
-    Cal_AddAbility(sITEM, ITEM_TYPE_ARMOR);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_KNAPSACK);
-    Cal_AddAbility(sITEM, ITEM_TYPE_KNAPSACK);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_GAUNTLET);
-    Cal_AddAbility(sITEM, ITEM_TYPE_GAUNTLET);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_BOOTS);
-    Cal_AddAbility(sITEM, ITEM_TYPE_BOOTS);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_WEAPON_R);
-    Cal_AddAbility(sITEM, ITEM_TYPE_WEAPON);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_WEAPON_L);
-    Cal_AddAbility(sITEM, ITEM_TYPE_SUBWPN);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_NECKLACE);
-    Cal_AddAbility(sITEM, ITEM_TYPE_JEWEL);
-
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_RING);
-    Cal_AddAbility(sITEM, ITEM_TYPE_JEWEL);
-
-    /// 2004/02/21 icarus Ãß°¡ : ±Í°ÉÀÌ 2¹øÂ° ´É·ÂÄ¡ Àû¿ë¾ÈµÇ´ø»çÇ×.
-    sITEM = this->Get_EquipITEM(EQUIP_IDX_EARRING);
-    Cal_AddAbility(sITEM, ITEM_TYPE_JEWEL);
-
-    if (this->GetCur_MOVE_MODE() > MOVE_MODE_RUN) {
-        // Å¾½Â ¸ğµåÀÏ°æ¿ì ÃÖ´ë ¹«°Ô Áõ°¡Ä¡´Â ÄÉ¸¯ÅÍ¿¡¼­ »Ì¾Æ¼­ Àû¿ë.
-        int iCurAddWgt = this->m_iAddValue[AT_WEIGHT];
-        // ¹«°Ô»©°í ÃÊ±âÈ­.
-        ::ZeroMemory(this->m_iAddValue, sizeof(int) * AT_MONEY);
-        this->m_iAddValue[AT_WEIGHT] = iCurAddWgt;
-
-        for (short nI = 0; nI < MAX_RIDING_PART; nI++) {
-            sITEM = this->m_Inventory.m_ItemRIDE[nI];
-            Cal_AddAbility(sITEM, ITEM_TYPE_RIDE_PART);
-        }
-    }
-}
 
 int
 CUserDATA::Cal_MaxHP() {
     int iA, iM1, iM2;
     float fC;
     switch (this->GetCur_JOB()) {
-        case CLASS_SOLDIER_111: // ¼ÖÁ®(111)		[(LV+5)*SQRT(LV+20)*3.5+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_SOLDIER_111:
             iA = 5, iM1 = 20, fC = 3.5f;
             break;
-        case CLASS_SOLDIER_121: // ³ªÀÌÆ®(121)		[(LV+5)*SQRT(LV+28)*3.5+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_SOLDIER_121:
             iA = 5, iM1 = 28, fC = 3.5f;
             break;
-        case CLASS_SOLDIER_122: // Ã¨ÇÁ(122			[(LV+5)*SQRT(LV+22)*3.5+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_SOLDIER_122:
             iA = 5, iM1 = 22, fC = 3.5f;
             break;
 
-        case CLASS_MAGICIAN_211: // ¹ÂÁî(211)		[(LV+4)*SQRT(LV+26)*2.36+(STR*2)] + ¾ÆÀÌÅÛ
-                                 // Áõ°¡Ä¡
+        case CLASS_MAGICIAN_211:
             iA = 4, iM1 = 26, fC = 2.36f;
             break;
-        case CLASS_MAGICIAN_221: // ¸ÅÁö¼Ç(221)		[(LV+5)*SQRT(LV+26)*2.37+(STR*2)] + ¾ÆÀÌÅÛ
-                                 // Áõ°¡Ä¡
+        case CLASS_MAGICIAN_221:
             iA = 5, iM1 = 26, fC = 2.37f;
             break;
-        case CLASS_MAGICIAN_222: // Å¬·¹¸¯(222)		[(LV+7)*SQRT(LV+26)*2.4+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_MAGICIAN_222:
             iA = 7, iM1 = 26, fC = 2.4f;
             break;
 
-        case CLASS_MIXER_311: // È£Ä¿(311)		[(LV+5)*SQRT(LV+20)*2.7+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_MIXER_311:
             iA = 5, iM1 = 20, fC = 2.7f;
             break;
-        case CLASS_MIXER_321: // ·¹ÀÌ´õ(321)		[(LV+5)*SQRT(LV+23)*3+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_MIXER_321:
             iA = 5, iM1 = 23, fC = 3.f;
             break;
-        case CLASS_MIXER_322: // ½ºÄ«¿ìÆ®(322)	[(LV+5)*SQRT(LV+21)*2.7+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_MIXER_322:
             iA = 5, iM1 = 21, fC = 2.7f;
             break;
 
-        case CLASS_MERCHANT_411: // µô·¯(411)		[(LV+5)*SQRT(LV+20)*2.7+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_MERCHANT_411:
             iA = 5, iM1 = 20, fC = 2.7f;
             break;
-        case CLASS_MERCHANT_421: // ºÎ·çÁî¾Æ(421)	[(LV+5)*SQRT(LV+20)*2.7+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_MERCHANT_421:
             iA = 5, iM1 = 20, fC = 2.7f;
             break;
-        case CLASS_MERCHANT_422: // ¾ÆÆ¼ÀÜ(422)		[(LV+5)*SQRT(LV+20)*2.7+(STR*2)] + ¾ÆÀÌÅÛ Áõ°¡Ä¡
+        case CLASS_MERCHANT_422:
             iA = 5, iM1 = 20, fC = 2.7f;
             break;
 
-        // case CLASS_VISITOR :		// ¹«Á÷	ºñÁöÅÍ(00)	[(LV+4)*SQRT(LV+26)*2.36+(STR*2)] + ¾ÆÀÌÅÛ
-        // Áõ°¡Ä¡
+        // case CLASS_VISITOR :
+        // ÃÃµÂ°Â¡Ã„Â¡
         default:
             iA = 4, iM1 = 26, fC = 2.36f;
             break;
@@ -395,6 +391,7 @@ CUserDATA::Cal_MaxHP() {
 
     return m_Battle.m_nMaxHP;
 }
+
 //-------------------------------------------------------------------------------------------------
 int
 CUserDATA::Cal_MaxMP() {
@@ -460,7 +457,7 @@ CUserDATA::Cal_MaxMP() {
 //-------------------------------------------------------------------------------------------------
 int
 CUserDATA::Cal_MaxWEIGHT() {
-    // * ITEM = 800 + (LV * 4) + (STR * 6) + ½ºÅ³ ¼ÒÁö·®
+    // * ITEM = 800 + (LV * 4) + (STR * 6) + Â½ÂºÃ…Â³ Â¼Ã’ÃÃ¶Â·Â®
     this->m_Battle.m_nMaxWEIGHT =
         (int)(1100 + (this->GetCur_LEVEL() * 5) + (this->GetCur_STR() * 6));
     this->m_Battle.m_nMaxWEIGHT += this->m_iAddValue[AT_WEIGHT];
@@ -468,7 +465,7 @@ CUserDATA::Cal_MaxWEIGHT() {
     tagITEM* pITEM = &m_Inventory.m_ItemEQUIP[EQUIP_IDX_KNAPSACK];
     if (pITEM->GetHEADER() && pITEM->GetLife()
         && ITEM_TYPE(pITEM->GetTYPE(), pITEM->GetItemNO()) == 162) {
-        // µîÁü ¹è³¶.
+        // ÂµÃ®ÃÃ¼ Â¹Ã¨Â³Â¶.
         short nW = this->GetPassiveSkillValue(AT_PSV_WEIGHT)
             + (short)(this->m_Battle.m_nMaxWEIGHT * this->GetPassiveSkillRate(AT_PSV_WEIGHT)
                 / 100.f);
@@ -515,7 +512,7 @@ CUserDATA::Cal_AvoidRATE() {
     if (this->GetCur_MOVE_MODE() > MOVE_MODE_RUN) {
         m_Battle.m_nAVOID = (short)((GetCur_DEX() + 10) * 0.8f + GetCur_LEVEL() * 0.5f);
     } else {
-        // AVO = [ (DEX*1.6 + LV*0.3 + 5) * 0.4 + (¹æ¾î±¸ Ç°ÁúÇÕ * 0.3) ]
+        // AVO = [ (DEX*1.6 + LV*0.3 + 5) * 0.4 + (Â¹Ã¦Â¾Ã®Â±Â¸ Ã‡Â°ÃÃºÃ‡Ã• * 0.3) ]
         m_Battle.m_nAVOID = (short)((GetCur_DEX() * 1.9f + GetCur_LEVEL() * 0.3f + 10) * 0.4f)
             + (short)(this->GetTot_DEF_DURABITY() * 0.3f) + this->GetTot_DEF_GRADE();
     }
@@ -557,12 +554,10 @@ CUserDATA::Cal_CRITICAL() {
     return m_Battle.m_iCritical;
 }
 
-//-------------------------------------------------------------------------------------------------
 int
 CUserDATA::Cal_RESIST() {
     int iTotRES = 0, iTotGradeRES = 0;
 
-    // ¸ğµç ¾ÆÀÌÅÛ¿¡ Ç×¸¶·ÂÀÌ ÀÔ·ÂµÉ¼ö ÀÖ´Ù..
     for (short nE = EQUIP_IDX_NULL + 1; nE < MAX_EQUIP_IDX; nE++) {
         if (m_Inventory.m_ItemEQUIP[nE].GetLife() < 1 || 0 == m_Inventory.m_ItemEQUIP[nE].GetTYPE())
             continue;
@@ -586,7 +581,6 @@ CUserDATA::Cal_RESIST() {
     return this->m_Battle.m_nRES;
 }
 
-//-------------------------------------------------------------------------------------------------
 int
 CUserDATA::Cal_HIT() {
     int iHitRate;
@@ -599,12 +593,10 @@ CUserDATA::Cal_HIT() {
                 + (int)((ITEM_QUALITY(ITEM_TYPE_WEAPON, pRightWPN->GetItemNO())) * 0.6f
                     + ITEMGRADE_HIT(pRightWPN->GetGrade()) + pRightWPN->GetDurability() * 0.8f);
         } else {
-            // ¸Ç¼Õ
             iHitRate = (int)((GetCur_CON() + 10) * 0.5f + 15);
         }
     } else {
         pRightWPN = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS];
-
         if (pRightWPN->GetLife() > 0)
             iHitRate = (int)((GetCur_CON() + 10) * 0.8f) + (GetCur_LEVEL() * 0.5f)
                 + (int)(ITEM_QUALITY(ITEM_TYPE_RIDE_PART, pRightWPN->GetItemNO()) * 1.2f);
@@ -625,238 +617,11 @@ CUserDATA::Cal_HIT() {
 
 //-------------------------------------------------------------------------------------------------
 int
-CUserDATA::Cal_ATTACK() {
-    int iAP = 0;
-
-    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
-        tagITEM* pRightWPN = this->Get_EquipItemPTR(EQUIP_IDX_WEAPON_R);
-        int iWeaponAP;
-
-        if (pRightWPN->GetHEADER() && pRightWPN->GetLife() > 0)
-            iWeaponAP = WEAPON_ATTACK_POWER(pRightWPN->m_nItemNo);
-        else
-            iWeaponAP = 0; /// ¼ö¸íÀÌ ´ÙÇÑ ¹«±â´Â ¹«±âÀÇ ±âº» °ø°İ·ÂÀ» 0 À¸·Î..
-
-        t_eSHOT ShotTYPE = pRightWPN->GetShotTYPE();
-        if (ShotTYPE < MAX_SHOT_TYPE) {
-            tagITEM* pShotITEM = &this->m_Inventory.m_ItemSHOT[ShotTYPE];
-
-            short nItemQ, nItemW;
-            if (pShotITEM->IsEtcITEM()) {
-                nItemQ = ITEM_QUALITY(pShotITEM->GetTYPE(), pShotITEM->GetItemNO());
-                nItemW = ITEM_WEIGHT(pShotITEM->GetTYPE(), pShotITEM->GetItemNO());
-            } else {
-                nItemQ = nItemW = 0;
-            }
-
-            // ¼Ò¸ğÅº¿¡ µû¸¥ °ø°İ·Â °è»ê...
-            switch (ShotTYPE) {
-                case SHOT_TYPE_ARROW:
-                    iAP = (int)((GetCur_DEX() * 0.52f + GetCur_STR() * 0.1f + GetCur_LEVEL() * 0.1f
-                                    + nItemQ * 0.5f)
-                        + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                            * (GetCur_DEX() * 0.04f + GetCur_SENSE() * 0.03f + 29) / 30));
-
-                    break;
-                case SHOT_TYPE_BULLET:
-                    iAP = (int)((GetCur_DEX() * 0.3f + GetCur_CON() * 0.47f + GetCur_LEVEL() * 0.1f
-                                    + nItemQ * 0.8f)
-                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())))
-                            * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 30));
-                    break;
-                case SHOT_TYPE_THROW:
-                    iAP = (int)((GetCur_STR() * 0.32f + GetCur_CON() * 0.45f + GetCur_LEVEL() * 0.1f
-                                    + nItemQ * 0.8f)
-                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())))
-                            * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 30));
-
-                    break;
-            }
-        } else {
-            switch (WEAPON_TYPE(pRightWPN->m_nItemNo) / 10) {
-                case 21: // ÇÑ¼Õ
-                case 22: // ¾ç¼Õ		// ±ÙÁ¢ ¹«±â
-                    iAP = (int)((GetCur_STR() * 0.75f + GetCur_LEVEL() * 0.2f)
-                        + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                            * (GetCur_STR() * 0.05f + 29) / 30.f));
-                    break;
-                case 24: // ¸¶¹ı ¹«±â
-                    if (241 == WEAPON_TYPE(pRightWPN->m_nItemNo)) {
-                        // ¸¶¹ı ÁöÆÎÀÌ.
-                        iAP = (int)((GetCur_STR() * 0.4f + GetCur_INT() * 0.4f
-                                        + GetCur_LEVEL() * 0.2f)
-                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                                * (GetCur_INT() * 0.05f + 29) / 30.f));
-                    } else {
-                        iAP = (int)((GetCur_INT() * 0.6f + GetCur_LEVEL() * 0.2f)
-                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                                * (GetCur_SENSE() * 0.1f + 26) / 27.f));
-                    }
-                    break;
-                case 25: // Ä«Å¸¸£
-                    if (252 == WEAPON_TYPE(pRightWPN->m_nItemNo)) {
-                        // ÀÌµµ·ù
-                        iAP = (int)((GetCur_STR() * 0.63f + GetCur_DEX() * 0.45f
-                                        + GetCur_LEVEL() * 0.2f)
-                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                                * (GetCur_DEX() * 0.05f + 25) / 26.f));
-                    } else {
-                        iAP = (int)((GetCur_STR() * 0.42f + GetCur_DEX() * 0.55f
-                                        + GetCur_LEVEL() * 0.2f)
-                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                                * (GetCur_DEX() * 0.05f + 20) / 21.f));
-                    }
-                    break;
-                case 0: // ½ºÅ³¸Ç¼Õ °ø°İ·Â : ¹«µµ°¡ Á÷¾÷¿¡ Æ¯ÇÑµÈ ½ºÅ³·Î, ÆĞ½Ãºê ¼º°İÀÇ ¸Ç¼Õ
-                        // °ø°İ·ÂÀ» Á¦°øÇÑ´Ù.
-                    iAP = (int)(GetCur_STR() * 0.5f + GetCur_DEX() * 0.3f + GetCur_LEVEL() * 0.2f);
-                    break;
-            }
-        }
-
-        ///ÇÑ±¹/ÀÏº»/IRose¸¦ À§ÇÑ ½ºÇÇµå
-        this->m_nPassiveAttackSpeed = this->GetPassiveSkillAttackSpeed(pRightWPN->m_nItemNo);
-        iAP += this->m_iAddValue[AT_ATK];
-        this->m_Battle.m_nATT = iAP + this->GetPassiveSkillAttackPower(iAP, pRightWPN->m_nItemNo);
-    } else ///Ä«Æ® Å¾½Â½Ã °ø°İ·Â °è»ê
-    {
-#if defined(_GBC)
-        tagITEM* pRightWPN = this->Get_EquipItemPTR(EQUIP_IDX_WEAPON_R);
-
-        assert(pRightWPN);
-
-        int PatArmsAttackPower = 0;
-        int iWeaponAP = 0;
-
-        /// ¼ö¸íÀÌ ´ÙÇÑ ¹«±â´Â ¹«±âÀÇ ±âº» °ø°İ·ÂÀ» 0 À¸·Î..
-        if (pRightWPN->GetHEADER() && pRightWPN->GetLife() > 0)
-            iWeaponAP = WEAPON_ATTACK_POWER(pRightWPN->m_nItemNo);
-        else
-            iWeaponAP = 0;
-
-        if (false == m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].IsEmpty()
-            && m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].GetLife() > 0)
-            PatArmsAttackPower =
-                PAT_ITEM_ATK_POW(m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].GetItemNO());
-
-        t_eSHOT ShotTYPE = pRightWPN->GetShotTYPE();
-
-        if (ShotTYPE < MAX_SHOT_TYPE) ///¿ø°Å¸® ¹«±â °ø°İ·Â
-        {
-            // ¼Ò¸ğÅº¿¡ µû¸¥ °ø°İ·Â °è»ê...
-            switch (ShotTYPE) {
-                case SHOT_TYPE_ARROW: ///È°¹«±â
-                {
-                    iAP = (int)((GetCur_DEX() * 0.52f + GetCur_STR() * 0.1f + GetCur_LEVEL() * 0.1f
-                                    + 3)
-                              + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
-                                     + PatArmsAttackPower)
-                                  * (GetCur_DEX() * 0.04f + GetCur_SENSE() * 0.03f + 29) / 60.f))
-                        * 1.03f;
-                } break;
-                case SHOT_TYPE_BULLET: ///ÃÑ¹«±â
-                {
-                    iAP = (int)((GetCur_DEX() * 0.3f + GetCur_CON() * 0.47f + GetCur_LEVEL() * 0.1f
-                                    + 6.4)
-                              + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                                     + PatArmsAttackPower)
-                                  * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 60.f))
-                        * 1.032f;
-
-                } break;
-                case SHOT_TYPE_THROW: ///ÅõÃ´±â
-                {
-                    iAP = (int)((GetCur_STR() * 0.32f + GetCur_CON() * 0.45f + GetCur_LEVEL() * 0.1f
-                                    + 8)
-                              + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                                     + PatArmsAttackPower)
-                                  * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 60.f))
-                        * 1.033f;
-                } break;
-                default:
-                    _RPTF0(_CRT_ASSERT, "Invalid Weapon Type");
-                    break;
-            }
-        } else ///±ÙÁ¢ ¹«±â °ø°İ·Â
-        {
-            switch (WEAPON_TYPE(pRightWPN->m_nItemNo) / 10) {
-                case 24: {
-                    if (241 == WEAPON_TYPE(pRightWPN->m_nItemNo)) ///¸¶¹ı ÁöÆÎÀÌ.
-                    {
-                        iAP = (int)((GetCur_STR() * 0.4f + GetCur_INT() * 0.4f
-                                        + GetCur_LEVEL() * 0.2f)
-                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
-                                   + PatArmsAttackPower)
-                                  * (GetCur_INT() * 0.05f + 29) / 60.f)
-                                * 1.03f);
-                    } else ///¸¶¹ıµµ±¸
-                    {
-                        iAP = (int)((GetCur_INT() * 0.6f + GetCur_LEVEL() * 0.2f)
-                                  + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
-                                         + PatArmsAttackPower)
-                                      * (GetCur_SENSE() * 0.1f + 26) / 54.f))
-                            * 1.025f;
-                    }
-                } break;
-                case 25: // Ä«Å¸¸£
-                    if (252 == WEAPON_TYPE(pRightWPN->m_nItemNo)) {
-                        // ÀÌµµ·ù
-                        iAP = (int)((GetCur_STR() * 0.63f + GetCur_DEX() * 0.45f
-                                        + GetCur_LEVEL() * 0.2f)
-                                  + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
-                                         + PatArmsAttackPower)
-                                      * (GetCur_DEX() * 0.05f + 25) / 52.f))
-                            * 1.032f;
-                    } else {
-                        iAP = (int)((GetCur_STR() * 0.42f + GetCur_DEX() * 0.55f
-                                        + GetCur_LEVEL() * 0.2f)
-                                  + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
-                                         + PatArmsAttackPower)
-                                      * (GetCur_DEX() * 0.05f + 20) / 42.f))
-                            * 1.032f;
-                    }
-                    break;
-                case 21: // ÇÑ¼Õ// ±ÙÁ¢ ¹«±â
-                case 22: // ¾ç¼Õ
-                {
-                    iAP = (int)((GetCur_STR() * 0.75 + GetCur_LEVEL() * 0.2)
-                              + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
-                                     + PatArmsAttackPower)
-                                  * (GetCur_STR() * 0.05 + 29) / 60.f))
-                        * 1.033f;
-                } break;
-                default: ///¸Ç¼Õ
-                {
-                    iAP = (int)((GetCur_STR() * 0.5f + GetCur_DEX() * 0.3f + GetCur_LEVEL() * 0.2f)
-                        + PatArmsAttackPower / 2);
-
-                } break;
-            }
-        }
-        ///ÇÑ±¹/ÀÏº»/IRose¸¦ À§ÇÑ ½ºÇÇµå
-        this->m_nPassiveAttackSpeed = this->GetPassiveSkillAttackSpeed(pRightWPN->m_nItemNo);
-
-        // iAP = iAP * 1.1f;
-        iAP += this->m_iAddValue[AT_ATK];
-        this->m_Battle.m_nATT = iAP + this->GetPassiveSkillAttackPower(iAP, pRightWPN->m_nItemNo);
-
-#else
-        iAP = (GetCur_LEVEL() * 3) + GetCur_CON()
-            + PAT_ITEM_ATK_POW(this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].GetItemNO());
-        this->m_Battle.m_nATT = iAP + this->m_iAddValue[AT_ATK];
-#endif
-    }
-
-    return this->m_Battle.m_nATT;
-}
-
-//-------------------------------------------------------------------------------------------------
-int
 CUserDATA::Cal_DEFENCE() {
     int iTotDEF = 0, iTotGradeDEF = 0, iTotGRADE = 0;
     int iTotPatPartsDEF = 0;
 
-    // ¸ğµç ¾ÆÀÌÅÛ¿¡ ¹æ¾î·ÂÀÌ ÀÔ·ÂµÉ¼ö ÀÖ´Ù..
+    // Â¸Ã°ÂµÃ§ Â¾Ã†Ã€ÃŒÃ…Ã›Â¿Â¡ Â¹Ã¦Â¾Ã®Â·Ã‚Ã€ÃŒ Ã€Ã”Â·Ã‚ÂµÃ‰Â¼Ã¶ Ã€Ã–Â´Ã™..
     short nE;
     for (nE = EQUIP_IDX_NULL + 1; nE < MAX_EQUIP_IDX; nE++) {
         if (0 == m_Inventory.m_ItemEQUIP[nE].GetLife()
@@ -904,28 +669,246 @@ CUserDATA::Cal_DEFENCE() {
 
     this->m_Battle.m_nDEF += iTotPatPartsDEF;
 
-    /*	2004. 7. 22 ¹æÆĞÂø¿ë½Ã¸é Àû¿ëµÇ¸é ¹æ¾î·Â ÆĞ½Ãºê ½ºÅ³À» ¹«Á¶°Ç Àû¿ëÀ¸·Î ¼öÁ¤...
-    tagITEM *pITEM = &m_Inventory.m_ItemEQUIP[ EQUIP_IDX_WEAPON_L ];
-    if ( pITEM->GetHEADER() && pITEM->GetLife() && ITEM_TYPE( pITEM->GetTYPE(), pITEM->GetItemNO() )
-    == 261 )
-    */
-    // ¹æÆĞ.
     nE = this->GetPassiveSkillValue(AT_PSV_DEF_POW)
         + (short)(this->m_Battle.m_nDEF * this->GetPassiveSkillRate(AT_PSV_DEF_POW) / 100.f);
     this->m_Battle.m_nDEF += nE;
 
-    //	2004. 7. 22 ¹æÆĞÂø¿ë½Ã¸é Àû¿ëµÇ¸é ¹æ¾î·Â ÆĞ½Ãºê ½ºÅ³À» ¹«Á¶°Ç Àû¿ëÀ¸·Î ¼öÁ¤...
-    //  2005. 8. 19 ¹æÆĞ ÆĞ½Ãºê ½ºÅ³ Ãß°¡...
+    //	2004. 7. 22 Â¹Ã¦Ã†ÃÃ‚Ã¸Â¿Ã«Â½ÃƒÂ¸Ã© Ã€Ã»Â¿Ã«ÂµÃ‡Â¸Ã© Â¹Ã¦Â¾Ã®Â·Ã‚ Ã†ÃÂ½ÃƒÂºÃª Â½ÂºÃ…Â³Ã€Â» Â¹Â«ÃÂ¶Â°Ã‡ Ã€Ã»Â¿Ã«Ã€Â¸Â·Ã Â¼Ã¶ÃÂ¤...
+    //  2005. 8. 19 Â¹Ã¦Ã†Ã Ã†ÃÂ½ÃƒÂºÃª Â½ÂºÃ…Â³ ÃƒÃŸÂ°Â¡...
     tagITEM* pITEM = &m_Inventory.m_ItemEQUIP[EQUIP_IDX_WEAPON_L];
     if (pITEM->GetHEADER() && pITEM->GetLife()
         && ITEM_TYPE(pITEM->GetTYPE(), pITEM->GetItemNO()) == 261) {
-        // ¹æÆĞ.
+        // Â¹Ã¦Ã†Ã.
         int iPsv = this->GetPassiveSkillValue(AT_PSV_SHIELD_DEF)
             + (short)(this->m_Battle.m_nDEF * this->GetPassiveSkillRate(AT_PSV_SHIELD_DEF) / 100.f);
         this->m_Battle.m_nDEF += iPsv;
     }
 
     return this->m_Battle.m_nDEF;
+}
+//-------------------------------------------------------------------------------------------------
+int
+CUserDATA::Cal_ATTACK() {
+    int iAP = 0;
+
+    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
+        tagITEM* pRightWPN = this->Get_EquipItemPTR(EQUIP_IDX_WEAPON_R);
+        int iWeaponAP;
+
+        if (pRightWPN->GetHEADER() && pRightWPN->GetLife() > 0)
+            iWeaponAP = WEAPON_ATTACK_POWER(pRightWPN->m_nItemNo);
+        else
+            iWeaponAP = 0; /// Â¼Ã¶Â¸Ã­Ã€ÃŒ Â´Ã™Ã‡Ã‘ Â¹Â«Â±Ã¢Â´Ã‚ Â¹Â«Â±Ã¢Ã€Ã‡ Â±Ã¢ÂºÂ» Â°Ã¸Â°ÃÂ·Ã‚Ã€Â» 0 Ã€Â¸Â·Ã..
+
+        t_eSHOT ShotTYPE = pRightWPN->GetShotTYPE();
+        if (ShotTYPE < MAX_SHOT_TYPE) {
+            tagITEM* pShotITEM = &this->m_Inventory.m_ItemSHOT[ShotTYPE];
+
+            short nItemQ, nItemW;
+            if (pShotITEM->IsEtcITEM()) {
+                nItemQ = ITEM_QUALITY(pShotITEM->GetTYPE(), pShotITEM->GetItemNO());
+                nItemW = ITEM_WEIGHT(pShotITEM->GetTYPE(), pShotITEM->GetItemNO());
+            } else {
+                nItemQ = nItemW = 0;
+            }
+
+            // Â¼Ã’Â¸Ã°Ã…ÂºÂ¿Â¡ ÂµÃ»Â¸Â¥ Â°Ã¸Â°ÃÂ·Ã‚ Â°Ã¨Â»Ãª...
+            switch (ShotTYPE) {
+                case SHOT_TYPE_ARROW:
+                    iAP = (int)((GetCur_DEX() * 0.52f + GetCur_STR() * 0.1f + GetCur_LEVEL() * 0.1f
+                                    + nItemQ * 0.5f)
+                        + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                            * (GetCur_DEX() * 0.04f + GetCur_SENSE() * 0.03f + 29) / 30));
+
+                    break;
+                case SHOT_TYPE_BULLET:
+                    iAP = (int)((GetCur_DEX() * 0.3f + GetCur_CON() * 0.47f + GetCur_LEVEL() * 0.1f
+                                    + nItemQ * 0.8f)
+                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())))
+                            * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 30));
+                    break;
+                case SHOT_TYPE_THROW:
+                    iAP = (int)((GetCur_STR() * 0.32f + GetCur_CON() * 0.45f + GetCur_LEVEL() * 0.1f
+                                    + nItemQ * 0.8f)
+                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())))
+                            * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 30));
+
+                    break;
+            }
+        } else {
+            switch (WEAPON_TYPE(pRightWPN->m_nItemNo) / 10) {
+                case 21: // Ã‡Ã‘Â¼Ã•
+                case 22: // Â¾Ã§Â¼Ã•		// Â±Ã™ÃÂ¢ Â¹Â«Â±Ã¢
+                    iAP = (int)((GetCur_STR() * 0.75f + GetCur_LEVEL() * 0.2f)
+                        + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                            * (GetCur_STR() * 0.05f + 29) / 30.f));
+                    break;
+                case 24: // Â¸Â¶Â¹Ã½ Â¹Â«Â±Ã¢
+                    if (241 == WEAPON_TYPE(pRightWPN->m_nItemNo)) {
+                        // Â¸Â¶Â¹Ã½ ÃÃ¶Ã†ÃÃ€ÃŒ.
+                        iAP = (int)((GetCur_STR() * 0.4f + GetCur_INT() * 0.4f
+                                        + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                * (GetCur_INT() * 0.05f + 29) / 30.f));
+                    } else {
+                        iAP = (int)((GetCur_INT() * 0.6f + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                * (GetCur_SENSE() * 0.1f + 26) / 27.f));
+                    }
+                    break;
+                case 25: // Ã„Â«Ã…Â¸Â¸Â£
+                    if (252 == WEAPON_TYPE(pRightWPN->m_nItemNo)) {
+                        // Ã€ÃŒÂµÂµÂ·Ã¹
+                        iAP = (int)((GetCur_STR() * 0.63f + GetCur_DEX() * 0.45f
+                                        + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                * (GetCur_DEX() * 0.05f + 25) / 26.f));
+                    } else {
+                        iAP = (int)((GetCur_STR() * 0.42f + GetCur_DEX() * 0.55f
+                                        + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                * (GetCur_DEX() * 0.05f + 20) / 21.f));
+                    }
+                    break;
+                case 0: // Â½ÂºÃ…Â³Â¸Ã‡Â¼Ã• Â°Ã¸Â°ÃÂ·Ã‚ : Â¹Â«ÂµÂµÂ°Â¡ ÃÃ·Â¾Ã·Â¿Â¡ Ã†Â¯Ã‡Ã‘ÂµÃˆ Â½ÂºÃ…Â³Â·Ã, Ã†ÃÂ½ÃƒÂºÃª Â¼ÂºÂ°ÃÃ€Ã‡ Â¸Ã‡Â¼Ã•
+                        // Â°Ã¸Â°ÃÂ·Ã‚Ã€Â» ÃÂ¦Â°Ã¸Ã‡Ã‘Â´Ã™.
+                    iAP = (int)(GetCur_STR() * 0.5f + GetCur_DEX() * 0.3f + GetCur_LEVEL() * 0.2f);
+                    break;
+            }
+        }
+
+        this->m_nPassiveAttackSpeed = this->GetPassiveSkillAttackSpeed(pRightWPN->m_nItemNo);
+        iAP += this->m_iAddValue[AT_ATK];
+        this->m_Battle.m_nATT = iAP + this->GetPassiveSkillAttackPower(iAP, pRightWPN->m_nItemNo);
+    } else {
+#if defined(_GBC)
+        tagITEM* pRightWPN = this->Get_EquipItemPTR(EQUIP_IDX_WEAPON_R);
+
+        assert(pRightWPN);
+
+        int PatArmsAttackPower = 0;
+        int iWeaponAP = 0;
+
+        /// Â¼Ã¶Â¸Ã­Ã€ÃŒ Â´Ã™Ã‡Ã‘ Â¹Â«Â±Ã¢Â´Ã‚ Â¹Â«Â±Ã¢Ã€Ã‡ Â±Ã¢ÂºÂ» Â°Ã¸Â°ÃÂ·Ã‚Ã€Â» 0 Ã€Â¸Â·Ã..
+        if (pRightWPN->GetHEADER() && pRightWPN->GetLife() > 0)
+            iWeaponAP = WEAPON_ATTACK_POWER(pRightWPN->m_nItemNo);
+        else
+            iWeaponAP = 0;
+
+        if (false == m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].IsEmpty()
+            && m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].GetLife() > 0)
+            PatArmsAttackPower =
+                PAT_ITEM_ATK_POW(m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].GetItemNO());
+
+        t_eSHOT ShotTYPE = pRightWPN->GetShotTYPE();
+
+        if (ShotTYPE < MAX_SHOT_TYPE) ///Â¿Ã¸Â°Ã…Â¸Â® Â¹Â«Â±Ã¢ Â°Ã¸Â°ÃÂ·Ã‚
+        {
+            // Â¼Ã’Â¸Ã°Ã…ÂºÂ¿Â¡ ÂµÃ»Â¸Â¥ Â°Ã¸Â°ÃÂ·Ã‚ Â°Ã¨Â»Ãª...
+            switch (ShotTYPE) {
+                case SHOT_TYPE_ARROW: ///ÃˆÂ°Â¹Â«Â±Ã¢
+                {
+                    iAP = (int)((GetCur_DEX() * 0.52f + GetCur_STR() * 0.1f + GetCur_LEVEL() * 0.1f
+                                    + 3)
+                              + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
+                                     + PatArmsAttackPower)
+                                  * (GetCur_DEX() * 0.04f + GetCur_SENSE() * 0.03f + 29) / 60.f))
+                        * 1.03f;
+                } break;
+                case SHOT_TYPE_BULLET: ///ÃƒÃ‘Â¹Â«Â±Ã¢
+                {
+                    iAP = (int)((GetCur_DEX() * 0.3f + GetCur_CON() * 0.47f + GetCur_LEVEL() * 0.1f
+                                    + 6.4)
+                              + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                     + PatArmsAttackPower)
+                                  * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 60.f))
+                        * 1.032f;
+
+                } break;
+                case SHOT_TYPE_THROW: ///Ã…ÃµÃƒÂ´Â±Ã¢
+                {
+                    iAP = (int)((GetCur_STR() * 0.32f + GetCur_CON() * 0.45f + GetCur_LEVEL() * 0.1f
+                                    + 8)
+                              + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                     + PatArmsAttackPower)
+                                  * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 60.f))
+                        * 1.033f;
+                } break;
+                default:
+                    _RPTF0(_CRT_ASSERT, "Invalid Weapon Type");
+                    break;
+            }
+        } else ///Â±Ã™ÃÂ¢ Â¹Â«Â±Ã¢ Â°Ã¸Â°ÃÂ·Ã‚
+        {
+            switch (WEAPON_TYPE(pRightWPN->m_nItemNo) / 10) {
+                case 24: {
+                    if (241 == WEAPON_TYPE(pRightWPN->m_nItemNo)) ///Â¸Â¶Â¹Ã½ ÃÃ¶Ã†ÃÃ€ÃŒ.
+                    {
+                        iAP = (int)((GetCur_STR() * 0.4f + GetCur_INT() * 0.4f
+                                        + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
+                                   + PatArmsAttackPower)
+                                  * (GetCur_INT() * 0.05f + 29) / 60.f)
+                                * 1.03f);
+                    } else ///Â¸Â¶Â¹Ã½ÂµÂµÂ±Â¸
+                    {
+                        iAP = (int)((GetCur_INT() * 0.6f + GetCur_LEVEL() * 0.2f)
+                                  + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
+                                         + PatArmsAttackPower)
+                                      * (GetCur_SENSE() * 0.1f + 26) / 54.f))
+                            * 1.025f;
+                    }
+                } break;
+                case 25: // Ã„Â«Ã…Â¸Â¸Â£
+                    if (252 == WEAPON_TYPE(pRightWPN->m_nItemNo)) {
+                        // Ã€ÃŒÂµÂµÂ·Ã¹
+                        iAP = (int)((GetCur_STR() * 0.63f + GetCur_DEX() * 0.45f
+                                        + GetCur_LEVEL() * 0.2f)
+                                  + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
+                                         + PatArmsAttackPower)
+                                      * (GetCur_DEX() * 0.05f + 25) / 52.f))
+                            * 1.032f;
+                    } else {
+                        iAP = (int)((GetCur_STR() * 0.42f + GetCur_DEX() * 0.55f
+                                        + GetCur_LEVEL() * 0.2f)
+                                  + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
+                                         + PatArmsAttackPower)
+                                      * (GetCur_DEX() * 0.05f + 20) / 42.f))
+                            * 1.032f;
+                    }
+                    break;
+                case 21: // Ã‡Ã‘Â¼Ã•// Â±Ã™ÃÂ¢ Â¹Â«Â±Ã¢
+                case 22: // Â¾Ã§Â¼Ã•
+                {
+                    iAP = (int)((GetCur_STR() * 0.75 + GetCur_LEVEL() * 0.2)
+                              + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
+                                     + PatArmsAttackPower)
+                                  * (GetCur_STR() * 0.05 + 29) / 60.f))
+                        * 1.033f;
+                } break;
+                default: ///Â¸Ã‡Â¼Ã•
+                {
+                    iAP = (int)((GetCur_STR() * 0.5f + GetCur_DEX() * 0.3f + GetCur_LEVEL() * 0.2f)
+                        + PatArmsAttackPower / 2);
+
+                } break;
+            }
+        }
+        ///Ã‡Ã‘Â±Â¹/Ã€ÃÂºÂ»/IRoseÂ¸Â¦ Ã€Â§Ã‡Ã‘ Â½ÂºÃ‡Ã‡ÂµÃ¥
+        this->m_nPassiveAttackSpeed = this->GetPassiveSkillAttackSpeed(pRightWPN->m_nItemNo);
+
+        // iAP = iAP * 1.1f;
+        iAP += this->m_iAddValue[AT_ATK];
+        this->m_Battle.m_nATT = iAP + this->GetPassiveSkillAttackPower(iAP, pRightWPN->m_nItemNo);
+
+#else
+        iAP = (GetCur_LEVEL() * 3) + GetCur_CON()
+            + PAT_ITEM_ATK_POW(this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].GetItemNO());
+        this->m_Battle.m_nATT = iAP + this->m_iAddValue[AT_ATK];
+#endif
+    }
+
+    return this->m_Battle.m_nATT;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1169,20 +1152,9 @@ CUserDATA::Add_AbilityValue(WORD wType, int iValue) {
         case AT_MP:
             AddCur_MP(iValue);
             break;
-        /*
-        case AT_ATK		:
-        case AT_DEF		:
-        case AT_HIT		:
-        case AT_RES		:
-        case AT_AVOID	:
-        case AT_SPEED	:
-        case AT_ATK_SPD :
-        case AT_WEIGHT	:
-        case AT_CRITICAL   :
-        case AT_RECOVER_HP :
-        case AT_RECOVER_MP :
-        case AT_LEVEL		:
-        */
+        case AT_STAMINA:
+            AddCur_STAMINA(iValue);
+            break;
         case AT_EXP:
             AddCur_EXP(iValue);
             break;
@@ -1192,26 +1164,12 @@ CUserDATA::Add_AbilityValue(WORD wType, int iValue) {
         case AT_SKILLPOINT:
             AddCur_SkillPOINT(iValue);
             break;
-            /*
-            case AT_CHAOS	:
-            case AT_PK_LEV	:
-
-            case AT_HEAD_SIZE :
-            case AT_BODY_SIZE :
-            case AT_BATTLE_LEV :
-                break;
-            */
 
         case AT_MONEY:
             if (iValue < 0 && iValue > GetCur_MONEY())
                 break;
             Add_CurMONEY(iValue);
             break;
-#ifndef _SERVER
-        case AT_STAMINA:
-            AddCur_STAMINA(iValue);
-            break;
-#endif
 
         /// AT_SEX, AT_HAIR, AT_FACE
         case AT_SEX:
@@ -1227,17 +1185,16 @@ CUserDATA::Add_AbilityValue(WORD wType, int iValue) {
     }
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CUserDATA::Check_JobCollection(short nClassStbIDX) {
     if (0 == CLASS_INCLUDE_JOB(nClassStbIDX, 0)) {
-        // Ã¹¹øÂ° ÀÔ·ÂµÈ °ªÀÌ ¾øÀ¸¸é Åë°ú...
+        // ÃƒÂ¹Â¹Ã¸Ã‚Â° Ã€Ã”Â·Ã‚ÂµÃˆ Â°ÂªÃ€ÃŒ Â¾Ã¸Ã€Â¸Â¸Ã© Ã…Ã«Â°Ãº...
         return true;
     }
 
     for (short nI = 0; nI < CLASS_INCLUDE_JOB_CNT; nI++) {
         if (0 == CLASS_INCLUDE_JOB(nClassStbIDX, nI)) {
-            // ÀÔ·ÂµÈ °ªÁß¿£ ¾ø¾ú´Ù..
+            // Ã€Ã”Â·Ã‚ÂµÃˆ Â°ÂªÃÃŸÂ¿Â£ Â¾Ã¸Â¾ÃºÂ´Ã™..
             return false;
         }
 
@@ -1264,19 +1221,19 @@ CUserDATA::Check_PatEquipCondition(tagITEM& sITEM) {
     return true;
 }
 //-------------------------------------------------------------------------------------------------
-/// Ä«Æ®/Ä³½½±â¾î ¿£ÁøÀº ¿¬·á(¼ö¸í)°¡ 1ÀÌÇÏÀÏ¶§µµ ÀåÂø°¡´ÉÇØ¾ß ÇÑ´Ù. 2004/11/25 - nAvy
+/// Ã„Â«Ã†Â®/Ã„Â³Â½Â½Â±Ã¢Â¾Ã® Â¿Â£ÃÃ¸Ã€Âº Â¿Â¬Â·Ã¡(Â¼Ã¶Â¸Ã­)Â°Â¡ 1Ã€ÃŒÃ‡ÃÃ€ÃÂ¶Â§ÂµÂµ Ã€Ã¥Ã‚Ã¸Â°Â¡Â´Ã‰Ã‡Ã˜Â¾ÃŸ Ã‡Ã‘Â´Ã™. 2004/11/25 - nAvy
 bool
 CUserDATA::Check_EquipCondition(tagITEM& sITEM) {
     if (ITEM_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO()) != TUNING_PART_ENGINE_CART
         && ITEM_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO()) != TUNING_PART_ENGINE_CASTLEGEAR
-        && sITEM.GetLife() < 1) /// ¼ö¸íÀÌ ´ÙÇÑ ¾ÆÀÌÅÛÀº ÀåÂø ºÒ°¡~
+        && sITEM.GetLife() < 1) /// Â¼Ã¶Â¸Ã­Ã€ÃŒ Â´Ã™Ã‡Ã‘ Â¾Ã†Ã€ÃŒÃ…Ã›Ã€Âº Ã€Ã¥Ã‚Ã¸ ÂºÃ’Â°Â¡~
         return false;
 
-    /// Ã¼Å©ÇÒ Á÷¾÷ÀÌ ÀÖ´Â°¡ ?
+    /// ÃƒÂ¼Ã…Â©Ã‡Ã’ ÃÃ·Â¾Ã·Ã€ÃŒ Ã€Ã–Â´Ã‚Â°Â¡ ?
     if (!Check_JobCollection(ITEM_EQUIP_REQUIRE_CLASS(sITEM.m_cType, sITEM.m_nItemNo)))
         return false;
 
-    ///Á¶ÇÕ Ã¼Å©<-2004.3.18.nAvy
+    ///ÃÂ¶Ã‡Ã• ÃƒÂ¼Ã…Â©<-2004.3.18.nAvy
     int iCheckCount = 0;
     bool bCorrect = false;
     for (int nl = 0; nl < ITEM_EQUIP_REQUIRE_UNION_CNT; nl++) {
@@ -1306,10 +1263,10 @@ CUserDATA::Check_EquipCondition(tagITEM& sITEM) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// USEITEM_NEED_DATA_TYPE : ¾î¶² ´É·ÂÄ¡¸¦ ºñ±³ÇÒ°ÍÀÎ°¡?
-/// USEITEM_NEED_DATA_VALUE : ÇÊ¿ä´É·ÂÄ¡.
-/// USEITEM_ADD_DATA_TYPE : Àû¿ë´É·Â
-/// USEITEM_ADD_DATA_VALUE : Àû¿ë ¼öÄ¡
+/// USEITEM_NEED_DATA_TYPE : Â¾Ã®Â¶Â² Â´Ã‰Â·Ã‚Ã„Â¡Â¸Â¦ ÂºÃ±Â±Â³Ã‡Ã’Â°ÃÃ€ÃÂ°Â¡?
+/// USEITEM_NEED_DATA_VALUE : Ã‡ÃŠÂ¿Ã¤Â´Ã‰Â·Ã‚Ã„Â¡.
+/// USEITEM_ADD_DATA_TYPE : Ã€Ã»Â¿Ã«Â´Ã‰Â·Ã‚
+/// USEITEM_ADD_DATA_VALUE : Ã€Ã»Â¿Ã« Â¼Ã¶Ã„Â¡
 bool
 CUserDATA::Use_ITEM(WORD wUseItemNO) {
 #ifndef __SERVER
@@ -1318,11 +1275,11 @@ CUserDATA::Use_ITEM(WORD wUseItemNO) {
         return false;
 #endif
 
-    // ÇöÀç ¹«°Ô °¨¼Ò..
+    // Ã‡Ã¶Ã€Ã§ Â¹Â«Â°Ã” Â°Â¨Â¼Ã’..
     // m_Battle.m_nWEIGHT -= ITEM_WEIGHT( ITEM_TYPE_USE, wUseItemNO );
 
     if (0 == USEITME_STATUS_STB(wUseItemNO)) {
-        // Áö¼ÓÇü »óÅÂ·Î ¼Ò¸ğµÇ´Â ¾ÆÀÌÅÛÀÌ ¾Æ´Ï¸é...
+        // ÃÃ¶Â¼Ã“Ã‡Ã¼ Â»Ã³Ã…Ã‚Â·Ã Â¼Ã’Â¸Ã°ÂµÃ‡Â´Ã‚ Â¾Ã†Ã€ÃŒÃ…Ã›Ã€ÃŒ Â¾Ã†Â´ÃÂ¸Ã©...
         Add_AbilityValue(USEITEM_ADD_DATA_TYPE(wUseItemNO), USEITEM_ADD_DATA_VALUE(wUseItemNO));
     }
 
@@ -1335,14 +1292,14 @@ CUserDATA::Use_ITEM(WORD wUseItemNO) {
 }
 
 ///
-/// ¸ö¿¡ ºÙ¾î¾ßÇÒ ¾ÆÀÌÅÛµéÀº ¸ö¿¡ ºÙ¿© ÁØ´Ù.
-/// ¾Æ´Ñ ¾ÆÀÌÅÛÀº ..?
+/// Â¸Ã¶Â¿Â¡ ÂºÃ™Â¾Ã®Â¾ÃŸÃ‡Ã’ Â¾Ã†Ã€ÃŒÃ…Ã›ÂµÃ©Ã€Âº Â¸Ã¶Â¿Â¡ ÂºÃ™Â¿Â© ÃÃ˜Â´Ã™.
+/// Â¾Ã†Â´Ã‘ Â¾Ã†Ã€ÃŒÃ…Ã›Ã€Âº ..?
 ///
 ///
 
 bool
 CUserDATA::Set_EquipITEM(short nEquipIDX, tagITEM& sITEM) {
-    // ºñ¾î ÀÖÁö ¾ÊÀ½?
+    // ÂºÃ±Â¾Ã® Ã€Ã–ÃÃ¶ Â¾ÃŠÃ€Â½?
     // if ( m_Inventory.m_ItemEQUIP[ nEquipIDX ].m_cType )
     //	return false;
     // m_Inventory.m_ItemEQUIP[ nEquipIDX ] = sITEM;
@@ -1376,11 +1333,11 @@ CUserDATA::Set_EquipITEM(short nEquipIDX, tagITEM& sITEM) {
             break;
     }
 
-    // ÀåÂø ¾ÆÀÌÅÛÀÌ ¹Ù²î¾úÀ¸´Ï... ÇØÁà¾ßÁö...
+    // Ã€Ã¥Ã‚Ã¸ Â¾Ã†Ã€ÃŒÃ…Ã›Ã€ÃŒ Â¹Ã™Â²Ã®Â¾ÃºÃ€Â¸Â´Ã... Ã‡Ã˜ÃÃ Â¾ÃŸÃÃ¶...
     this->UpdateCur_Ability();
 
 #ifndef __SERVER
-    /// ¸ğµ¨ µ¥ÀÌÅÍ °»½Å
+    /// Â¸Ã°ÂµÂ¨ ÂµÂ¥Ã€ÃŒÃ…Ã Â°Â»Â½Ã…
     UpdateModelData();
 #endif
 
@@ -1388,7 +1345,7 @@ CUserDATA::Set_EquipITEM(short nEquipIDX, tagITEM& sITEM) {
 }
 
 //-------------------------------------------------------------------------------------------------
-// ½ºÅ³ »ç¿ë½Ã ¼Ò¸ğµÉ ´É·ÂÄ¡ÀÇ ¼öÄ¡¸¦ ¾ò´Â´Ù.
+// Â½ÂºÃ…Â³ Â»Ã§Â¿Ã«Â½Ãƒ Â¼Ã’Â¸Ã°ÂµÃ‰ Â´Ã‰Â·Ã‚Ã„Â¡Ã€Ã‡ Â¼Ã¶Ã„Â¡Â¸Â¦ Â¾Ã²Â´Ã‚Â´Ã™.
 int
 CUserDATA::Skill_ToUseAbilityVALUE(short nSkillIDX, short nPropertyIDX) {
     int iValue = SKILL_USE_VALUE(nSkillIDX, nPropertyIDX);
@@ -1406,7 +1363,6 @@ CUserDATA::Skill_ToUseAbilityVALUE(short nSkillIDX, short nPropertyIDX) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// 2005/01/12 ½ºÅ³»ç¿ë½Ã ½ºÅÂ¹Ì³Ê°¡ ¼Ò¸ğµÇ´Â°Íµµ ÀÖ´Ù.
 bool
 CUserDATA::Skill_UseAbilityValue(short nSkillIDX) {
     int iValue;
@@ -1465,7 +1421,7 @@ CUserDATA::Skill_GetAbilityValue(short nAbilityType) {
             return GetCur_SENSE();
 
         case AT_HP:
-            return (GetCur_HP() - 1); //// ½ÇÁ¦º¸´Ù 1ÀÛ°Ô...ÇÇÀÎ °æ¿ì ¼Ò¸ğ½Ã ´Ù»©¸é µØÁø´Ù..
+            return (GetCur_HP() - 1); //// Â½Ã‡ÃÂ¦ÂºÂ¸Â´Ã™ 1Ã€Ã›Â°Ã”...Ã‡Ã‡Ã€Ã Â°Ã¦Â¿Ã¬ Â¼Ã’Â¸Ã°Â½Ãƒ Â´Ã™Â»Â©Â¸Ã© ÂµÃ˜ÃÃ¸Â´Ã™..
         case AT_MP:
             return GetCur_MP();
         case AT_EXP:
@@ -1505,7 +1461,6 @@ CUserDATA::Skill_FindEmptySlot(short nSkillIDX) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// 2004/8/24-nAvy ¼öÁ¤ if( nFindSlot ) => if( nFindSlot >= 0 )
 short
 CUserDATA::Skill_FindLearnedLevel(short nSkillIDX) {
     short nFindSlot;
@@ -1539,19 +1494,19 @@ CUserDATA::Skill_FindLearnedSlot(short nSkillIDX) {
 bool
 CUserDATA::Skill_CheckJOB(short nSkillIDX) {
     // 2004.3.18... icarus
-    // Á÷¾÷ Ã¼Å©...
+    // ÃÃ·Â¾Ã· ÃƒÂ¼Ã…Â©...
     if (!Check_JobCollection(SKILL_AVAILBLE_CLASS_SET(nSkillIDX)))
         return false;
 
-    // ¼Ò¼Ó Á¶ÇÕ Ã¼Å©...
+    // Â¼Ã’Â¼Ã“ ÃÂ¶Ã‡Ã• ÃƒÂ¼Ã…Â©...
     if (0 == SKILL_AVAILBLE_UNION(nSkillIDX, 0)) {
-        // Ã¹¹øÂ° ÀÔ·ÂµÈ °ªÀÌ ¾øÀ¸¸é Åë°ú...
+        // ÃƒÂ¹Â¹Ã¸Ã‚Â° Ã€Ã”Â·Ã‚ÂµÃˆ Â°ÂªÃ€ÃŒ Â¾Ã¸Ã€Â¸Â¸Ã© Ã…Ã«Â°Ãº...
         return true;
     }
 
     for (short nI = 0; nI < SKILL_AVAILBLE_UNION_CNT; nI++) {
         if (0 == SKILL_AVAILBLE_UNION(nSkillIDX, nI)) {
-            // ÀÔ·ÂµÈ °ªÁß¿£ ¾ø¾ú´Ù..
+            // Ã€Ã”Â·Ã‚ÂµÃˆ Â°ÂªÃÃŸÂ¿Â£ Â¾Ã¸Â¾ÃºÂ´Ã™..
             return false;
         }
 
@@ -1595,34 +1550,34 @@ CUserDATA::Skill_CheckNeedABILITY(short nSkillIDX) {
     return true;
 }
 
-// ½ºÅ³ ½Àµæ Á¶°Ç ...
-// 1. Á÷¾÷ Á¶°Ç..
-// 2. º¸À¯ÇÑ ½ºÅ³ ¸ñ·Ï °Ë»ö...
-// 3. Á¶°Ç ´É·ÂÄ¡ ÆÇ´Ü...
+// Â½ÂºÃ…Â³ Â½Ã€ÂµÃ¦ ÃÂ¶Â°Ã‡ ...
+// 1. ÃÃ·Â¾Ã· ÃÂ¶Â°Ã‡..
+// 2. ÂºÂ¸Ã€Â¯Ã‡Ã‘ Â½ÂºÃ…Â³ Â¸Ã±Â·Ã Â°Ã‹Â»Ã¶...
+// 3. ÃÂ¶Â°Ã‡ Â´Ã‰Â·Ã‚Ã„Â¡ Ã†Ã‡Â´Ãœ...
 BYTE
 CUserDATA::Skill_LearnCondition(short nSkillIDX) {
     if (nSkillIDX < 1 || nSkillIDX >= g_SkillList.Get_SkillCNT())
         return RESULT_SKILL_LEARN_INVALID_SKILL;
 
-    // 0. ÀÌ¹Ì º¸À¯ÇÑ ½ºÅ³ÀÎÁö ÆÇ´Ü..
+    // 0. Ã€ÃŒÂ¹ÃŒ ÂºÂ¸Ã€Â¯Ã‡Ã‘ Â½ÂºÃ…Â³Ã€ÃÃÃ¶ Ã†Ã‡Â´Ãœ..
     if (Skill_FindLearnedSlot(nSkillIDX) >= 0)
         return RESULT_SKILL_LEARN_FAILED;
 
-    // 1. ½ºÅ³ Æ÷ÀÎÆ® ºÎÁ·...
+    // 1. Â½ÂºÃ…Â³ Ã†Ã·Ã€ÃÃ†Â® ÂºÃÃÂ·...
     if (this->GetCur_SkillPOINT() < SKILL_NEED_LEVELUPPOINT(nSkillIDX))
         return RESULT_SKILL_LEARN_OUTOFPOINT;
 
-    // 2. Á÷¾÷ Á¶°Ç Ã¼Å©
+    // 2. ÃÃ·Â¾Ã· ÃÂ¶Â°Ã‡ ÃƒÂ¼Ã…Â©
     if (!this->Skill_CheckJOB(nSkillIDX)) {
         return RESULT_SKILL_LEARN_NEED_JOB;
     }
 
-    // 3. ½ÀµæÇÑ ½ºÅ³·¹º§ ÆÇ´Ü...
+    // 3. Â½Ã€ÂµÃ¦Ã‡Ã‘ Â½ÂºÃ…Â³Â·Â¹ÂºÂ§ Ã†Ã‡Â´Ãœ...
     if (!this->Skill_CheckLearnedSKILL(nSkillIDX)) {
         return RESULT_SKILL_LEARN_NEED_SKILL;
     }
 
-    // 4. Á¶°Ç ´É·ÂÄ¡ ÆÇ´Ü...
+    // 4. ÃÂ¶Â°Ã‡ Â´Ã‰Â·Ã‚Ã„Â¡ Ã†Ã‡Â´Ãœ...
     if (!this->Skill_CheckNeedABILITY(nSkillIDX)) {
         return RESULT_SKILL_LEARN_NEED_ABILITY;
     }
@@ -1631,43 +1586,43 @@ CUserDATA::Skill_LearnCondition(short nSkillIDX) {
 }
 
 //-------------------------------------------------------------------------------------------------
-// ½ºÅ³ ·¹º§¾÷ Á¶°Ç ...
-// 1. ÇÊ¿ä ½ºÅ³ Æ÷ÀÎÆ®..
-// 2. Á¶°Ç ´É·ÂÄ¡ ÆÇ´Ü.
+// Â½ÂºÃ…Â³ Â·Â¹ÂºÂ§Â¾Ã· ÃÂ¶Â°Ã‡ ...
+// 1. Ã‡ÃŠÂ¿Ã¤ Â½ÂºÃ…Â³ Ã†Ã·Ã€ÃÃ†Â®..
+// 2. ÃÂ¶Â°Ã‡ Â´Ã‰Â·Ã‚Ã„Â¡ Ã†Ã‡Â´Ãœ.
 BYTE
 CUserDATA::Skill_LevelUpCondition(short nCurLevelSkillIDX, short nNextLevelSkillIDX) {
     if (nNextLevelSkillIDX >= g_SkillList.Get_SkillCNT()) {
-        // ´õÀÌ»ó ·¹º§¾÷ ÇÒ¼ö ¾ø´Ù.
+        // Â´ÃµÃ€ÃŒÂ»Ã³ Â·Â¹ÂºÂ§Â¾Ã· Ã‡Ã’Â¼Ã¶ Â¾Ã¸Â´Ã™.
         return RESULT_SKILL_LEVELUP_FAILED;
     }
     /*
-        ½ºÅ³ ·¹º§¾÷ Á¦ÇÑ »èÁ¦...
+        Â½ÂºÃ…Â³ Â·Â¹ÂºÂ§Â¾Ã· ÃÂ¦Ã‡Ã‘ Â»Ã¨ÃÂ¦...
         if ( SKILL_LEVEL( nCurLevelSkillIDX ) >= 10 ) {
-            // ´õÀÌ»ó ·¹º§¾÷ ÇÒ¼ö ¾ø´Ù.
+            // Â´ÃµÃ€ÃŒÂ»Ã³ Â·Â¹ÂºÂ§Â¾Ã· Ã‡Ã’Â¼Ã¶ Â¾Ã¸Â´Ã™.
             return RESULT_SKILL_LEVELUP_FAILED;
         }
     */
-    // °°Àº Á¾·ùÀÇ ½ºÅ³ÀÌ°í ¹è¿ì·Á´Â ·¹º§ÀÌ ÇöÀç ·¹º§ÀÇ ´ÙÀ½ ·¹º§ÀÎ°¡ ??
+    // Â°Â°Ã€Âº ÃÂ¾Â·Ã¹Ã€Ã‡ Â½ÂºÃ…Â³Ã€ÃŒÂ°Ã­ Â¹Ã¨Â¿Ã¬Â·ÃÂ´Ã‚ Â·Â¹ÂºÂ§Ã€ÃŒ Ã‡Ã¶Ã€Ã§ Â·Â¹ÂºÂ§Ã€Ã‡ Â´Ã™Ã€Â½ Â·Â¹ÂºÂ§Ã€ÃÂ°Â¡ ??
     if (SKILL_1LEV_INDEX(nCurLevelSkillIDX) != SKILL_1LEV_INDEX(nNextLevelSkillIDX)
         || SKILL_LEVEL(nCurLevelSkillIDX) + 1 != SKILL_LEVEL(nNextLevelSkillIDX)) {
         return RESULT_SKILL_LEVELUP_FAILED;
     }
 
-    // 1. ½ºÅ³ Æ÷ÀÎÆ® ºÎÁ·...
+    // 1. Â½ÂºÃ…Â³ Ã†Ã·Ã€ÃÃ†Â® ÂºÃÃÂ·...
     if (this->GetCur_SkillPOINT() < SKILL_NEED_LEVELUPPOINT(nNextLevelSkillIDX))
         return RESULT_SKILL_LEVELUP_OUTOFPOINT;
 
-    // 2. Á÷¾÷ Á¶°Ç Ã¼Å©
+    // 2. ÃÃ·Â¾Ã· ÃÂ¶Â°Ã‡ ÃƒÂ¼Ã…Â©
     if (!this->Skill_CheckJOB(nNextLevelSkillIDX)) {
         return RESULT_SKILL_LEVELUP_NEED_JOB;
     }
 
-    // 3. ½ÀµæÇÑ ½ºÅ³·¹º§ ÆÇ´Ü...
+    // 3. Â½Ã€ÂµÃ¦Ã‡Ã‘ Â½ÂºÃ…Â³Â·Â¹ÂºÂ§ Ã†Ã‡Â´Ãœ...
     if (!this->Skill_CheckLearnedSKILL(nNextLevelSkillIDX)) {
         return RESULT_SKILL_LEVELUP_NEED_SKILL;
     }
 
-    // 4. Á¶°Ç ´É·ÂÄ¡ ÆÇ´Ü...
+    // 4. ÃÂ¶Â°Ã‡ Â´Ã‰Â·Ã‚Ã„Â¡ Ã†Ã‡Â´Ãœ...
     if (!this->Skill_CheckNeedABILITY(nNextLevelSkillIDX)) {
         return RESULT_SKILL_LEVELUP_NEED_ABILITY;
     }
@@ -1679,9 +1634,9 @@ CUserDATA::Skill_LevelUpCondition(short nCurLevelSkillIDX, short nNextLevelSkill
     #include "Game.h"
 #endif
 //-------------------------------------------------------------------------------------------------
-// ½ºÅ³ »ç¿ë½Ã Á¶°Ç ...
-// 1. ¼Ò¸ğ ¼öÄ¡..
-// 2. ¹«±â
+// Â½ÂºÃ…Â³ Â»Ã§Â¿Ã«Â½Ãƒ ÃÂ¶Â°Ã‡ ...
+// 1. Â¼Ã’Â¸Ã° Â¼Ã¶Ã„Â¡..
+// 2. Â¹Â«Â±Ã¢
 bool
 CUserDATA::Skill_ActionCondition(short nSkillIDX) {
     short nI;
@@ -1691,7 +1646,7 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
 #ifndef __SERVER
             g_itMGR.AppendChatMsg(STR_CANT_CASTING_STATE, IT_MGR::CHAT_TYPE_SYSTEM);
 #endif
-            // º¡¾î¸® »óÅÂ¿¡¼­ »ç¿ëÇÒ¼ö ¾ø´Â ½ºÅ³ÀÌ´Ù.
+            // ÂºÂ¡Â¾Ã®Â¸Â® Â»Ã³Ã…Ã‚Â¿Â¡Â¼Â­ Â»Ã§Â¿Ã«Ã‡Ã’Â¼Ã¶ Â¾Ã¸Â´Ã‚ Â½ÂºÃ…Â³Ã€ÃŒÂ´Ã™.
             return false;
         }
     } else if (SKILL_TYPE_14 == SKILL_TYPE(nSkillIDX)) {
@@ -1699,12 +1654,12 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
 #ifndef __SERVER
             g_itMGR.AppendChatMsg(STR_CANT_CASTING_STATE, IT_MGR::CHAT_TYPE_SYSTEM);
 #endif
-            // º¡¾î¸® »óÅÂ¿¡¼­ »ç¿ëÇÒ¼ö ¾ø´Â ½ºÅ³ÀÌ´Ù.
+            // ÂºÂ¡Â¾Ã®Â¸Â® Â»Ã³Ã…Ã‚Â¿Â¡Â¼Â­ Â»Ã§Â¿Ã«Ã‡Ã’Â¼Ã¶ Â¾Ã¸Â´Ã‚ Â½ÂºÃ…Â³Ã€ÃŒÂ´Ã™.
             return false;
         }
     }
 
-    // 1. ¸¶³ª or .....
+    // 1. Â¸Â¶Â³Âª or .....
     int iCurValue;
     for (nI = 0; nI < SKILL_USE_PROPERTY_CNT; nI++) {
         if (0 == SKILL_USE_PROPERTY(nSkillIDX, nI))
@@ -1729,10 +1684,10 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
         nNeedWPN = SKILL_NEED_WEAPON(nSkillIDX, nI);
 
         if (0 == nNeedWPN) {
-            /// Ã¹¹øÂ° ÇÊ¿äÀåºñ°¡ 0 ÀÌ¶ó¸é.. ÇÊ¿äÀåºñ°¡ ÇÊ¿ä¾ø´Ù.( ¸ğµç Ä®·³ÀÌ 0 ÀÌ¶õ ¾à¼Ó )
+            /// ÃƒÂ¹Â¹Ã¸Ã‚Â° Ã‡ÃŠÂ¿Ã¤Ã€Ã¥ÂºÃ±Â°Â¡ 0 Ã€ÃŒÂ¶Ã³Â¸Ã©.. Ã‡ÃŠÂ¿Ã¤Ã€Ã¥ÂºÃ±Â°Â¡ Ã‡ÃŠÂ¿Ã¤Â¾Ã¸Â´Ã™.( Â¸Ã°ÂµÃ§ Ã„Â®Â·Â³Ã€ÃŒ 0 Ã€ÃŒÂ¶Ãµ Â¾Ã Â¼Ã“ )
             if (nI == 0)
                 return true;
-            else /// ¸ğµç ÇÊ¿ä¹«±â´Â ¾ÕÂÊºÎÅÍ Ã¤¿öÁø´Ù.
+            else /// Â¸Ã°ÂµÃ§ Ã‡ÃŠÂ¿Ã¤Â¹Â«Â±Ã¢Â´Ã‚ Â¾Ã•Ã‚ÃŠÂºÃÃ…Ã ÃƒÂ¤Â¿Ã¶ÃÃ¸Â´Ã™.
                 break;
         }
 
@@ -1748,24 +1703,21 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
     return false;
 }
 
-//-------------------------------------------------------------------------------------------------
-// ´ë¸¸, ÇÊ¸®ÇÉ ¹öÁ¯¿ë °è»ê½Ä
-//-------------------------------------------------------------------------------------------------
 short
 CUserDATA::GetPassiveSkillAttackSpeed(float fCurSpeed, short nRightWeaponItemNo) {
     t_AbilityINDEX eIndex;
     switch (WEAPON_TYPE(nRightWeaponItemNo)) {
         case 231:
             eIndex = AT_PSV_ATK_SPD_BOW;
-            break; // È°
-        case 233: // ÅõÃ´±â
+            break; // ÃˆÂ°
+        case 233: // Ã…ÃµÃƒÂ´Â±Ã¢
         case 232:
             eIndex = AT_PSV_ATK_SPD_GUN;
-            break; // ÃÑ
-        case 251: // Ä«Å¸¸£
+            break; // ÃƒÃ‘
+        case 251: // Ã„Â«Ã…Â¸Â¸Â£
         case 252:
             eIndex = AT_PSV_ATK_SPD_PAIR;
-            break; // ÀÌµµ·ù
+            break; // Ã€ÃŒÂµÂµÂ·Ã¹
 
         default:
             return 0;
@@ -1776,19 +1728,19 @@ CUserDATA::GetPassiveSkillAttackSpeed(float fCurSpeed, short nRightWeaponItemNo)
 }
 
 //---------------------------------------
-// ±¹³», ÀÏº», Á¦´ÏÆÛ, IRose¹öÁ¯¿ë °è»ê½Ä
+// Â±Â¹Â³Â», Ã€ÃÂºÂ», ÃÂ¦Â´ÃÃ†Ã›, IRoseÂ¹Ã¶ÃÂ¯Â¿Ã« Â°Ã¨Â»ÃªÂ½Ã„
 //---------------------------------------
 short
 CUserDATA::GetPassiveSkillAttackSpeed(short nRightWeaponItemNo) {
     switch (WEAPON_TYPE(nRightWeaponItemNo)) {
         case 231:
-            return this->GetPassiveSkillValue(AT_PSV_ATK_SPD_BOW); // È°
-        case 233: // ÅõÃ´±â
+            return this->GetPassiveSkillValue(AT_PSV_ATK_SPD_BOW); // ÃˆÂ°
+        case 233: // Ã…ÃµÃƒÂ´Â±Ã¢
         case 232:
-            return this->GetPassiveSkillValue(AT_PSV_ATK_SPD_GUN); // ÃÑ
-        case 251: // Ä«Å¸¸£
+            return this->GetPassiveSkillValue(AT_PSV_ATK_SPD_GUN); // ÃƒÃ‘
+        case 251: // Ã„Â«Ã…Â¸Â¸Â£
         case 252:
-            return this->GetPassiveSkillValue(AT_PSV_ATK_SPD_PAIR); // ÀÌµµ·ù
+            return this->GetPassiveSkillValue(AT_PSV_ATK_SPD_PAIR); // Ã€ÃŒÂµÂµÂ·Ã¹
     }
 
     return 0;
@@ -1799,42 +1751,42 @@ short
 CUserDATA::GetPassiveSkillAttackPower(int iCurAP, short nRightWeaponItemNo) {
     t_AbilityINDEX eIndex;
     if (0 == nRightWeaponItemNo) {
-        // ¸Ç¼Õ
+        // Â¸Ã‡Â¼Ã•
         eIndex = AT_PSV_ATK_POW_NO_WEAPON;
     } else {
         switch (WEAPON_TYPE(nRightWeaponItemNo)) {
-            // ÇÑ¼Õ°Ë, ÇÑ¼ÕµĞ±â,
+            // Ã‡Ã‘Â¼Ã•Â°Ã‹, Ã‡Ã‘Â¼Ã•ÂµÃÂ±Ã¢,
             case 211:
             case 212:
                 eIndex = AT_PSV_ATK_POW_1HAND_WPN;
                 break;
-            // ¾ç¼Õ°Ë, ¾ç¼ÕÃ¢, ¾ç¼Õµµ³¢
+            // Â¾Ã§Â¼Ã•Â°Ã‹, Â¾Ã§Â¼Ã•ÃƒÂ¢, Â¾Ã§Â¼Ã•ÂµÂµÂ³Â¢
             case 221:
             case 222:
             case 223:
                 eIndex = AT_PSV_ATK_POW_2HAND_WPN;
                 break;
-            // È°
+            // ÃˆÂ°
             case 231:
                 eIndex = AT_PSV_ATK_POW_BOW;
                 break;
-            // ÃÑ, ÅõÃ´±â, ½ÖÃÑ
+            // ÃƒÃ‘, Ã…ÃµÃƒÂ´Â±Ã¢, Â½Ã–ÃƒÃ‘
             case 232:
             case 233:
             case 253:
                 eIndex = AT_PSV_ATK_POW_GUN;
                 break;
-            // ¸¶¹ıÁöÆÎÀÌ	// ¸¶¹ı¿Ïµå
+            // Â¸Â¶Â¹Ã½ÃÃ¶Ã†ÃÃ€ÃŒ	// Â¸Â¶Â¹Ã½Â¿ÃÂµÃ¥
             case 241:
             case 242:
                 eIndex = AT_PSV_ATK_POW_STAFF_WAND;
                 break;
-            // Ä«Å¸¸£, ÀÌµµ·ù
+            // Ã„Â«Ã…Â¸Â¸Â£, Ã€ÃŒÂµÂµÂ·Ã¹
             case 251:
             case 252:
                 eIndex = AT_PSV_ATK_POW_KATAR_PAIR;
                 break;
-            // ¼®±Ã
+            // Â¼Â®Â±Ãƒ
             case 271:
                 eIndex = AT_PSV_ATK_POW_AUTO_BOW;
                 break;
@@ -1849,21 +1801,21 @@ CUserDATA::GetPassiveSkillAttackPower(int iCurAP, short nRightWeaponItemNo) {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// ½ºÅ³ ½Àµæ & ·¹º§¾÷½Ã..!!! ::
-/// return == trueÀÌ¸é CObjAVT->Update_SPEED() È£Ãâ ÇÊ¿ä !!!
+/// Â½ÂºÃ…Â³ Â½Ã€ÂµÃ¦ & Â·Â¹ÂºÂ§Â¾Ã·Â½Ãƒ..!!! ::
+/// return == trueÃ€ÃŒÂ¸Ã© CObjAVT->Update_SPEED() ÃˆÂ£ÃƒÃ¢ Ã‡ÃŠÂ¿Ã¤ !!!
 BYTE
 CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
-    // btReturn & 0x02¸é ÀüÃ¼ °»½Å, & 0x01ÀÌ¸é ¼Óµµ °»½Å
+    // btReturn & 0x02Â¸Ã© Ã€Ã¼ÃƒÂ¼ Â°Â»Â½Ã…, & 0x01Ã€ÃŒÂ¸Ã© Â¼Ã“ÂµÂµ Â°Â»Â½Ã…
     BYTE btReturn = 0;
 
-    // ½ºÅ³ Æ÷ÀÎÆ® ¼Ò¸ğ - ½Àµæ½Ã¿¡µµ ¼Ò¸ğµÇµµ·Ï ¼öÁ¤, 2004. 3. 16
-    if (bSubPOINT)
+    // Â½ÂºÃ…Â³ Ã†Ã·Ã€ÃÃ†Â® Â¼Ã’Â¸Ã° - Â½Ã€ÂµÃ¦Â½ÃƒÂ¿Â¡ÂµÂµ Â¼Ã’Â¸Ã°ÂµÃ‡ÂµÂµÂ·Ã Â¼Ã¶ÃÂ¤, 2004. 3. 16
+    if (bSubPOINT) {
         this->SetCur_SkillPOINT(this->GetCur_SkillPOINT() - SKILL_NEED_LEVELUPPOINT(nSkillIDX));
-
+    }
     short nBeforeSkill = this->m_Skills.m_nSkillINDEX[nSkillSLOT];
-    this->m_Skills.m_nSkillINDEX[nSkillSLOT] = nSkillIDX; // ½ºÅ³ ½Àµæ !!!
+    this->m_Skills.m_nSkillINDEX[nSkillSLOT] = nSkillIDX; // Â½ÂºÃ…Â³ Â½Ã€ÂµÃ¦ !!!
 
-    // ÆĞ½Ãºê ½ºÅ³ÀÌ¸é ???
+    // Ã†ÃÂ½ÃƒÂºÃª Â½ÂºÃ…Â³Ã€ÃŒÂ¸Ã© ???
     short nPassiveTYPE;
     if (SKILL_TYPE_PASSIVE == SKILL_TYPE(nSkillIDX)) {
         for (short nI = 0; nI < SKILL_INCREASE_ABILITY_CNT; nI++) {
@@ -1871,13 +1823,13 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                 && 0 == SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI))
                 continue;
 
-            // ¼öÄ¡·Î ¿Ã¸² : ÆĞ½Ãºê ½ºÅ³Àº ºñÀ²·Î´Â ¸ø¿Ã¸² !!!
+            // Â¼Ã¶Ã„Â¡Â·Ã Â¿ÃƒÂ¸Â² : Ã†ÃÂ½ÃƒÂºÃª Â½ÂºÃ…Â³Ã€Âº ÂºÃ±Ã€Â²Â·ÃÂ´Ã‚ Â¸Ã¸Â¿ÃƒÂ¸Â² !!!
             if (SKILL_INCREASE_ABILITY(nSkillIDX, nI) >= AT_STR
                 && SKILL_INCREASE_ABILITY(nSkillIDX, nI) <= AT_SENSE) {
                 nPassiveTYPE = SKILL_INCREASE_ABILITY(nSkillIDX, nI) - AT_STR;
 
                 if (SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI)) {
-                    // 05.05.26 ºñÀ²°è»ê Ãß°¡...
+                    // 05.05.26 ÂºÃ±Ã€Â²Â°Ã¨Â»Ãª ÃƒÃŸÂ°Â¡...
                     int iCurAbility = this->m_BasicAbility.m_nBasicA[nPassiveTYPE]
                         + m_iAddValue[SKILL_INCREASE_ABILITY(nSkillIDX, nI)];
                     this->AddPassiveSkillRate(SKILL_INCREASE_ABILITY(nSkillIDX, nI),
@@ -1899,17 +1851,18 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                 if ((nPassiveTYPE >= AT_PSV_ATK_POW_NO_WEAPON
                         && nPassiveTYPE < AT_AFTER_PASSIVE_SKILL)
                     || (nPassiveTYPE >= AT_PSV_RES && nPassiveTYPE < AT_AFTER_PASSIVE_SKILL_2ND)) {
-                    // ÆĞ½Ãºê¿¡ÀÇÇØ º¸Á¤µÇ´Â °ªµé...
+                    // Ã†ÃÂ½ÃƒÂºÃªÂ¿Â¡Ã€Ã‡Ã‡Ã˜ ÂºÂ¸ÃÂ¤ÂµÃ‡Â´Ã‚ Â°ÂªÂµÃ©...
                     if (SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI)) {
                         short nValue = SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI);
-                        if (nBeforeSkill)
+                        if (nBeforeSkill) {
                             nValue -= SKILL_CHANGE_ABILITY_RATE(nBeforeSkill, nI);
-                        // ºñÀ² °è»êÀÌ¸é ???
+                        }
                         this->AddPassiveSkillRate(nPassiveTYPE, nValue);
                     } else {
                         short nValue = SKILL_INCREASE_ABILITY_VALUE(nSkillIDX, nI);
-                        if (nBeforeSkill)
+                        if (nBeforeSkill) {
                             nValue -= SKILL_INCREASE_ABILITY_VALUE(nBeforeSkill, nI);
+                        }
                         this->AddPassiveSkillValue(nPassiveTYPE, nValue);
                     }
 
@@ -1917,30 +1870,30 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                         case AT_PSV_MAX_HP:
                             Cal_MaxHP();
                             btReturn |= 0x01;
-                            break; // ÁÖº¯¿¡ Åëº¸ ÇÊ¿ä
+                            break; // ÃÃ–ÂºÂ¯Â¿Â¡ Ã…Ã«ÂºÂ¸ Ã‡ÃŠÂ¿Ã¤
                         case AT_PSV_MAX_MP:
                             Cal_MaxMP();
-                            break; // ÁÖº¯¿¡ Åëº¸ ¾øÀÌ Àç°è»ê....
+                            break; // ÃÃ–ÂºÂ¯Â¿Â¡ Ã…Ã«ÂºÂ¸ Â¾Ã¸Ã€ÃŒ Ã€Ã§Â°Ã¨Â»Ãª....
                         case AT_PSV_DEF_POW:
                             Cal_DEFENCE();
-                            break; // ÁÖº¯¿¡ Åëº¸ ¾øÀÌ Àç°è»ê....
-                        case AT_PSV_WEIGHT: // ¹«°Ô ¹Ù²ñ
+                            break; // ÃÃ–ÂºÂ¯Â¿Â¡ Ã…Ã«ÂºÂ¸ Â¾Ã¸Ã€ÃŒ Ã€Ã§Â°Ã¨Â»Ãª....
+                        case AT_PSV_WEIGHT: // Â¹Â«Â°Ã” Â¹Ã™Â²Ã±
                             // this->m_btWeightRate = ;
                             Cal_MaxWEIGHT();
                             btReturn |= 0x01;
                             break;
                         case AT_PSV_MOV_SPD:
                             btReturn |= 0x01;
-                            break; // ÀÌ¼Ó.. ÁÖº¯¿¡ Åëº¸ ÇÊ¿ä
-                        case AT_PSV_RECOVER_HP: // ÆÄÆ¼¿øµéÇÑÅ× º¯°æ »çÇ× Åëº¸ ÇÊ¿ä...
+                            break; // Ã€ÃŒÂ¼Ã“.. ÃÃ–ÂºÂ¯Â¿Â¡ Ã…Ã«ÂºÂ¸ Ã‡ÃŠÂ¿Ã¤
+                        case AT_PSV_RECOVER_HP: // Ã†Ã„Ã†Â¼Â¿Ã¸ÂµÃ©Ã‡Ã‘Ã…Ã— ÂºÂ¯Â°Ã¦ Â»Ã§Ã‡Ã— Ã…Ã«ÂºÂ¸ Ã‡ÃŠÂ¿Ã¤...
                             Cal_RecoverHP();
                             btReturn |= 0x01;
                             break;
-                        case AT_PSV_RECOVER_MP: // ÆÄÆ¼¿øµéÇÑÅ× º¯°æ »çÇ× Åëº¸ ÇÊ¿ä...
+                        case AT_PSV_RECOVER_MP: // Ã†Ã„Ã†Â¼Â¿Ã¸ÂµÃ©Ã‡Ã‘Ã…Ã— ÂºÂ¯Â°Ã¦ Â»Ã§Ã‡Ã— Ã…Ã«ÂºÂ¸ Ã‡ÃŠÂ¿Ã¤...
                             Cal_RecoverMP();
                             btReturn |= 0x01;
                             break;
-                        case AT_PSV_SAVE_MP: // MP Àı°¨ ºñÀ²
+                        case AT_PSV_SAVE_MP: // MP Ã€Ã½Â°Â¨ ÂºÃ±Ã€Â²
                             m_Battle.m_fRateUseMP = (100 - this->GetCur_SaveMP()) / 100.f;
                             break;
                         case AT_PSV_DROP_RATE:
@@ -1962,16 +1915,15 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                         case AT_PSV_SHIELD_DEF:
                             Cal_DEFENCE();
                             break;
-
                         case AT_PSV_IMMUNITY:
                             break;
 
                         default:
                             if (nPassiveTYPE <= AT_PSV_ATK_POW_KATAR_PAIR) {
-                                // °ø°İ·Â º¯È­...
+                                // Â°Ã¸Â°ÃÂ·Ã‚ ÂºÂ¯ÃˆÂ­...
                                 this->Cal_ATTACK();
                             } else if (nPassiveTYPE < AT_PSV_MOV_SPD) {
-                                // °ø¼Ó º¯°æ...
+                                // Â°Ã¸Â¼Ã“ ÂºÂ¯Â°Ã¦...
                                 tagITEM* pITEM = &m_Inventory.m_ItemEQUIP[EQUIP_IDX_WEAPON_R];
                                 if (pITEM->GetHEADER()) {
                                     this->m_nPassiveAttackSpeed =
@@ -1985,14 +1937,14 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                     SetDef_IMMUNITY(0);
 
                     switch (GetCur_JOB()) {
-                        case CLASS_SOLDIER_121: // 2Â÷ ³ªÀÌÆ®
-                        case CLASS_SOLDIER_122: // 2Â÷ Ã¨ÇÁ
-                        case CLASS_MAGICIAN_221: // 2Â÷ ¸ŞÁö¼Ç
-                        case CLASS_MAGICIAN_222: // 2Â÷ Å¬·¯¸¯
-                        case CLASS_MIXER_321: // 2Â÷ ·¹ÀÌ´õ
-                        case CLASS_MIXER_322: // 2Â÷ ½ºÄ«¿ìÆ®
-                        case CLASS_MERCHANT_421: // 2Â÷ ºÎÁîÁÖ¾Æ
-                        case CLASS_MERCHANT_422: // 2Â÷ ¾ÆÆ¼Àò
+                        case CLASS_SOLDIER_121: // 2Ã‚Ã· Â³ÂªÃ€ÃŒÃ†Â®
+                        case CLASS_SOLDIER_122: // 2Ã‚Ã· ÃƒÂ¨Ã‡Ã
+                        case CLASS_MAGICIAN_221: // 2Ã‚Ã· Â¸ÃÃÃ¶Â¼Ã‡
+                        case CLASS_MAGICIAN_222: // 2Ã‚Ã· Ã…Â¬Â·Â¯Â¸Â¯
+                        case CLASS_MIXER_321: // 2Ã‚Ã· Â·Â¹Ã€ÃŒÂ´Ãµ
+                        case CLASS_MIXER_322: // 2Ã‚Ã· Â½ÂºÃ„Â«Â¿Ã¬Ã†Â®
+                        case CLASS_MERCHANT_421: // 2Ã‚Ã· ÂºÃÃÃ®ÃÃ–Â¾Ã†
+                        case CLASS_MERCHANT_422: // 2Ã‚Ã· Â¾Ã†Ã†Â¼Ã€Ã²
                             this->m_Battle.m_nMaxHP += 300;
                             this->m_Battle.m_nATT += 30;
                             this->m_Battle.m_nDEF += 25;
@@ -2004,7 +1956,7 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
             }
 
 #ifndef __SERVER
-            /// Update È£Ãâ
+            /// Update ÃˆÂ£ÃƒÃ¢
             if (SKILL_INCREASE_ABILITY(nSkillIDX, nI) >= AT_STR
                 && SKILL_INCREASE_ABILITY(nSkillIDX, nI) <= AT_SENSE) {
                 UpdateCur_Ability();
@@ -2020,7 +1972,7 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
 bool
 CUserDATA::Skill_DELETE(short nSkillSLOT, short nSkillIDX) {
     if (nSkillIDX == this->m_Skills.m_nSkillINDEX[nSkillSLOT]) {
-        this->m_Skills.m_nSkillINDEX[nSkillSLOT] = 0; /// ½ºÅ³ »èÁ¦ !!!
+        this->m_Skills.m_nSkillINDEX[nSkillSLOT] = 0; /// Â½ÂºÃ…Â³ Â»Ã¨ÃÂ¦ !!!
         return true;
     }
     return false;
@@ -2055,11 +2007,11 @@ CUserDATA::InitPassiveSkill() {
                     && 0 == SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI))
                     continue;
 
-                // ¼öÄ¡·Î ¿Ã¸² : ÆĞ½Ãºê ½ºÅ³Àº ºñÀ²·Î´Â ¸ø¿Ã¸² !!!
+                // Â¼Ã¶Ã„Â¡Â·Ã Â¿ÃƒÂ¸Â² : Ã†ÃÂ½ÃƒÂºÃª Â½ÂºÃ…Â³Ã€Âº ÂºÃ±Ã€Â²Â·ÃÂ´Ã‚ Â¸Ã¸Â¿ÃƒÂ¸Â² !!!
                 if (SKILL_INCREASE_ABILITY(nSkillIDX, nI) >= AT_STR
                     && SKILL_INCREASE_ABILITY(nSkillIDX, nI) <= AT_SENSE) {
                     if (SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI)) {
-                        // 05.05.26 ºñÀ²°è»ê Ãß°¡...
+                        // 05.05.26 ÂºÃ±Ã€Â²Â°Ã¨Â»Ãª ÃƒÃŸÂ°Â¡...
                         this->AddPassiveSkillRate(SKILL_INCREASE_ABILITY(nSkillIDX, nI),
                             SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI));
                     } else {
@@ -2073,7 +2025,7 @@ CUserDATA::InitPassiveSkill() {
                         || (nPassiveTYPE >= AT_PSV_ATK_POW_NO_WEAPON
                             && nPassiveTYPE <= AT_AFTER_PASSIVE_SKILL)) {
                         if (SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI)) {
-                            // 05.05.26 ºñÀ²°è»ê ÀÌ¸é ???
+                            // 05.05.26 ÂºÃ±Ã€Â²Â°Ã¨Â»Ãª Ã€ÃŒÂ¸Ã© ???
                             this->AddPassiveSkillRate(nPassiveTYPE,
                                 SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI));
                         } else {
@@ -2088,8 +2040,8 @@ CUserDATA::InitPassiveSkill() {
 }
 
 //-------------------------------------------------------------------------------------------------
-/// 2004 / 2 /10 :nAvy¼öÁ¤( return 0¿¡¼­ ÇØ´ç SkillIdx·Î STB¿¡¼­ ÇÊ¿ä Æ÷ÀÎÆ®¸¦ °¡Á®¿Â´Ù)
-/// 2004 / 6 /10 :nAvy¼öÁ¤( STB ±¸Á¶º¯°æ - ´ÙÀ½·¹º§¾÷À» À§ÇÑ Æ÷ÀÎÆ®´Â ´ÙÀ½·¹º§¿¡¼­ °¡Á®¿Â´Ù )
+/// 2004 / 2 /10 :nAvyÂ¼Ã¶ÃÂ¤( return 0Â¿Â¡Â¼Â­ Ã‡Ã˜Â´Ã§ SkillIdxÂ·Ã STBÂ¿Â¡Â¼Â­ Ã‡ÃŠÂ¿Ã¤ Ã†Ã·Ã€ÃÃ†Â®Â¸Â¦ Â°Â¡ÃÂ®Â¿Ã‚Â´Ã™)
+/// 2004 / 6 /10 :nAvyÂ¼Ã¶ÃÂ¤( STB Â±Â¸ÃÂ¶ÂºÂ¯Â°Ã¦ - Â´Ã™Ã€Â½Â·Â¹ÂºÂ§Â¾Ã·Ã€Â» Ã€Â§Ã‡Ã‘ Ã†Ã·Ã€ÃÃ†Â®Â´Ã‚ Â´Ã™Ã€Â½Â·Â¹ÂºÂ§Â¿Â¡Â¼Â­ Â°Â¡ÃÂ®Â¿Ã‚Â´Ã™ )
 short
 CUserDATA::Get_NeedPoint2SkillUP(short nSkillSLOT) {
     _ASSERT(nSkillSLOT >= 0 && nSkillSLOT <= MAX_LEARNED_SKILL_CNT);
@@ -2098,17 +2050,17 @@ CUserDATA::Get_NeedPoint2SkillUP(short nSkillSLOT) {
     short nNextLevelSkillIDX = nSkillIDX + 1;
 
     if (nNextLevelSkillIDX >= g_SkillList.Get_SkillCNT()) {
-        // ´õÀÌ»ó ·¹º§¾÷ ÇÒ¼ö ¾ø´Ù.
+        // Â´ÃµÃ€ÃŒÂ»Ã³ Â·Â¹ÂºÂ§Â¾Ã· Ã‡Ã’Â¼Ã¶ Â¾Ã¸Â´Ã™.
         return 0;
     }
 
-    // °°Àº Á¾·ùÀÇ ½ºÅ³ÀÌ°í ¹è¿ì·Á´Â ·¹º§ÀÌ ÇöÀç ·¹º§ÀÇ ´ÙÀ½ ·¹º§ÀÎ°¡ ??
+    // Â°Â°Ã€Âº ÃÂ¾Â·Ã¹Ã€Ã‡ Â½ÂºÃ…Â³Ã€ÃŒÂ°Ã­ Â¹Ã¨Â¿Ã¬Â·ÃÂ´Ã‚ Â·Â¹ÂºÂ§Ã€ÃŒ Ã‡Ã¶Ã€Ã§ Â·Â¹ÂºÂ§Ã€Ã‡ Â´Ã™Ã€Â½ Â·Â¹ÂºÂ§Ã€ÃÂ°Â¡ ??
     if (SKILL_1LEV_INDEX(nSkillIDX) != SKILL_1LEV_INDEX(nNextLevelSkillIDX)
         || SKILL_LEVEL(nSkillIDX) + 1 != SKILL_LEVEL(nNextLevelSkillIDX)) {
         return 0;
     }
 
-    // TODO:: ¿©±â¼­ skill stbÀÇ ÄÃ·³¿¡ ÀÖ´Â °ªÀ» Àü¼Û...
+    // TODO:: Â¿Â©Â±Ã¢Â¼Â­ skill stbÃ€Ã‡ Ã„ÃƒÂ·Â³Â¿Â¡ Ã€Ã–Â´Ã‚ Â°ÂªÃ€Â» Ã€Ã¼Â¼Ã›...
     return SKILL_NEED_LEVELUPPOINT(nNextLevelSkillIDX);
 }
 
@@ -2203,35 +2155,6 @@ CUserDATA::Quest_SubITEM(tagITEM& sSubITEM) {
     #include "Game_FUNC.h"
 #endif
 bool
-CUserDATA::Reward_InitSTATUS(void) {
-    // ÄÉ¸¯ÅÍÀÇ ½ºÅİÀ» ÃÊ±âÈ­ ÇÑ´Ù.
-    // º¸»óµÇ´Â Æ÷ÀÎÆ®½Ä ¼öÁ¤... 2004. 6. 7 by icarus
-    int iBPoint = (int)((this->GetCur_LEVEL() - 1) * (this->GetCur_LEVEL() + 24) * 0.4f
-        + (this->GetCur_LEVEL() - 1) * 0.8f + 0.5f);
-    this->SetCur_BonusPOINT(iBPoint);
-
-    short nRace = this->GetCur_RACE();
-
-    this->SetDef_STR(AVATAR_STR(nRace));
-    this->SetDef_DEX(AVATAR_DEX(nRace));
-    this->SetDef_INT(AVATAR_INT(nRace));
-    this->SetDef_CON(AVATAR_CON(nRace));
-    this->SetDef_CHARM(AVATAR_CHARM(nRace));
-    this->SetDef_SENSE(AVATAR_SENSE(nRace));
-
-    // ÃÊ±âÈ­ µÆÀ¸´Ï »óÅÂ¸¦ º¸³»ÀÚ...
-    this->UpdateCur_Ability();
-    this->Quest_CHANGE_SPEED();
-
-#ifndef __SERVER
-    int iEffect = GF_GetEffectUseFile("3DData\\Effect\\healing_01.eft");
-    GF_EffectOnObject(g_pAVATAR->Get_INDEX(), iEffect);
-#endif
-
-    return true;
-}
-
-bool
 CUserDATA::Reward_InitSKILL(void) {
     if (g_pAVATAR) {
         /// Remove from SkillSlot
@@ -2251,12 +2174,41 @@ CUserDATA::Reward_InitSKILL(void) {
     /// QuickSlot Update
     g_itMGR.UpdateQuickSlot();
 
-    // 0ÆäÀÌÁöÀÇ ±âº» ½ºÅ³À» °Á µĞ´Ù.
+    // 0Ã†Ã¤Ã€ÃŒÃÃ¶Ã€Ã‡ Â±Ã¢ÂºÂ» Â½ÂºÃ…Â³Ã€Â» Â°Ã ÂµÃÂ´Ã™.
     ::ZeroMemory(&m_Skills.m_nSkillINDEX[MAX_LEARNED_SKILL_PER_PAGE],
         sizeof(short) * (MAX_LEARNED_SKILL_CNT - MAX_LEARNED_SKILL_PER_PAGE));
 
-    InitPassiveSkill();
-    UpdateCur_Ability();
+    this->InitPassiveSkill();
+    this->UpdateCur_Ability();
+    return true;
+}
+
+bool
+CUserDATA::Reward_InitSTATUS(void) {
+    // Ã„Ã‰Â¸Â¯Ã…ÃÃ€Ã‡ Â½ÂºÃ…ÃÃ€Â» ÃƒÃŠÂ±Ã¢ÃˆÂ­ Ã‡Ã‘Â´Ã™.
+    // ÂºÂ¸Â»Ã³ÂµÃ‡Â´Ã‚ Ã†Ã·Ã€ÃÃ†Â®Â½Ã„ Â¼Ã¶ÃÂ¤... 2004. 6. 7 by icarus
+    int iBPoint = (int)((this->GetCur_LEVEL() - 1) * (this->GetCur_LEVEL() + 24) * 0.4f
+        + (this->GetCur_LEVEL() - 1) * 0.8f + 0.5f);
+    this->SetCur_BonusPOINT(iBPoint);
+
+    short nRace = this->GetCur_RACE();
+
+    this->SetDef_STR(AVATAR_STR(nRace));
+    this->SetDef_DEX(AVATAR_DEX(nRace));
+    this->SetDef_INT(AVATAR_INT(nRace));
+    this->SetDef_CON(AVATAR_CON(nRace));
+    this->SetDef_CHARM(AVATAR_CHARM(nRace));
+    this->SetDef_SENSE(AVATAR_SENSE(nRace));
+
+    // ÃƒÃŠÂ±Ã¢ÃˆÂ­ ÂµÃ†Ã€Â¸Â´Ã Â»Ã³Ã…Ã‚Â¸Â¦ ÂºÂ¸Â³Â»Ã€Ãš...
+    this->UpdateCur_Ability();
+    this->Quest_CHANGE_SPEED();
+
+#ifndef __SERVER
+    int iEffect = GF_GetEffectUseFile("3DData\\Effect\\healing_01.eft");
+    GF_EffectOnObject(g_pAVATAR->Get_INDEX(), iEffect);
+#endif
+
     return true;
 }
 
@@ -2268,7 +2220,7 @@ CUserDATA::Reward_ITEM(tagITEM& sITEM, BYTE btRewardToParty, BYTE btQuestSLOT) {
         ;
     } else {
         if (ITEM_TYPE_QUEST == sITEM.GetTYPE()) {
-            // Äù½ºÆ® ÀÎº¥Åä¸®¿¡ ³Ö±â...
+            // Ã„Ã¹Â½ÂºÃ†Â® Ã€ÃÂºÂ¥Ã…Ã¤Â¸Â®Â¿Â¡ Â³Ã–Â±Ã¢...
             if (btQuestSLOT >= QUEST_PER_PLAYER)
                 return false;
 
@@ -2321,9 +2273,6 @@ CUserDATA::Reward_CalMONEY(BYTE btEquation, int iBaseValue, BYTE btRewardToParty
     int iR;
 
     if (btRewardToParty) {
-        ;
-        ;
-        ;
     } else {
         iR = CCal::Get_RewardVALUE(btEquation, iBaseValue, this, nDupCNT);
         this->Add_MoneyNSend(iR, GSV_REWARD_MONEY);
@@ -2344,14 +2293,11 @@ CUserDATA::Reward_CalITEM(BYTE btEquation,
 
     int iR;
     if (btRewardToParty) {
-        ;
-        ;
-        ;
     } else {
         if (sITEM.IsEnableDupCNT()) {
             iR = CCal::Get_RewardVALUE(btEquation, iBaseValue, this, 0);
             if (iR > 0) {
-                sITEM.m_uiQuantity = iR; // ¼ö·®...
+                sITEM.m_uiQuantity = iR; // Â¼Ã¶Â·Â®...
                 if (ITEM_TYPE_QUEST == sITEM.GetTYPE()) {
                     if (btQuestSLOT >= QUEST_PER_PLAYER)
                         return false;
@@ -2362,7 +2308,7 @@ CUserDATA::Reward_CalITEM(BYTE btEquation,
                 }
             }
         } else {
-            // Àåºñ
+            // Ã€Ã¥ÂºÃ±
             if (nItemOP) {
                 sITEM.m_bIsAppraisal = 1;
                 sITEM.m_bHasSocket = 0;
@@ -2375,9 +2321,6 @@ CUserDATA::Reward_CalITEM(BYTE btEquation,
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
-/// 2004 / 2/ 19 : Ãß°¡ nAvy
-/// 2004 / 5/ 24 : ¼öÁ¤ nAvy - Sub_ITEM => ClearITEM
 void
 CUserDATA::Set_ITEM(short nListRealNO, tagITEM& sITEM) {
     tagITEM oldItem = Get_InventoryITEM(nListRealNO);
@@ -2411,9 +2354,9 @@ CUserDATA::SetCur_HP(short nValue) {
 #endif
 
     this->m_GrowAbility.m_nHP = nValue;
-} // »ı¸í·Â
+} // Â»Ã½Â¸Ã­Â·Ã‚
 
-// È«±Ù.
+// ÃˆÂ«Â±Ã™.
 short
 CUserDATA::GetCur_PatHP() {
 #ifdef _GBC
@@ -2423,7 +2366,7 @@ CUserDATA::GetCur_PatHP() {
 #endif
 }
 
-// È«±Ù.
+// ÃˆÂ«Â±Ã™.
 void
 CUserDATA::SetCur_PatHP(short nPatHP) {
 #ifdef _GBC
@@ -2435,7 +2378,7 @@ CUserDATA::SetCur_PatHP(short nPatHP) {
 #endif
 }
 
-// È«±Ù.
+// ÃˆÂ«Â±Ã™.
 DWORD
 CUserDATA::GetCur_PatCoolTIME() {
 #ifdef _GBC
@@ -2445,7 +2388,7 @@ CUserDATA::GetCur_PatCoolTIME() {
 #endif
 }
 
-// È«±Ù.
+// ÃˆÂ«Â±Ã™.
 void
 CUserDATA::SetCur_PatCoolTIME(DWORD dwCoolTIME) {
 #ifdef _GBC
@@ -2453,17 +2396,7 @@ CUserDATA::SetCur_PatCoolTIME(DWORD dwCoolTIME) {
 #endif
 }
 
-// È«±Ù.
-int
-CUserDATA::GetDef_IMMUNITY() {
-#ifdef _GBC
-    return this->m_Battle.m_nImmunity;
-#else
-    return 0;
-#endif
-}
-
-// È«±Ù.
+// ÃˆÂ«Â±Ã™.
 void
 CUserDATA::SetDef_IMMUNITY(int iImmunity) {
 #ifdef _GBC

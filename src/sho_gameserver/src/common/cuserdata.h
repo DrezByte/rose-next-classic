@@ -1,14 +1,10 @@
-/**
- * \ingroup SHO_GS
- * \file	CUserData.h
- * \brief	개인 사용자의 케릭터의 데이터 보관, 관리
- */
 #ifndef __CUSERDATA_H
 #define __CUSERDATA_H
+#include "IO_STB.h"
 #include "CQuest.h"
 #include "CInventory.h"
 #include "CHotICON.h"
-#include "Calculation.h"
+#include "calculation.h"
 
 #include "rose/common/game_config.h"
 
@@ -19,23 +15,16 @@
 #endif
 
 #pragma pack(push, 1)
-//-------------------------------------------------------------------------------------------------
-/**
- * \ingroup SHO_GS_LIB
- * \class	tagBasicINFO
- * \author	wookSang.Jo
- * \brief	사용자 케릭터의 기본 정보 데이타 보관 구조체
- */
 struct tagBasicINFO {
     // NAME
     // SEX
-    char m_cBirthStone; ///< 탄생석
-    char m_cFaceIDX; ///< 얼굴 모양
-    char m_cHairIDX; ///< 머리 모양
-    short m_nClass; ///< 직업 ( 1~30 )
-    char m_cUnion; ///< 소속 조합 ( 1~20 )
-    char m_cRank; ///< 계급 ( 1~15 )
-    char m_cFame; ///< 명성 ( 0 ~ 99 )
+    char m_cBirthStone;
+    char m_cFaceIDX;
+    char m_cHairIDX;
+    short m_nClass;
+    char m_cUnion;
+    char m_cRank;
+    char m_cFame;
     void Init(char cBirthStone, char cFaceIDX, char cHairIDX) {
         m_cBirthStone = cBirthStone;
         m_cFaceIDX = cFaceIDX;
@@ -48,21 +37,15 @@ struct tagBasicINFO {
     }
 };
 
-/**
- * \ingroup SHO_GS_LIB
- * \class	tagBasicAbility
- * \author	wookSang.Jo
- * \brief	사용자 케릭터의 기본 능력치 데이타 보관 구조체
- */
 struct tagBasicAbility {
     union {
         struct {
-            short m_nSTR; ///< 근력 1~200
-            short m_nDEX; ///< 민첩 1~200
-            short m_nINT; ///< 지력 1~200
-            short m_nCON; ///< concentration 집중력 1~200
-            short m_nCHARM; ///< 매력 1~200
-            short m_nSENSE; ///< 감각 1~200
+            short m_nSTR;
+            short m_nDEX;
+            short m_nINT;
+            short m_nCON;
+            short m_nCHARM;
+            short m_nSENSE;
         };
         short m_nBasicA[BA_MAX];
     };
@@ -77,12 +60,7 @@ struct tagBasicAbility {
 };
 
 #define MAX_EXPERIENCE 0x7FFFFFFFFFFFFFFF
-
 #define MAX_STAMINA 5000
-//#define	MAX_STAMINA				20000
-//#define	GREEN_STAMINA			10000	// 이상이면 연두색
-//#define	YELLOW_STAMINA			3000	// 이상이면 노란색
-//#define	RED_STAMINA				0		// 이상이면 붉은색
 
 #define MAX_MAINTAIN_STATUS 40 // 8 * 50 = 400
 struct tagMaintainSTATUS {
@@ -90,142 +68,49 @@ struct tagMaintainSTATUS {
     short m_nValue;
     short m_nDummy;
 };
-// struct tagMaintainDATA {
-//	tagMaintainSTATUS	m_STATUS[ MAX_MAINTAIN_STATUS ];
-//
-//	bool UpdateSTATUS (DWORD dwCurAbsSEC, int iAbilityType, int i10Min, short nValue)
-//	{
-//		short nIndex = iAbilityType - (int)AT_MAINTAIN_ABILITY;
-//		if ( nIndex >= 0 && nIndex < MAX_MAINTAIN_STATUS ) {
-//			// 현재시간 + 입력값 * 10분
-//			if ( this->m_STATUS[ nIndex ].m_dwExpiredSEC > dwCurAbsSEC ) {
-//				// 시간 추가...
-//				this->m_STATUS[ nIndex ].m_dwExpiredSEC += ( i10Min * 10 * 60 );
-//			} else {
-//				// 시간 갱신...
-//				this->m_STATUS[ nIndex ].m_dwExpiredSEC = dwCurAbsSEC + ( i10Min * 10 * 60 );
-//			}
-//			this->m_STATUS[ nIndex ].m_nValue = nValue;
-//			return true;
-//		}
-//		return false;
-//	}
-//	bool IsBankFREE (DWORD dwCurAbsSEC)
-//	{
-//		return ( this->m_STATUS[ AT_BANK_FREE -AT_MAINTAIN_ABILITY ].m_dwExpiredSEC > dwCurAbsSEC );
-//	}
-//	bool IsBankAddON (DWORD dwCurAbsSEC)
-//	{
-//		return ( this->m_STATUS[ AT_BANK_ADDON-AT_MAINTAIN_ABILITY ].m_dwExpiredSEC > dwCurAbsSEC );
-//	}
-//	short GetStoreSKIN (DWORD dwCurAbsSEC)
-//	{
-//		if ( this->m_STATUS[ AT_STORE_SKIN-AT_MAINTAIN_ABILITY ].m_dwExpiredSEC > dwCurAbsSEC )
-//			return this->m_STATUS[ AT_STORE_SKIN-AT_MAINTAIN_ABILITY ].m_nValue;
-//		return 0;
-//	}
-//} ;
 
-/**
- * \ingroup SHO_GS_LIB
- * \class	tagGrowAbility_old
- * \author	wookSang.Jo
- * \brief	사용자 케릭터의 성장 능력치 데이타 보관 구조체
- */
-struct tagGrowAbility_old {
-    union {
-        struct {
-            short m_nHP; ///< 0~2000
-            short m_nMP; ///< 0~1000
-
-            long m_lEXP; ///< 경험치 1~100000
-            short m_nLevel; ///< 0~250
-            short m_nBonusPoint; ///< 1~999
-            short m_nSkillPoint; ///< 1~
-            BYTE m_btBodySIZE; ///< 몸통크기
-            BYTE m_btHeadSIZE; ///< 머리크기
-            long m_lPenalEXP; ///< 추가 경험치...
-
-            short m_nFameG; ///< 선행지수	: 퀘스트에 의해 증감됨	: 2004.5.27 추가
-            short m_nFameB; ///< 선행지수 : 퀘스트에 의해 증감됨	: 2004.5.27 추가
-            short m_nJoHapPOINT[MAX_UNION_COUNT]; // 조합 포인트		: 2004.5.27 추가
-
-            // int	m_iGuildNO;			///< 길드 번호	: 2004.5.27 추가
-            // short	m_nGuildCNTRB;		///< 길드 기여도	: 2004.5.27 추가
-            // BYTE	m_btGuildPOS;		///< 길드 직위	: 2004.5.27 추가
-            int m_iNULL1;
-            short m_nNULL2;
-            BYTE m_btNULL3;
-
-            short m_nPKFlag; // 2004. 6. 17 추가..
-            short m_nSTAMINA; // 2004. 7. 23 추가..
-            /*
-                char	m_cChaos;			// 성향
-                short	m_nBattle_LV;		// 베틀레벨
-                short	m_nPK_LV;			//
-            */
-            //#ifdef	__INC_PLATINUM
-            tagMaintainSTATUS m_STATUS[MAX_MAINTAIN_STATUS];
-            //#endif
-        };
-    };
-};
-
-/**
- * \ingroup SHO_GS_LIB
- * \class	tagGrowAbility
- * \author	wookSang.Jo
- * \brief	사용자 케릭터의 성장 능력치 데이타 보관 구조체
- */
 struct tagGrowAbility {
-    union {
-        struct {
-            short m_nHP; ///< 0~2000
-            short m_nMP; ///< 0~1000
-
-            __int64 m_lEXP; ///< 경험치 1~100000
-            short m_nLevel; ///< 0~250
-            short m_nBonusPoint; ///< 1~999
-            short m_nSkillPoint; ///< 1~
-            BYTE m_btBodySIZE; ///< 몸통크기
-            BYTE m_btHeadSIZE; ///< 머리크기
-            __int64 m_lPenalEXP; ///< 추가 경험치...
-
-            short m_nFameG; ///< 선행지수	: 퀘스트에 의해 증감됨	: 2004.5.27 추가
-            short m_nFameB; ///< 선행지수 : 퀘스트에 의해 증감됨	: 2004.5.27 추가
-            short m_nJoHapPOINT[MAX_UNION_COUNT]; // 조합 포인트		: 2004.5.27 추가
-
-            // int	m_iGuildNO;			///< 길드 번호	: 2004.5.27 추가
-            // short	m_nGuildCNTRB;		///< 길드 기여도	: 2004.5.27 추가
-            // BYTE	m_btGuildPOS;		///< 길드 직위	: 2004.5.27 추가
-            int m_iNULL1;
-            short m_nNULL2;
-            BYTE m_btNULL3;
-
-            short m_nPKFlag; // 2004. 6. 17 추가..
-            short m_nSTAMINA; // 2004. 7. 23 추가..
-            /*
-                char	m_cChaos;			// 성향
-                short	m_nBattle_LV;		// 베틀레벨
-                short	m_nPK_LV;			//
-            */
-            //#ifdef	__INC_PLATINUM
-            tagMaintainSTATUS m_STATUS[MAX_MAINTAIN_STATUS];
-//#endif
+	union {
+		struct {
+			short m_nHP;
+			short m_nMP;
+			
+			__int64 m_lEXP;
+			short m_nLevel;
+			short m_nBonusPoint;
+			short m_nSkillPoint;
+			BYTE m_btBodySIZE;
+			BYTE m_btHeadSIZE;
+			__int64 m_lPenalEXP;
+			
+			short m_nFameG;
+			short m_nFameB;
+			short m_nJoHapPOINT[MAX_UNION_COUNT];
+			
+			int m_iGuildNO;
+			short m_nGuildCNTRB;
+			BYTE m_btGuildPOS;
+			
+			short m_nPKFlag;
+			short m_nSTAMINA;
+			
+			tagMaintainSTATUS m_STATUS[MAX_MAINTAIN_STATUS];
+			
 #ifdef __KCHS_BATTLECART__
-            short m_nPatHP;
-            DWORD m_dwPatCoolTIME;
+			short m_nPatHP;
+			DWORD m_dwPatCoolTIME;
 #endif
-        };
-        BYTE m_pDATA[1];
-    };
+		};
+		BYTE m_pDATA[1];
+	};
+
     void Init() {
         ::ZeroMemory(m_pDATA, sizeof(tagGrowAbility));
         m_nHP = 50;
         m_nMP = 40;
 
-        m_nLevel = 1;
         m_lEXP = 0;
+        m_nLevel = 1;
         m_btBodySIZE = 100; // 몸통크기
         m_btHeadSIZE = 100; // 머리크기
         m_nSTAMINA = MAX_STAMINA;
@@ -233,7 +118,7 @@ struct tagGrowAbility {
 #ifndef __SERVER
         m_nBonusPoint = 0;
         m_nSkillPoint = 0;
-        m_lPenalEXP = 0;
+		m_lPenalEXP = 0;
         m_nFameG = m_nFameB = 0;
         m_iGuildNO = m_nGuildCNTRB = m_btGuildPOS = 0;
         ::ZeroMemory(m_nUnionPOINT, sizeof(m_nUnionPOINT));
@@ -320,29 +205,13 @@ struct tagSkillAbility {
     void Init() {
         ::ZeroMemory(m_nSkillINDEX, sizeof(short) * MAX_LEARNED_SKILL_CNT);
 
-        m_nSkillINDEX[0] = 11; // 앉기
-        m_nSkillINDEX[1] = 12; // 줍기
-        m_nSkillINDEX[2] = 16; // 일반공격
-        m_nSkillINDEX[3] = 20; // 거래신청
+        m_nSkillINDEX[0] = 11;
+        m_nSkillINDEX[1] = 12;
+        m_nSkillINDEX[2] = 16;
+        m_nSkillINDEX[3] = 20;
 
-        /*
-        m_nSkillINDEX[4] = 49; // 화남
-        m_nSkillINDEX[5] = 50; // 박수
-        m_nSkillINDEX[6] = 48; // 절규
-        m_nSkillINDEX[7] = 47; // 파이팅
-        m_nSkillINDEX[8] = 46; // 웃기
-        m_nSkillINDEX[9] = 43; // 인사
-        m_nSkillINDEX[10] = 42; // 인사
-        m_nSkillINDEX[11] = 41; // 인사
-        m_nSkillINDEX[12] = 181; // 인사
-        m_nSkillINDEX[13] = 22; // 본인 타겟팅
-        */
     }
 };
-
-/// 퀘스트 데이터 ...
-
-// #define	__APPLY_EXTAND_QUEST_VAR
 
 #define QUEST_PER_PLAYER 10 // 개인당 최대 등록 가능 퀘스트수...
 
@@ -359,13 +228,6 @@ struct tagSkillAbility {
 #endif
 #define QUEST_SWITCH_GROUP_CNT (QUEST_SWITCH_CNT / sizeof(DWORD))
 
-// #define	MAX_SQUEST_SWITCH	2048
-/**
- * \ingroup SHO_GS_LIB
- * \class	tagQuestData
- * \author	wookSang.Jo
- * \brief	사용자 케릭터가 진행중이거나 완료된 퀘스트의 데이타 보관 구조체
- */
 struct tagQuestData {
 private:
     enum { BIT_SHIFT = 3, WHICH_BIT = 0x07 };
@@ -388,14 +250,14 @@ private:
     }
 
 public:
-    short m_nEpisodeVAR[QUEST_EPISODE_VAR_CNT]; // 2 * 5
-    short m_nJobVAR[QUEST_JOB_VAR_CNT]; // 2 * 3
-    short m_nPlanetVAR[QUEST_PLANET_VAR_CNT]; // 2 * 7
-    short m_nUnionVAR[QUEST_UNION_VAR_CNT]; // 2 * 10
-    CQUEST m_QUEST[QUEST_PER_PLAYER]; // 660
+    short m_nEpisodeVAR[QUEST_EPISODE_VAR_CNT];
+    short m_nJobVAR[QUEST_JOB_VAR_CNT];
+    short m_nPlanetVAR[QUEST_PLANET_VAR_CNT];
+    short m_nUnionVAR[QUEST_UNION_VAR_CNT];
+    CQUEST m_QUEST[QUEST_PER_PLAYER];
     union {
         DWORD m_dwSWITCHES[QUEST_SWITCH_CNT / 32];
-        BYTE m_btSWITCHES[QUEST_SWITCH_CNT / 8]; // 1024 / 8 = 128
+        BYTE m_btSWITCHES[QUEST_SWITCH_CNT / 8];
     };
 
 #ifdef __APPLY_EXTAND_QUEST_VAR
@@ -410,6 +272,7 @@ public:
 #ifdef __APPLY_EXTAND_QUEST_VAR
         ::ZeroMemory(m_nEtcVAR, sizeof(short) * QUEST_ETC_VAR_CNT);
 #endif
+
         this->ClearAllSwitchs();
 
         for (short nI = 0; nI < QUEST_PER_PLAYER; nI++) {
@@ -449,36 +312,21 @@ public:
     }
 };
 
-// sizeof(tagITME) = 6+8 = 14
-// 14 * 40 * 4 = 2240
-//#ifdef	__INC_PLATINUM
-#define BANKSLOT_JPN_DEFAULT 40
-#define BANKSLOT_JPN_EXTRA 120
-
 #define BANKSLOT_DEFAULT 90
 #define BANKSLOT_ADDON 30
 #define BANKSLOT_PLATINUM 40
-//#else
-//	#define	BANKSLOT_DEFAULT		90
-//	#define	BANKSLOT_ADDON			0
-//	#define	BANKSLOT_PLATINUM		0
-//#endif
+
 #define BANKSLOT_TOTAL (BANKSLOT_DEFAULT + BANKSLOT_ADDON + BANKSLOT_PLATINUM)
 
 #define BANKSLOT_PLATINUM_0 (BANKSLOT_DEFAULT + BANKSLOT_ADDON)
-/**
- * \ingroup SHO_GS_LIB
- * \class	tagSkillAbility
- * \author	wookSang.Jo
- * \brief	사용자 케릭터의 창고 데이타 보관 구조체
- */
+
 struct tagBankData {
     tagITEM m_ItemLIST[BANKSLOT_TOTAL];
     __int64 m_i64ZULY;
 
-    void Init() {
-        ::ZeroMemory(m_ItemLIST, sizeof(m_ItemLIST));
-        m_i64ZULY = 0;
+	void Init() {
+		::ZeroMemory(m_ItemLIST, sizeof(tagITEM) * BANKSLOT_TOTAL);
+		m_i64ZULY = 0;
     }
 
     short Get_EmptySlot(short nStartSlotNO, short nEndSlotNO);
@@ -488,13 +336,7 @@ struct tagBankData {
     void Set_ITEM(short nSlotNO, tagITEM& sITEM) { m_ItemLIST[nSlotNO] = sITEM; }
 };
 
-#define MAX_WISH_ITEMS 30 // 구입 희망하는 찜 아이템 최대 갯수
-/**
- * \ingroup SHO_GS_LIB
- * \class	tagWishLIST
- * \author	wookSang.Jo
- * \brief	사용자 케릭터의 구입 희망 목록 데이타 보관 구조체
- */
+#define MAX_WISH_ITEMS 30
 struct tagWishLIST {
     tagBaseITEM m_WishITEM[MAX_WISH_ITEMS];
 
@@ -511,31 +353,25 @@ struct tagWishLIST {
 //-------------------------------------------------------------------------------------------------
 #pragma pack(pop)
 
-/**
- * \ingroup SHO_GS_LIB
- * \class	tagBattleAbility
- * \author	wookSang.Jo
- * \brief	사용자 케릭터의 전투 능력치 데이터 보관 구조체 - 디비에 저장되지 않고 실시간 계산됨
- */
 struct tagBattleAbility {
     short m_nMaxHP;
     short m_nMaxMP;
-    short m_nATT; ///< 공격력 1~200
-    short m_nDEF; ///< 방어력 1~200
-    short m_nMAG; ///< 마법력 1~200
-    short m_nHIT; ///< 명중력 1~500
-    short m_nRES; ///< 항마력 1~200
-    short m_nAVOID; ///< 회피력 1~999
-    short m_nSPD; ///< 이동력 1~50
-    short m_nMaxWEIGHT; ///< weight 아이템소지량.
-    short m_nWEIGHT; ///< 현재 소지한량
+    short m_nATT;
+    short m_nDEF;
+    short m_nMAG;
+    short m_nHIT;
+    short m_nRES;
+    short m_nAVOID;
+    short m_nSPD;
+    short m_nMaxWEIGHT;
+    short m_nWEIGHT;
 
-    //	int		m_iDefQuality;	///< 전체 방어구 품질
-    int m_iDefDurabity; ///< 전체 방어구 내구도합
-    int m_iDefGrade; ///< 전체 방어구 등급합
+    int m_iDefDurabity;
+    int m_iDefGrade;
 
-    int m_iCritical; ///< 크리티컬 수치
-    float m_fRateUseMP; ///< MP 절감 비율로 계산되어진 MP 소모될 비율.
+    int m_iCritical;
+    float m_fRateUseMP;
+    
 #ifdef __KCHS_BATTLECART__
     short m_nPatMaxHP;
 #endif
@@ -544,16 +380,8 @@ struct tagBattleAbility {
 #endif
 };
 
-//-------------------------------------------------------------------------------------------------
-
-/**
- * \ingroup SHO_GS_LIB
- * \class	CUserDATA
- * \author	wookSang.Jo
- * \brief	사용자 케릭터의 기본 데이터 보관 구조체
- */
 class CUserDATA {
-private:
+protected:
     inline int GetPassiveSkillValue(short nAbilityTYPE) { return this->m_iAddValue[nAbilityTYPE]; }
     inline void AddPassiveSkillValue(short nAbilityTYPE, short nValue) {
         this->m_iAddValue[nAbilityTYPE] += nValue;
@@ -597,27 +425,26 @@ protected:
     int Cal_ATTACK();
 
 public:
-    short GetCur_HP() { return this->m_GrowAbility.m_nHP; } /// 생명력
+    short GetCur_HP() { return this->m_GrowAbility.m_nHP; }
     short GetCur_MP() { return this->m_GrowAbility.m_nMP; }
     virtual short GetCur_WEIGHT() { return this->m_Battle.m_nWEIGHT; }
 
     int GetCur_LEVEL() { return this->m_GrowAbility.m_nLevel; }
 
-    int GetDef_ATK() { return this->m_Battle.m_nATT; } /// 공격력
-    int GetDef_DEF() { return this->m_Battle.m_nDEF; } /// 방어력
-    int GetDef_RES() { return this->m_Battle.m_nRES; } /// 항마력
+    int GetDef_ATK() { return this->m_Battle.m_nATT; }
+    int GetDef_DEF() { return this->m_Battle.m_nDEF; }
+    int GetDef_RES() { return this->m_Battle.m_nRES; }
     int GetDef_HIT() { return this->m_Battle.m_nHIT; }
-    int GetDef_AVOID() { return this->m_Battle.m_nAVOID; } /// 회피력
+    int GetDef_AVOID() { return this->m_Battle.m_nAVOID; }
     int GetDef_CRITICAL() { return this->m_Battle.m_iCritical; }
-#ifdef __APPLY_2ND_JOB
-    int GetDef_IMMUNITY() { return this->m_Battle.m_nImmunity; } /// 면역력
-#endif
 
-    int GetCur_BIRTH() { return this->m_BasicINFO.m_cBirthStone; } /// 탄생석
-    int GetCur_RANK() { return this->m_BasicINFO.m_cRank; } /// 계급
-    int GetCur_JOHAP() { return this->m_BasicINFO.m_cUnion; } /// 소속
-    int GetCur_FAME() { return this->m_BasicINFO.m_cFame; } /// 명성
-    int GetCur_JOB() { return this->m_BasicINFO.m_nClass; } /// 직업
+	void SetDef_IMMUNITY(int iImmunity);
+
+    int GetCur_BIRTH() { return this->m_BasicINFO.m_cBirthStone; }
+    int GetCur_RANK() { return this->m_BasicINFO.m_cRank; }
+    int GetCur_JOHAP() { return this->m_BasicINFO.m_cUnion; }
+    int GetCur_FAME() { return this->m_BasicINFO.m_cFame; }
+    int GetCur_JOB() { return this->m_BasicINFO.m_nClass; }
 
     __int64 GetCur_EXP() { return this->m_GrowAbility.m_lEXP; }
     int GetCur_BonusPOINT() { return this->m_GrowAbility.m_nBonusPoint; }
@@ -626,12 +453,12 @@ public:
     BYTE GetCur_BodySIZE() { return this->m_GrowAbility.m_btBodySIZE; }
 
     /// 기본 능력치...
-    int GetDef_STR() { return this->m_BasicAbility.m_nSTR; } /// 근력
-    int GetDef_DEX() { return this->m_BasicAbility.m_nDEX; } /// 민첩
-    int GetDef_INT() { return this->m_BasicAbility.m_nINT; } /// 지력
-    int GetDef_CON() { return this->m_BasicAbility.m_nCON; } /// 집중
-    int GetDef_CHARM() { return this->m_BasicAbility.m_nCHARM; } /// 매력
-    int GetDef_SENSE() { return this->m_BasicAbility.m_nSENSE; } /// 감각
+    int GetDef_STR() { return this->m_BasicAbility.m_nSTR; }
+    int GetDef_DEX() { return this->m_BasicAbility.m_nDEX; }
+    int GetDef_INT() { return this->m_BasicAbility.m_nINT; }
+    int GetDef_CON() { return this->m_BasicAbility.m_nCON; }
+    int GetDef_CHARM() { return this->m_BasicAbility.m_nCHARM; }
+    int GetDef_SENSE() { return this->m_BasicAbility.m_nSENSE; }
 
     void SetDef_STR(short nValue) { this->m_BasicAbility.m_nSTR = nValue; }
     void SetDef_DEX(short nValue) { this->m_BasicAbility.m_nDEX = nValue; }
@@ -666,8 +493,7 @@ public:
         return (GetPassiveSkillValue(AT_PSV_SAVE_MP) + m_iAddValue[AT_SAVE_MP]
             + (short)(m_iAddValue[AT_SAVE_MP] * GetPassiveSkillRate(AT_PSV_SAVE_MP) / 100.f));
     }
-    // int GetCur_DropRATE()			{	return  ( GetPassiveSkillValue( AT_PSV_DROP_RATE ) +
-    // m_iAddValue[ AT_DROP_RATE ] );	}	// 드롭 확률
+    
     int GetCur_DropRATE() { return m_iDropRATE; } // 드롭 확률
     void Cal_DropRATE() // 드롭 확률
     {
@@ -677,7 +503,7 @@ public:
 
     int GetMax_SummonCNT() {
         return (50 + GetPassiveSkillValue(AT_PSV_SUMMON_MOB_CNT));
-    } // 최대 소환 가능 몹 개수
+    }
 
     int GetCur_JoHapPOINT(char btUnionIDX) {
         return btUnionIDX >= 1 ? this->m_GrowAbility.m_nJoHapPOINT[btUnionIDX - 1] : 0;
@@ -752,9 +578,7 @@ public:
     }
 
     void SetCur_FAME(char cValue) { this->m_BasicINFO.m_cFame = cValue; }
-    virtual void SetCur_UNION(
-        char cValue) = 0; //		{	if ( cValue >= 0 && cValue < MAX_UNION_COUNT )
-                          // this->m_BasicINFO.m_cUnion=cValue;	}
+    virtual void SetCur_UNION(char cValue) = 0;
     void SetCur_RANK(char cValue) { this->m_BasicINFO.m_cRank = cValue; }
 
     char GetCur_FACE() { return this->m_BasicINFO.m_cFaceIDX; }
@@ -773,35 +597,32 @@ public:
     void SetCur_BonusPOINT(short nValue) { this->m_GrowAbility.m_nBonusPoint = nValue; }
     void SetCur_SkillPOINT(short nValue) { this->m_GrowAbility.m_nSkillPoint = nValue; }
 
-    tagBasicINFO m_BasicINFO; ///< 기본 정보 데이터...
-    tagBasicAbility m_BasicAbility; ///< 기본 능력치 데이터...
-    tagGrowAbility m_GrowAbility; ///< 성장 능력치 데이터 ...
-    tagSkillAbility m_Skills; ///< 아바타 보유스킬
+    tagBasicINFO m_BasicINFO;
+    tagBasicAbility m_BasicAbility;
+    tagGrowAbility m_GrowAbility;
+    tagSkillAbility m_Skills;
 
-    tagQuestData m_Quests; ///< quest
-    CInventory m_Inventory; ///< inventory
-    CHotICONS m_HotICONS; ///< 단축아이콘 등록 정보...
-    tagBankData m_Bank; ///< 은행 데이타.
-    tagWishLIST m_WishLIST; ///< 개인 상점에서 물건 구입시 사용할 구입희망 아이템목록.
+    tagQuestData m_Quests;
+    CInventory m_Inventory;
+    CHotICONS m_HotICONS;
+    tagBankData m_Bank;
+    tagWishLIST m_WishLIST;
 
-    tagBattleAbility m_Battle; ///< 전투 능력치 데이터 - 계산되어져 얻음
+    tagBattleAbility m_Battle;
 
-    int m_iAddValue[AT_MAX]; ///< 장착 아이템에 의해 증가된 수치 : 계산되어짐.
-    short m_nPassiveRate[AT_MAX]; ///< 패시브 스킬에 의해 보정된 비율
+    int m_iAddValue[AT_MAX];
+    short m_nPassiveRate[AT_MAX];
 
-    BYTE
-        m_btRecoverHP; ///< == m_PassiveSkill[ PST_RECOVER_HP ] + this->m_iAddValue[ AT_RECOVER_HP ]
-    BYTE
-        m_btRecoverMP; ///< == m_PassiveSkill[ PST_RECOVER_MP ] + this->m_iAddValue[ AT_RECOVER_MP ]
+    BYTE m_btRecoverHP;
+    BYTE m_btRecoverMP;
 
-    int m_iDropRATE; ///< 드롭 확률
+    int m_iDropRATE;
 
-    short m_PassiveAbilityFromValue[BA_MAX]; ///< 기본 능력치 :: 수치 패시브 스킬에 의해 보정된 값
-    short m_PassiveAbilityFromRate[BA_MAX]; ///< 기본 능력치 :: 비율 패시브 스킬에 의해 보정된 값
+    short m_PassiveAbilityFromValue[BA_MAX];
+    short m_PassiveAbilityFromRate[BA_MAX];
     short m_nPassiveAttackSpeed;
 
     short m_nPatHP_Mode;
-    //	tagMaintainDATA		m_MaintainDATA;
 
     tagITEM Get_EquipITEM(WORD wEquipIDX) { return m_Inventory.m_ItemEQUIP[wEquipIDX]; }
     tagITEM* Get_EquipItemPTR(WORD wEquipIDX) { return &m_Inventory.m_ItemEQUIP[wEquipIDX]; }
@@ -904,11 +725,9 @@ public:
     bool Set_AbilityValue(WORD nType, int iValue);
     void Add_AbilityValue(WORD nType, int iValue);
 
-    virtual int
-    GetCur_SummonCNT() = 0; /// 현재 존에 소환되어 있는 NPC갯수(죽을때, 존 워프시 0으로 리셋함)
+    virtual int GetCur_SummonCNT() = 0;
 #ifdef __SERVER
     virtual int GetCur_AbilityValue(WORD nType) = 0;
-//			int GetOri_AbilityValue (WORD nType);
 #else
     int GetCur_AbilityValue(WORD nType) { return Get_AbilityValue(nType); }
     int Get_AbilityValue(WORD nType);
@@ -936,7 +755,6 @@ public:
         return (short)(m_BasicAbility.m_nBasicA[BasicAbilityType] * 0.2);
     }
 
-    /// skill stb의 컬럼값을 사용하는것으로...
     short Get_NeedPoint2SkillUP(short nSkillSLOT);
 
     //  -------------------------------------------------------------------------------------------
@@ -1077,7 +895,6 @@ public:
 #endif
     }
 
-    /// 퀘스트 보상 관련 함수
 #ifdef __SERVER
     virtual bool Reward_WARP(int iZoneNO, tPOINTF& PosGOTO) = 0;
 #endif
@@ -1093,8 +910,8 @@ public:
     virtual void Add_AbilityValueNSend(WORD wType, int iValue) { /* nop */
     }
 
-    bool Reward_InitSKILL(void);
     bool Reward_InitSTATUS(void);
+    bool Reward_InitSKILL(void);
     bool Reward_ITEM(tagITEM& sITEM, BYTE btRewardToParty, BYTE btQuestSLOT);
     bool Reward_ABILITY(bool bSetOrAdj, int iType, int iValue, BYTE btRewardToParty);
     bool Reward_CalEXP(BYTE btEquation, int iBaseValue, BYTE btRewardToParty);

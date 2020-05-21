@@ -1,10 +1,17 @@
-﻿#include "stdAFX.h"
+#include "stdAFX.h"
 
 #include "IO_STB.h"
 #include "CUserDATA.h"
 #include "Object.h"
-#include "Calculation.h"
+#include "calculation.h"
 
+#ifndef __SERVER
+    #include "../util/classTIME.h"
+    #include "IO_PAT.h"
+    #include "NET_Prototype.h"
+    #include "../Interface/Dlgs/ChattingDlg.h"
+    #include "../Game.h"
+#endif
 #define MAX_INT 0x07fffffff
 
 short
@@ -82,8 +89,7 @@ tagBankData::Sub_ITEM(short nSlotNO, tagITEM& sITEM) {
 
     return nSlotNO;
 }
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+
 void
 CUserDATA::Cal_AddAbility(tagITEM& sITEM, short nItemTYPE) {
     if (sITEM.GetItemNO() < 1 || sITEM.GetLife() < 1) /// ¾ÆÀÌÅÛÀÌ ¾ø°Å³ª ¼ö¸íÀÌ ´ÙÇÑ°ÍÀº Åë°ú~
@@ -270,10 +276,9 @@ CUserDATA::Cal_BattleAbility() {
     Cal_IMMUNITY();
 #endif
 
-    short nI;
     /// ÇöÀç ¼ÒÁöÇÏ°í ÀÖ´Â ¾ÆÀÌÅÛµéÀÇ ¹«°Ô¸¦ °è»ê...
     m_Battle.m_nWEIGHT = 0;
-    for (nI = EQUIP_IDX_FACE_ITEM; nI < INVENTORY_TOTAL_SIZE; nI++) {
+    for (short nI = EQUIP_IDX_FACE_ITEM; nI < INVENTORY_TOTAL_SIZE; nI++) {
         m_Battle.m_nWEIGHT += m_Inventory.GetWEIGHT(nI);
     }
 
@@ -718,8 +723,7 @@ CUserDATA::Cal_ATTACK() {
 
         iAP += this->m_iAddValue[AT_ATK];
         this->m_Battle.m_nATT = iAP + this->GetPassiveSkillAttackPower(iAP, pRightWPN->m_nItemNo);
-    } else // PAT Å¾½Â ¸ðµå
-    {
+    } else {
         t_eSHOT ShotTYPE = pRightWPN->GetShotTYPE();
         /// ¼ö¸íÀÌ ´ÙÇÑ ¹«±â´Â ¹«±âÀÇ ±âº» °ø°Ý·ÂÀ» 0 À¸·Î..
         if (pRightWPN->GetHEADER() && pRightWPN->GetLife() > 0)
@@ -1472,7 +1476,6 @@ CUserDATA::Skill_LevelUpCondition(short nCurLevelSkillIDX, short nNextLevelSkill
         // ´õÀÌ»ó ·¹º§¾÷ ÇÒ¼ö ¾ø´Ù.
         return RESULT_SKILL_LEVELUP_FAILED;
     }
-
     /*
         ½ºÅ³ ·¹º§¾÷ Á¦ÇÑ »èÁ¦...
         if ( SKILL_LEVEL( nCurLevelSkillIDX ) >= 10 ) {
@@ -1522,7 +1525,7 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
     if (SKILL_TYPE(nSkillIDX) >= SKILL_TYPE_07 && SKILL_TYPE(nSkillIDX) <= SKILL_TYPE_13) {
         if (FLAG_ING_DUMB & this->GetCur_IngStatusFLAG()) {
 #ifndef __SERVER
-            AddMsgToChatWND(STR_CANT_CASTING_STATE, g_dwRED, CChatDLG::CHAT_TYPE_SYSTEM);
+            g_itMGR.AppendChatMsg(STR_CANT_CASTING_STATE, IT_MGR::CHAT_TYPE_SYSTEM);
 #endif
             // º¡¾î¸® »óÅÂ¿¡¼­ »ç¿ëÇÒ¼ö ¾ø´Â ½ºÅ³ÀÌ´Ù.
             return false;
@@ -1530,7 +1533,7 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
     } else if (SKILL_TYPE_14 == SKILL_TYPE(nSkillIDX)) {
         if (FLAG_ING_DUMB & this->GetCur_IngStatusFLAG()) {
 #ifndef __SERVER
-            AddMsgToChatWND(STR_CANT_CASTING_STATE, g_dwRED, CChatDLG::CHAT_TYPE_SYSTEM);
+            g_itMGR.AppendChatMsg(STR_CANT_CASTING_STATE, IT_MGR::CHAT_TYPE_SYSTEM);
 #endif
             // º¡¾î¸® »óÅÂ¿¡¼­ »ç¿ëÇÒ¼ö ¾ø´Â ½ºÅ³ÀÌ´Ù.
             return false;
@@ -1555,7 +1558,7 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
         iCurValue = this->Skill_GetAbilityValue(SKILL_USE_PROPERTY(nSkillIDX, nI));
         if (iCurValue < this->Skill_ToUseAbilityVALUE(nSkillIDX, nI)) {
 #ifndef __SERVER
-            AddMsgToChatWND(STR_NOT_ENOUGH_PROPERTY, g_dwRED, CChatDLG::CHAT_TYPE_SYSTEM);
+            g_itMGR.AppendChatMsg(STR_NOT_ENOUGH_PROPERTY, IT_MGR::CHAT_TYPE_SYSTEM);
 #endif
             return false;
         }
@@ -1590,13 +1593,12 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
     }
 
 #ifndef __SERVER
-    AddMsgToChatWND(STR_MISMATCH_CASTING_NEED_EQUIP, g_dwRED, CChatDLG::CHAT_TYPE_SYSTEM);
+    g_itMGR.AppendChatMsg(STR_MISMATCH_CASTING_NEED_EQUIP, IT_MGR::CHAT_TYPE_SYSTEM);
 #endif
 
     return false;
 }
 
-//-------------------------------------------------------------------------------------------------
 short
 CUserDATA::GetPassiveSkillAttackSpeed(float fCurSpeed, short nRightWeaponItemNo) {
     t_AbilityINDEX eIndex;
@@ -1734,7 +1736,6 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                     || (nPassiveTYPE >= AT_PSV_RES && nPassiveTYPE < AT_AFTER_PASSIVE_SKILL_2ND)) {
                     // ÆÐ½Ãºê¿¡ÀÇÇØ º¸Á¤µÇ´Â °ªµé...
                     if (SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI)) {
-                        // ºñÀ² °è»êÀÌ¸é ???
                         short nValue = SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI);
                         if (nBeforeSkill) {
                             nValue -= SKILL_CHANGE_ABILITY_RATE(nBeforeSkill, nI);
@@ -1797,8 +1798,7 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                         case AT_PSV_SHIELD_DEF:
                             Cal_DEFENCE();
                             break;
-                        case AT_PSV_IMMUNITY:;
-                            ;
+                        case AT_PSV_IMMUNITY:
                             break;
 
                         default:
@@ -2000,7 +2000,7 @@ CUserDATA::Quest_SubITEM(tagITEM& sSubITEM) {
     if (nFindSLOT >= 0) {
         this->Sub_ITEM(nFindSLOT, sSubITEM);
 #ifndef __SERVER
-        g_itMGR.AppendChatMsg(sSubITEM.SubtractQuestMESSAGE(), g_dwWHITE);
+        g_itMGR.AppendChatMsg(sSubITEM.SubtractQuestMESSAGE(), IT_MGR::CHAT_TYPE_SYSTEM);
 #endif
         return true;
     }
@@ -2020,7 +2020,6 @@ CUserDATA::Reward_InitSKILL(void) {
     ::ZeroMemory(&m_Skills.m_nSkillINDEX[MAX_LEARNED_SKILL_PER_PAGE],
         sizeof(short) * (MAX_LEARNED_SKILL_CNT - MAX_LEARNED_SKILL_PER_PAGE));
 
-    // ÃÊ±âÈ­ µÆÀ¸´Ï »óÅÂ¸¦ º¸³»ÀÚ...
     this->InitPassiveSkill();
     this->UpdateCur_Ability();
     this->Quest_CHANGE_SPEED();
@@ -2258,5 +2257,10 @@ CUserDATA::Apply_2ndJob_Ability(void) {
     }
 #endif
 }
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+// È«±Ù.
+void
+CUserDATA::SetDef_IMMUNITY(int iImmunity) {
+#ifdef __APPLY_2ND_JOB
+    m_Battle.m_nImmunity = iImmunity;
+#endif
+}

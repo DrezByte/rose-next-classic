@@ -3,9 +3,12 @@
 #include "..\Util\classHASH.h"
 #ifndef __SERVER
     #include "../GameCommon/StringManager.h"
+#else
+    #include "classstr.h"
 #endif
 
 #include "rose/common/log.h"
+
 
 //-------------------------------------------------------------------------------------------------
 

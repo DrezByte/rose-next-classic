@@ -570,19 +570,24 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     // m_lPenalEXP -- What is this?
     // m_nPKFlag -- What is this?
 
+    // TODO: Populate skills
     tagSkillAbility skill_ability;
     skill_ability.Init();
 
+    // TODO: Populate quest data
     tagQuestData quest_data;
     quest_data.Init();
     quest_data.CheckExpiredTIME();
 
+    // TODO: Populate inventory
     CInventory inventory;
     inventory.Clear();
 
+    // TODO: Populate wish list
     tagWishLIST wish_list;
     wish_list.Init();
 
+    // TODO: Populate hotbar icons
     CHotICONS hotbar_icons;
     hotbar_icons.Init();
 
