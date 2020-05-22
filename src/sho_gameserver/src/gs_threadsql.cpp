@@ -501,8 +501,8 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    QueryResult equip_res =
-        this->db_pg.query("SELECT inventory.slot, item.game_data_id, item.type_id, item.stat_id, "
+    QueryResult item_res =
+        this->db_pg.query("SELECT inventory.slot, inventory.quantity, item.game_data_id, item.type_id, item.stat_id, "
                           "item.grade, item.durability, item.lifespan, item.appraisal, item.socket "
                           "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
                           "WHERE inventory.owner_id = $1",
@@ -510,6 +510,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
     enum InvCol {
         INV_COL_SLOT,
+        INV_COL_QUANTITY,
         INV_COL_GAME_DATA_ID,
         INV_COL_TYPE_ID,
         INV_COL_STAT_ID,
@@ -520,8 +521,8 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         INV_COL_SOCKET,
     };
 
-    if (!equip_res.is_ok()) {
-        LOG_ERROR("Inventory query failed for character '%s': %s", equip_res.error_message());
+    if (!item_res.is_ok()) {
+        LOG_ERROR("Inventory query failed for character '%s': %s", item_res.error_message());
         return false;
     }
 
@@ -570,18 +571,28 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     // m_lPenalEXP -- What is this?
     // m_nPKFlag -- What is this?
 
-    // TODO: Populate skills
     tagSkillAbility skill_ability;
     skill_ability.Init();
+
+    json j = j.parse(char_res.get_string(0, COL_SKILLS));
+    if (!j.is_array()) {
+        LOG_ERROR("Skills column for character '%s' is not a valid json array.");
+        return false;
+    }
+
+    size_t skill_count = min(j.size(), MAX_LEARNED_SKILL_CNT);
+    for (size_t idx = 0; idx < skill_count; ++idx) {
+        skill_ability.m_nSkillINDEX[idx] = j[idx];
+    }
 
     // TODO: Populate quest data
     tagQuestData quest_data;
     quest_data.Init();
     quest_data.CheckExpiredTIME();
 
-    // TODO: Populate inventory
     CInventory inventory;
     inventory.Clear();
+    inventory.m_i64Money = char_res.get_int32(0, COL_MONEY);
 
     // TODO: Populate wish list
     tagWishLIST wish_list;
@@ -591,8 +602,8 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     CHotICONS hotbar_icons;
     hotbar_icons.Init();
 
-    for (size_t row_idx = 0; row_idx < equip_res.row_count; ++row_idx) {
-        int slot = equip_res.get_int32(row_idx, INV_COL_SLOT);
+    for (size_t row_idx = 0; row_idx < item_res.row_count; ++row_idx) {
+        int slot = item_res.get_int32(row_idx, INV_COL_SLOT);
 
         if (slot <= 0) {
             continue;
@@ -601,15 +612,27 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         const size_t part_idx = equip2part(slot);
         if (part_idx >= BODY_PART_HELMET && part_idx < MAX_BODY_PART) {
             tagPartITEM& part = basic_etc.m_PartITEM[part_idx];
-            part.m_nItemNo = equip_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
-            part.m_cGrade = equip_res.get_int32(row_idx, INV_COL_GRADE);
-            part.m_nGEM_OP = equip_res.get_int32(row_idx, INV_COL_STAT_ID);
-            part.m_bHasSocket = equip_res.get_bool(row_idx, INV_COL_SOCKET) ? 1 : 0;
+            part.m_nItemNo = item_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
+            part.m_cGrade = item_res.get_int32(row_idx, INV_COL_GRADE);
+            part.m_nGEM_OP = item_res.get_int32(row_idx, INV_COL_STAT_ID);
+            part.m_bHasSocket = item_res.get_bool(row_idx, INV_COL_SOCKET) ? 1 : 0;
         }
 
         // TODO: basic_etc tagPartITEM m_RideITEM[MAX_RIDING_PART];
 
-        // TODO: Inventory
+        tagITEM item;
+        item.Init(0, 1);
+        item.m_nItemNo = item_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
+        item.m_cType = item_res.get_int32(row_idx, INV_COL_TYPE_ID);
+        item.m_uiQuantity = item_res.get_int32(row_idx, INV_COL_QUANTITY);
+        item.m_bHasSocket = item_res.get_bool(row_idx, INV_COL_SOCKET);
+        item.m_bIsAppraisal = item_res.get_bool(row_idx, INV_COL_APPRAISAL);
+        item.m_cDurability = item_res.get_int32(row_idx, INV_COL_DURABILITY);
+        item.m_cGrade = item_res.get_int32(row_idx, INV_COL_GRADE);
+        item.m_nLife = item_res.get_int32(row_idx, INV_COL_LIFESPAN);
+        item.m_nGEM_OP = item_res.get_int32(row_idx, INV_COL_STAT_ID);
+
+        inventory.m_ItemLIST[slot] = item;
     }
 
     CZoneTHREAD* zone = g_pZoneLIST->GetZONE(basic_etc.m_nZoneNO);
@@ -671,6 +694,14 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     std::memcpy(&user->m_Inventory, &inventory, sizeof(CInventory));
     std::memcpy(&user->m_WishLIST, &wish_list, sizeof(tagWishLIST));
     std::memcpy(&user->m_HotICONS, &hotbar_icons, sizeof(CHotICONS));
+
+    // Client doesn't need stat options if it hasn't been appraised yet
+    for (size_t idx = 0; idx < INVENTORY_TOTAL_SIZE; ++idx) {
+        tagITEM& item = user->m_Inventory.m_ItemLIST[idx];
+        if (item.IsAppraisal()) {
+            item.m_nGEM_OP = 0;
+        }
+    }
 
     user->InitPassiveSkill();
     user->UpdateAbility();
