@@ -334,8 +334,8 @@ enum t_eRidePART {
     RIDE_PART_ARMS,
 #endif
 
-    MAX_RIDING_PART
-
+    MAX_RIDING_PART,
+    RIDE_PART_INVALID=999,
 };
 /*
 #ifdef _NEWUI
@@ -905,8 +905,8 @@ const ZZ_COLOR zz_color_Oorange = zz_color_argb(255, 255, 128, 0);
 // Maps an inventory slot position to an equipment position
 // i.e. t_EquipINDEX to t_CharPART
 constexpr size_t
-equip2part(size_t equip_idx) {
-    if (equip_idx == 0 || equip_idx > EQUIP_IDX_WEAPON_L) {
+inventory2part(size_t inventory_idx) {
+    if (inventory_idx == 0 || inventory_idx > EQUIP_IDX_WEAPON_L) {
         return BODY_PART_INVALID;
     }
 
@@ -922,5 +922,23 @@ equip2part(size_t equip_idx) {
         BODY_PART_WEAPON_L, // EQUIP_IDX_WEAPON_L
     };
 
-    return map[equip_idx];
+    return map[inventory_idx];
+}
+
+// Maps an inventory slot position to a ride part
+constexpr size_t
+inventory2ride(size_t inventory_idx) {
+    size_t ride_idx = inventory_idx - (INVENTORY_TOTAL_SIZE - MAX_RIDING_PART);
+    if (ride_idx <= 0 || ride_idx >= MAX_RIDING_PART) {
+        return RIDE_PART_INVALID;
+    }
+
+    const size_t map[] = {
+        RIDE_PART_BODY,
+        RIDE_PART_ENGINE,
+        RIDE_PART_LEG,
+        RIDE_PART_ARMS,
+    };
+
+    return map[ride_idx];
 }

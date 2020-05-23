@@ -175,7 +175,69 @@ GS_CThreadSQL::Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE) {
 #define BEGINNER_ZONE_NO 20
 
 bool
-GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
+GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
+    std::string query(
+        "UPDATE character SET gender_id=$1, job_id=$2, face_id=$3, hair_id=$4, level=$5, exp=$6, "
+        "hp=$7, mp=$8, stamina=$9, max_hp=$10, max_mp=$11, max_stamina=$12, str=$13, dex=$14, "
+        "intt=$15, con=$16, cha=$17, sen=$18, stat_points=$19, skill_points=$20 , money=$21, "
+        "storage_money=$22, map_id=$23, respawn_x=$24, respawn_y=$25, town_respawn_id=$26, "
+        "town_respawn_x=$27, town_respawn_y=$28, union_id=$29, skills=$30 "
+        "WHERE id=$31");
+
+    json skills_json = json::array();
+    for (size_t i = 0; i < MAX_LEARNED_SKILL_CNT; ++i) {
+        skills_json.push_back(user->m_Skills.m_nSkillINDEX[i]);
+    }
+
+    QueryResult char_res = this->db_pg.query(query,
+        {
+            std::to_string(user->m_nCharRACE),
+            std::to_string(user->m_BasicINFO.m_nClass),
+            std::to_string(user->m_BasicINFO.m_cFaceIDX),
+            std::to_string(user->m_BasicINFO.m_cHairIDX),
+            std::to_string(user->m_GrowAbility.m_nLevel),
+            std::to_string(user->m_GrowAbility.m_lEXP),
+            std::to_string(user->m_GrowAbility.m_nHP),
+            std::to_string(user->m_GrowAbility.m_nMP),
+            std::to_string(user->m_GrowAbility.m_nSTAMINA),
+            std::to_string(user->Get_MaxHP()),
+            std::to_string(user->Get_MaxMP()),
+            std::to_string(MAX_STAMINA),
+            std::to_string(user->m_BasicAbility.m_nSTR),
+            std::to_string(user->m_BasicAbility.m_nDEX),
+            std::to_string(user->m_BasicAbility.m_nINT),
+            std::to_string(user->m_BasicAbility.m_nCON),
+            std::to_string(user->m_BasicAbility.m_nCHARM),
+            std::to_string(user->m_BasicAbility.m_nSENSE),
+            std::to_string(user->m_GrowAbility.m_nBonusPoint),
+            std::to_string(user->m_GrowAbility.m_nSkillPoint),
+            std::to_string(user->m_Inventory.m_i64Money),
+            std::to_string(user->m_Bank.m_i64ZULY),
+            std::to_string(user->m_nZoneNO),
+            std::to_string(user->m_PosCUR.x),
+            std::to_string(user->m_PosCUR.y),
+            std::to_string(user->m_nReviveZoneNO),
+            std::to_string(user->m_PosREVIVE.x),
+            std::to_string(user->m_PosREVIVE.y),
+            std::to_string(user->m_BasicINFO.m_cUnion),
+            skills_json.dump(),
+            std::to_string(user->m_dwDBID),
+        });
+
+    if (!char_res.is_ok()) {
+        LOG_ERROR("Failed to save character info for '%s': %s",
+            user->Get_NAME(),
+            char_res.error_message());
+        return false;
+    }
+
+    // TODO: Inventory
+    // Have to uniquely identify items...
+
+    // TODO: Storage
+
+    return true;
+    /*
     // update character DB !!!
     // "UPDATE tblGS_AVATAR SET nZoneNO=xxx, binBasicI=xx, binBasicA=xx WHERE txtNAME=xxx;"
     m_sBE.m_btCharRACE = (BYTE)pUSER->m_nCharRACE;
@@ -274,6 +336,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* pUSER) {
     }
 
     return true;
+    */
 }
 
 void
@@ -501,12 +564,12 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    QueryResult item_res =
-        this->db_pg.query("SELECT inventory.slot, inventory.quantity, item.game_data_id, item.type_id, item.stat_id, "
-                          "item.grade, item.durability, item.lifespan, item.appraisal, item.socket "
-                          "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
-                          "WHERE inventory.owner_id = $1",
-            {char_res.get_string(0, COL_ID)});
+    QueryResult item_res = this->db_pg.query(
+        "SELECT inventory.slot, inventory.quantity, item.game_data_id, item.type_id, item.stat_id, "
+        "item.grade, item.durability, item.lifespan, item.appraisal, item.socket "
+        "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
+        "WHERE inventory.owner_id = $1",
+        {char_res.get_string(0, COL_ID)});
 
     enum InvCol {
         INV_COL_SLOT,
@@ -609,7 +672,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
             continue;
         }
 
-        const size_t part_idx = equip2part(slot);
+        const size_t part_idx = inventory2part(slot);
         if (part_idx >= BODY_PART_HELMET && part_idx < MAX_BODY_PART) {
             tagPartITEM& part = basic_etc.m_PartITEM[part_idx];
             part.m_nItemNo = item_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
@@ -618,7 +681,11 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
             part.m_bHasSocket = item_res.get_bool(row_idx, INV_COL_SOCKET) ? 1 : 0;
         }
 
-        // TODO: basic_etc tagPartITEM m_RideITEM[MAX_RIDING_PART];
+        const size_t ride_part_idx = inventory2ride(slot);
+        if (ride_part_idx >= RIDE_PART_BODY && ride_part_idx < MAX_RIDING_PART) {
+            tagPartITEM& part = basic_etc.m_RideITEM[ride_part_idx];
+            part.m_nItemNo = item_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
+        }
 
         tagITEM item;
         item.Init(0, 1);
