@@ -7,12 +7,12 @@
 #pragma pack(push, 1)
 class CInventory {
 public:
+    CInventory() { this->Clear(); }
     static t_InvTYPE m_InvTYPE[ITEM_TYPE_MONEY];
 
     __int64 m_i64Money;
 
     union {
-        // m_ItemLIST[ 0 ]은 서버에서 돈아이템이다...
         tagITEM m_ItemLIST[INVENTORY_TOTAL_SIZE];
         struct {
             tagITEM m_ItemEQUIP[MAX_EQUIP_IDX]; // 착용 장비..
@@ -78,6 +78,6 @@ public:
 };
 #pragma pack(pop)
 
-//-------------------------------------------------------------------------------------------------
+
 #pragma warning(default : 4201)
 #endif

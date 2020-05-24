@@ -28,8 +28,6 @@ using namespace Rose;
 using namespace Rose::Network;
 
 classUSER::classUSER() {
-    COMPILE_TIME_ASSERT(sizeof(tagITEM) == (6 + sizeof(__int64)));
-
     this->InitUSER();
 }
 
@@ -1259,10 +1257,7 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
 /// 인벤토리및 퀘스트 데이타 전송
 bool
 classUSER::Send_gsv_INVENTORYnQUEST_DATA(void) {
-    COMPILE_TIME_ASSERT(
-        (sizeof(__int64) + sizeof(tagBaseITEM) * INVENTORY_TOTAL_SIZE) < MAX_PACKET_SIZE);
     COMPILE_TIME_ASSERT(sizeof(gsv_QUEST_ONLY) < MAX_PACKET_SIZE);
-    //	COMPILE_TIME_ASSERT( sizeof( gsv_QUEST_DATA ) < MAX_PACKET_SIZE );
 
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)
@@ -4162,7 +4157,7 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
             break;
         }
 
-        case MOVE_ITEM_TYPE_BANK2INV:
+        case MOVE_ITEM_TYPE_BANK2INV: {
             // 꺼내 가는건 결제와 상관없다..
             if (pPacket->m_cli_MOVE_ITEM.m_btFromIDX >= BANKSLOT_TOTAL) {
                 bResult = false;
@@ -4215,9 +4210,11 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
             pCPacket->m_gsv_MOVE_ITEM.m_nBankIDX = pPacket->m_cli_MOVE_ITEM.m_btFromIDX;
             pCPacket->m_gsv_MOVE_ITEM.m_nInvIDX = nToSlotIDX;
             break;
-
-        default:
+        }
+        default: {
             bResult = false;
+            break;
+        }
     }
 
     if (bResult) {

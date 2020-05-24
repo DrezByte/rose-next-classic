@@ -13,6 +13,9 @@
     <Filter Include="network\packets">
       <UniqueIdentifier>{82dd461f-2b9b-43de-837b-97bc482aee82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{13e1d4ad-4fb9-4503-8c22-ab0bb2cbffba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rose\common\log.h" />
@@ -42,6 +45,9 @@
     <ClInclude Include="include\rose\common\commands.h" />
     <ClInclude Include="include\rose\common\game_types.h" />
     <ClInclude Include="include\rose\common\character_stats.h" />
+    <ClInclude Include="include\rose\util\uuid.h">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
@@ -49,6 +55,9 @@
       <Filter>status_effect</Filter>
     </ClCompile>
     <ClCompile Include="src\util.cpp" />
+    <ClCompile Include="src\uuid.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Flatbuffer Include="..\common-lib\include\rose\network\packets\login_rep.fbs">

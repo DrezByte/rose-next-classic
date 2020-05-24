@@ -4,7 +4,3 @@ DROP TABLE mail;
 DROP TABLE inventory;
 DROP TABLE item;
 DROP TABLE character;
-/*
-DROP TABLE inventory;
-DROP TABLE item;
-*/

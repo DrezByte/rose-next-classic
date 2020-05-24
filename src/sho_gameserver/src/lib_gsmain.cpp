@@ -839,7 +839,6 @@ CLIB_GameSRV::Start(HWND hMainWND,
     m_btHighAGE = btHighAge;
 
     COMPILE_TIME_ASSERT(sizeof(t_PACKETHEADER) == 6);
-    COMPILE_TIME_ASSERT(sizeof(tagITEM) == (6 + sizeof(__int64)));
 
     COMPILE_TIME_ASSERT(sizeof(gsv_DAMAGE) == (sizeof(t_PACKETHEADER) + 6));
     COMPILE_TIME_ASSERT(sizeof(char) == 1);
@@ -847,9 +846,6 @@ CLIB_GameSRV::Start(HWND hMainWND,
     COMPILE_TIME_ASSERT(sizeof(long) >= 4);
     COMPILE_TIME_ASSERT(sizeof(int) >= sizeof(short));
     COMPILE_TIME_ASSERT(sizeof(long) >= sizeof(int));
-
-    COMPILE_TIME_ASSERT(sizeof(gsv_INVENTORY_DATA) < MAX_PACKET_SIZE);
-    //	COMPILE_TIME_ASSERT( sizeof( gsv_QUEST_ONLY ) < MAX_PACKET_SIZE );
 
     COMPILE_TIME_ASSERT(IS_SIGNED(long));
     COMPILE_TIME_ASSERT(IS_UNSIGNED(DWORD));

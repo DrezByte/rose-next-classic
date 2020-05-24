@@ -7,50 +7,7 @@
     #include "..\\Object.h"
 #endif
 
-/*
-static t_EquipINDEX s_EquipIDX[] = {
-    EQUIP_IDX_NULL,					// Not Used
-
-    EQUIP_IDX_FACE_ITEM,			// ITEM_TYPE_FACE_ITEM = 1,		// 1	LIST_FACEITEM.stb ¾ó±¼
-Àå½Ä EQUIP_IDX_HELMET,				// ITEM_TYPE_HELMET,			// 2	LIST_CAP.stb
-    EQUIP_IDX_ARMOR,				// ITEM_TYPE_ARMOR,				// 3	LIST_BODY.stb
-    EQUIP_IDX_GAUNTLET,				// ITEM_TYPE_GAUNTLET,			// 4	LIST_ARMS.stb
-    EQUIP_IDX_BOOTS,				// ITEM_TYPE_BOOTS,				// 5	LIST_FOOT.stb
-    EQUIP_IDX_KNAPSACK,				// ITEM_TYPE_KNAPSACK,				// 6	LIST_BACK.stb
-
-    EQUIP_IDX_NULL,					// Àå½Å±¸ : ¸ñ°ÉÀÌ ¹ÝÁö
-
-    EQUIP_IDX_WEAPON_R,				// ITEM_TYPE_WEAPON,			// 8	LIST_WEAPON.stb		¹«±â
-    EQUIP_IDX_WEAPON_L				// ITEM_TYPE_SUBWPN,			// 9	LIST_SUBWPN.stb
-} ;
-
-//-------------------------------------------------------------------------------------------------
-t_EquipINDEX CInventory::GetEquipInvIDX (tagITEM *pITEM)
-{
-    if ( pITEM->GetTYPE() >= 1 && pITEM->GetTYPE() < ITEM_TYPE_USE ) {
-        if ( pITEM->GetTYPE() == ITEM_TYPE_JEWEL ) {
-            return EQUIP_IDX_NECKLACE,
-            return EQUIP_IDX_RING,
-            return EQUIP_IDX_RING2,
-        }
-
-        return ::s_EquipIDX[ pITEM->GetTYPE() ];
-    }
-
-    return EQUIP_IDX_NULL;
-}
-*/
-
 t_InvTYPE CInventory::m_InvTYPE[ITEM_TYPE_MONEY] = {
-    /*
-    enum t_InvTYPE {
-        INV_WEAPON = 0,
-        INV_USE,
-        INV_ETC,
-        IMV_EMOTION,
-        MAX_INV_TYPE
-    } ;
-    */
     MAX_INV_TYPE, //	Not used...
 
     INV_WEAPON, //	ITEM_TYPE_FACE = 1,				// 1	LIST_FACEITEM.stb	¾ó±¼ Àå½Ä
@@ -160,8 +117,6 @@ CInventory::IDX_GetITEM(short nInvTYPE, short nPageIndexNO, tagITEM& OutITEM) {
 //-------------------------------------------------------------------------------------------------
 #endif // __SERVER
 
-// 2005. 06. 15  ¹ÚÁöÈ£
-// iEquit index ¸¦ ¾ÆÀÌÅÛ Å¸ÀÔÀ¸·Î º¯°æÇÑ´Ù.
 short
 CInventory::GetBodyPartToItemType(short nEquipSlot) {
 
@@ -231,8 +186,6 @@ CInventory::GetBodyPartByEquipSlot(short nEquipSlot) {
     return nBodyPartIDX;
 }
 
-//-------------------------------------------------------------------------------------------------
-/// Real table ¿¡¼­ ¾ÆÀÌÅÛÀ» ¾ò´Â´Ù.
 tagITEM
 CInventory::LST_GetITEM(short nListNO) {
     _ASSERT(nListNO >= 0 && nListNO < INVENTORY_TOTAL_SIZE);
@@ -240,7 +193,6 @@ CInventory::LST_GetITEM(short nListNO) {
     return m_ItemLIST[nListNO];
 }
 
-/// Real table ¿¡¼­ ¾ÆÀÌÅÛÅ¸ÀÔ°ú, ÆäÀÌÁö ¹øÈ£·Î( LST_GetITEM( real list no ) È£Ãâ )¾ÆÀÌÅÛÀ» ¾ò´Â´Ù.
 tagITEM
 CInventory::LST_GetITEM(t_InvTYPE InvTYPE, short nPageListNO) {
     _ASSERT(InvTYPE >= 0 && InvTYPE < MAX_EQUIP_IDX);
@@ -251,8 +203,6 @@ CInventory::LST_GetITEM(t_InvTYPE InvTYPE, short nPageListNO) {
     return LST_GetITEM(nListNO);
 }
 
-//-------------------------------------------------------------------------------------------------
-/// Real table°ú Lookup table ¿¡ °¢ÀÚÀÇ ÀÎµ¦½º·Î ¾ÆÀÌÅÛ µî·Ï.
 bool
 CInventory::IDX_SetITEM(short nIndexNO, short nListNO, tagITEM& sITEM) {
 #ifndef __SERVER
@@ -273,6 +223,7 @@ CInventory::IDX_SetITEM(t_InvTYPE InvTYPE, short nPageListNO, short nTotListNO, 
 
     return IDX_SetITEM(nIndexNO, nTotListNO, sITEM);
 }
+
 bool
 CInventory::IDX_SetITEM(t_InvTYPE IdxInvTYPE,
     short nIdxPageListNO,
@@ -291,7 +242,6 @@ CInventory::IDX_SetITEM(t_InvTYPE IdxInvTYPE,
     return IDX_SetITEM(nIndexNO, nListNO, sITEM);
 }
 
-//-------------------------------------------------------------------------------------------------
 short
 CInventory::GetWEIGHT(short nListNO) {
     tagITEM* pITEM = &this->m_ItemLIST[nListNO];
@@ -307,8 +257,6 @@ CInventory::GetWEIGHT(short nListNO) {
     return ITEM_WEIGHT(pITEM->m_cType, pITEM->m_nItemNo);
 }
 
-//-------------------------------------------------------------------------------------------------
-// iItemNO == 03005 (¹«»ç¼ö·Ãº¹)
 void
 CInventory::SetInventory(short nListNO, int iItem, int iQuantity) {
     if (0 == iItem)
@@ -316,24 +264,9 @@ CInventory::SetInventory(short nListNO, int iItem, int iQuantity) {
 
     tagITEM sITEM;
     sITEM.Init(iItem, iQuantity);
-    /*
-        ::ZeroMemory( &sITEM, sizeof(sITEM) );
-        sITEM.m_cType    = (char)(iItemNO / 1000);
-        sITEM.m_nItemNo  = iItemNO % 1000;
-
-        t_InvTYPE InvTYPE = m_InvTYPE[ sITEM.m_cType ];
-        if ( INV_WEAPON == InvTYPE ) {
-            sITEM.m_cResmelt = 0;
-            sITEM.m_cQuality = ITEM_QUALITY( sITEM.m_cType, sITEM.m_nItemNo );
-        } else {
-            sITEM.m_uiQuantity = iQuantity;
-        }
-    */
     m_ItemLIST[nListNO] = sITEM;
 }
 
-//-------------------------------------------------------------------------------------------------
-/// Server function
 short
 CInventory::AppendITEM(tagITEM& sITEM, short& nCurWeight) {
     _ASSERT(sITEM.GetTYPE());
@@ -418,9 +351,6 @@ CInventory::Add_CatchITEM(short nListRealNO, tagITEM& sITEM, short& nCurWeight) 
 }
 #endif
 
-//-------------------------------------------------------------------------------------------------
-/// Client & Server function
-/// Real table ¿¡ ¾ÆÀÌÅÛÀ» Ãß°¡ÇÏ°í, Lookup table °»½Å
 short
 CInventory::AppendITEM(short nListRealNO, tagITEM& sITEM, short& nCurWeight) {
     _ASSERT(sITEM.GetTYPE());
@@ -456,8 +386,6 @@ CInventory::AppendITEM(short nListRealNO, tagITEM& sITEM, short& nCurWeight) {
     return nListRealNO;
 }
 
-//-------------------------------------------------------------------------------------------------
-/// Real Index ·Î ¾ÆÀÌÅÛÀ» ½½·Ô¿¡¼­ ºñ¿î´Ù.
 void
 CInventory::DeleteITEM(WORD wListRealNO) {
     m_ItemLIST[wListRealNO].Clear();
@@ -474,8 +402,6 @@ CInventory::DeleteITEM(WORD wListRealNO) {
 #endif
 }
 
-//-------------------------------------------------------------------------------------------------
-// ÀÎº¥Åä¸®¿¡¼­ sITEMÀ» »«ÈÄ nCurWEIGHT¸¦ °»½ÅÇÑ´Ù.
 void
 CInventory::SubtractITEM(short nListNO, tagITEM& sITEM, short& nCurWEIGHT) {
     if (ITEM_TYPE_MONEY == sITEM.m_cType) {
@@ -487,20 +413,6 @@ CInventory::SubtractITEM(short nListNO, tagITEM& sITEM, short& nCurWEIGHT) {
         nCurWEIGHT -= m_ItemLIST[nListNO].Subtract(sITEM);
     }
 }
-/*
-// iQuantity°¹¼ö ¸¸Å­ Á¦°Å ÇÑ´Ù.
-void CInventory::SubtractITEM (short nListNO, int iQuantity, short &nCurWEIGHT)
-{
-    tagITEM SubITEM = m_ItemLIST[ nListNO ];
-
-    if ( SubITEM.IsEnableDupCNT() ) {
-        // Áßº¹µÈ °¹¼ö¸¦ °®´Â ¾ÆÀÌÅÛÀÌ´Ù.
-        SubITEM.m_uiQuantity = iQuantity;
-    }
-
-    nCurWEIGHT -= m_ItemLIST[ nListNO ].Subtract( SubITEM );
-}
-*/
 
 short
 CInventory::FindITEM(tagITEM& sITEM) {
@@ -514,8 +426,6 @@ CInventory::FindITEM(tagITEM& sITEM) {
     return -1;
 }
 
-//-------------------------------------------------------------------------------------------------
-/// @bug m_dwITEM == 0 À¸·Î¸¸ ÀÌ ½½·ÔÀÌ ºñ¾ú´Ù°í ÇÒ¼ö ÀÖ´Â°¡?
 short
 CInventory::GetEmptyInventory(short nInvPAGE) {
     _ASSERT(nInvPAGE >= INV_WEAPON && nInvPAGE < MAX_INV_TYPE);
@@ -531,7 +441,6 @@ CInventory::GetEmptyInventory(short nInvPAGE) {
     return -1;
 }
 
-//-------------------------------------------------------------------------------------------------
 short
 CInventory::GetEmptyInvenSlotCount(t_InvTYPE InvType) {
     short nCount = 0;
@@ -544,141 +453,3 @@ CInventory::GetEmptyInvenSlotCount(t_InvTYPE InvType) {
     }
     return nCount;
 }
-
-//-------------------------------------------------------------------------------------------------
-/// ¼­¹ö¿¡°Ô ÀÎº¥Åä¸® º¯°æ¿äÃ»À» ÇÏ±â Àü¿¡ ÀÎº¥Åä¸®°¡ FullÀÌ µÇ´Â°¡¸¦ CheckÇÏ±â À§ÇÑ Methodµé
-/// ½ÇÁ¦ Inventory Á¶ÀÛ¿¡ »ç¿ëÇÏÁö ¸»°Í - 2004 / 11 /18 - nAvy
-/// ½ÇÁ¦ ¼­¹ö¿¡¼­ÀÇ µ¿ÀÛ°ú À¯»çÇÏ°Ô ÇÏ±â À§ÇØ¼­ AppendITEM, FindITEM, SubtractITEMÀ» »ç¿ëÇÏ´Â
-/// ¹æ½ÄÀ¸·Î ¹Ù²ñ.
-//#ifndef __SERVER
-// bool CInventory::Remove( tagITEM Item )
-//{
-//	if( !Item.IsEnableDupCNT() )
-//	{
-//		short InvenIndex = FindITEM( Item );
-//		if( InvenIndex < 0 )///Not Found
-//			return false;
-//
-//		ZeroMemory( &m_ItemLIST[ InvenIndex ], sizeof( tagITEM ) );
-//	}
-//	else
-//	{
-//		tagITEM TempItem = Item;
-//		t_InvTYPE InvTYPE = m_InvTYPE[ TempItem.GetTYPE() ];
-//
-//		for (short nI=0; nI<INVENTORY_PAGE_SIZE; nI++)
-//		{
-//			if ( m_ItemPAGE[ InvTYPE ][ nI ].IsEqual( TempItem.GetTYPE(), TempItem.GetItemNO() ) )
-//			{
-//				if( m_ItemPAGE[ InvTYPE ][ nI ].GetQuantity() == TempItem.GetQuantity() )
-//				{
-//					ZeroMemory( &m_ItemPAGE[ InvTYPE ][ nI ], sizeof( tagITEM ) );
-//					ZeroMemory( &TempItem, sizeof( tagITEM ) );
-//					break;
-//				}
-//				else if( m_ItemPAGE[ InvTYPE ][ nI ].GetQuantity() > TempItem.GetQuantity() )
-//				{
-//					m_ItemPAGE[ InvTYPE ][ nI ].m_uiQuantity -= TempItem.GetQuantity();
-//					ZeroMemory( &TempItem, sizeof( tagITEM ) );
-//					break;
-//				}
-//				else
-//				{
-//					ZeroMemory( &m_ItemPAGE[ InvTYPE ][ nI ], sizeof( tagITEM ) );
-//					TempItem.m_uiQuantity -= m_ItemPAGE[ InvTYPE ][ nI ].GetQuantity();
-//				}
-//			}
-//		}
-//
-//		if( TempItem.GetQuantity() > 0 )
-//			return false;
-//	}
-//	return true;
-//}
-//
-// bool CInventory::Append( tagITEM& Item )
-//{
-//	short InvenIndex = 0;
-//	if( !Item.IsEnableDupCNT() )
-//	{
-//		t_InvTYPE InvTYPE = m_InvTYPE[ Item.GetTYPE() ];
-//		InvenIndex = GetEmptyInventory( InvTYPE );
-//		if( InvenIndex < 0 )
-//			return false;
-//
-//		memcpy( &m_ItemLIST[ InvenIndex ], &Item, sizeof( tagITEM ));
-//	}
-//	else
-//	{
-//		tagITEM TempItem  = Item;
-//		t_InvTYPE InvTYPE = m_InvTYPE[ TempItem.GetTYPE() ];
-//
-////		while( TempItem.GetQuantity() > 0 )
-//		{
-//			InvenIndex = FindEnableAppendDupCNTItem( TempItem );
-//			if( InvenIndex >= 0 )///Not Found
-////				break;
-//			{
-//				if( m_ItemLIST[ InvenIndex ].GetQuantity() + TempItem.GetQuantity() <=
-// MAX_DUP_ITEM_QUANTITY )
-//				{
-//					m_ItemLIST[ InvenIndex ].m_uiQuantity += TempItem.GetQuantity();
-//					ZeroMemory( &TempItem, sizeof( tagITEM ) );
-//					//break;
-//				}
-//				else
-//				{
-//					TempItem.m_uiQuantity -= MAX_DUP_ITEM_QUANTITY - m_ItemLIST[
-// InvenIndex].GetQuantity(); 					m_ItemLIST[ InvenIndex ].m_uiQuantity =
-// MAX_DUP_ITEM_QUANTITY;
-//				}
-//			}
-//		}
-//
-//		if( TempItem.GetQuantity() > 0 )////Append is Not Finished
-//		{
-//			for (short nI=0; nI<INVENTORY_PAGE_SIZE; nI++)
-//			{
-//				if ( m_ItemPAGE[ InvTYPE ][ nI ].IsEmpty() )
-//				{
-//					if( TempItem.GetQuantity() <= MAX_DUP_ITEM_QUANTITY )
-//					{
-//						m_ItemPAGE[ InvTYPE ][ nI ] = TempItem;
-//						ZeroMemory( &TempItem, sizeof( tagITEM ) );
-//						break;
-//					}
-//					else
-//					{
-//						m_ItemPAGE[ InvTYPE ][ nI ] = TempItem;
-//						m_ItemPAGE[ InvTYPE ][ nI ].m_uiQuantity = MAX_DUP_ITEM_QUANTITY;
-//						TempItem.m_uiQuantity -= MAX_DUP_ITEM_QUANTITY;
-//					}
-//				}
-//			}
-//		}
-//
-//		if( TempItem.GetQuantity() > 0 )/// Append is Failed
-//			return false;
-//	}
-//	return true;
-//}
-//
-/////ÀÎº¥Åä¸®¿¡¼­ °³¼ö Áßº¹°¡´ÉÇÑ ¾ÆÀÌÅÛÀ» ´õÇÒ¶§ ´õÇÒ °ø°£ÀÌ ³²¾Æ ÀÖ´Â ¾ÆÀÌÅÛÀÇ ½½·ÔÀ» Ã£´Â´Ù.
-/////ºó½½·ÔÀº Á¦¿ÜÇÑ´Ù.
-// short CInventory::FindEnableAppendDupCNTItem( tagITEM& Item )
-//{
-//	if( !Item.IsEnableDupCNT() )
-//		return -1;
-//
-//	t_InvTYPE InvTYPE = m_InvTYPE[ Item.GetTYPE() ];
-//
-//	for (short nI=0; nI<INVENTORY_PAGE_SIZE; nI++)
-//	{
-//		if( m_ItemPAGE[ InvTYPE ][ nI ].IsEqual( Item.GetTYPE(), Item.GetItemNO() ) && m_ItemPAGE[
-// InvTYPE ][ nI ].GetQuantity() < MAX_DUP_ITEM_QUANTITY ) 			return MAX_EQUIP_IDX + ( InvTYPE
-// * INVENTORY_PAGE_SIZE ) + nI;
-//	}
-//	return -1;
-//}
-/// #endif
-/*-----------------------------------------------------------------------------------------------------*/

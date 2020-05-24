@@ -35,12 +35,6 @@ GS_CThreadSQL::GS_CThreadSQL(): CSqlTHREAD(true), m_csUserLIST(4000), m_TmpSTR(5
     COMPILE_TIME_ASSERT(sizeof(tagBasicAbility) <= 48);
     COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) <= 384);
     COMPILE_TIME_ASSERT(sizeof(tagSkillAbility) <= 240);
-    COMPILE_TIME_ASSERT(sizeof(CInventory) <= 2048);
-    COMPILE_TIME_ASSERT(sizeof(tagBankData) <= 2576);
-    COMPILE_TIME_ASSERT(sizeof(tagQuestData) < 1000);
-
-    COMPILE_TIME_ASSERT(sizeof(tagITEM) == (6 + 8));
-    COMPILE_TIME_ASSERT(sizeof(CInventory) == (139 * 14 + 8)); // 1954
 
     COMPILE_TIME_ASSERT(sizeof(m_sBE) == sizeof(tagBasicETC));
     COMPILE_TIME_ASSERT(sizeof(tagHotICON) == sizeof(WORD));
@@ -564,16 +558,18 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    QueryResult item_res = this->db_pg.query(
-        "SELECT inventory.slot, inventory.quantity, item.game_data_id, item.type_id, item.stat_id, "
-        "item.grade, item.durability, item.lifespan, item.appraisal, item.socket "
-        "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
-        "WHERE inventory.owner_id = $1",
-        {char_res.get_string(0, COL_ID)});
+    QueryResult item_res =
+        this->db_pg.query("SELECT inventory.slot, inventory.quantity, item.uuid, "
+                          "item.game_data_id, item.type_id, item.stat_id, item.grade, "
+                          "item.durability, item.lifespan, item.appraisal, item.socket "
+                          "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
+                          "WHERE inventory.owner_id = $1",
+            {char_res.get_string(0, COL_ID)});
 
     enum InvCol {
         INV_COL_SLOT,
         INV_COL_QUANTITY,
+        INV_COL_UUID,
         INV_COL_GAME_DATA_ID,
         INV_COL_TYPE_ID,
         INV_COL_STAT_ID,
@@ -689,6 +685,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
         tagITEM item;
         item.Init(0, 1);
+        item.uuid = Rose::Util::UUID::from_string(item_res.get_string(row_idx, INV_COL_UUID));
         item.m_nItemNo = item_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
         item.m_cType = item_res.get_int32(row_idx, INV_COL_TYPE_ID);
         item.m_uiQuantity = item_res.get_int32(row_idx, INV_COL_QUANTITY);
