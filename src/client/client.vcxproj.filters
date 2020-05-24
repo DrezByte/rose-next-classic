@@ -2149,9 +2149,6 @@
     <ClInclude Include="Common\CRegenAREA.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\CUserDATA.h">
-      <Filter>Source Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\IO_AI.H">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
@@ -2246,6 +2243,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\include\citem.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\include\cuserdata.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

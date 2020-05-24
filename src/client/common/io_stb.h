@@ -2,10 +2,10 @@
 #define __IO_STB_H
 
 #include "util/classstr.h"
-#include "..\Util\classHASH.h"
+#include "Util\classHASH.h"
 
 #ifndef __SERVER
-    #include "../GameCommon/StringManager.h"
+    #include "GameCommon/StringManager.h"
 #endif
 //-------------------------------------------------------------------------------------------------
 

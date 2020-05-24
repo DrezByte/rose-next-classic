@@ -1,7 +1,7 @@
 #ifndef _CSKILLSLOT_
 #define _CSKILLSLOT_
 
-#include "../../Common/CUserDATA.h"
+#include "CUserDATA.h"
 #include "../../gamecommon/cobservable.h"
 #include "../../gamedata/event/CTEventSkill.h"
 class CSkill;

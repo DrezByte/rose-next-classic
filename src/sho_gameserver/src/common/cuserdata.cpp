@@ -112,7 +112,7 @@ CUserDATA::Cal_AddAbility(tagITEM& sITEM, short nItemTYPE) {
 
     for (nI = 0; nI < 2; nI++) {
         nType = ITEM_NEED_UNION(nItemTYPE, sITEM.m_nItemNo, nI);
-        if (nType && (nType != this->GetCur_JOHAP()))
+        if (nType && (nType != this->GetCur_UNION()))
             continue;
 
         nType = ITEM_ADD_DATA_TYPE(nItemTYPE, sITEM.m_nItemNo, nI);
@@ -189,7 +189,7 @@ CUserDATA::Cal_BattleAbility() {
     int iDefDura = 0;
 
     tagITEM* pITEM;
-    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) { // Å¸ÀÌ¿ÏÀÌ¸é ³»±¸µµ´Â Ä³¸¯ÅÍ ²¬·Î...
+    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
         pITEM = &this->m_Inventory.m_ItemEQUIP[EQUIP_IDX_HELMET];
         if (pITEM->m_wHeader && pITEM->GetLife())
             iDefDura += pITEM->GetDurability();
@@ -927,7 +927,7 @@ CUserDATA::Set_AbilityValue(WORD nType, int iValue) {
 
         default:
             if (nType >= AT_UNION_POINT1 && nType <= AT_UNION_POINT10) {
-                SetCur_JoHapPOINT(nType - AT_UNION_POINT1 + 1, iValue);
+                SetCur_UnionPOINT(nType - AT_UNION_POINT1 + 1, iValue);
             }
     }
 
@@ -999,7 +999,7 @@ CUserDATA::Add_AbilityValue(WORD wType, int iValue) {
 
         default:
             if (wType >= AT_UNION_POINT1 && wType <= AT_UNION_POINT10) {
-                AddCur_JoHapPOINT(wType - AT_UNION_POINT1 + 1, iValue);
+                AddCur_UnionPOINT(wType - AT_UNION_POINT1 + 1, iValue);
             }
     }
 }
@@ -1113,7 +1113,7 @@ CUserDATA::Check_EquipCondition(tagITEM& sITEM, short nEquipIdx) {
         if (0 != ITEM_EQUIP_REQUIRE_UNION(sITEM.GetTYPE(), sITEM.GetItemNO(), nl)) {
             ++iCheckCount;
             if (ITEM_EQUIP_REQUIRE_UNION(sITEM.GetTYPE(), sITEM.GetItemNO(), nl)
-                == this->GetCur_JOHAP()) {
+                == this->GetCur_UNION()) {
                 bCorrect = true;
                 break;
             }
@@ -1391,7 +1391,7 @@ CUserDATA::Skill_CheckJOB(short nSkillIDX) {
             return false;
         }
 
-        if (this->GetCur_JOHAP() == SKILL_AVAILBLE_UNION(nSkillIDX, nI))
+        if (this->GetCur_UNION() == SKILL_AVAILBLE_UNION(nSkillIDX, nI))
             return true;
     }
     return false;

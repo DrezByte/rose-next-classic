@@ -3,14 +3,18 @@
 */
 #ifndef __COBJUSER_H
 #define __COBJUSER_H
+
 #include "CObjCHAR.h"
-#include "CInventory.h"
-#include "Common\CUserDATA.h"
+#include "CObjCART.h"
+
+#include "cinventory.h"
+#include "cuserdata.h"
+
 #include "Interface\\TypeResource.h"
 #include "Interface/SlotContainer/CSkillSlot.h"
 #include "Interface/SlotContainer/CItemSlot.h"
 #include "Interface/SlotContainer/HotIconSlot.h"
-#include "CObjCART.h"
+
 #include <list>
 #include <algorithm>
 
@@ -190,7 +194,7 @@ public:
     /*override*/ int Quest_DistanceFrom(int iX, int iY, int iZ);
     /*override*/ int Quest_PartyMemberCNT();
 
-    /*override*/ void SetCur_TeamNO(short nTeamNO) { CObjAVT::SetTeamInfo(nTeamNO); }
+    /*override*/ void SetCur_TeamNO(int nTeamNO) { CObjAVT::SetTeamInfo(nTeamNO); }
 
     /// <
     /// < end

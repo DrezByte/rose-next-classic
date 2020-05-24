@@ -72,22 +72,20 @@ STBDATA* g_pTblSTBs[ITEM_TYPE_RIDE_PART + 1];
 STBDATA g_TblString;
 STBDATA g_TblHitSound;
 
-STBDATA g_TblAVATAR; /// 아바타 초기 설정 데이타..
+STBDATA g_TblAVATAR;
 STBDATA g_TblResolution;
 
 STBDATA g_TblSTATE;
 
 STBDATA g_TblCamera;
-STBDATA g_TblRangeSet; /// LOD 거리 관련 정보..
+STBDATA g_TblRangeSet;
 STBDATA g_TblUnion;
 STBDATA g_TblClass;
-STBDATA g_TblStepSound; /// 발자국소리.
+STBDATA g_TblStepSound;
 
-STBDATA g_TblItemGRADE; /// 장비 아이템별 등급 적용 수치
+STBDATA g_TblItemGRADE;
 
 const float g_fMinHeight = -999999999.f;
 const float g_fMaxDistance = 999999999.f;
 
 CAI_LIST g_AI_LIST;
-
-//-------------------------------------------------------------------------------------------------

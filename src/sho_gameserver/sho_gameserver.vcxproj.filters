@@ -103,9 +103,6 @@
     <ClInclude Include="src\common\cregenarea.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\cuserdata.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\io_ai.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
@@ -161,6 +158,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\include\citem.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\include\cuserdata.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

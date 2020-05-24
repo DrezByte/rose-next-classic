@@ -1,10 +1,17 @@
-#ifndef __CUSERDATA_H
-#define __CUSERDATA_H
-#include "IO_STB.h"
-#include "CQuest.h"
-#include "CInventory.h"
-#include "CHotICON.h"
+#pragma once
+
+#ifdef __SERVER
+    #include "choticon.h"
+    #include "cquest.h"
+    #include "io_stb.h"
+#else
+    #include "common/choticon.h"
+    #include "common/cquest.h"
+    #include "common/io_stb.h"
+#endif
+
 #include "calculation.h"
+#include "cinventory.h"
 
 #include "rose/common/game_config.h"
 
@@ -25,6 +32,7 @@ struct tagBasicINFO {
     char m_cUnion;
     char m_cRank;
     char m_cFame;
+
     void Init(char cBirthStone, char cFaceIDX, char cHairIDX) {
         m_cBirthStone = cBirthStone;
         m_cFaceIDX = cFaceIDX;
@@ -70,39 +78,39 @@ struct tagMaintainSTATUS {
 };
 
 struct tagGrowAbility {
-	union {
-		struct {
-			short m_nHP;
-			short m_nMP;
-			
-			__int64 m_lEXP;
-			short m_nLevel;
-			short m_nBonusPoint;
-			short m_nSkillPoint;
-			BYTE m_btBodySIZE;
-			BYTE m_btHeadSIZE;
-			__int64 m_lPenalEXP;
-			
-			short m_nFameG;
-			short m_nFameB;
-			short m_nJoHapPOINT[MAX_UNION_COUNT];
-			
-			int m_iGuildNO;
-			short m_nGuildCNTRB;
-			BYTE m_btGuildPOS;
-			
-			short m_nPKFlag;
-			short m_nSTAMINA;
-			
-			tagMaintainSTATUS m_STATUS[MAX_MAINTAIN_STATUS];
-			
+    union {
+        struct {
+            short m_nHP;
+            short m_nMP;
+
+            __int64 m_lEXP;
+            short m_nLevel;
+            short m_nBonusPoint;
+            short m_nSkillPoint;
+            BYTE m_btBodySIZE;
+            BYTE m_btHeadSIZE;
+            __int64 m_lPenalEXP;
+
+            short m_nFameG;
+            short m_nFameB;
+            short m_nUnionPOINT[MAX_UNION_COUNT];
+
+            int m_iGuildNO;
+            short m_nGuildCNTRB;
+            BYTE m_btGuildPOS;
+
+            short m_nPKFlag;
+            short m_nSTAMINA;
+
+            tagMaintainSTATUS m_STATUS[MAX_MAINTAIN_STATUS];
+
 #ifdef __KCHS_BATTLECART__
-			short m_nPatHP;
-			DWORD m_dwPatCoolTIME;
+            short m_nPatHP;
+            DWORD m_dwPatCoolTIME;
 #endif
-		};
-		BYTE m_pDATA[1];
-	};
+        };
+        BYTE m_pDATA[1];
+    };
 
     void Init() {
         ::ZeroMemory(m_pDATA, sizeof(tagGrowAbility));
@@ -118,17 +126,20 @@ struct tagGrowAbility {
 #ifndef __SERVER
         m_nBonusPoint = 0;
         m_nSkillPoint = 0;
-		m_lPenalEXP = 0;
+        m_lPenalEXP = 0;
         m_nFameG = m_nFameB = 0;
         m_iGuildNO = m_nGuildCNTRB = m_btGuildPOS = 0;
         ::ZeroMemory(m_nUnionPOINT, sizeof(m_nUnionPOINT));
         m_nPKFlag = 0;
+    #ifdef __KCHS_BATTLECART__
         m_nPatHP = 0;
         m_dwPatCoolTIME = 0;
+    #endif
+
 #endif
     }
 
-    //#ifdef	__INC_PLATINUM
+#ifdef __GAMESERVER
     bool UpdateSTATUS(DWORD dwCurAbsSEC, int iAbilityType, int i10Min, short nValue) {
         short nIndex = iAbilityType - (int)AT_MAINTAIN_ABILITY;
         if (nIndex >= 0 && nIndex < MAX_MAINTAIN_STATUS) {
@@ -156,38 +167,7 @@ struct tagGrowAbility {
             return this->m_STATUS[AT_STORE_SKIN - AT_MAINTAIN_ABILITY].m_nValue;
         return 0;
     }
-#ifdef FRAROSE
-    short GetEXPBoost(DWORD dwCurAbsSEC) {
-        if (this->m_STATUS[AT_EXP_BOOST - AT_MAINTAIN_ABILITY].m_dwExpiredSEC > dwCurAbsSEC)
-            return (this->m_STATUS[AT_EXP_BOOST - AT_MAINTAIN_ABILITY].m_nValue > 3)
-                ? 3
-                : this->m_STATUS[AT_EXP_BOOST - AT_MAINTAIN_ABILITY].m_nValue;
-        else {
-            this->m_STATUS[AT_EXP_BOOST - AT_MAINTAIN_ABILITY].m_dwExpiredSEC = 0;
-            this->m_STATUS[AT_EXP_BOOST - AT_MAINTAIN_ABILITY].m_nValue = 0;
-        }
-        return 1;
-    }
-    short GetDropBoost(DWORD dwCurAbsSEC) {
-        if (this->m_STATUS[AT_DROP_BOOST - AT_MAINTAIN_ABILITY].m_dwExpiredSEC > dwCurAbsSEC)
-            return (this->m_STATUS[AT_DROP_BOOST - AT_MAINTAIN_ABILITY].m_nValue)
-                ? 3
-                : this->m_STATUS[AT_DROP_BOOST - AT_MAINTAIN_ABILITY].m_nValue;
-        else {
-            this->m_STATUS[AT_DROP_BOOST - AT_MAINTAIN_ABILITY].m_dwExpiredSEC = 0;
-            this->m_STATUS[AT_DROP_BOOST - AT_MAINTAIN_ABILITY].m_nValue = 0;
-        }
-        return 1;
-    }
-    bool IsReceiveEXP(DWORD dwCurAbsSEC) {
-        if (this->m_STATUS[AT_EXP_NONE - AT_MAINTAIN_ABILITY].m_dwExpiredSEC > dwCurAbsSEC)
-            return false;
-        else
-            this->m_STATUS[AT_EXP_NONE - AT_MAINTAIN_ABILITY].m_dwExpiredSEC = 0;
-        return true;
-    }
 #endif
-    //#endif
 };
 
 /// 아바타 보유스킬 - 여분으로 120으로 설정 기획서상 사용은 90개
@@ -198,9 +178,7 @@ struct tagGrowAbility {
 struct tagSkillAbility {
     union {
         short m_nSkillINDEX[MAX_LEARNED_SKILL_CNT];
-        short m_nPageIndex[MAX_LEARNED_SKILL_PAGE]
-                          [MAX_LEARNED_SKILL_PER_PAGE]; // 전투, 상업/제조, 패시브 스킬 각각
-                                                        // 10개까지 보유.
+        short m_nPageIndex[MAX_LEARNED_SKILL_PAGE][MAX_LEARNED_SKILL_PER_PAGE];
     };
     void Init() {
         ::ZeroMemory(m_nSkillINDEX, sizeof(short) * MAX_LEARNED_SKILL_CNT);
@@ -208,8 +186,9 @@ struct tagSkillAbility {
         m_nSkillINDEX[0] = 11;
         m_nSkillINDEX[1] = 12;
         m_nSkillINDEX[2] = 16;
-        m_nSkillINDEX[3] = 20;
-
+        m_nSkillINDEX[3] = 19;
+        m_nSkillINDEX[4] = 20;
+        m_nSkillINDEX[5] = 21;
     }
 };
 
@@ -279,6 +258,8 @@ public:
             m_QUEST[nI].Init();
         }
     }
+
+#ifdef __GAMESERVER
     void CheckExpiredTIME() {
         for (short nI = 0; nI < QUEST_PER_PLAYER; nI++) {
             if (this->m_QUEST[nI].GetID()) {
@@ -286,6 +267,7 @@ public:
             }
         }
     }
+#endif
 
     //-------------------------------------------------------------------------------------------------
     void ClearAllSwitchs() { ::ZeroMemory(m_dwSWITCHES, sizeof(m_dwSWITCHES)); }
@@ -324,19 +306,40 @@ struct tagBankData {
     tagITEM m_ItemLIST[BANKSLOT_TOTAL];
     __int64 m_i64ZULY;
 
-	void Init() {
-		::ZeroMemory(m_ItemLIST, sizeof(tagITEM) * BANKSLOT_TOTAL);
-		m_i64ZULY = 0;
+    void Init() {
+        ::ZeroMemory(m_ItemLIST, sizeof(tagITEM) * BANKSLOT_TOTAL);
+        m_i64ZULY = 0;
     }
 
+#ifndef __SERVER
+    short Get_EmptySlot(short nStartSlotNO);
+    short Add_ITEM(tagITEM& sITEM);
+#else
     short Get_EmptySlot(short nStartSlotNO, short nEndSlotNO);
     short Add_ITEM(tagITEM& sITEM, short nStartSlotNO, short nEndSlotNO);
+#endif
+
     short Add_ITEM(short nSlotNO, tagITEM& sITEM);
     short Sub_ITEM(short nSlotNO, tagITEM& sITEM);
     void Set_ITEM(short nSlotNO, tagITEM& sITEM) { m_ItemLIST[nSlotNO] = sITEM; }
 };
 
 #define MAX_WISH_ITEMS 30
+
+#ifndef __SERVER
+struct tagWishLIST {
+    tagITEM m_WishITEM[MAX_WISH_ITEMS];
+
+    void Init() { ::ZeroMemory(m_WishITEM, sizeof(m_WishITEM)); }
+    bool Set(BYTE btSlotNO, tagITEM& sITEM) {
+        if (btSlotNO >= MAX_WISH_ITEMS)
+            return false;
+
+        this->m_WishITEM[btSlotNO] = sITEM;
+        return true;
+    }
+};
+#else
 struct tagWishLIST {
     tagBaseITEM m_WishITEM[MAX_WISH_ITEMS];
 
@@ -349,6 +352,7 @@ struct tagWishLIST {
         return true;
     }
 };
+#endif
 
 //-------------------------------------------------------------------------------------------------
 #pragma pack(pop)
@@ -371,12 +375,10 @@ struct tagBattleAbility {
 
     int m_iCritical;
     float m_fRateUseMP;
-    
+
 #ifdef __KCHS_BATTLECART__
     short m_nPatMaxHP;
-#endif
-#ifdef __APPLY_2ND_JOB
-    short m_nImmunity; ///< 면역력
+    short m_nImmunity;
 #endif
 };
 
@@ -394,7 +396,9 @@ protected:
     }
 
     void Cal_AddAbility(tagITEM& sITEM, short nItemTYPE);
+#ifdef __GAMESERVER
     void Cal_AddPatAbility(tagITEM& sITEM, short nItemTYPE);
+#endif
     void Cal_AddAbility();
 
     void Cal_RecoverHP();
@@ -419,8 +423,15 @@ protected:
 protected:
     short GetPassiveSkillAttackSpeed(float fCurSpeed, short nRightWeaponItemNo);
 
+#ifndef __SERVER
+    short GetPassiveSkillAttackSpeed(short nRightWeaponItemNo);
+#endif
+
 protected:
+#ifdef __GAMESERVER
     float Cal_RunSPEED();
+#endif
+
     void Cal_BattleAbility();
     int Cal_ATTACK();
 
@@ -438,19 +449,26 @@ public:
     int GetDef_AVOID() { return this->m_Battle.m_nAVOID; }
     int GetDef_CRITICAL() { return this->m_Battle.m_iCritical; }
 
-	void SetDef_IMMUNITY(int iImmunity);
+    void SetDef_IMMUNITY(int iImmunity);
 
     int GetCur_BIRTH() { return this->m_BasicINFO.m_cBirthStone; }
     int GetCur_RANK() { return this->m_BasicINFO.m_cRank; }
-    int GetCur_JOHAP() { return this->m_BasicINFO.m_cUnion; }
+    int GetCur_UNION() { return this->m_BasicINFO.m_cUnion; }
     int GetCur_FAME() { return this->m_BasicINFO.m_cFame; }
     int GetCur_JOB() { return this->m_BasicINFO.m_nClass; }
 
-    __int64 GetCur_EXP() { return this->m_GrowAbility.m_lEXP; }
+    int64_t GetCur_EXP() { return this->m_GrowAbility.m_lEXP; }
     int GetCur_BonusPOINT() { return this->m_GrowAbility.m_nBonusPoint; }
     int GetCur_SkillPOINT() { return this->m_GrowAbility.m_nSkillPoint; }
     BYTE GetCur_HeadSIZE() { return this->m_GrowAbility.m_btHeadSIZE; }
     BYTE GetCur_BodySIZE() { return this->m_GrowAbility.m_btBodySIZE; }
+
+#ifndef __SERVER
+    short GetCur_PatHP();
+    void SetCur_PatHP(short nPatHP);
+    DWORD GetCur_PatCoolTIME();
+    void SetCur_PatCoolTIME(DWORD dwCoolTIME);
+#endif
 
     /// 기본 능력치...
     int GetDef_STR() { return this->m_BasicAbility.m_nSTR; }
@@ -493,7 +511,7 @@ public:
         return (GetPassiveSkillValue(AT_PSV_SAVE_MP) + m_iAddValue[AT_SAVE_MP]
             + (short)(m_iAddValue[AT_SAVE_MP] * GetPassiveSkillRate(AT_PSV_SAVE_MP) / 100.f));
     }
-    
+
     int GetCur_DropRATE() { return m_iDropRATE; } // 드롭 확률
     void Cal_DropRATE() // 드롭 확률
     {
@@ -501,37 +519,49 @@ public:
             + (short)(m_iAddValue[AT_DROP_RATE] * GetPassiveSkillRate(AT_PSV_DROP_RATE) / 100.f);
     }
 
-    int GetMax_SummonCNT() {
-        return (50 + GetPassiveSkillValue(AT_PSV_SUMMON_MOB_CNT));
-    }
+    int GetMax_SummonCNT() { return (50 + GetPassiveSkillValue(AT_PSV_SUMMON_MOB_CNT)); }
 
-    int GetCur_JoHapPOINT(char btUnionIDX) {
-        return btUnionIDX >= 1 ? this->m_GrowAbility.m_nJoHapPOINT[btUnionIDX - 1] : 0;
+#ifdef __SERVER
+    int GetCur_UnionPOINT(char btUnionIDX) {
+        return btUnionIDX >= 1 ? this->m_GrowAbility.m_nUnionPOINT[btUnionIDX - 1] : 0;
     }
-    virtual void SetCur_JoHapPOINT(BYTE btUnionIDX,
-        short nValue) = 0; //	{	if ( btUnionIDX >=1 ) this->m_GrowAbility.m_nJoHapPOINT[
-                           // btUnionIDX-1 ] = nValue;	}
-    void AddCur_JoHapPOINT(BYTE btUnionIDX, short nValue) {
+    virtual void SetCur_UnionPOINT(BYTE btUnionIDX, short nValue) = 0;
+    void AddCur_UnionPOINT(BYTE btUnionIDX, short nValue) {
         if (btUnionIDX >= 1) {
-            short nResult = this->m_GrowAbility.m_nJoHapPOINT[btUnionIDX - 1] + nValue;
-            this->SetCur_JoHapPOINT(btUnionIDX, nResult);
+            short nResult = this->m_GrowAbility.m_nUnionPOINT[btUnionIDX - 1] + nValue;
+            this->SetCur_UnionPOINT(btUnionIDX, nResult);
         }
     }
-    void SubCur_JoHapPOINT(BYTE btUnionIDX, short nValue) {
+    void SubCur_UnionPOINT(BYTE btUnionIDX, short nValue) {
         if (btUnionIDX >= 1) {
-            short nResult = this->m_GrowAbility.m_nJoHapPOINT[btUnionIDX - 1] - nValue;
-            this->SetCur_JoHapPOINT(btUnionIDX, nResult);
+            short nResult = this->m_GrowAbility.m_nUnionPOINT[btUnionIDX - 1] - nValue;
+            this->SetCur_UnionPOINT(btUnionIDX, nResult);
         }
     }
+#else
+    int GetCur_UnionPOINT(WORD wAbilityTYPE) {
+        return this->m_GrowAbility.m_nUnionPOINT[wAbilityTYPE - AT_UNION_POINT1];
+    }
+    void SetCur_UnionPOINT(WORD wAbilityTYPE, short nValue) {
+        this->m_GrowAbility.m_nUnionPOINT[wAbilityTYPE - AT_UNION_POINT1] = nValue;
+    }
+    void AddCur_UnionPOINT(WORD wAbilityTYPE, short nValue) {
+        this->m_GrowAbility.m_nUnionPOINT[wAbilityTYPE - AT_UNION_POINT1] += nValue;
+    }
+#endif
 
     int GetCur_FameB() { return this->m_GrowAbility.m_nFameB; }
     int GetCur_FameG() { return this->m_GrowAbility.m_nFameG; }
 
-    // int	  GetCur_GuildNO()			{	return	this->m_GrowAbility.m_iGuildNO;		}
-    // int	  GetCur_GuildPOS()			{	return	this->m_GrowAbility.m_btGuildPOS;	}
-    // int	  GetCur_GuildCONTRIBUTION(){	return	this->m_GrowAbility.m_nGuildCNTRB;	}
-    // virtual void AddClanCONTRIBUTE(int /*iCon*/)=0;
+#ifndef __SERVER
+    int GetCur_GuildNO() { return this->m_GrowAbility.m_iGuildNO; }
+    int GetCur_GuildPOS() { return this->m_GrowAbility.m_nGuildCNTRB; }
+    int GetCur_GuildCONTRIBUTION() { return this->m_GrowAbility.m_btGuildPOS; }
+#endif
+
+#ifdef __SERVER
     virtual void AddClanSCORE(int /*iValue*/) = 0;
+#endif
 
     short GetDef_MaxHP() { return this->m_Battle.m_nMaxHP; }
     short GetDef_MaxMP() { return this->m_Battle.m_nMaxMP; }
@@ -549,7 +579,7 @@ public:
     __int64 GetCur_MONEY() { return this->m_Inventory.m_i64Money; } // 돈
     void Add_CurMONEY(int iMoney) { this->m_Inventory.m_i64Money += iMoney; }
     void Sub_CurMONEY(int iMoney) { this->m_Inventory.m_i64Money -= iMoney; }
-    void SetCur_HP(short nValue); // 생명력
+    void SetCur_HP(short nValue);
     void SetCur_MP(short nValue) { this->m_GrowAbility.m_nMP = nValue; }
 
     int AddCur_HP(short nValue) {
@@ -577,23 +607,54 @@ public:
         return m_GrowAbility.m_nMP;
     }
 
+#ifndef __SERVER
+    int AddCur_STAMINA(short nValue) {
+        m_GrowAbility.m_nSTAMINA += nValue;
+        if (m_GrowAbility.m_nSTAMINA > GetCur_MaxSTAMINA())
+            m_GrowAbility.m_nSTAMINA = GetCur_MaxSTAMINA();
+        return m_GrowAbility.m_nSTAMINA;
+    }
+    int SubCur_STAMINA(short nValue) {
+        m_GrowAbility.m_nSTAMINA -= nValue;
+        if (m_GrowAbility.m_nSTAMINA < 0)
+            m_GrowAbility.m_nSTAMINA = 0;
+        return m_GrowAbility.m_nSTAMINA;
+    }
+#else
+    void AddCur_STAMINA(short nValue) {
+        this->m_GrowAbility.m_nSTAMINA += nValue;
+        if (this->m_GrowAbility.m_nSTAMINA > MAX_STAMINA)
+            this->m_GrowAbility.m_nSTAMINA = MAX_STAMINA;
+        else if (this->m_GrowAbility.m_nSTAMINA < 0)
+            this->m_GrowAbility.m_nSTAMINA = 0;
+    }
+#endif
+
     void SetCur_FAME(char cValue) { this->m_BasicINFO.m_cFame = cValue; }
-    virtual void SetCur_UNION(char cValue) = 0;
     void SetCur_RANK(char cValue) { this->m_BasicINFO.m_cRank = cValue; }
 
+#ifndef __SERVER
+    void SetCur_UNION(char cValue) { this->m_BasicINFO.m_cUnion = cValue; }
+#else
+    virtual void SetCur_UNION(char cValue) = 0;
+#endif
+
+#ifdef __SERVER
     char GetCur_FACE() { return this->m_BasicINFO.m_cFaceIDX; }
     void SetCur_FACE(char cValue) { this->m_BasicINFO.m_cFaceIDX = cValue; }
 
     char GetCur_HAIR() { return this->m_BasicINFO.m_cHairIDX; }
     void SetCur_HAIR(char cValue) { this->m_BasicINFO.m_cHairIDX = cValue; }
+#endif
 
     virtual void SetCur_JOB(short nValue) { this->m_BasicINFO.m_nClass = nValue; }
 
     void SetCur_LEVEL(WORD wValue) {
-        this->m_GrowAbility.m_nLevel =
-            (wValue > Rose::GameStaticConfig::MAX_LEVEL) ? Rose::GameStaticConfig::MAX_LEVEL : wValue;
+        this->m_GrowAbility.m_nLevel = (wValue > Rose::GameStaticConfig::MAX_LEVEL)
+            ? Rose::GameStaticConfig::MAX_LEVEL
+            : wValue;
     }
-    void SetCur_EXP(long lValue) { this->m_GrowAbility.m_lEXP = lValue; }
+    void SetCur_EXP(int64_t lValue) { this->m_GrowAbility.m_lEXP = lValue; }
     void SetCur_BonusPOINT(short nValue) { this->m_GrowAbility.m_nBonusPoint = nValue; }
     void SetCur_SkillPOINT(short nValue) { this->m_GrowAbility.m_nSkillPoint = nValue; }
 
@@ -622,7 +683,13 @@ public:
     short m_PassiveAbilityFromRate[BA_MAX];
     short m_nPassiveAttackSpeed;
 
+#ifndef __SERVER
+    int m_iAppliedPenaltyEXP;
+#endif
+
+#ifdef __SERVER
     short m_nPatHP_Mode;
+#endif
 
     tagITEM Get_EquipITEM(WORD wEquipIDX) { return m_Inventory.m_ItemEQUIP[wEquipIDX]; }
     tagITEM* Get_EquipItemPTR(WORD wEquipIDX) { return &m_Inventory.m_ItemEQUIP[wEquipIDX]; }
@@ -637,7 +704,7 @@ public:
 #ifdef __SERVER
     short Add_CatchITEM(short nListRealNO,
         tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
-                         //m_Battle.m_nWEIGHT
+                         // m_Battle.m_nWEIGHT
                          //);	}
     short Add_ITEM(tagITEM& sITEM) { return m_Inventory.AppendITEM(sITEM, m_Battle.m_nWEIGHT); }
     short Add_ITEM(short nListRealNO,
@@ -645,7 +712,7 @@ public:
                          // m_Battle.m_nWEIGHT);		}
     void Sub_ITEM(short nListRealNO,
         tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM,
-                         //m_Battle.m_nWEIGHT);
+                         // m_Battle.m_nWEIGHT);
                          //}
     void Set_ITEM(short nListRealNO, tagITEM& sITEM);
     void ClearITEM(WORD wListRealNO) {
@@ -655,7 +722,7 @@ public:
 #else
     virtual short Add_CatchITEM(short nListRealNO,
         tagITEM& sITEM); //		{	return m_Inventory.AppendITEM( nListRealNO, sITEM,
-                         //m_Battle.m_nWEIGHT
+                         // m_Battle.m_nWEIGHT
                          //);	}
     virtual short Add_ITEM(tagITEM& sITEM) {
         return m_Inventory.AppendITEM(sITEM, m_Battle.m_nWEIGHT);
@@ -665,17 +732,19 @@ public:
                          // m_Battle.m_nWEIGHT);		}
     virtual void Sub_ITEM(short nListRealNO,
         tagITEM& sITEM); //				{	m_Inventory.SubtractITEM( nListRealNO, sITEM,
-                         //m_Battle.m_nWEIGHT);
+                         // m_Battle.m_nWEIGHT);
                          //}
     virtual void Set_ITEM(short nListRealNO, tagITEM& sITEM);
     virtual void ClearITEM(WORD wListRealNO) {
         ///		m_Battle.m_nWEIGHT -= m_Inventory.GetWEIGHT (wListRealNO);
         m_Inventory.DeleteITEM(wListRealNO);
     }
-
 #endif
+
     /// 지속 스킬에 의해 보정된 값을 리턴할 함수...
+#ifdef __SERVER
     virtual void SetCur_SEX(char cValue) = 0;
+#endif
     virtual short GetCur_RACE() = 0; /// 종족,,,, gsv_SELECT_CHAR.m_btCharRACE 값 리턴하면됨
     virtual short GetCur_ATK_SPD() = 0;
     virtual float GetCur_MOVE_SPEED() = 0;
@@ -688,16 +757,22 @@ public:
 
     virtual int GetCur_MaxHP() = 0; /// 스킬에 의해 보정된 값이 있을경우 더해져서 리턴할 함수
     virtual int GetCur_MaxMP() = 0; /// 스킬에 의해 보정된 값이 있을경우 더해져서 리턴할 함수
+#ifndef __SERVER
+    virtual int GetCur_MaxSTAMINA() = 0;
+#endif
     virtual void UpdateCur_Ability() = 0;
     virtual BYTE GetCur_MOVE_MODE() { return 0; }
 
+#ifdef __SERVER
     virtual int GetCur_FUEL() = 0;
     virtual void SubCur_FUEL(short nValue) = 0;
+#endif
 
     virtual void SetCur_TeamNO(int /*nValue*/) = 0;
     void SetCur_PK_FLAG(short nValue) { this->m_GrowAbility.m_nPKFlag = nValue; }
     short GetCur_PK_FLAG() { return this->m_GrowAbility.m_nPKFlag; }
 
+#ifdef __SERVER
     short GetCur_STAMINA() { return this->m_GrowAbility.m_nSTAMINA; }
     void SetCur_STAMINA(short nValue) {
         this->m_GrowAbility.m_nSTAMINA = nValue;
@@ -706,13 +781,7 @@ public:
         else if (this->m_GrowAbility.m_nSTAMINA < 0)
             this->m_GrowAbility.m_nSTAMINA = 0;
     }
-    void AddCur_STAMINA(short nValue) {
-        this->m_GrowAbility.m_nSTAMINA += nValue;
-        if (this->m_GrowAbility.m_nSTAMINA > MAX_STAMINA)
-            this->m_GrowAbility.m_nSTAMINA = MAX_STAMINA;
-        else if (this->m_GrowAbility.m_nSTAMINA < 0)
-            this->m_GrowAbility.m_nSTAMINA = 0;
-    }
+#endif
 
     virtual void AddCur_EXP(int /*iValue*/) { /* nop */
     } // 호출될경우 서버에서 전송됨.
@@ -725,8 +794,12 @@ public:
     bool Set_AbilityValue(WORD nType, int iValue);
     void Add_AbilityValue(WORD nType, int iValue);
 
-    virtual int GetCur_SummonCNT() = 0;
+#ifndef __SERVER
+    virtual void ChangeModelInfo(short nType, int iValue) = 0;
+#endif
+
 #ifdef __SERVER
+    virtual int GetCur_SummonCNT() = 0;
     virtual int GetCur_AbilityValue(WORD nType) = 0;
 #else
     int GetCur_AbilityValue(WORD nType) { return Get_AbilityValue(nType); }
@@ -737,8 +810,15 @@ public:
 
     bool Use_ITEM(WORD wUseItemNO);
     bool Set_EquipITEM(short nEquipIDX, tagITEM& sITEM);
+
+#ifdef __GAMESERVER
     bool Check_PatEquipCondition(tagITEM& sITEM, short nEquipIdx);
     bool Check_EquipCondition(tagITEM& sITEM, short nEquipIdx);
+#else
+    bool Check_PatEquipCondition(tagITEM& sITEM);
+    bool Check_EquipCondition(tagITEM& sITEM);
+#endif
+
     bool Check_JobCollection(short nClassStbIDX);
 
     virtual void SetCur_PartITEM(short nPartIdx, tagITEM& sItem) = 0;
@@ -748,6 +828,43 @@ public:
     __int64 Get_NeedEXP(int iLevel) {
         return (m_GrowAbility.m_lPenalEXP + CCal::Get_NeedRawEXP(iLevel));
     }
+
+#ifndef __SERVER
+    void Set_PenalEXP(BYTE btAddPercent) {
+        if (this->GetCur_LEVEL() >= 10) {
+            // 10렙 이상이면 페널티 적용..
+            int iNeedEXP = static_cast<int32_t>(CCal::Get_NeedRawEXP(m_GrowAbility.m_nLevel));
+            int iPenalEXP = (int)(iNeedEXP * btAddPercent / 100.f);
+            m_iAppliedPenaltyEXP = iPenalEXP;
+
+            if (m_GrowAbility.m_lEXP >= iPenalEXP) {
+                m_GrowAbility.m_lEXP -= iPenalEXP;
+            } else {
+                iPenalEXP -= static_cast<int32_t>(m_GrowAbility.m_lEXP);
+                m_GrowAbility.m_lPenalEXP += iPenalEXP;
+                m_GrowAbility.m_lEXP = 0;
+
+                if (m_GrowAbility.m_lPenalEXP > DIV02(iNeedEXP)) {
+                    m_iAppliedPenaltyEXP -=
+                        (DIV02(iNeedEXP) - static_cast<int32_t>(m_GrowAbility.m_lPenalEXP));
+                    m_GrowAbility.m_lPenalEXP = DIV02(iNeedEXP);
+                }
+            }
+        }
+    }
+
+    /// 부활시 복구시킬 경험치
+    void Cancel_PenalEXP(BYTE btPercent) {
+        if (this->GetCur_LEVEL() >= 10 && m_iAppliedPenaltyEXP > 0) {
+            // 10렙 이상이면 적용했던 페널티 해제...
+            m_iAppliedPenaltyEXP = (int)(m_iAppliedPenaltyEXP * btPercent / 100.f);
+            if (m_iAppliedPenaltyEXP) {
+                m_GrowAbility.m_lEXP += m_iAppliedPenaltyEXP;
+            }
+        }
+        m_iAppliedPenaltyEXP = 0;
+    }
+#endif
 
     short Get_NeedPoint2AbilityUP(short BasicAbilityType) {
         _ASSERT(BasicAbilityType >= 0 && BasicAbilityType < 6);
@@ -761,7 +878,9 @@ public:
     /// 스킬 조건 관련 함수...
     virtual int GetCur_R_WEAPON() = 0;
     virtual int GetCur_L_WEAPON() = 0;
+#ifdef __SERVER
     virtual int GetCur_PET_BODY() = 0;
+#endif
     virtual DWORD GetCur_IngStatusFLAG() = 0;
 
     /// 스킬의 빈 스롯 찾기
@@ -802,8 +921,7 @@ public:
 
     /// 패시브 스킬 관련 함수.
     void InitPassiveSkill(); /// 서버로 부터 스킬 데이타 받으면 한번 호출해야함...
-    //	short GetPassiveSkillAttackSpeed()		{	return m_nPassiveAttackSpeed + m_iAddValue[
-    // AT_ATK_SPD ];	}
+    short GetPassiveSkillAttackSpeed() { return m_nPassiveAttackSpeed + m_iAddValue[AT_ATK_SPD]; }
 
     short GetBuySkillVALUE() { return GetPassiveSkillValue(AT_PSV_BUYING); }
     short GetSellSkillVALUE() { return GetPassiveSkillValue(AT_PSV_SELLING); }
@@ -923,6 +1041,7 @@ public:
         short nItemOP,
         BYTE btQuestSLOT);
 
+#ifdef __GAMESERVER
     virtual void Cal_AruaATTACK() = 0;
     virtual void Cal_AruaHIT() = 0;
     virtual void Cal_AruaAVOID() = 0;
@@ -934,8 +1053,14 @@ public:
     virtual short Get_WeightRATE() = 0;
 
     void Apply_2ndJob_Ability(void);
+#endif
+
+#ifndef __SERVER
+public:
+    DWORD m_dwCoolItemStartTime[MAX_USEITEM_COOLTIME_TYPE];
+    DWORD m_dwCoolItemEndTime[MAX_USEITEM_COOLTIME_TYPE];
+#endif
 };
 
-//-------------------------------------------------------------------------------------------------
+
 #pragma warning(default : 4201)
-#endif

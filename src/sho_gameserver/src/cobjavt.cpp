@@ -473,7 +473,7 @@ CObjAVT::Get_AbilityValue(WORD wType) {
         case AT_CLASS:
             return GetCur_JOB();
         case AT_UNION:
-            return GetCur_JOHAP();
+            return GetCur_UNION();
         case AT_RANK:
             return GetCur_RANK();
         case AT_FAME:
@@ -578,7 +578,7 @@ CObjAVT::Get_AbilityValue(WORD wType) {
 
         default:
             if (wType >= AT_UNION_POINT1 && wType <= AT_UNION_POINT10)
-                return GetCur_JoHapPOINT(wType - AT_UNION_POINT1 + 1);
+                return GetCur_UnionPOINT(wType - AT_UNION_POINT1 + 1);
     }
 
     return 0;
@@ -963,9 +963,9 @@ CObjAVT::SetCur_UNION(char cValue) {
 
 //-------------------------------------------------------------------------------------------------
 void
-CObjAVT::SetCur_JoHapPOINT(BYTE btUnionIDX, short nValue) {
+CObjAVT::SetCur_UnionPOINT(BYTE btUnionIDX, short nValue) {
     if (btUnionIDX >= 1) {
-        this->m_GrowAbility.m_nJoHapPOINT[btUnionIDX - 1] = nValue;
+        this->m_GrowAbility.m_nUnionPOINT[btUnionIDX - 1] = nValue;
     }
 }
 

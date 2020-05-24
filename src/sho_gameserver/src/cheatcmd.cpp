@@ -508,14 +508,14 @@ classUSER::Cheat_add(char* pArg1, char* pArg2, char* pArg3, char* szCode) {
                     pUSER->SetCur_BonusPOINT(9999);
                 return CHEAT_PROCED;
             } else if (!strcmpi(pArg1, "UP")) {
-                if (pUSER->GetCur_JOHAP()) {
+                if (pUSER->GetCur_UNION()) {
                     int iValue = atoi(pArg2);
-                    pUSER->AddCur_JoHapPOINT(pUSER->GetCur_JOHAP(), iValue);
+                    pUSER->AddCur_UnionPOINT(pUSER->GetCur_UNION(), iValue);
 
-                    if (pUSER->GetCur_JoHapPOINT(pUSER->GetCur_JOHAP()) < 0)
-                        pUSER->SetCur_JoHapPOINT(pUSER->GetCur_JOHAP(), 0);
-                    else if (pUSER->GetCur_JoHapPOINT(pUSER->GetCur_JOHAP()) > 99999)
-                        pUSER->SetCur_JoHapPOINT(pUSER->GetCur_JOHAP(), 99999);
+                    if (pUSER->GetCur_UnionPOINT(pUSER->GetCur_UNION()) < 0)
+                        pUSER->SetCur_UnionPOINT(pUSER->GetCur_UNION(), 0);
+                    else if (pUSER->GetCur_UnionPOINT(pUSER->GetCur_UNION()) > 99999)
+                        pUSER->SetCur_UnionPOINT(pUSER->GetCur_UNION(), 99999);
                 }
                 return CHEAT_PROCED;
             } else if (!strcmpi(pArg1, "MONEY")) {
@@ -674,34 +674,6 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
 
                     this->Send_gsv_WHISPER(pUSER->Get_NAME(), (char*)output.str().c_str());
                     return CHEAT_NOLOG;
-
-                    /*
-                    pStrVAR->Printf ("HP:%d/%d, MP:%d/%d, LEV:%d, EXP:%d/%d, JOB:%d, SPD(M:%d,A:%d),
-                    nANI(M:%1.1f,A:%d), Hit:%d, Crt:%d, Atk:%d, Def:%d, AVD:%d, Res: %d, ATTR:%d,
-                    bCST:%d, SKL:%d, FLG:%x, Summon:%d/%d, BP:%d, SP:%d, UP:%d, STMNA:%d \\:%I64d,
-                    Team:%d, Clan(%d,L:%d,P:%d,S:%d), Recover(%d,%d)", pUSER->Get_HP(),
-                    pUSER->Get_MaxHP(), pUSER->Get_MP(), pUSER->Get_MaxMP(), pUSER->Get_LEVEL(),
-                            pUSER->Get_EXP(), ((classUSER*)pUSER )->Get_NeedEXP(pUSER->Get_LEVEL()),
-                            pUSER->Get_JOB(),
-                            nMovSpeed, nAtkSpeed,
-                            m_fRunAniSPEED, m_nAtkAniSPEED,
-                            pUSER->Get_HIT(), pUSER->Get_CRITICAL(), pUSER->Get_ATK(),
-                            pUSER->Get_DEF(), pUSER->Get_AVOID(), pUSER->Get_RES(),
-                            btGndATT, pUSER->m_bCastingSTART,
-                            pUSER->Get_ActiveSKILL(), pUSER->m_IngSTATUS.GetFLAGs(),
-                            (classUSER*)pUSER->Get_SummonCNT(), (classUSER*)pUSER->Max_SummonCNT(),
-                            ((classUSER*)pUSER)->GetCur_BonusPOINT(),
-                            ((classUSER*)pUSER)->GetCur_SkillPOINT(),
-                            ((classUSER*)pUSER)->GetCur_JoHapPOINT(
-                    ((classUSER*)pUSER)->GetCur_JOHAP() ),
-                            ((classUSER*)pUSER)->GetCur_STAMINA(),
-                            ((classUSER*)pUSER)->Get_MONEY(), pUSER->Get_TeamNO(),
-                    ((classUSER*)pUSER)->GetClanID(), ((classUSER*)pUSER)->GetClanLEVEL(),
-                    ((classUSER*)pUSER)->GetClanSCORE(), ((classUSER*)pUSER)->GetClanPOS(),
-                            ((classUSER*)pUSER)->GetAdd_RecoverHP(),
-                    ((classUSER*)pUSER)->GetAdd_RecoverMP()
-                            );
-                            */
                 } else {
                     pStrVAR->Printf(
                         "HP:%d/%d \nMP:%d/%d \nLEV:%d (EXP:%d), JOB:%d, SPD(M:%d,A:%d), Hit:%d, "

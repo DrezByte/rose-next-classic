@@ -1,7 +1,7 @@
 #pragma once
 #include "../../gamecommon/cobservable.h"
 #include "NET_Prototype.h"
-#include "../../Common/CUserDATA.h"
+#include "CUserDATA.h"
 #include "../../gamedata/event/CTEventClanSkill.h"
 
 class CSkill;

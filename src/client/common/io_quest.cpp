@@ -612,8 +612,9 @@ F_QSTCOND009(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
         // 없는지 체크
         for (nT = nTab1; nT <= nTab2; nT++) {
             for (nI = 0; nI < MAX_LEARNED_SKILL_PER_PAGE; nI++) {
-                if (pPARAM->m_pOWNER->m_Skills.m_nIndex[nT][nI] >= pCOND->m_Cond009.iSkillSN1
-                    && pPARAM->m_pOWNER->m_Skills.m_nIndex[nT][nI] <= pCOND->m_Cond009.iSkillSN1) {
+                if (pPARAM->m_pOWNER->m_Skills.m_nPageIndex[nT][nI] >= pCOND->m_Cond009.iSkillSN1
+                    && pPARAM->m_pOWNER->m_Skills.m_nPageIndex[nT][nI]
+                        <= pCOND->m_Cond009.iSkillSN1) {
 #ifndef __SERVER
                     //--------------------------------------------------------------------------------
                     LOGWAR(
@@ -631,8 +632,8 @@ F_QSTCOND009(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
     // 있는지 체크...
     for (nT = nTab1; nT <= nTab2; nT++) {
         for (nI = 0; nI < MAX_LEARNED_SKILL_PER_PAGE; nI++) {
-            if (pPARAM->m_pOWNER->m_Skills.m_nIndex[nT][nI] >= pCOND->m_Cond009.iSkillSN1
-                && pPARAM->m_pOWNER->m_Skills.m_nIndex[nT][nI] <= pCOND->m_Cond009.iSkillSN1) {
+            if (pPARAM->m_pOWNER->m_Skills.m_nPageIndex[nT][nI] >= pCOND->m_Cond009.iSkillSN1
+                && pPARAM->m_pOWNER->m_Skills.m_nPageIndex[nT][nI] <= pCOND->m_Cond009.iSkillSN1) {
                 return true;
             }
         }

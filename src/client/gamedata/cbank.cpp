@@ -6,7 +6,7 @@
 //#include "../gamecommon/citemetc.h"
 //#include "../gamecommon/citempat.h"
 #include "../gamecommon/item.h"
-#include "../common/cuserdata.h"
+#include "cuserdata.h"
 
 CBank::CBank(void) {
     m_Money = 0;

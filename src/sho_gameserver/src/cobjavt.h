@@ -63,10 +63,7 @@ public:
     void SetCur_TeamNO(int iTeamNO) { m_iTeamNO = iTeamNO; }
     void SetCur_UNION(char cValue); //	{	if ( cValue >= 0 && cValue < MAX_UNION_COUNT )
                                     // this->m_BasicINFO.m_cUnion=cValue;	}
-    void SetCur_JoHapPOINT(BYTE btUnionIDX,
-        short nValue); //	{	if ( btUnionIDX >=1 ) this->m_GrowAbility.m_nJoHapPOINT[
-                       // btUnionIDX-1 ] = nValue;	}
-
+    void SetCur_UnionPOINT(BYTE btUnionIDX, short nValue);
     void AddCur_EXP(int iExp) { this->Add_EXP(iExp); }
     void UpdateCur_Ability() { this->UpdateAbility(); }
 

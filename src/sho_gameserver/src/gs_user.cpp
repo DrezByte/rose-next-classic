@@ -2982,7 +2982,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
     }
 
     BYTE btUnionIDX = NPC_UNION_NO(pCharNPC->Get_CharNO());
-    if (btUnionIDX && btUnionIDX != this->GetCur_JOHAP()) {
+    if (btUnionIDX && btUnionIDX != this->GetCur_UNION()) {
         // 조합 상점인데 소속 조합이 틀리면...
         return this->Send_gsv_STORE_TRADE_REPLY(STORE_TRADE_RESULT_NOT_UNION_USER);
     }
@@ -3097,7 +3097,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
                 iTotValue = iPriceEA;
             }
 
-            if (this->GetCur_JoHapPOINT(btUnionIDX) < iTotValue) {
+            if (this->GetCur_UnionPOINT(btUnionIDX) < iTotValue) {
                 // 조합 포인트 없다.
                 this->Send_gsv_STORE_TRADE_REPLY(STORE_TRADE_RESULT_OUT_OF_POINT);
                 break;
@@ -3124,7 +3124,7 @@ classUSER::Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket) {
 
         // 소모...
         if (btUnionIDX) {
-            this->SubCur_JoHapPOINT(btUnionIDX, iTotValue);
+            this->SubCur_UnionPOINT(btUnionIDX, iTotValue);
         } else {
             this->Sub_CurMONEY(iTotValue);
         }

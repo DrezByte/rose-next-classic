@@ -216,10 +216,6 @@ CUserDATA::Cal_BattleAbility() {
         if (pITEM->m_wHeader && pITEM->GetLife())
             iDefDura += pITEM->GetDurability();
 
-            ///<- 2005/7/25 Ä«Æ® ½Ã½ºÅÛ ÆÄÃ÷ Ãß°¡·Î ¼öÁ¤ : nAvy
-            // pITEM = &this->m_Inventory.m_ItemRIDE[ RIDE_PART_ARMS ];
-            // if ( pITEM->m_wHeader && pITEM->GetLife() )	iDefDura += pITEM->GetDurability();
-
 #if defined(_GBC)
         pITEM = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ABIL];
         if (pITEM->m_wHeader && pITEM->GetLife())
@@ -1449,10 +1445,10 @@ CUserDATA::Skill_FindEmptySlot(short nSkillIDX) {
     char cPageIDX = SKILL_TAB_TYPE(nSkillIDX);
 
     for (short nI = 0; nI < MAX_LEARNED_SKILL_PER_PAGE; nI++) {
-        if (nSkillIDX == m_Skills.m_nIndex[cPageIDX][nI])
+        if (nSkillIDX == m_Skills.m_nPageIndex[cPageIDX][nI])
             return (cPageIDX * MAX_LEARNED_SKILL_PER_PAGE + nI);
 
-        if (nSlot < 0 && 0 == m_Skills.m_nIndex[cPageIDX][nI]) {
+        if (nSlot < 0 && 0 == m_Skills.m_nPageIndex[cPageIDX][nI]) {
             nSlot = cPageIDX * MAX_LEARNED_SKILL_PER_PAGE + nI;
         }
     }
@@ -1479,10 +1475,10 @@ CUserDATA::Skill_FindLearnedSlot(short nSkillIDX) {
     short nI, n1LevSkillIDX = SKILL_1LEV_INDEX(nSkillIDX);
 
     for (nI = 0; nI < MAX_LEARNED_SKILL_PER_PAGE; nI++) {
-        if (0 == m_Skills.m_nIndex[cPageIDX][nI])
+        if (0 == m_Skills.m_nPageIndex[cPageIDX][nI])
             continue;
 
-        if (n1LevSkillIDX == SKILL_1LEV_INDEX(m_Skills.m_nIndex[cPageIDX][nI])) {
+        if (n1LevSkillIDX == SKILL_1LEV_INDEX(m_Skills.m_nPageIndex[cPageIDX][nI])) {
             return (cPageIDX * MAX_LEARNED_SKILL_PER_PAGE + nI);
         }
     }

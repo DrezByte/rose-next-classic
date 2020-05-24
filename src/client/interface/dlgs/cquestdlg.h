@@ -10,7 +10,7 @@
     #endif // _MSC_VER > 1000
 
     #include "tgamectrl/tdialog.h"
-    #include "../../Common/CUserData.h"
+    #include "CUserData.h"
 class CQuestListItem;
 /**
  * Quest 정보를 보여주는 다이얼로그
