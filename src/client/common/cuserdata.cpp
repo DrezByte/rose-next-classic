@@ -14,6 +14,7 @@
 #endif
 #define MAX_INT 0x07fffffff
 
+#ifndef __SERVER
 short
 tagBankData::Get_EmptySlot(short nStartSlotNO) {
     for (short nI = nStartSlotNO; nI < BANKSLOT_TOTAL; nI++)
@@ -51,6 +52,45 @@ tagBankData::Add_ITEM(tagITEM& sITEM) {
 
     return -1;
 }
+#else
+short
+tagBankData::Get_EmptySlot(short nStartSlotNO, short nEndSlotNO) {
+    for (short nI = nStartSlotNO; nI < nEndSlotNO; nI++)
+        if (0 == this->m_ItemLIST[nI].GetHEADER())
+            return nI;
+
+    return -1;
+}
+
+short
+tagBankData::Add_ITEM(tagITEM& sITEM, short nStartSlotNO, short nEndSlotNO) {
+    if (0 == sITEM.GetTYPE() || sITEM.GetTYPE() >= ITEM_TYPE_MONEY) {
+        return -1;
+    }
+
+    short nI;
+    if (sITEM.GetTYPE() >= ITEM_TYPE_USE) {
+        // Áßº¹ µÉ¼ö ÀÖ´Â ¾ÆÀÌÅÛÀÌ´Ù.
+        for (nI = 0; nI < nEndSlotNO; nI++) {
+            if (this->m_ItemLIST[nI].GetHEADER() != sITEM.GetHEADER())
+                continue;
+
+            if (this->m_ItemLIST[nI].GetQuantity() + sITEM.GetQuantity() <= MAX_DUP_ITEM_QUANTITY) {
+                this->m_ItemLIST[nI].m_uiQuantity += sITEM.GetQuantity();
+                return nI;
+            }
+        }
+    }
+
+    nI = this->Get_EmptySlot(nStartSlotNO, nEndSlotNO);
+    if (nI >= nStartSlotNO) {
+        this->m_ItemLIST[nI] = sITEM;
+        return nI;
+    }
+
+    return -1;
+}
+#endif
 
 short
 tagBankData::Add_ITEM(short nSlotNO, tagITEM& sITEM) {
@@ -61,6 +101,8 @@ tagBankData::Add_ITEM(short nSlotNO, tagITEM& sITEM) {
     }
 
     this->m_ItemLIST[nSlotNO] = sITEM;
+    if (this->m_ItemLIST[nSlotNO].GetQuantity() > MAX_DUP_ITEM_QUANTITY)
+        this->m_ItemLIST[nSlotNO].m_uiQuantity = MAX_DUP_ITEM_QUANTITY;
 
     return nSlotNO;
 }
@@ -216,15 +258,11 @@ CUserDATA::Cal_BattleAbility() {
         if (pITEM->m_wHeader && pITEM->GetLife())
             iDefDura += pITEM->GetDurability();
 
-#if defined(_GBC)
+        pITEM = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS];
+        if (pITEM->m_wHeader && pITEM->GetLife())
+            iDefDura += pITEM->GetDurability();
+#ifdef __KCHS_BATTLECART__
         pITEM = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ABIL];
-        if (pITEM->m_wHeader && pITEM->GetLife())
-            iDefDura += pITEM->GetDurability();
-        pITEM = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS];
-        if (pITEM->m_wHeader && pITEM->GetLife())
-            iDefDura += pITEM->GetDurability();
-#else
-        pITEM = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS];
         if (pITEM->m_wHeader && pITEM->GetLife())
             iDefDura += pITEM->GetDurability();
 #endif
@@ -310,12 +348,14 @@ CUserDATA::Cal_BattleAbility() {
             break;
     }
 }
+
 void
 CUserDATA::Cal_RecoverHP() {
     m_btRecoverHP = this->GetPassiveSkillValue(AT_PSV_RECOVER_HP)
         + (short)(m_iAddValue[AT_RECOVER_HP] * this->GetPassiveSkillRate(AT_PSV_RECOVER_HP)
             / 100.f);
 }
+
 void
 CUserDATA::Cal_RecoverMP() {
     m_btRecoverMP = this->GetPassiveSkillValue(AT_PSV_RECOVER_MP)
@@ -323,6 +363,19 @@ CUserDATA::Cal_RecoverMP() {
             / 100.f);
 }
 
+#ifdef __KCHS_BATTLECART__
+void
+CUserDATA::Cal_PatMaxHP() {
+    m_Battle.m_nPatMaxHP = 0;
+    for (short nI = 0; nI < MAX_RIDING_PART; nI++) {
+        tagITEM sITEM = this->m_Inventory.m_ItemRIDE[nI];
+        m_Battle.m_nPatMaxHP += PAT_ITEM_HP(sITEM.GetItemNO());
+    }
+
+    if (this->m_GrowAbility.m_nPatHP > m_Battle.m_nPatMaxHP)
+        this->m_GrowAbility.m_nPatHP = m_Battle.m_nPatMaxHP;
+}
+#endif
 int
 CUserDATA::Cal_MaxHP() {
     int iA, iM1, iM2;
@@ -377,9 +430,6 @@ CUserDATA::Cal_MaxHP() {
     m_Battle.m_nMaxHP = (short)((this->GetCur_LEVEL() + iA) * sqrtf(this->GetCur_LEVEL() + iM1) * fC
         + (this->GetCur_STR() * 2) + this->m_iAddValue[AT_MAX_HP]);
 
-#ifdef _DEBUG
-    int test = this->GetPassiveSkillValue(AT_PSV_MAX_HP);
-#endif
 
     iA = this->GetPassiveSkillValue(AT_PSV_MAX_HP)
         + (short)(m_Battle.m_nMaxHP * this->GetPassiveSkillRate(AT_PSV_MAX_HP) / 100.f);
@@ -1263,6 +1313,7 @@ CUserDATA::Check_EquipCondition(tagITEM& sITEM) {
 /// USEITEM_NEED_DATA_VALUE : ÇÊ¿ä´É·ÂÄ¡.
 /// USEITEM_ADD_DATA_TYPE : Àû¿ë´É·Â
 /// USEITEM_ADD_DATA_VALUE : Àû¿ë ¼öÄ¡
+#ifndef __SERVER
 bool
 CUserDATA::Use_ITEM(WORD wUseItemNO) {
 #ifndef __SERVER
@@ -1286,6 +1337,7 @@ CUserDATA::Use_ITEM(WORD wUseItemNO) {
 
     return true;
 }
+#endif
 
 ///
 /// ¸ö¿¡ ºÙ¾î¾ßÇÒ ¾ÆÀÌÅÛµéÀº ¸ö¿¡ ºÙ¿© ÁØ´Ù.
@@ -1331,6 +1383,9 @@ CUserDATA::Set_EquipITEM(short nEquipIDX, tagITEM& sITEM) {
 
     // ÀåÂø ¾ÆÀÌÅÛÀÌ ¹Ù²î¾úÀ¸´Ï... ÇØÁà¾ßÁö...
     this->UpdateCur_Ability();
+#ifdef __SERVER
+    this->InitPassiveSkill();
+#endif
 
 #ifndef __SERVER
     /// ¸ðµ¨ µ¥ÀÌÅÍ °»½Å
@@ -1354,7 +1409,7 @@ CUserDATA::Skill_ToUseAbilityVALUE(short nSkillIDX, short nPropertyIDX) {
                                                               : iValue;
         default:
             break;
-    }
+	}
     return iValue;
 }
 
@@ -1382,14 +1437,18 @@ CUserDATA::Skill_UseAbilityValue(short nSkillIDX) {
                 this->SetCur_MONEY(GetCur_MONEY() - iValue);
                 break;
             case AT_STAMINA:
-                this->SubCur_STAMINA(iValue);
+                this->SetCur_STAMINA(GetCur_STAMINA() - iValue);
                 break;
-            case AT_PATHP: {
+#ifdef __SERVER
+            case AT_FUEL:
+                this->SubCur_FUEL(iValue);
+                break;
+#endif
+#ifndef __SERVER
+            case AT_PATHP:
                 SetCur_PatHP(GetCur_PatHP() - iValue);
-            } break;
-            default:
-                _RPTF0(_CRT_ASSERT, "Invalid Type");
-                break;
+            	break;
+#endif
         }
     }
 
@@ -1428,11 +1487,15 @@ CUserDATA::Skill_GetAbilityValue(short nAbilityType) {
             return (int)GetCur_MONEY();
 
         case AT_STAMINA:
-            return this->m_GrowAbility.m_nSTAMINA;
+            return GetCur_STAMINA();
+#ifdef __SERVER
+        case AT_FUEL:
+            return GetCur_FUEL();
+#endif
+#ifndef __SERVER
         case AT_PATHP:
             return GetCur_PatHP();
-
-            // case AT_SKILLPOINT :	return GetCur_SkillPOINT ();
+#endif
     }
 
     return -999;
@@ -1673,8 +1736,19 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
     // 2.
     short nNeedWPN, nRWPN, nLWPN;
 
-    nRWPN = WEAPON_TYPE(this->GetCur_R_WEAPON());
+#ifndef __SERVER
+	nRWPN = WEAPON_TYPE(this->GetCur_R_WEAPON());
     nLWPN = SUBWPN_TYPE(this->GetCur_L_WEAPON());
+#else
+    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
+        nRWPN = WEAPON_TYPE(this->GetCur_R_WEAPON());
+        nLWPN = SUBWPN_TYPE(this->GetCur_L_WEAPON());
+    } else {
+        // Å¾½Â½Ã¿¡´Â ÇÊ¿ä ¹Ùµð¸¦ Ã¼Å©...
+        nRWPN = PAT_ITEM_TYPE(this->GetCur_PET_BODY());
+        nLWPN = -1;
+    }
+#endif
 
     for (nI = 0; nI < SKILL_NEED_WEAPON_CNT; nI++) {
         nNeedWPN = SKILL_NEED_WEAPON(nSkillIDX, nI);
@@ -1723,9 +1797,7 @@ CUserDATA::GetPassiveSkillAttackSpeed(float fCurSpeed, short nRightWeaponItemNo)
         + (short)(fCurSpeed * this->GetPassiveSkillRate(eIndex) / 100.f);
 }
 
-//---------------------------------------
-// ±¹³», ÀÏº», Á¦´ÏÆÛ, IRose¹öÁ¯¿ë °è»ê½Ä
-//---------------------------------------
+#ifndef __SERVER
 short
 CUserDATA::GetPassiveSkillAttackSpeed(short nRightWeaponItemNo) {
     switch (WEAPON_TYPE(nRightWeaponItemNo)) {
@@ -1741,8 +1813,8 @@ CUserDATA::GetPassiveSkillAttackSpeed(short nRightWeaponItemNo) {
 
     return 0;
 }
+#endif
 
-//-------------------------------------------------------------------------------------------------
 short
 CUserDATA::GetPassiveSkillAttackPower(int iCurAP, short nRightWeaponItemNo) {
     t_AbilityINDEX eIndex;
@@ -1826,17 +1898,23 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
 
                 if (SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI)) {
                     // 05.05.26 ºñÀ²°è»ê Ãß°¡...
+                    short nValue = SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI);
+                    if (nBeforeSkill) {
+                        nValue -= SKILL_CHANGE_ABILITY_RATE(nBeforeSkill, nI);
+                    }
                     int iCurAbility = this->m_BasicAbility.m_nBasicA[nPassiveTYPE]
                         + m_iAddValue[SKILL_INCREASE_ABILITY(nSkillIDX, nI)];
-                    this->AddPassiveSkillRate(SKILL_INCREASE_ABILITY(nSkillIDX, nI),
-                        SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI));
+                    this->AddPassiveSkillRate(SKILL_INCREASE_ABILITY(nSkillIDX, nI), nValue);
                     m_PassiveAbilityFromRate[nPassiveTYPE] = (int)(iCurAbility
                         * m_nPassiveRate[SKILL_INCREASE_ABILITY(nSkillIDX, nI)] / 100.f);
                 } else {
+                    short nValue = SKILL_INCREASE_ABILITY_VALUE(nSkillIDX, nI);
+                    if (nBeforeSkill) {
+                        nValue -= SKILL_INCREASE_ABILITY_VALUE(nBeforeSkill, nI);
+                    }
                     this->m_iAddValue[SKILL_INCREASE_ABILITY(nSkillIDX, nI)] -=
                         this->m_PassiveAbilityFromValue[nPassiveTYPE];
-                    this->m_PassiveAbilityFromValue[nPassiveTYPE] =
-                        SKILL_INCREASE_ABILITY_VALUE(nSkillIDX, nI);
+                    this->m_PassiveAbilityFromValue[nPassiveTYPE] += nValue;
                     this->m_iAddValue[SKILL_INCREASE_ABILITY(nSkillIDX, nI)] +=
                         this->m_PassiveAbilityFromValue[nPassiveTYPE];
                 }
@@ -1919,12 +1997,13 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                                 // °ø°Ý·Â º¯È­...
                                 this->Cal_ATTACK();
                             } else if (nPassiveTYPE < AT_PSV_MOV_SPD) {
-                                // °ø¼Ó º¯°æ...
+#ifndef __SERVER
                                 tagITEM* pITEM = &m_Inventory.m_ItemEQUIP[EQUIP_IDX_WEAPON_R];
                                 if (pITEM->GetHEADER()) {
                                     this->m_nPassiveAttackSpeed =
                                         this->GetPassiveSkillAttackSpeed(pITEM->GetItemNO());
                                 }
+#endif
                                 btReturn |= 0x01;
                             }
                             break;
@@ -2012,14 +2091,15 @@ CUserDATA::InitPassiveSkill() {
                             SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI));
                     } else {
                         nPassiveTYPE = SKILL_INCREASE_ABILITY(nSkillIDX, nI) - AT_STR;
-                        this->m_PassiveAbilityFromValue[nPassiveTYPE] =
+                        this->m_PassiveAbilityFromValue[nPassiveTYPE] +=
                             SKILL_INCREASE_ABILITY_VALUE(nSkillIDX, nI);
                     }
                 } else {
                     nPassiveTYPE = SKILL_INCREASE_ABILITY(nSkillIDX, nI);
-                    if ((nPassiveTYPE >= AT_PSV_RES && nPassiveTYPE < AT_AFTER_PASSIVE_SKILL_2ND)
-                        || (nPassiveTYPE >= AT_PSV_ATK_POW_NO_WEAPON
-                            && nPassiveTYPE <= AT_AFTER_PASSIVE_SKILL)) {
+                    if ((nPassiveTYPE >= AT_PSV_ATK_POW_NO_WEAPON
+                            && nPassiveTYPE <= AT_AFTER_PASSIVE_SKILL)
+                        || (nPassiveTYPE >= AT_PSV_RES
+                            && nPassiveTYPE < AT_AFTER_PASSIVE_SKILL_2ND)) {
                         if (SKILL_CHANGE_ABILITY_RATE(nSkillIDX, nI)) {
                             // 05.05.26 ºñÀ²°è»ê ÀÌ¸é ???
                             this->AddPassiveSkillRate(nPassiveTYPE,
@@ -2152,6 +2232,7 @@ CUserDATA::Quest_SubITEM(tagITEM& sSubITEM) {
 #endif
 bool
 CUserDATA::Reward_InitSKILL(void) {
+#ifndef __SERVER
     if (g_pAVATAR) {
         /// Remove from SkillSlot
         if (CSkillSlot* p = g_pAVATAR->GetSkillSlot()) {
@@ -2163,12 +2244,15 @@ CUserDATA::Reward_InitSKILL(void) {
             }
         }
     }
+#endif
 
     short nNewSP = (int)(this->GetCur_LEVEL() * (this->GetCur_LEVEL() + 4) * 0.25f) - 1;
     this->SetCur_SkillPOINT(nNewSP);
 
+#ifndef __SERVER
     /// QuickSlot Update
     g_itMGR.UpdateQuickSlot();
+#endif
 
     // 0ÆäÀÌÁöÀÇ ±âº» ½ºÅ³À» °Á µÐ´Ù.
     ::ZeroMemory(&m_Skills.m_nSkillINDEX[MAX_LEARNED_SKILL_PER_PAGE],
@@ -2176,6 +2260,9 @@ CUserDATA::Reward_InitSKILL(void) {
 
     this->InitPassiveSkill();
     this->UpdateCur_Ability();
+#ifdef __SERVER
+    this->Quest_CHANGE_SPEED();
+#endif
     return true;
 }
 
@@ -2197,6 +2284,9 @@ CUserDATA::Reward_InitSTATUS(void) {
     this->SetDef_SENSE(AVATAR_SENSE(nRace));
 
     // ÃÊ±âÈ­ µÆÀ¸´Ï »óÅÂ¸¦ º¸³»ÀÚ...
+#ifdef __SERVER
+    this->InitPassiveSkill();
+#endif
     this->UpdateCur_Ability();
     this->Quest_CHANGE_SPEED();
 
@@ -2222,6 +2312,21 @@ CUserDATA::Reward_ITEM(tagITEM& sITEM, BYTE btRewardToParty, BYTE btQuestSLOT) {
 
             this->m_Quests.m_QUEST[btQuestSLOT].AddITEM(sITEM);
         } else {
+            if (!sITEM.IsEnableDupCNT() && 0 == sITEM.GetOption()) {
+                // ÀåºñÀÌ°í ¿É¼ÇÀÌ ¾øÀ¸¸é : ¼ÒÄÏ °áÁ¤.
+                switch (ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO())) {
+                    case 1: // ¹«Á¶°Ç
+                        sITEM.m_bHasSocket = 1;
+                        break;
+                    case 2: // °è»ê
+                        if (ITEM_QUALITY(sITEM.GetTYPE(), sITEM.GetItemNO()) + 60 - RANDOM(400)
+                            > 0) {
+                            sITEM.m_bHasSocket = 1;
+                            break;
+                        }
+                }
+            }
+
             this->Add_ItemNSend(sITEM);
         }
 #ifndef __SERVER
@@ -2305,10 +2410,23 @@ CUserDATA::Reward_CalITEM(BYTE btEquation,
             }
         } else {
             // Àåºñ
-            if (nItemOP) {
+            if (nItemOP && nItemOP < 300) {
                 sITEM.m_bIsAppraisal = 1;
                 sITEM.m_bHasSocket = 0;
                 sITEM.m_nGEM_OP = nItemOP;
+            } else {
+                // Àåºñ°í ¿É¼ÇÀÌ ¾ø´Â °æ¿ì´Ù...¼ÒÄÏ °áÁ¤.
+                switch (ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO())) {
+                    case 1: // ¹«Á¶°Ç
+                        sITEM.m_bHasSocket = 1;
+                        break;
+                    case 2: // °è»ê
+                        if (ITEM_QUALITY(sITEM.GetTYPE(), sITEM.GetItemNO()) + 60 - RANDOM(400)
+                            > 0) {
+                            sITEM.m_bHasSocket = 1;
+                            break;
+                        }
+                }
             }
             this->Add_ItemNSend(sITEM);
         }
@@ -2395,7 +2513,7 @@ CUserDATA::SetCur_PatCoolTIME(DWORD dwCoolTIME) {
 // È«±Ù.
 void
 CUserDATA::SetDef_IMMUNITY(int iImmunity) {
-#ifdef _GBC
+#ifdef __APPLY_2ND_JOB
     m_Battle.m_nImmunity = iImmunity;
 #endif
 }

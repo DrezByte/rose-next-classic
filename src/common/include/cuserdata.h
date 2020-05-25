@@ -772,7 +772,6 @@ public:
     void SetCur_PK_FLAG(short nValue) { this->m_GrowAbility.m_nPKFlag = nValue; }
     short GetCur_PK_FLAG() { return this->m_GrowAbility.m_nPKFlag; }
 
-#ifdef __SERVER
     short GetCur_STAMINA() { return this->m_GrowAbility.m_nSTAMINA; }
     void SetCur_STAMINA(short nValue) {
         this->m_GrowAbility.m_nSTAMINA = nValue;
@@ -781,7 +780,6 @@ public:
         else if (this->m_GrowAbility.m_nSTAMINA < 0)
             this->m_GrowAbility.m_nSTAMINA = 0;
     }
-#endif
 
     virtual void AddCur_EXP(int /*iValue*/) { /* nop */
     } // 호출될경우 서버에서 전송됨.
