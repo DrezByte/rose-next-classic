@@ -15,6 +15,8 @@
 
 #include "rose/common/game_config.h"
 
+#include "nlohmann/json_fwd.hpp"
+
 #pragma warning(disable : 4201)
 
 #ifdef __BORLANDC__
@@ -286,12 +288,9 @@ public:
 
         return this->GetBit(iSwitchNO);
     }
-    int Flip_SWITCH(int iSwitchNO) {
-        if (iSwitchNO < 0 || iSwitchNO >= QUEST_SWITCH_CNT)
-            return -1;
 
-        return this->FlipBit(iSwitchNO);
-    }
+    nlohmann::json to_json();
+    void from_json(const nlohmann::json& j);
 };
 
 #define BANKSLOT_DEFAULT 90

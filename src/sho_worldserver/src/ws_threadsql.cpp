@@ -305,6 +305,14 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
     g_pUserLIST->SendPacketToSocketIDX(pSqlPACKET->m_iTAG, pCPacket);
 
     if (delete_list.size() > 0) {
+        std::string del_item = fmt::format(
+            "DELETE FROM item WHERE id IN (SELECT item_id FROM inventory WHERE owner_id IN ({}))", param_list(delete_list.size()));
+
+        QueryResult del_item_res = this->db_pg.query(del_item, delete_list);
+        if (!del_item_res.is_ok()) {
+            LOG_ERROR("Failed to delete items for character(s): %s", del_item_res.error_message());
+        }
+
         std::string q =
             fmt::format("DELETE FROM character WHERE id IN ({})", param_list(delete_list.size()));
 
@@ -851,24 +859,53 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
 
     std::string bulk;
     for (size_t i = 0; i < INVENTORY_TOTAL_SIZE; ++i) {
-        tagITEM item = m_pDefaultINV[gender_id].m_ItemLIST[i];
+        tagITEM& item = m_pDefaultINV[gender_id].m_ItemLIST[i];
         if (item.GetTYPE() == 0) {
             continue;
         }
 
-        bulk += fmt::format("INSERT INTO item (game_data_id, type_id, stat_id, grade, durability, "
-                            "lifespan, appraisal, socket) VALUES ({}, {}, {}, {}, {}, {}, {}, {});",
-            std::to_string(item.GetItemNO()),
-            std::to_string(item.GetTYPE()),
-            std::to_string(item.GetGemNO()),
-            std::to_string(item.GetGrade()),
-            std::to_string(item.GetDurability()),
-            std::to_string(item.GetLife()),
-            PG_BOOL(item.IsAppraisal()),
-            PG_BOOL(item.HasSocket()));
+        uint16_t gem_id = 0;
+        uint16_t grade = 0;
+        uint16_t durability = 0;
+        uint16_t lifespan = 0;
+        bool is_appraisal = false;
+        bool has_socket = false;
+        bool is_crafted = false;
+        uint16_t quantity = 1;
+
+        if (item.IsEnableDupCNT()) {
+            quantity = item.GetQuantity();
+        } else {
+            gem_id = item.GetGemNO();
+            grade = item.GetGrade();
+            durability = item.GetDurability();
+            lifespan = item.GetLife();
+            is_appraisal = item.IsAppraisal();
+            has_socket = item.HasSocket();
+            is_crafted = item.IsCreated();
+        }
 
         bulk += fmt::format(
-            "INSERT INTO inventory (owner_id, item_id, slot, quantity) VALUES ({}, currval('item_id_seq'), {}, {});", char_id, i, item.GetQuantity());
+            "INSERT INTO item (uuid, game_data_id, type_id, stat_id, grade, durability, "
+            "lifespan, appraisal, socket, crafted) "
+            "VALUES ('{}', {}, {}, {}, {}, {}, {}, {}, {}, {});",
+            item.uuid.to_string(),
+            std::to_string(item.GetItemNO()),
+            std::to_string(item.GetTYPE()),
+            std::to_string(gem_id),
+            std::to_string(grade),
+            std::to_string(durability),
+            std::to_string(lifespan),
+            PG_BOOL(is_appraisal),
+            PG_BOOL(has_socket),
+            PG_BOOL(is_crafted));
+
+        bulk += fmt::format("INSERT INTO inventory (owner_id, slot, quantity, item_id) "
+                            "VALUES ({}, {}, {}, (SELECT id FROM item WHERE uuid='{}'));",
+            char_id,
+            i,
+            quantity,
+            item.uuid.to_string());
     }
 
     QueryResult bulk_res = this->db_pg.batch(bulk);

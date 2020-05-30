@@ -164,7 +164,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__SERVER;__GAMESERVER;Ndebug;WIN32;_LIB;__USE_CHEAT;_PA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -207,7 +207,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\common;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(ProjectDir)src\srv_common;$(ProjectDir)src\ai_lib;$(SolutionDir)src\LIB_Util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\Client\Util;$(SolutionDir)src\Client\Common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__SERVER;__GAMESERVER;_debug;WIN32;_LIB;__USE_CHEAT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

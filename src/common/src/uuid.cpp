@@ -23,7 +23,7 @@ UUID::is_nil() {
 
 #ifdef WIN32
 UUID
-generate() {
+UUID::generate() {
     GUID guid;
     if (S_OK != CoCreateGuid(&guid)) {
         return UUID();

@@ -27,6 +27,23 @@ PG_BOOL(bool b) {
 /// e.g. param_list(4) => "$1, $2, $3, $4"
 std::string param_list(size_t count);
 
+/// Builds a value list from a vector
+/// e.g.
+/// std::vector some_vec{'val1', 'val2', 'val3');
+/// value_list(some_vec) => "val1, val2, val3"
+std::string value_list(std::vector<std::string>& vals);
+
+template<typename T,
+    std::enable_if_t<std::is_integral<T>::value || std::is_floating_point<T>::value, int> = 0>
+std::string
+value_list(std::vector<T>& vals) {
+    std::vector<std::string> v;
+    for (const T& val: vals) {
+        v.push_back(std::to_string(val));
+    }
+    return value_list(v);
+}
+
 struct PgConnDeleter {
     void operator()(PGconn* c);
 };
@@ -84,6 +101,7 @@ public:
     /// Get a value from the query result by row and column index
     std::string get_string(size_t row_idx, size_t col_idx);
     int32_t get_int32(size_t row_idx, size_t col_idx);
+    int64_t get_int64(size_t row_idx, size_t col_idx);
     float get_float(size_t row_idx, size_t col_idx);
     double get_double(size_t row_idx, size_t col_idx);
     bool get_bool(size_t row_idx, size_t col_idx);

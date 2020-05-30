@@ -21,6 +21,18 @@ param_list(size_t count) {
     return s;
 }
 
+std::string
+value_list(std::vector<std::string>& vals) {
+    std::string s;
+    for (size_t i = 0; i < vals.size(); ++i) {
+        if (i != 0) {
+            s += ", ";
+        }
+        s += vals[i];
+    }
+    return s;
+}
+
 void
 PgConnDeleter::operator()(PGconn* c) {
     PQfinish(c);
@@ -118,6 +130,15 @@ int32_t
 QueryResult::get_int32(size_t row_idx, size_t col_idx) {
     try {
         return std::stoi(this->get_string(row_idx, col_idx));
+    } catch (...) {
+        return 0;
+    }
+}
+
+int64_t
+QueryResult::get_int64(size_t row_idx, size_t col_idx) {
+    try {
+        return std::stoll(this->get_string(row_idx, col_idx));
     } catch (...) {
         return 0;
     }

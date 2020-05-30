@@ -32,10 +32,13 @@
     <ClCompile Include="..\common-server\src\cthreadmsgr.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\src\cinventory.cpp">
+    <ClCompile Include="..\common\shared\cinventory.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\src\citem.cpp">
+    <ClCompile Include="..\common\shared\citem.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\shared\cuserdata_new.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -67,13 +70,16 @@
     <ClInclude Include="..\common-server\include\cthreadmsgr.h">
       <Filter>Common Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\include\cinventory.h">
+    <ClInclude Include="..\common\shared\cinventory.h">
       <Filter>Common Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\include\datatype.h">
+    <ClInclude Include="..\common\shared\citem.h">
       <Filter>Common Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\include\citem.h">
+    <ClInclude Include="..\common\shared\cuserdata.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shared\datatype.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

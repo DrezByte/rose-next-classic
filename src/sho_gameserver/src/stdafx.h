@@ -12,3 +12,5 @@
 #include "rose/common/game_config.h"
 
 #include "lib_gsmain.h"
+
+#include "fmt/core.h"

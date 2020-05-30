@@ -170,6 +170,18 @@ GS_CThreadSQL::Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE) {
 
 bool
 GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
+    const char* char_name = user->Get_NAME();
+
+    // Begin the database transaction
+    QueryResult trans_res = this->db_pg.query("BEGIN", {});
+    if (!trans_res.is_ok()) {
+        LOG_ERROR("Failed to begin transaction when saving character '%s': %s",
+            char_name,
+            trans_res.error_message());
+        return false;
+    }
+
+    // Update the character info
     std::string query(
         "UPDATE character SET gender_id=$1, job_id=$2, face_id=$3, hair_id=$4, level=$5, exp=$6, "
         "hp=$7, mp=$8, stamina=$9, max_hp=$10, max_mp=$11, max_stamina=$12, str=$13, dex=$14, "
@@ -222,121 +234,119 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         LOG_ERROR("Failed to save character info for '%s': %s",
             user->Get_NAME(),
             char_res.error_message());
+
+        trans_res = this->db_pg.query("ROLLBACK", {});
+        if (!trans_res.is_ok()) {
+            LOG_ERROR("Failed to rollback transaction when saving character '%s': %s",
+                char_name,
+                trans_res.error_message());
+        }
+
         return false;
     }
 
-    // TODO: Inventory
-    // Have to uniquely identify items...
-    // INSERT ... ON CONFLICT (uuid) UPDATE SET ...
+    std::vector<int> delete_list;
+
+    // Update inventory info
+    std::string bulk;
+    for (size_t i = 0; i < INVENTORY_TOTAL_SIZE; ++i) {
+        tagITEM& item = user->m_Inventory.m_ItemLIST[i];
+        if (item.GetTYPE() == 0 || item.IsEmpty() || !item.IsValidITEM()) {
+            delete_list.push_back(i);
+            continue;
+        }
+
+        uint16_t gem_id = 0;
+        uint16_t grade = 0;
+        uint16_t durability = 0;
+        uint16_t lifespan = 0;
+        bool is_appraisal = false;
+        bool has_socket = false;
+        bool is_crafted = false;
+        uint16_t quantity = 1;
+
+        if (item.IsEnableDupCNT()) {
+            quantity = item.GetQuantity();
+        } else {
+            gem_id = item.GetGemNO();
+            grade = item.GetGrade();
+            durability = item.GetDurability();
+            lifespan = item.GetLife();
+            is_appraisal = item.IsAppraisal();
+            has_socket = item.HasSocket();
+            is_crafted = item.IsCreated();
+        }
+
+        bulk += fmt::format(
+            "INSERT INTO item (uuid, game_data_id, type_id, stat_id, grade, durability, "
+            "lifespan, appraisal, socket, crafted) "
+            "VALUES ('{0}', {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}) "
+            "ON CONFLICT (uuid) "
+            "DO UPDATE SET uuid='{0}', game_data_id={1}, type_id={2}, stat_id={3}, grade={4}, "
+            "durability={5}, lifespan={6}, appraisal={7}, socket={8}, crafted={9};",
+            item.uuid.to_string(),
+            std::to_string(item.GetItemNO()),
+            std::to_string(item.GetTYPE()),
+            std::to_string(gem_id),
+            std::to_string(grade),
+            std::to_string(durability),
+            std::to_string(lifespan),
+            PG_BOOL(is_appraisal),
+            PG_BOOL(has_socket),
+            PG_BOOL(is_crafted));
+
+        bulk += fmt::format(
+            "INSERT INTO inventory (owner_id, slot, quantity, item_id) "
+            "VALUES ({0}, {1}, {2}, (SELECT id FROM item WHERE uuid='{3}')) "
+            "ON CONFLICT (owner_id, slot) "
+            "DO UPDATE SET quantity={2}, item_id=(SELECT id FROM item WHERE uuid='{3}');",
+            user->m_dwDBID,
+            i,
+            quantity,
+            item.uuid.to_string());
+    }
+
+    bulk += fmt::format("DELETE FROM item WHERE id IN (SELECT item_id FROM inventory WHERE owner_id={} AND slot IN ({}));",
+        user->m_dwDBID,
+        value_list(delete_list));
+
+    QueryResult bulk_res = this->db_pg.batch(bulk);
+    if (!bulk_res.is_ok()) {
+        LOG_ERROR("Failed to update items for character '%s': %s",
+            char_name,
+            bulk_res.error_message());
+
+        trans_res = this->db_pg.query("ROLLBACK", {});
+        if (!trans_res.is_ok()) {
+            LOG_ERROR("Failed to rollback transaction when creating '%s': %s",
+                char_name,
+                trans_res.error_message());
+        }
+        return false;
+    }
+
+    // Commit the transaction
+    trans_res = this->db_pg.query("COMMIT", {});
+    if (!trans_res.is_ok()) {
+        LOG_ERROR("Failed to commit transaction when saving character '%s': %s",
+            char_name,
+            trans_res.error_message());
+        return false;
+    }
 
     // TODO: Storage
+    // OH BOY
 
     // TODO: Quest data
+    // JSON
 
     // TODO: Wish list
+    // JSON
 
-    // TODO: 
-    return true;
-    /*
-    // update character DB !!!
-    // "UPDATE tblGS_AVATAR SET nZoneNO=xxx, binBasicI=xx, binBasicA=xx WHERE txtNAME=xxx;"
-    m_sBE.m_btCharRACE = (BYTE)pUSER->m_nCharRACE;
-
-    if (pUSER->Get_HP() <= 0) {
-        // Á¸¹øÈ£°¡ ¾øÀ¸¸é ???
-        // Á×¾úÀ¸¸é ÀúÀåµÈ ºÎÈ°Àå¼Ò¿¡¼­ ...
-        if (pUSER->m_nZoneNO == BEGINNER_ZONE_NO) {
-            m_sBE.m_nZoneNO = BEGINNER_ZONE_NO;
-            m_sBE.m_PosSTART = pUSER->m_PosCUR;
-        } else {
-            m_sBE.m_nZoneNO = pUSER->m_nReviveZoneNO;
-            m_sBE.m_PosSTART = pUSER->m_PosREVIVE;
-        }
-    } else {
-        m_sBE.m_nZoneNO = pUSER->m_nZoneNO;
-        m_sBE.m_PosSTART = pUSER->m_PosCUR;
-    }
-
-    // ºÎÈ° Àå¼Ò...
-    m_sBE.m_nReviveZoneNO = pUSER->m_nReviveZoneNO;
-    m_sBE.m_PosREVIVE = pUSER->m_PosREVIVE;
-    m_sBE.m_btCharSlotNO = pUSER->m_btPlatinumCHAR;
-
-    if (m_sBE.m_nZoneNO < 0 || m_sBE.m_nReviveZoneNO < 0) {
-        g_LOG.CS_ODS(0xffff,
-            "**** Invalid ZoneNO [ %s ] Race: %d, Zone: %d ReviveZone: %d",
-            pUSER->Get_NAME(),
-            m_sBE.m_btCharRACE,
-            m_sBE.m_nZoneNO,
-            m_sBE.m_nReviveZoneNO);
-    }
-
-    ::CopyMemory(m_sBE.m_PartITEM, pUSER->m_PartITEM, sizeof(tagPartITEM) * MAX_BODY_PART);
-    ::CopyMemory(m_sBE.m_RideITEM, pUSER->m_RideITEM, sizeof(tagPartITEM) * MAX_RIDING_PART);
-
-    pUSER->m_BasicINFO.m_cFaceIDX = (char)pUSER->m_PartITEM[BODY_PART_FACE].m_nItemNo;
-    pUSER->m_BasicINFO.m_cHairIDX = (char)pUSER->m_PartITEM[BODY_PART_HAIR].m_nItemNo;
-
-    // Update character data
-    std::string query("UPDATE character SET basic_etc=?, basic_info=?, basic_ability=?, "
-                      "grow_ability=?, skill_ability=?, inventory=?, quest_data=?, hot_icon=?, "
-                      "wish_list=?, level=?, money=?, job_id=?, "
-                      "party_id=?, item_serial=?, gender_id=?, face_id=?, hair_id=?, "
-                      "map_id=?, respawn_x=?, respawn_y=?, "
-                      "town_respawn_id=?, town_respawn_x=?, town_respawn_y=? "
-                      "WHERE name=?");
-
-    this->db->bind_binary(1, (uint8_t*)&this->m_sBE, sizeof(tagBasicETC));
-    this->db->bind_binary(2, (uint8_t*)&pUSER->m_BasicINFO, sizeof(tagBasicINFO));
-    this->db->bind_binary(3, (uint8_t*)&pUSER->m_BasicAbility, sizeof(tagBasicAbility));
-    this->db->bind_binary(4, (uint8_t*)&pUSER->m_GrowAbility, sizeof(tagGrowAbility));
-    this->db->bind_binary(5, (uint8_t*)&pUSER->m_Skills, sizeof(tagSkillAbility));
-    this->db->bind_binary(6, (uint8_t*)&pUSER->m_Inventory, sizeof(CInventory));
-    this->db->bind_binary(7, (uint8_t*)&pUSER->m_Quests, sizeof(tagQuestData));
-    this->db->bind_binary(8, (uint8_t*)&pUSER->m_HotICONS, sizeof(CHotICONS));
-    this->db->bind_binary(9, (uint8_t*)&pUSER->m_WishLIST, sizeof(tagWishLIST));
-    this->db->bind_int16(10, pUSER->m_GrowAbility.m_nLevel);
-    this->db->bind_int64(11, pUSER->GetCur_MONEY());
-    this->db->bind_int16(12, pUSER->m_BasicINFO.m_nClass);
-    this->db->bind_int32(13, pUSER->GetPARTY() ? pUSER->m_pPartyBUFF->m_wPartyWSID : 0);
-    this->db->bind_int32(14, pUSER->m_dwItemSN);
-    this->db->bind_int16(15, this->m_sBE.m_btCharRACE);
-    this->db->bind_int16(16, pUSER->m_BasicINFO.m_cFaceIDX);
-    this->db->bind_int16(17, pUSER->m_BasicINFO.m_cHairIDX);
-    this->db->bind_float(18, this->m_sBE.m_nZoneNO);
-    this->db->bind_float(19, this->m_sBE.m_PosSTART.x);
-    this->db->bind_float(20, this->m_sBE.m_PosSTART.y);
-    this->db->bind_float(21, this->m_sBE.m_nReviveZoneNO);
-    this->db->bind_float(22, this->m_sBE.m_PosREVIVE.x);
-    this->db->bind_float(23, this->m_sBE.m_PosREVIVE.y);
-    this->db->bind_string(24, pUSER->Get_RNAME(), pUSER->m_RName.Length());
-
-    if (!this->db->execute(query)) {
-        LOG_ERROR("failed to update charactacter. Character: (%s)", pUSER->Get_RNAME());
-        for (const std::string& msg: this->db->get_error_messages()) {
-            LOG_WARN(msg.c_str());
-        }
-        return false;
-    }
-
-    if (BANK_CHANGED != pUSER->m_btBankData) {
-        return true;
-    }
-
-    // Update bank data
-    this->db->bind_binary(1, (uint8_t*)&pUSER->m_Bank, sizeof(tagBankData));
-    this->db->bind_string(2, pUSER->Get_ACCOUNT(), pUSER->Get_AccountLEN());
-
-    if (!this->db->execute("UPDATE tblGS_BANK SET blobITEMS=? WHERE txtACCOUNT=?")) {
-        LOG_ERROR("Failed to update storage. Account: %s", pUSER->Get_NAME());
-        for (const std::string& msg: this->db->get_error_messages()) {
-            LOG_WARN(msg.c_str());
-        }
-        return false;
-    }
+    // TODO: Hoticons
+    // JSON
 
     return true;
-    */
 }
 
 void
@@ -564,13 +574,13 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    QueryResult item_res =
-        this->db_pg.query("SELECT inventory.slot, inventory.quantity, item.uuid, "
-                          "item.game_data_id, item.type_id, item.stat_id, item.grade, "
-                          "item.durability, item.lifespan, item.appraisal, item.socket "
-                          "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
-                          "WHERE inventory.owner_id = $1",
-            {char_res.get_string(0, COL_ID)});
+    QueryResult item_res = this->db_pg.query(
+        "SELECT inventory.slot, inventory.quantity, item.uuid, "
+        "item.game_data_id, item.type_id, item.stat_id, item.grade, "
+        "item.durability, item.lifespan, item.appraisal, item.socket, item.crafted "
+        "FROM inventory INNER JOIN item ON inventory.item_id = item.id "
+        "WHERE inventory.owner_id = $1",
+        {char_res.get_string(0, COL_ID)});
 
     enum InvCol {
         INV_COL_SLOT,
@@ -584,6 +594,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         INV_COL_LIFESPAN,
         INV_COL_APPRAISAL,
         INV_COL_SOCKET,
+        INV_COL_CRAFTED,
     };
 
     if (!item_res.is_ok()) {
@@ -657,7 +668,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
     CInventory inventory;
     inventory.Clear();
-    inventory.m_i64Money = char_res.get_int32(0, COL_MONEY);
+    inventory.m_i64Money = char_res.get_int64(0, COL_MONEY);
 
     // TODO: Populate wish list
     tagWishLIST wish_list;
@@ -694,14 +705,18 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         item.uuid = Rose::Util::UUID::from_string(item_res.get_string(row_idx, INV_COL_UUID));
         item.m_nItemNo = item_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
         item.m_cType = item_res.get_int32(row_idx, INV_COL_TYPE_ID);
-        item.m_uiQuantity = item_res.get_int32(row_idx, INV_COL_QUANTITY);
-        item.m_bHasSocket = item_res.get_bool(row_idx, INV_COL_SOCKET);
-        item.m_bIsAppraisal = item_res.get_bool(row_idx, INV_COL_APPRAISAL);
-        item.m_cDurability = item_res.get_int32(row_idx, INV_COL_DURABILITY);
-        item.m_cGrade = item_res.get_int32(row_idx, INV_COL_GRADE);
-        item.m_nLife = item_res.get_int32(row_idx, INV_COL_LIFESPAN);
-        item.m_nGEM_OP = item_res.get_int32(row_idx, INV_COL_STAT_ID);
 
+        if (item.IsEnableDupCNT()) {
+            item.m_uiQuantity = item_res.get_int32(row_idx, INV_COL_QUANTITY);
+        } else {
+            item.m_bCreated = item_res.get_bool(row_idx, INV_COL_CRAFTED);
+            item.m_bHasSocket = item_res.get_bool(row_idx, INV_COL_SOCKET);
+            item.m_bIsAppraisal = item_res.get_bool(row_idx, INV_COL_APPRAISAL);
+            item.m_cDurability = item_res.get_int32(row_idx, INV_COL_DURABILITY);
+            item.m_cGrade = item_res.get_int32(row_idx, INV_COL_GRADE);
+            item.m_nLife = item_res.get_int32(row_idx, INV_COL_LIFESPAN);
+            item.m_nGEM_OP = item_res.get_int32(row_idx, INV_COL_STAT_ID);
+        }
         inventory.m_ItemLIST[slot] = item;
     }
 

@@ -81,6 +81,7 @@ tagBaseITEM::Init(int iItem, unsigned int uiQuantity) {
 
     if (1001 > iItem)
         return;
+    this->uuid = Rose::Util::UUID::generate();
     this->m_cType = (char)(iItem / 1000);
     this->m_nItemNo = iItem % 1000;
     if (this->IsEnableDupCNT()) {
