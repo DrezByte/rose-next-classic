@@ -2,16 +2,15 @@
 
 #ifdef __SERVER
     #include "choticon.h"
-    #include "cquest.h"
     #include "io_stb.h"
 #else
     #include "common/choticon.h"
-    #include "common/cquest.h"
     #include "common/io_stb.h"
 #endif
 
 #include "calculation.h"
 #include "cinventory.h"
+#include "cquest.h"
 
 #include "rose/common/game_config.h"
 

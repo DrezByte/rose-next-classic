@@ -3,7 +3,7 @@
 */
 #ifndef	__QUEST_FUNC_H
 #define	__QUEST_FUNC_H
-#include "..\Common\CQuest.h"
+#include "cquest.h"
 #include "..\LUA_Func.h"
 //-------------------------------------------------------------------------------------------------
 

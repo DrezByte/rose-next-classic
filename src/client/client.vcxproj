@@ -189,6 +189,7 @@
     <ClCompile Include="..\common\calculation.cpp" />
     <ClCompile Include="..\common\shared\cinventory.cpp" />
     <ClCompile Include="..\common\shared\citem.cpp" />
+    <ClCompile Include="..\common\shared\cquest.cpp" />
     <ClCompile Include="..\common\shared\cuserdata_new.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CClientStorage.cpp" />
@@ -507,7 +508,6 @@
     <ClCompile Include="Common\CEconomy.cpp" />
     <ClCompile Include="Common\CHotICON.cpp" />
     <ClCompile Include="Common\CObjAI.cpp" />
-    <ClCompile Include="Common\CQuest.cpp" />
     <ClCompile Include="Common\cregenarea.cpp" />
     <ClCompile Include="Common\CUserDATA.cpp" />
     <ClCompile Include="Common\IO_AI.CPP" />
@@ -544,6 +544,7 @@
     <ClInclude Include="..\common\net_prototype.h" />
     <ClInclude Include="..\common\shared\cinventory.h" />
     <ClInclude Include="..\common\shared\citem.h" />
+    <ClInclude Include="..\common\shared\cquest.h" />
     <ClInclude Include="..\common\shared\cuserdata.h" />
     <ClInclude Include="..\common\shared\datatype.h" />
     <ClInclude Include="CCamera.h" />
@@ -879,7 +880,6 @@
     <ClInclude Include="Common\CEconomy.h" />
     <ClInclude Include="Common\CHotICON.h" />
     <ClInclude Include="Common\CObjAI.h" />
-    <ClInclude Include="Common\CQuest.h" />
     <ClInclude Include="Common\CRegenAREA.h" />
     <ClInclude Include="Common\IO_AI.H" />
     <ClInclude Include="Common\IO_Motion.h" />

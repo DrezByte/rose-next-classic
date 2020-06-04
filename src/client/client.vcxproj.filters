@@ -1046,9 +1046,6 @@
     <ClCompile Include="Common\CObjAI.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\CQuest.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\cregenarea.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -1152,6 +1149,9 @@
       <Filter>Common Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\shared\cuserdata_new.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\shared\cquest.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2146,9 +2146,6 @@
     <ClInclude Include="Common\CObjAI.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\CQuest.h">
-      <Filter>Source Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\CRegenAREA.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
@@ -2249,6 +2246,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\shared\datatype.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shared\cquest.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

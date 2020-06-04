@@ -1,13 +1,15 @@
 #include "stdAFX.h"
 
 #include "CQuest.h"
-#include "IO_Quest.h"
 
 #ifndef __SERVER
     #include "..\GameProc\CDayNNightProc.h"
     #include "../Game.h"
+    #include "../interface/it_mgr.h"
+    #include "common/io_quest.h"
 #else
-extern DWORD Get_WorldPassTIME();
+    #include "IO_Quest.h"
+    extern DWORD Get_WorldPassTIME();
 #endif
 
 #define MAX_ASSOCIATION 20 // 최대 조합 갯수
@@ -32,6 +34,20 @@ CQUEST::Init() {
     ClearAllSwitch();
     ::ZeroMemory(m_pVAR, sizeof(m_pVAR));
     ::ZeroMemory(m_ITEMs, sizeof(m_ITEMs));
+}
+
+void
+CQUEST::CheckExpiredTIME() {
+    // if ( this->m_wID )
+    {
+        if (QUEST_TIME_LIMIT(this->m_wID)) {
+            DWORD dwNewExpired = ::Get_WorldPassTIME() + QUEST_TIME_LIMIT(this->m_wID);
+            if (this->m_dwExpirationTIME > dwNewExpired) {
+                // 서버 통합되면서 케릭이전될때... 서버타임이 틀려지니까...
+                this->m_dwExpirationTIME = dwNewExpired;
+            }
+        }
+    }
 }
 
 void
