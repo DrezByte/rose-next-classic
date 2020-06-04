@@ -642,7 +642,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     grow_ability.m_nSTAMINA = char_res.get_int32(0, COL_STAMINA);
 
     // TODO: In grow_ability
-    // short m_nUnionPOINT[MAX_UNION_COUNT]; -- Unions?
+    // short m_nUnionPOINT[MAX_UNION_COUNT];
     // m_btBodySIZE / m_btHeadSIZE -- Would be fun to get these working!
     // m_lPenalEXP -- What is this?
     // m_nPKFlag -- What is this?

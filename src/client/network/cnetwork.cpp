@@ -629,6 +629,9 @@ CNetwork::Proc() {
             }
             case LSV_SELECT_SERVER: {
                 DWORD dwRet = Recv_lsv_SELECT_SERVER();
+                if (dwRet == 0) {
+                    CGame::GetInstance().active_state->on_charserver_connect_failed();
+                }
                 break;
             }
             case LSV_CHANNEL_LIST_REPLY:

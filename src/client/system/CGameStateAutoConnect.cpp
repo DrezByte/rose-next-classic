@@ -174,7 +174,7 @@ CGameStateAutoConnect::on_charserver_connected() {
 
 void
 CGameStateAutoConnect::on_charserver_connect_failed() {
-    this->messages.push_back("Failed to connect to server/channel.");
+    this->messages.push_back("Failed to connect to charserver.");
     this->last_error = AutoConnectError::CharSelectError;
     return;
 }
