@@ -143,7 +143,6 @@
     <ClInclude Include="classTHREAD.h" />
     <ClInclude Include="..\Client\Util\CBITArray.h" />
     <ClInclude Include="CDXHPC.H" />
-    <ClInclude Include="classCRC.h" />
     <ClInclude Include="..\Client\Util\classHASH.h" />
     <ClInclude Include="..\Client\Util\classLUA.h" />
     <ClInclude Include="..\Client\Util\classMD5.h" />
@@ -170,15 +169,6 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="cdxHPC.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Disabled</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='release|Win32'">MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="classCRC.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
