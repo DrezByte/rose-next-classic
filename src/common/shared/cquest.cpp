@@ -12,6 +12,10 @@
     extern DWORD Get_WorldPassTIME();
 #endif
 
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
 #define MAX_ASSOCIATION 20 // 최대 조합 갯수
 
 // 메인 퀘스트 진행 수치
@@ -206,4 +210,76 @@ CQUEST::AddITEM(tagITEM& sITEM) {
     return false;
 }
 
-//-------------------------------------------------------------------------------------------------
+void to_json(json& j, const CQUEST& q) {
+    json vars = json::array();
+    for (size_t i = 0; i < QUEST_VAR_PER_QUEST; ++i) {
+        vars.push_back(q.m_pVAR[i]);
+    }
+
+    json switches = json::array();
+    for (size_t i = 0; i < (QUEST_SWITCH_PER_QUEST / 8); ++i) {
+        const uint8_t b = q.m_btSWITCHES[i];
+        switches.push_back((b >> 0) & 0x1);
+        switches.push_back((b >> 1) & 0x1);
+        switches.push_back((b >> 2) & 0x1);
+        switches.push_back((b >> 3) & 0x1);
+        switches.push_back((b >> 4) & 0x1);
+        switches.push_back((b >> 5) & 0x1);
+        switches.push_back((b >> 6) & 0x1);
+        switches.push_back((b >> 7) & 0x1);
+    }
+
+    json items = json::array();
+    for (size_t i = 0; i < QUEST_ITEM_PER_QUEST; ++i) {
+        // TODO: Serialize tagBaseITEM
+    }
+
+    j["id"] = q.m_wID;
+    j["expiration"] = q.m_dwExpirationTIME;
+    j["vars"] = vars;
+    j["switches"] = switches;
+    j["items"] = items;
+}
+
+void
+from_json(const json&j, CQUEST& q) {
+    if (!j.is_object()) {
+        return;
+    }
+
+    if (j.contains("id") && j["id"].is_number_integer()) {
+        q.m_wID = j["id"];
+    }
+
+    if (j.contains("expiration") && j["expiration"].is_number_integer()) {
+        q.m_dwExpirationTIME = j["expiration"];
+    }
+
+    if (j.contains("vars") && j["vars"].is_array()) {
+        json vars = j["vars"];
+        for (size_t i = 0; i < min(vars.size(), QUEST_VAR_PER_QUEST); ++i) {
+            q.m_pVAR[i] = vars[i];
+        }
+    }
+
+    if (j.contains("switches") && j["switches"].is_array()) {
+        json switches = j["switches"];
+        for (size_t i = 0; i < min(switches.size(), QUEST_SWITCH_PER_QUEST) / 8; ++i) {
+            uint8_t b = 0;
+            b |= switches[i] << 0;
+            b |= switches[i] << 1;
+            b |= switches[i] << 2;
+            b |= switches[i] << 3;
+            b |= switches[i] << 4;
+            b |= switches[i] << 5;
+            b |= switches[i] << 6;
+            b |= switches[i] << 7;
+            q.m_btSWITCHES[i] = b;
+        }
+    }
+
+    if (j.contains("items") && j["items"].is_array()) {
+        json items = j["items"];
+        // TODO: Deserialize tagBaseITEM
+    }
+}

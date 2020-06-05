@@ -37,7 +37,7 @@ Log::log(LogLevel level, const char* file, uint32_t line, const char* message, v
     std::lock_guard<std::mutex> lock(_log_mutex);
 
     try {
-        vsprintf_s(_buffer, sizeof(_buffer), message, args);
+        vsprintf_s(_buffer, LOG_BUFFER_SIZE, message, args);
     } catch (...) {
         return;
     }

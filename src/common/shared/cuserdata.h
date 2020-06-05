@@ -208,7 +208,7 @@ struct tagSkillAbility {
 #endif
 #define QUEST_SWITCH_GROUP_CNT (QUEST_SWITCH_CNT / sizeof(DWORD))
 
-struct tagQuestData {
+class tagQuestData {
 private:
     enum { BIT_SHIFT = 3, WHICH_BIT = 0x07 };
     BYTE GetBit(int iIndex) {
@@ -287,9 +287,6 @@ public:
 
         return this->GetBit(iSwitchNO);
     }
-
-    nlohmann::json to_json();
-    void from_json(const nlohmann::json& j);
 };
 
 #define BANKSLOT_DEFAULT 90
@@ -1057,6 +1054,18 @@ public:
     DWORD m_dwCoolItemEndTime[MAX_USEITEM_COOLTIME_TYPE];
 #endif
 };
+
+
+// Json conversions
+
+// Worldserver does not implement CQuest (does not include CQuest.cpp)
+// so including these functions causes issues
+
+#ifndef __WORLDSERVER
+void to_json(nlohmann::json& j, const tagQuestData& q);
+void from_json(const nlohmann::json& j, tagQuestData& q);
+#endif
+
 
 
 #pragma warning(default : 4201)

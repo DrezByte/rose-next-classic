@@ -5,6 +5,10 @@
 #include "IO_STB.h"
 #include "CUserDATA.h" ///추가 2004 / 2 /19 : 추가 nAvy
 
+#ifdef __SERVER
+#include "cobjvar.h"
+#endif
+
 #pragma warning(disable : 4200)
 //-------------------------------------------------------------------------------------------------
 
@@ -751,7 +755,9 @@ enum eQE_CODE {		// Quest error code
 } ;
 */
 class CUserDATA;
+#ifndef __SERVER
 class CObjUSER;
+#endif
 class CQUEST;
 class CQuestTRIGGER;
 class CObjNPC;

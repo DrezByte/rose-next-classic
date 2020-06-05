@@ -82,6 +82,9 @@
     <ClInclude Include="..\common\shared\datatype.h">
       <Filter>Common Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\shared\cquest.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="common">

@@ -1,13 +1,10 @@
-/**
- * \ingroup SHO_GS
- * \file	CQuest.h
- * \brief	개개의 퀘스트 데이타 보관
- */
-#ifndef __QUEST_H
-#define __QUEST_H
+#pragma once
+
 #include "CBITArray.h"
 #include "CItem.h"
-//-------------------------------------------------------------------------------------------------
+
+#include "nlohmann/json_fwd.hpp"
+
 
 const BYTE g_btSwitchBitMask[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
@@ -18,7 +15,7 @@ const BYTE g_btSwitchBitMask[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x8
 typedef short t_qstvar;
 
 class CQUEST {
-private:
+public:
     enum { BIT_SHIFT = 3, WHICH_BIT = 0x07 };
 
     // Total 2 + 2 + 2*10 + 1*4 = 28 bytes !!!
@@ -42,7 +39,7 @@ private:
 public:
     void Init();
     void SetID(WORD wID, bool bResetTimer);
-    WORD GetID(void) { return m_wID; }
+    WORD GetID(void) const { return m_wID; }
 
     void Set_VAR(int iVarNO, int iValue);
     int Get_VAR(int iVarNO);
@@ -54,7 +51,7 @@ public:
     int Get_SWITCH(int iSwitchNO);
     int Flip_SWITCH(int iSwitchNO);
 
-    DWORD GetExpirationTIME() { return m_dwExpirationTIME; }
+    DWORD GetExpirationTIME() const { return m_dwExpirationTIME; }
     DWORD GetRemainTIME();
 
     tagBaseITEM* GetSameITEM(WORD wItemHEADER);
@@ -65,5 +62,9 @@ public:
     void CheckExpiredTIME();
 };
 
-//-------------------------------------------------------------------------------------------------
+// Worldserver does not implement CQuest (does not include CQuest.cpp)
+// so including these functions causes issues
+#ifndef __WORLDSERVER
+void to_json(nlohmann::json& j, const CQUEST& q);
+void from_json(const nlohmann::json& j, CQUEST& q);
 #endif
