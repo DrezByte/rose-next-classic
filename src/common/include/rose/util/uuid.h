@@ -18,7 +18,7 @@ public:
 
     static UUID generate();
 
-    std::string to_string();
+    std::string to_string() const;
     static UUID from_string(const std::string& s);
 };
 

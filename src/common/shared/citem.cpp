@@ -10,6 +10,8 @@
     #include "../Util/LogWnd.h"
 #endif
 
+#include "nlohmann/json.hpp"
+
 enum {
     DROP_TIEM_GOLD = 0,
     DROP_TIEM_SILVER = 207,
@@ -581,3 +583,57 @@ tagBaseITEM::GetName() {
 }
 
 #endif
+
+void
+to_json(nlohmann::json& j, const tagBaseITEM& item) {
+    j["uuid"] = item.uuid.to_string();
+    j["type"] = item.m_cType;
+    j["id"] = item.m_nItemNo;
+
+    if (item.IsEnableDupCNT()) {
+        j["quantity"] = item.m_uiQuantity;
+    } else {
+        j["crafted"] = item.m_bCreated;
+        j["stat_id"] = item.m_nGEM_OP;
+        j["durability"] = item.m_cDurability;
+        j["lifespan"] = item.m_nLife;
+        j["socketed"] = item.m_bHasSocket == 1;
+        j["appraisal"] = item.m_bIsAppraisal == 1;
+        j["grade"] = item.m_cGrade;
+    }
+}
+
+void
+from_json(const nlohmann::json& j, tagBaseITEM& item) {
+    if (!j.is_object()) {
+        return;
+    }
+
+    if (!j.contains("uuid") || !j.contains("type") || !j.contains("id")) {
+        return;
+    }
+
+    item.uuid.from_string(j["uuid"]);
+    item.m_cType = j["type"];
+    item.m_nItemNo = j["id"];
+
+    if (j.contains("quantity")) {
+        item.m_uiQuantity = j["quantity"];
+        return;
+    }
+
+    for (const auto& k:
+        {"crafted", "stat_id", "durability", "lifespan", "socketed", "appraisal", "grade"}) {
+        if (!j.contains(k)) {
+            return;
+        }
+    }
+
+    item.m_bCreated = j["crafted"];
+    item.m_nGEM_OP = j["stat_id"];
+    item.m_cDurability = j["durability"];
+    item.m_nLife = j["lifespan"];
+    item.m_bHasSocket = j["socketed"];
+    item.m_bIsAppraisal = j["appraisal"];
+    item.m_cGrade = j["grade"];
+}

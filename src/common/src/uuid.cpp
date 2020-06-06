@@ -49,7 +49,7 @@ UUID::generate() {
 #endif
 
 std::string
-UUID::to_string() {
+UUID::to_string() const {
     std::stringstream stream;
 
     for (const uint8_t& b: this->data) {

@@ -231,7 +231,7 @@ void to_json(json& j, const CQUEST& q) {
 
     json items = json::array();
     for (size_t i = 0; i < QUEST_ITEM_PER_QUEST; ++i) {
-        // TODO: Serialize tagBaseITEM
+        items.push_back(q.m_ITEMs[i]);
     }
 
     j["id"] = q.m_wID;
@@ -280,6 +280,8 @@ from_json(const json&j, CQUEST& q) {
 
     if (j.contains("items") && j["items"].is_array()) {
         json items = j["items"];
-        // TODO: Deserialize tagBaseITEM
+        for (size_t i = 0; i < min(items.size(), QUEST_ITEM_PER_QUEST); ++i) {
+            q.m_ITEMs[i] = items[i];
+        }
     }
 }

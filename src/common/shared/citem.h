@@ -3,6 +3,8 @@
 
 #include "rose/util/uuid.h"
 
+#include "nlohmann/json_fwd.hpp"
+
 #define MAX_ITEM_LIFE 1000
 
 #define MAX_DUP_ITEM_QUANTITY 999
@@ -113,7 +115,7 @@ struct tagBaseITEM {
     static bool IsEnableDupCNT(unsigned short cType) {
         return (cType >= ITEM_TYPE_USE && cType < ITEM_TYPE_RIDE_PART);
     }
-    bool IsEnableDupCNT() { return IsEnableDupCNT(m_cType); }
+    bool IsEnableDupCNT() const { return IsEnableDupCNT(m_cType); }
 
     bool IsCreated() { return (1 == m_bCreated); }
     bool IsEquipITEM() { return (m_cType && m_cType < ITEM_TYPE_USE); }
@@ -212,3 +214,6 @@ struct tagITEM: public tagBaseITEM {
 };
 #endif
 #pragma pack(pop)
+
+void to_json(nlohmann::json& j, const tagBaseITEM& i);
+void from_json(const nlohmann::json& j, tagBaseITEM& i);

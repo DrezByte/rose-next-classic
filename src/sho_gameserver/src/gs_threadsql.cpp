@@ -664,7 +664,6 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         skill_ability.m_nSkillINDEX[idx] = j[idx];
     }
 
-    // TODO: Populate quest data
     tagQuestData quest_data;
     quest_data.Init();
     quest_data.CheckExpiredTIME();
