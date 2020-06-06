@@ -307,9 +307,11 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             item.uuid.to_string());
     }
 
-    bulk += fmt::format("DELETE FROM item WHERE id IN (SELECT item_id FROM inventory WHERE owner_id={} AND slot IN ({}));",
+    std::string del = fmt::format("DELETE FROM item WHERE id IN (SELECT item_id FROM inventory WHERE owner_id={} AND slot IN ({}));",
         user->m_dwDBID,
         value_list(delete_list));
+
+    bulk = del + bulk;
 
     QueryResult bulk_res = this->db_pg.batch(bulk);
     if (!bulk_res.is_ok()) {
