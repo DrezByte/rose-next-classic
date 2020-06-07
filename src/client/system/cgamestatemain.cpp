@@ -3,7 +3,6 @@
 #include "../GameCommon/item.h"
 #include "../GameProc/CDayNNightProc.h"
 #include "../Interface/CHelpMgr.h"
-#include "../Interface/CKeyMove.h"
 #include "../Interface/CTFontImpl.h"
 #include "../Interface/CUIMediator.h"
 #include "../Interface/ClanMarkManager.h"
@@ -80,7 +79,6 @@ int
 CGameStateMain::Update(bool bLostFocus) {
 
     if (g_pCApp->IsActive()) {
-        g_KeyMove.Proc();
         CD3DSOUND::UpdateListener(g_pCamera);
     }
 

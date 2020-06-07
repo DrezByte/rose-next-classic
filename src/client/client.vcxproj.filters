@@ -608,9 +608,6 @@
     <ClCompile Include="Interface\CInfo.cpp">
       <Filter>Source Files\Interface</Filter>
     </ClCompile>
-    <ClCompile Include="Interface\CKeyMove.cpp">
-      <Filter>Source Files\Interface</Filter>
-    </ClCompile>
     <ClCompile Include="Interface\ClanMarkManager.cpp">
       <Filter>Source Files\Interface</Filter>
     </ClCompile>
@@ -1715,9 +1712,6 @@
       <Filter>Source Files\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Interface\CInfo.h">
-      <Filter>Source Files\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="Interface\CKeyMove.h">
       <Filter>Source Files\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Interface\ClanMarkManager.h">

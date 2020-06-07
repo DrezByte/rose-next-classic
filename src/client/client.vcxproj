@@ -362,7 +362,6 @@
     <ClCompile Include="Interface\CHelpMgr.cpp" />
     <ClCompile Include="Interface\CIndicate.cpp" />
     <ClCompile Include="Interface\CInfo.cpp" />
-    <ClCompile Include="Interface\CKeyMove.cpp" />
     <ClCompile Include="Interface\ClanMarkManager.cpp" />
     <ClCompile Include="Interface\ClanMarkTransfer.cpp" />
     <ClCompile Include="Interface\CLoading.cpp" />
@@ -737,7 +736,6 @@
     <ClInclude Include="Interface\CHelpMgr.h" />
     <ClInclude Include="Interface\CIndicate.h" />
     <ClInclude Include="Interface\CInfo.h" />
-    <ClInclude Include="Interface\CKeyMove.h" />
     <ClInclude Include="Interface\ClanMarkManager.h" />
     <ClInclude Include="Interface\ClanMarkTransfer.h" />
     <ClInclude Include="Interface\CLoading.h" />
