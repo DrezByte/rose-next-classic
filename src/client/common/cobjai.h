@@ -6,7 +6,7 @@
 #include "CGameOBJ.h"
 #include "IO_Motion.h"
 #include "IO_Skill.h"
-#include "..\AI_LIB\CAI_LIB.h"
+#include "CAI_LIB.h"
 
 #include <cstdint>
 
@@ -440,7 +440,7 @@ public:
         return (this->Get_HP() * 100 / this->Get_MaxHP());
     }
 
-    CAI_OBJ* Get_TARGET() { return this->Get_TargetOBJ(); }
+    CAI_OBJ* Get_TARGET(bool bCheckHP = true) { return this->Get_TargetOBJ(); }
     void Set_TargetObjIDX(int iTargetOBJ) { this->Set_TargetIDX(iTargetOBJ); }
 
 #ifndef __SERVER

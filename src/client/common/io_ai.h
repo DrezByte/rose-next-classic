@@ -1,6 +1,6 @@
 #ifndef __IO_AI_H
 #define __IO_AI_H
-#include "..\AI_LIB\CAI_LIB.H"
+#include "CAI_LIB.H"
 //-------------------------------------------------------------------------------------------------
 
 class CAI_LIST {

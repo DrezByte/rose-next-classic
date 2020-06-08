@@ -6,7 +6,7 @@
 #ifndef __SERVER
     #include "Game.h"
     #include "..\\Util\\VFSManager.h"
-    #include "IO_STB.h"
+    #include "..\\Common\\IO_STB.h"
 #endif
 
 #ifndef SAFE_DELETE
@@ -38,8 +38,6 @@
             }                   \
         }
 #endif
-
-extern FILE* g_fpTXT;
 
 //-------------------------------------------------------------------------------------------------
 int
@@ -221,19 +219,6 @@ CAI_EVENT::Load(FILE* fp, STBDATA* pSTB, int iLangCol) {
                 strcpy(pNewACT->szCon, szMsg);
                 pNewACT->szCon[iStrLen] = NULL;
 
-                if (g_fpTXT)
-                    fprintf(g_fpTXT,
-                        "AI02 STR[%d:%d] :: %s\n",
-                        iLangCol,
-                        m_ppActionLIST[iA]->st02.iStrID - 1,
-                        pNewACT->szCon);
-
-                LogString(0xffff,
-                    "AI02 STR[%d:%d] :: %s\n",
-                    iLangCol,
-                    m_ppActionLIST[iA]->st02.iStrID - 1,
-                    pNewACT->szCon);
-
                 SAFE_DELETE_ARRAY(m_ppActionLIST[iA]);
                 m_ppActionLIST[iA] = (AI_ACTION*)pNewACT;
                 break;
@@ -279,7 +264,6 @@ CAI_EVENT::Load(FILE* fp, STBDATA* pSTB, int iLangCol) {
             case AIACT_16:
                 m_ppActionLIST[iA]->st16.iDistance *= 100;
                 break;
-
             case AIACT_17:
                 if (sActionH.dwSize != sizeof(AIACT17)) {
                     // 이전 데이타와의 호환성을 고려..btToAttacker멤버가 없으므로...
@@ -290,7 +274,6 @@ CAI_EVENT::Load(FILE* fp, STBDATA* pSTB, int iLangCol) {
                     SAFE_DELETE_ARRAY(pOri);
                 }
                 break;
-
             case AIACT_18:
                 m_ppActionLIST[iA]->st18.iDistance *= 100;
                 break;
@@ -311,19 +294,6 @@ CAI_EVENT::Load(FILE* fp, STBDATA* pSTB, int iLangCol) {
                 memcpy(pNewACT, m_ppActionLIST[iA], sizeof(AIACT28) - sizeof(int));
                 strcpy(pNewACT->szMsg, szMsg);
                 pNewACT->szMsg[iStrLen] = NULL;
-
-                if (g_fpTXT)
-                    fprintf(g_fpTXT,
-                        "AI28 STR[%d:%d] :: %s\n",
-                        iLangCol,
-                        m_ppActionLIST[iA]->st28.iStrID - 1,
-                        pNewACT->szMsg);
-
-                LogString(0xffff,
-                    "AI28 STR[%d:%d] :: %s\n",
-                    iLangCol,
-                    m_ppActionLIST[iA]->st28.iStrID - 1,
-                    pNewACT->szMsg);
 
                 SAFE_DELETE_ARRAY(m_ppActionLIST[iA]);
                 m_ppActionLIST[iA] = (AI_ACTION*)pNewACT;
@@ -418,19 +388,6 @@ CAI_EVENT::Load(CFileSystem* pFileSystem, STBDATA* pSTB, int iLangCol) {
                 strcpy(pNewACT->szCon, szMsg);
                 pNewACT->szCon[iStrLen] = NULL;
 
-                if (g_fpTXT)
-                    fprintf(g_fpTCT,
-                        "AI02 STR[%d:%d] :: %s\n",
-                        iLangCol,
-                        m_ppActionLIST[iA]->st02.iStrID - 1,
-                        pNewACT->szCon);
-
-                LogString(0xffff,
-                    "AI02 STR[%d:%d] :: %s\n",
-                    iLangCol,
-                    m_ppActionLIST[iA]->st02.iStrID - 1,
-                    pNewACT->szCon);
-
                 SAFE_DELETE_ARRAY(m_ppActionLIST[iA]);
                 m_ppActionLIST[iA] = (AI_ACTION*)pNewACT;
                 break;
@@ -481,19 +438,6 @@ CAI_EVENT::Load(CFileSystem* pFileSystem, STBDATA* pSTB, int iLangCol) {
                 memcpy(pNewACT, m_ppActionLIST[iA], sizeof(AIACT28) - sizeof(int));
                 strcpy(pNewACT->szMsg, szMsg);
                 pNewACT->szMsg[iStrLen] = NULL;
-
-                if (g_fpTXT)
-                    fprintf(g_fpTXT,
-                        "AI28 STR[%d:%d] :: %s\n",
-                        iLangCol,
-                        m_ppActionLIST[iA]->st28.iStrID - 1,
-                        pNewACT->szMsg);
-
-                LogString(0xffff,
-                    "AI28 STR[%d:%d] :: %s\n",
-                    iLangCol,
-                    m_ppActionLIST[iA]->st28.iStrID - 1,
-                    pNewACT->szMsg);
 
                 SAFE_DELETE_ARRAY(m_ppActionLIST[iA]);
                 m_ppActionLIST[iA] = (AI_ACTION*)pNewACT;
@@ -618,7 +562,11 @@ CAI_FILE::Load(char* szFileName, STBDATA* pSTB, int iLangCol) {
 
     for (int iP = 0; iP < sFileH.iNumOfPattern; iP++) {
         if (!m_pPattern[iP].Load(fp, pSTB, iLangCol)) {
-            LOG_ERROR("Error loading AI file: %s", szFileName);
+#ifndef __SERVER
+            ::MessageBox(NULL, szFileName, "AI File ERROR", MB_OK);
+#else
+			LOG_ERROR("Error loading AI file: %s", szFileName);
+#endif
             fclose(fp);
             return false;
         }

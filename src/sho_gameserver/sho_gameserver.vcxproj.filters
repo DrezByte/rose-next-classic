@@ -118,12 +118,6 @@
     <ClInclude Include="src\common\io_stb.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\ai_lib\cai_file.h">
-      <Filter>Source Files\ai_lib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ai_lib\cai_lib.h">
-      <Filter>Source Files\ai_lib</Filter>
-    </ClInclude>
     <ClInclude Include="src\srv_common\cchatroom.h">
       <Filter>Source Files\srv_common</Filter>
     </ClInclude>
@@ -161,6 +155,12 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\shared\cquest.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shared\cai_file.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shared\cai_lib.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -273,9 +273,6 @@
     <ClCompile Include="src\ai_lib\ai_condition.cpp">
       <Filter>Source Files\ai_lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\ai_lib\cai_file.cpp">
-      <Filter>Source Files\ai_lib</Filter>
-    </ClCompile>
     <ClCompile Include="src\srv_common\cchatroom.cpp">
       <Filter>Source Files\srv_common</Filter>
     </ClCompile>
@@ -302,6 +299,9 @@
       <Filter>Common Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\shared\cquest.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\shared\cai_file.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>

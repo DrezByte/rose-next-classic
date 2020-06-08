@@ -1,6 +1,6 @@
-#ifndef __CAI_FILE_H
-#define __CAI_FILE_H
-#include "CAI_LIB.h"
+#pragma once
+
+#include "cai_lib.h"
 
 #pragma pack() // default
 
@@ -1075,6 +1075,3 @@ Result_AiOP(BYTE btOP, dType iLeft, dType iRight) {
     }
     return 0;
 }
-
-//-------------------------------------------------------------------------------------------------
-#endif

@@ -276,7 +276,9 @@ F_AIACT10(stActHead* pActDATA, t_AIPARAM* pEVENT) {
     pEVENT->m_pSourCHAR->Create_PET(pAct->wMonster,
         pEVENT->m_pSourCHAR->Get_CurXPOS(),
         pEVENT->m_pSourCHAR->Get_CurYPOS(),
-        150);
+        150,
+        0,
+        pEVENT->m_wPattern != AI_PATTERN_DEAD);
 }
 //-------------------------------------------------------------------------------------------------
 void
@@ -447,7 +449,7 @@ F_AIACT17(stActHead* pActDATA, t_AIPARAM* pEVENT) {
 
     short nDropITEM = pAct->m_ITEMS[pEVENT->m_pSourCHAR->Get_RANDOM(5)];
     if (nDropITEM > 0)
-        pEVENT->m_pSourCHAR->Drop_ITEM(nDropITEM);
+        pEVENT->m_pSourCHAR->Drop_ITEM(nDropITEM, (BYTE)pAct->iToOwner);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -548,7 +550,9 @@ F_AIACT20(stActHead* pActDATA, t_AIPARAM* pEVENT) {
             pEVENT->m_pSourCHAR->Create_PET(pAct->cMonster,
                 pEVENT->m_pSourCHAR->Get_CurXPOS(),
                 pEVENT->m_pSourCHAR->Get_CurYPOS(),
-                pAct->iDistance);
+                pAct->iDistance,
+                0,
+                pEVENT->m_wPattern != AI_PATTERN_DEAD);
             break;
         }
 
@@ -558,7 +562,9 @@ F_AIACT20(stActHead* pActDATA, t_AIPARAM* pEVENT) {
                 pEVENT->m_pSourCHAR->Create_PET(pAct->cMonster,
                     pEVENT->m_pDestCHAR->Get_CurXPOS(),
                     pEVENT->m_pDestCHAR->Get_CurYPOS(),
-                    pAct->iDistance);
+                    pAct->iDistance,
+                    0,
+                    pEVENT->m_wPattern != AI_PATTERN_DEAD);
             }
             break;
         }
@@ -570,7 +576,9 @@ F_AIACT20(stActHead* pActDATA, t_AIPARAM* pEVENT) {
                 pEVENT->m_pSourCHAR->Create_PET(pAct->cMonster,
                     pTarget->Get_CurXPOS(),
                     pTarget->Get_CurYPOS(),
-                    pAct->iDistance);
+                    pAct->iDistance,
+                    0,
+                    pEVENT->m_wPattern != AI_PATTERN_DEAD);
             }
             break;
         }

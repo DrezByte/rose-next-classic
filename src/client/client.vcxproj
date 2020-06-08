@@ -187,6 +187,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\calculation.cpp" />
+    <ClCompile Include="..\common\shared\cai_file.cpp" />
     <ClCompile Include="..\common\shared\cinventory.cpp" />
     <ClCompile Include="..\common\shared\citem.cpp" />
     <ClCompile Include="..\common\shared\cquest.cpp" />
@@ -520,7 +521,6 @@
     <ClCompile Include="Common\IO_STB.cpp" />
     <ClCompile Include="Ai_lib\AI_Action.cpp" />
     <ClCompile Include="Ai_lib\AI_Condition.cpp" />
-    <ClCompile Include="Ai_lib\cai_file.cpp" />
     <ClCompile Include="Game_FUNC.cpp" />
     <ClCompile Include="LUA_Func.cpp" />
     <ClCompile Include="LUA_Init.cpp" />
@@ -541,6 +541,8 @@
   <ItemGroup>
     <ClInclude Include="..\common\calculation.h" />
     <ClInclude Include="..\common\net_prototype.h" />
+    <ClInclude Include="..\common\shared\cai_file.h" />
+    <ClInclude Include="..\common\shared\cai_lib.h" />
     <ClInclude Include="..\common\shared\cinventory.h" />
     <ClInclude Include="..\common\shared\citem.h" />
     <ClInclude Include="..\common\shared\cquest.h" />
@@ -885,8 +887,6 @@
     <ClInclude Include="Common\IO_Quest.h" />
     <ClInclude Include="Common\IO_Skill.h" />
     <ClInclude Include="Common\IO_STB.h" />
-    <ClInclude Include="Ai_lib\Cai_file.h" />
-    <ClInclude Include="Ai_lib\Cai_lib.h" />
     <ClInclude Include="Game_FUNC.h" />
     <ClInclude Include="LUA_Func.h" />
     <ClInclude Include="Network\CNetwork.h" />
