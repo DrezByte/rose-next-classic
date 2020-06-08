@@ -1,4 +1,4 @@
-DROP INDEX character_account_username_index;
+DROP TABLE union_points;
 DROP TABLE worldvar;
 DROP TABLE mail;
 DROP TABLE inventory;

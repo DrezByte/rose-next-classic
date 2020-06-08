@@ -74,7 +74,9 @@ CREATE TABLE inventory
     slot smallint NOT NULL,
     quantity smallint NOT NULL DEFAULT 1,
     UNIQUE (owner_id, slot),
-    CONSTRAINT slot_positive CHECK (slot >= 0)
+    UNIQUE (owner_id, slot, item_id),
+    CONSTRAINT inventory_slot_positive CHECK (slot >= 0),
+    CONSTRAINT inventory_quantity_positive CHECK (quantity >= 0)
 );
 
 CREATE TABLE mail

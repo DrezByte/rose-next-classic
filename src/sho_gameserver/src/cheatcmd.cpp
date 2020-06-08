@@ -777,7 +777,7 @@ classUSER::Cheat_item(char* pArg1, char* pArg2, char* pArg3, char* pArg4) {
         int iDupCNT = atoi(pArg3);
 
         tagITEM item;
-        item.Clear();
+        item.init();
         item.m_cType = item_type;
 
         if (item.m_cType > 0 && item.m_cType < ITEM_TYPE_MONEY) {
@@ -807,19 +807,19 @@ classUSER::Cheat_item(char* pArg1, char* pArg2, char* pArg3, char* pArg4) {
                 item.m_nGEM_OP = iDupCNT % 301;
                 item.m_bIsAppraisal = 1;
                 if (0 == item.m_nGEM_OP) {
-                    // 옵션이 없다..
                     if (pArg4 && ITEM_RARE_TYPE(item.GetTYPE(), item.GetItemNO())) {
-                        // 0이 아니면 소켓이 붙을수 있는 아이템이다..
-                        if (atoi(pArg4))
+                        if (atoi(pArg4)) {
                             item.m_bHasSocket = 1;
+                        }
                     }
                 }
             }
 
             short nInvIDX = this->Add_ITEM(item);
             if (nInvIDX >= 0) {
+                std::string msg = fmt::format("Spawning item {}:{} ({})", item_type, item_id, iDupCNT);
                 this->Send_gsv_SET_INV_ONLY((BYTE)nInvIDX, &item);
-                this->Send_gsv_WHISPER("Server", "Spawning item.");
+                this->Send_gsv_WHISPER("Server", const_cast<char*>(msg.c_str()));
                 return CHEAT_PROCED;
             }
         }

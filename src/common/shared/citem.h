@@ -74,6 +74,7 @@ struct tagBaseITEM {
         DWORD m_dwITEM;
     };
 
+    void init();
     void Init(int iItem, unsigned int uiQuantity = 1);
 
     void Clear() { m_dwLSB = m_wMSB = 0; }
@@ -101,16 +102,18 @@ struct tagBaseITEM {
     bool IsEnableSELL();
     bool IsEnableKEEPING();
 
-#ifdef __SERVER
     static bool IsValidITEM(DWORD wType, DWORD wItemNO);
+
     static bool IsValidITEM(tagBaseITEM* pItem) {
         return tagBaseITEM::IsValidITEM(pItem->GetTYPE(), pItem->GetItemNO());
     }
-    bool IsValidITEM() { return IsValidITEM(this->GetTYPE(), this->GetItemNO()); }
-#else
-    bool IsValidITEM();
-    bool IsValidITEM(DWORD wType, DWORD wItemNO);
-#endif
+
+    bool IsValidITEM() {
+        if (this->uuid.is_nil()) {
+            return false;
+        }
+        return IsValidITEM(this->GetTYPE(), this->GetItemNO());
+    }
 
     static bool IsEnableDupCNT(unsigned short cType) {
         return (cType >= ITEM_TYPE_USE && cType < ITEM_TYPE_RIDE_PART);

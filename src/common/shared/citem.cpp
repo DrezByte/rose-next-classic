@@ -64,22 +64,17 @@ tagITEM::SubtractOnly(tagITEM& sITEM) {
     this->Clear();
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+void
+tagBaseITEM::init() {
+    // RAM: Adding a constructor breaks a lot of code related to packets so we
+    // settle with this init function for now.
+    this->Clear();
+    this->uuid = Rose::Util::UUID::generate();
+}
+
 void
 tagBaseITEM::Init(int iItem, unsigned int uiQuantity) {
     this->Clear();
-
-#ifndef __SERVER
-    if (iItem == 0) {
-        //--------------------------------------------------------------------------------
-        LOGERR("tagITEM::Init( 0 ) : ITEM Type is 0");
-        //--------------------------------------------------------------------------------
-        return;
-    }
-#endif
 
     if (1001 > iItem)
         return;
@@ -112,24 +107,7 @@ tagBaseITEM::IsValidITEM(DWORD wType, DWORD wItemNO) {
 
     return true;
 }
-//-------------------------------------------------------------------------------------------------
-// bool tagBaseITEM::IsValidITEM ()
-//{
-//	if ( 0 == this->GetTYPE() || 0 == this->GetItemNO() )
-//		return false;
-//
-//	if ( this->GetTYPE() > ITEM_TYPE_RIDE_PART )
-//		return false;
-//	if ( NULL == g_pTblSTBs[ this->GetTYPE() ] )
-//		return false;
-//
-//	if ( this->GetItemNO() >= g_pTblSTBs[ this->GetTYPE() ]->m_nDataCnt )
-//		return false;
-//
-//	return true;
-//}
 
-//-------------------------------------------------------------------------------------------------
 bool
 tagBaseITEM::IsEnableKEEPING() {
     if (this->IsEmpty())
