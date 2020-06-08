@@ -48,8 +48,6 @@ CIndexARRAY<DataType>::CIndexARRAY(char* szName, unsigned int uiBuffSize) {
 
     for (unsigned int iL = 0; iL < uiBuffSize; iL++)
         m_pINDEX[iL] = NULL;
-
-    g_LOG.CS_ODS(0xffff, "Create [%s] index buffer :: %d", szName, uiBuffSize);
 }
 
 //-------------------------------------------------------------------------------------------------

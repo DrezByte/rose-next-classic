@@ -236,8 +236,6 @@ WS_ZoneLIST::Add_EventPOS(t_HASHKEY HashKEY,
     float fYPos) {
     tagEVENTPOS* pEventPos;
 
-    LOG_TRACE("Event added on Zone %d:%s  at ( %f, %f )", nZoneNO, szPosName, fXPos, fYPos);
-
     pEventPos = new tagEVENTPOS;
 
     pEventPos->m_nZoneNO = nZoneNO;

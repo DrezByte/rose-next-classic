@@ -39,8 +39,6 @@ CClientSOCKET::CClientSOCKET(): sent_bytes(0) {
 unsigned __stdcall ClientSOCKET_SendTHREAD(void* lpParameter) {
     CClientSOCKET* pClientSocket = (CClientSOCKET*)lpParameter;
 
-    LOG_DEBUG("ClientSocket_Thread::0x%x", pClientSocket, pClientSocket->m_dwThreadID);
-
     while (1) {
         WaitForSingleObject(pClientSocket->m_hThreadEvent, INFINITE);
 

@@ -50,11 +50,6 @@ protected:
             pNextNODE = pDataNODE;
         }
 
-        LOG_DEBUG("Pool[ %s ] Increase %d data total: %d",
-            m_PoolName.Get(),
-            uiDataCNT,
-            m_uiTotalDataCNT);
-
         return pDataBLOCK;
     }
 

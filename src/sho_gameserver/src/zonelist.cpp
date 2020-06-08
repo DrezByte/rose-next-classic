@@ -217,7 +217,6 @@ CZoneLIST::Add_EventPOS(t_HASHKEY HashKEY,
 
     m_PosLIST.Insert(HashKEY, pEventPos);
 
-    LOG_DEBUG("Event position %s created on map %d at (%f, %f)", szPosName, nZoneNO, fXPos, fYPos);
     return pEventPos;
 }
 

@@ -98,11 +98,6 @@ void
 CThreadMSGR::Execute() {
     CDLList<tagMSGR_CMD>::tagNODE* pCmdNODE;
 
-    g_LOG.CS_ODS(0xffff,
-        ">  > >> CThreadMSGR::Execute() ThreadID: %d(0x%x)\n",
-        this->ThreadID,
-        this->ThreadID);
-
     //	this->Check_FRIENDS ();
     //	this->Check_ItemCNT (ITEM_TYPE_NATURAL, 401);
 
@@ -136,11 +131,6 @@ CThreadMSGR::Execute() {
 
     int iCnt = m_AddPACKET.GetNodeCount();
     _ASSERT(iCnt == 0);
-
-    g_LOG.CS_ODS(0xffff,
-        "<<<< CThreadMSGR::Execute() ThreadID: %d(0x%x)\n",
-        this->ThreadID,
-        this->ThreadID);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -241,12 +241,6 @@ CZoneFILE::ReadObjINFO(FILE* fp, long lOffset, int iLumpType, short nMapXIDX, sh
                     continue;
                 }
 
-                g_LOG.CS_ODS(LOG_DEBUG_,
-                    "Set Default CHAR( %d:%s ), ( %f, %f ) \n",
-                    iObjID,
-                    pNewCHAR->Get_NAME(),
-                    fPosX,
-                    fPosY);
                 continue;
             }
                 ///*
@@ -263,21 +257,6 @@ CZoneFILE::ReadObjINFO(FILE* fp, long lOffset, int iLumpType, short nMapXIDX, sh
                     szTmp2[cNameLen] = 0;
                 }
                 if (iEventID) {
-                    LogString(0xffff,
-                        "Terrain object type : %d[%d,%d], name:%s, map(%d,%d), pos(%3.0f,%3.0f), "
-                        "id:%d, %s/%s \n",
-                        iLumpType,
-                        nMapXIDX,
-                        nMapYIDX,
-                        szName,
-                        iMapXPos,
-                        iMapYPos,
-                        fPosX,
-                        fPosY,
-                        iEventID,
-                        szTmp1,
-                        szTmp2);
-
                     CObjEVENT* pNewEVENT = new CObjEVENT;
                     if (!pNewEVENT->Init(this->GetZonePTR(),
                             nMapXIDX,
@@ -410,10 +389,7 @@ CZoneFILE::ReadZoneINFO(FILE* fp, long lOffset) {
     fseek(fp, sizeof(int), SEEK_CUR);
 
     fread(&iValue, sizeof(int), 1, fp); // witdh
-    LogString(LOG_DEBUG_, "Width:: %d ... \n", iValue);
-
     fread(&iValue, sizeof(int), 1, fp); // height
-    LogString(LOG_DEBUG_, "Height:: %d ... \n", iValue);
 
     // appended 03. 07. 25
     fread(&iValue, sizeof(int), 1, fp); // patch grid count
@@ -550,12 +526,6 @@ CZoneFILE::ReadEventObjINFO(FILE* fp, long lOffset) {
     m_PosREVIVE = this->Get_RevivePOS(m_PosSTART);
     if (m_nZoneNO != 98)
         assert(m_PosREVIVE.x != 0 && m_PosREVIVE.y != 0);
-
-    LogString(LOG_DEBUG_,
-        "[[[ Zone %d, StartPOS :: ( %d, %d ) ]]]\n",
-        m_nZoneNO,
-        m_PosSTART.x,
-        m_PosSTART.y);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -623,7 +593,6 @@ CZoneFILE::LoadZONE(char* szBaseDIR, short nZoneNO) {
         strncpy(pStr, szZoneFILE, iCount);
         pStr[iCount] = 0;
         m_ZoneDIR.Set(pStr);
-        LogString(LOG_NORMAL, "zone folder :: %s \n", pStr);
     }
 
     long lCurPtr;

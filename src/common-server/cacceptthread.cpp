@@ -24,8 +24,6 @@ CAcceptTHREAD::Execute() {
     SOCKADDR_IN SockADDR;
     int iAddrLEN;
 
-    LOG_DEBUG("CAcceptTHREAD::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
-
     //    Synchronize( LogSTART );
 
     // m_ListenSocket이 INVALID_SOCKET이 되면 루프를 탈출한다.
@@ -54,8 +52,6 @@ CAcceptTHREAD::Execute() {
             LOG_DEBUG("Failed to accept a socket connection");
         }
     }
-
-    LOG_DEBUG("CAcceptTHREAD::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 
     //    Synchronize( LogSTOP );
 }

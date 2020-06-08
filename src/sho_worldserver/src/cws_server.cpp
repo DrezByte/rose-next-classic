@@ -184,12 +184,6 @@ CWS_Server::Recv_zws_SERVER_INFO(t_PACKET* pPacket) {
         return false;
     }
 
-    g_LOG.CS_ODS(0xffff,
-        "Start Channel SERVER :: %s / %s / %d\n",
-        szServerName,
-        m_ServerIP.Get(),
-        this->m_wListenPORT);
-
     classPACKET pCPacket = classPACKET();
 
     pCPacket.m_HEADER.m_wType = WSV_SET_WORLD_VAR;

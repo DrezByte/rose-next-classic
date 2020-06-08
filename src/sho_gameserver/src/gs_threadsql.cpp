@@ -361,8 +361,6 @@ GS_CThreadSQL::Execute() {
     CDLList<tagQueryDATA>::tagNODE* pSqlNODE;
     classDLLNODE<tagSqlUSER>* pUsrNODE;
 
-    LOG_DEBUG("GS_CThreadSQL::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
-
     while (TRUE) {
         if (!this->Terminated) {
             m_bWaiting = true;
@@ -440,10 +438,6 @@ GS_CThreadSQL::Execute() {
 
     int iCnt = m_AddPACKET.GetNodeCount();
     assert(iCnt == 0);
-
-    LOG_DEBUG("<  < << GS_CThreadSQL::Execute() ThreadID: %d(0x%x)",
-        this->ThreadID,
-        this->ThreadID);
 }
 
 bool

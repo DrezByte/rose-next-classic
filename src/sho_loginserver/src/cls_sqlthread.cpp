@@ -36,8 +36,6 @@ CLS_SqlTHREAD::Execute() {
     CDLList<tagQueryDATA>::tagNODE* pSqlNODE;
     classDLLNODE<CLS_Account*>* pUsrNODE;
 
-    LOG_TRACE("Sql thread started. ThreadID: %d(0x%x)\n", this->ThreadID, this->ThreadID);
-
     while (TRUE) {
         if (!this->Terminated) {
             m_pEVENT->WaitFor(INFINITE);

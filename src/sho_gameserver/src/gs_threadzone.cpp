@@ -101,12 +101,6 @@ CZoneTHREAD::Execute() {
 
     DWORD dwPassTIME, dwCurTIME;
 
-    LOG_DEBUG("CZoneTHREAD::Execute() ThreadID: %d(0x%x),  Zone:%d, TotObjIN:%d",
-        this->ThreadID,
-        this->ThreadID,
-        this->Get_ZoneNO(),
-        m_ObjWAIT.GetNodeCount() + m_ObjLIST.GetNodeCount());
-
     if (!m_Timer.Start()) {
         LOG_ERROR("Could not sart the CZoneThread timer");
         this->Terminate();
@@ -242,12 +236,6 @@ CZoneTHREAD::Execute() {
     int iTotObjInZONE = m_ObjLIST.GetNodeCount();
     this->DeleteZoneOBJ();
 
-    LOG_DEBUG("CZoneTHREAD::Execute() ThreadID: %d(0x%x), Zone:%d, TotObjIN:%d",
-        this->ThreadID,
-        this->ThreadID,
-        this->Get_ZoneNO(),
-        iTotObjInZONE);
-
     this->m_bEndExecuteFunc = true;
 }
 
@@ -349,8 +337,6 @@ CZoneTHREAD::Init(char* szBaseDIR, short nZoneNO) {
         }
     */
     bool bValidZONE = this->LoadZONE(szBaseDIR, nZoneNO);
-
-    LogString(0xffff, "Init Sectors: %d \n", CZoneSECTOR::GetSectorCount());
 
     return bValidZONE;
 }

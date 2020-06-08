@@ -559,8 +559,6 @@ CWS_Client::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
 //-------------------------------------------------------------------------------------------------
 bool
 CWS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
-    LOG_TRACE("Client %d sent packet: 0x%04X", Get_WSID(), pPacket->m_wType);
-
     if (this->m_iSocketIDX == 0) {
         return false;
     }

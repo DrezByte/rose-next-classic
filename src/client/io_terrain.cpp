@@ -2224,10 +2224,7 @@ CTERRAIN::ReadZoneINFO(CFileSystem* pFileSystem, long lOffset) {
     pFileSystem->Seek(sizeof(int), FILE_POS_CUR);
 
     pFileSystem->ReadInt32(&iValue); // witdh
-    LogString(LOG_DEBUG_, "Width:: %d ... \n", iValue);
-
     pFileSystem->ReadInt32(&iValue); // height
-    LogString(LOG_DEBUG_, "Height:: %d ... \n", iValue);
 
     // appended 03. 07. 25
     pFileSystem->ReadInt32(&iValue); // patch grid count
@@ -2246,8 +2243,6 @@ CTERRAIN::ReadZoneINFO(CFileSystem* pFileSystem, long lOffset) {
 
     pFileSystem->ReadInt32(&iValue); // start pos
     m_nCenterMapYIDX = iValue;
-
-    LogString(LOG_DEBUG_, "Start (X:%d, Y:%d) \n", m_nCenterMapXIDX, m_nCenterMapYIDX);
 }
 
 void
@@ -2422,7 +2417,6 @@ CTERRAIN::LoadZONE(short nZoneNO, bool bPlayBGM) {
         pStr[iCount] = 0;
         m_ZoneDIR.Set(pStr);
         m_WideTerrain.SetZoneDir(pStr);
-        LogString(LOG_DEBUG_, "zone folder :: %s \n", pStr);
     }
 
     pFileSystem->ReadInt32(&iCount);

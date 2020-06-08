@@ -118,8 +118,6 @@ CWS_ThreadSQL::Execute() {
 
     CDLList<tagQueryDATA>::tagNODE* pSqlNODE;
 
-    LOG_TRACE("Start CWS_ThreadSQL::Execute(), ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
-
     while (TRUE) {
         if (!this->Terminated) {
             m_pEVENT->WaitFor(INFINITE);
@@ -151,8 +149,6 @@ CWS_ThreadSQL::Execute() {
 
     int iCnt = m_AddPACKET.GetNodeCount();
     _ASSERT(iCnt == 0);
-
-    LOG_TRACE("End CWS_ThreadSQL::Execute(), ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 }
 
 bool

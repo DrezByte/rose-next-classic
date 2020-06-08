@@ -254,9 +254,6 @@ CFileLIST<dType>::Add_FILE(char* szFileName,
             if (this->Load_FILE(&m_pDATAs[nIndex])) {
                 m_pDATAs[nIndex].m_bLoad = true;
                 m_nLoadCNT++;
-                LOG_DEBUG((char*)"Add and Load FILE : %s, LoadCNT: %d",
-                    m_pDATAs[nIndex].m_FileName.Get(),
-                    Get_LoadCOUNT());
             }
         }
 

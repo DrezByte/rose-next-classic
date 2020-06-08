@@ -928,8 +928,6 @@ CThreadGUILD::Test_del(char* pGuildName) {
 
 void
 CThreadGUILD::Execute() {
-    LOG_TRACE("CThreadGUILD::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
-
     CDLList<tagCLAN_CMD>::tagNODE* pCmdNODE;
 
     while (TRUE) {
@@ -962,8 +960,6 @@ CThreadGUILD::Execute() {
 
     int iCnt = m_AddPACKET.GetNodeCount();
     _ASSERT(iCnt == 0);
-
-    LOG_TRACE("CThreadGUILD::Execute() ThreadID: %d(0x%x)", this->ThreadID, this->ThreadID);
 }
 
 //-------------------------------------------------------------------------------------------------
