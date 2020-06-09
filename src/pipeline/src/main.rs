@@ -20,6 +20,7 @@ use walkdir::WalkDir;
 const BAKE_INPUT_DIR: &str = "INPUT_DIR";
 const BAKE_OUTPUT_DIR: &str = "OUTOUT_DIR";
 const BAKE_CONFIG_NAME: &str = "config_name";
+const BAKE_CLEAN_NAME: &str = "clean";
 
 #[derive(Debug)]
 enum PipelineError {
@@ -272,6 +273,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
 
     println!("Executing commands.");
 
+    let mut output_filepaths = Vec::new();
+
     'file_loop: for relative_filepath in file_list {
         let input_filepath = input_dir.join(&relative_filepath);
 
@@ -304,6 +307,8 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                 "dds" => output_dir.join(&relative_filepath).with_extension("dds"),
                 _ => PathBuf::new(),
             };
+
+            output_filepaths.push(output_filepath.clone());
 
             if !rebake && output_filepath.exists() {
                 continue 'file_loop;
@@ -438,6 +443,54 @@ fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
         }
     }
 
+    // Clean the output directory of files that don't match what our bake
+    // commands created. Ensures our output directory is clean without
+    // having to rebake every single file
+    let clean_output_dir = matches.is_present(BAKE_CLEAN_NAME);
+    if clean_output_dir {
+        println!("Cleaning output directory.");
+        let mut output_subdirs = Vec::new();
+
+        for entry in WalkDir::new(&output_dir).into_iter() {
+            if let Ok(ent) = entry {
+                // Symlinks are unsupported
+                if ent.file_type().is_symlink() {
+                    continue;
+                }
+
+                let entry_path = ent.clone().into_path();
+                if ent.file_type().is_dir() {
+                    output_subdirs.push(entry_path);
+                    continue;
+                }
+
+                if output_filepaths.contains(&entry_path) {
+                    continue;
+                }
+
+                println!("Removing file {}", entry_path.display());
+
+                if let Err(e) = fs::remove_file(&entry_path) {
+                    println!("Error removing file {}: {}", entry_path.display(), e);
+                    continue;
+                }
+            }
+        }
+
+        for output_subdir in output_subdirs {
+            if let Ok(de) = fs::read_dir(&output_subdir) {
+                if de.count() > 0 {
+                    continue;
+                }
+
+                println!("Removing empty directory {}", output_subdir.display());
+                if let Err(e) = fs::remove_dir(&output_subdir) {
+                    println!("Error removing empty dir {}: {}", output_dir.display(), e);
+                }
+            }
+        }
+    }
+
     println!("Finished. Caching results.");
 
     let _ = save_bake_cache(cache_file_path.as_path(), &cache);
@@ -460,6 +513,12 @@ fn main() -> Result<(), PipelineError> {
                         .help("Name of the manifest file in the input directory")
                         .required(true)
                         .takes_value(true),
+                )
+                .arg(
+                    Arg::with_name(BAKE_CLEAN_NAME)
+                        .long(BAKE_CLEAN_NAME)
+                        .help("Removes any invalid files from output directory")
+                        .takes_value(false),
                 ),
         );
     let mut help = Vec::new();
