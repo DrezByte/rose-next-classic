@@ -112,3 +112,23 @@ from_json(const json& j, tagQuestData& q) {
     }
 }
 #endif
+
+void
+to_json(nlohmann::json& j, const tagSkillAbility& s) {
+    j = json::array();
+    for (size_t i = 0; i < MAX_LEARNED_SKILL_CNT; ++i) {
+        j.push_back(s.m_nSkillINDEX[i]);
+    }
+}
+
+void
+from_json(const nlohmann::json& j, tagSkillAbility& s) {
+    if (!j.is_array()) {
+        return;
+    }
+
+    size_t skill_count = min(j.size(), MAX_LEARNED_SKILL_CNT);
+    for (size_t idx = 0; idx < skill_count; ++idx) {
+        s.m_nSkillINDEX[idx] = j[idx];
+    }
+}

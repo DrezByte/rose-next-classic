@@ -190,11 +190,6 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         "town_respawn_x=$27, town_respawn_y=$28, union_id=$29, skills=$30, quests=$31 "
         "WHERE id=$32");
 
-    json skills_json = json::array();
-    for (size_t i = 0; i < MAX_LEARNED_SKILL_CNT; ++i) {
-        skills_json.push_back(user->m_Skills.m_nSkillINDEX[i]);
-    }
-
     QueryResult char_res = this->db_pg.query(query,
         {
             std::to_string(user->m_nCharRACE),
@@ -226,7 +221,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             std::to_string(user->m_PosREVIVE.x),
             std::to_string(user->m_PosREVIVE.y),
             std::to_string(user->m_BasicINFO.m_cUnion),
-            skills_json.dump(),
+            json(user->m_Skills).dump(),
             json(user->m_Quests).dump(),
             std::to_string(user->m_dwDBID),
         });
@@ -339,9 +334,6 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
 
     // TODO: Storage
     // OH BOY
-
-    // TODO: Quest data
-    // JSON
 
     // TODO: Wish list
     // JSON
@@ -649,16 +641,8 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     tagSkillAbility skill_ability;
     skill_ability.Init();
 
-    json j = j.parse(char_res.get_string(0, COL_SKILLS));
-    if (!j.is_array()) {
-        LOG_ERROR("Skills column for character '%s' is not a valid json array.");
-        return false;
-    }
-
-    size_t skill_count = min(j.size(), MAX_LEARNED_SKILL_CNT);
-    for (size_t idx = 0; idx < skill_count; ++idx) {
-        skill_ability.m_nSkillINDEX[idx] = j[idx];
-    }
+    json skill_json = json::parse(char_res.get_string(0, COL_SKILLS));
+    from_json(skill_json, skill_ability);
 
     tagQuestData quest_data;
     quest_data.Init();

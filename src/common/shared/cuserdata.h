@@ -1058,14 +1058,14 @@ public:
 
 // Json conversions
 
+#ifndef __WORLDSERVER
 // Worldserver does not implement CQuest (does not include CQuest.cpp)
 // so including these functions causes issues
-
-#ifndef __WORLDSERVER
 void to_json(nlohmann::json& j, const tagQuestData& q);
 void from_json(const nlohmann::json& j, tagQuestData& q);
 #endif
 
-
+void to_json(nlohmann::json& j, const tagSkillAbility& s);
+void from_json(const nlohmann::json& j, tagSkillAbility& s);
 
 #pragma warning(default : 4201)
