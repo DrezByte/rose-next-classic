@@ -4,8 +4,12 @@
 ### Requirements
 - Rust 1.38+
 - Visual studio 2019 Community or better
+    - "Desktop development with C++" bundle is recommended
 - SQL Server Express 2014+
 - SQL Server Management Studio
+- PostgreSQL 12+
+- Python 3+ (for scripts)
+- Clang-format (for code formatting)
 
 ### Build
 The project consists of a mix of Rust code and C++ code. In order to build the project one must
@@ -34,6 +38,8 @@ projects by compiling the `rose-next.sln` solution.
 - Open the `thirdparty.sln` solution and compile all projects
 - Open the `rose-next.sln` solution and compile all the projects
 
+> Note: Don't forget to build both configurations (debug/release)
+
 ## Client
 ### Debugging
 The `client` project can be run from within Visual Studio to debug the executable. By default
@@ -41,6 +47,15 @@ it looks in the `game/` directory for the runtime game assets
 
 ### Connecting to servers
 Run `trose.exe --server <IP>` to connect to a server at a specific IP Address
+
+#### Auto-connect
+The client has an extra feature to automatically connect directly to the game
+world. It requires that all the servers are running and that a character exists
+and is known by name. E.g. usage:
+
+```
+trose.exe --server 127.0.0.1 --username user --password pass --auto-connect-server 1 --auto-connect-channel 1 --auto-connect-character MyChar
+```
 
 ## Server
 ### Database
@@ -79,6 +94,15 @@ Insert a row into `dbo.UserInfo`, the following fields are required:
 
 ### Start
 After building everything launch `1-login.bat` then `2-world.bat` then `3-game.bat` and finally `client.bat`
+
+Alternatively the servers can be invoked manually from the command line with an
+optional flag to the config file
+
+```cmd
+sho_loginserver.exe --config C:\rose\loginserver.toml
+sho_worldserver.exe --config C:\rose\worldserver.toml
+sho_gameserver.exe --config C:\rose\gameserver.toml
+```
 
 ### Config file
 The servers have default values but can optionally read their values from a `server.toml` file in the
