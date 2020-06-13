@@ -95,7 +95,8 @@ VReadFileEntry(FileEntry* fe, FILE* fp) {
     if ((buff = new char[sLength])) {
         ZeroMemory(buff, sLength); /// 0으로 초기화
         fread(buff, sizeof(char), sLength, fp); /// NULL문자까지 포함해서 읽어온다
-        fe->sFileName = buff;
+        fe->sFileName.clear();
+        fe->sFileName.insert(0, buff, sLength);
         delete[] buff;
     }
 

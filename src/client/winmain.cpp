@@ -101,7 +101,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmd
     }
 #endif
 
-    VHANDLE hVFS = OpenVFS("data.idx", "mr");
+    VHANDLE hVFS = OpenVFS("data.idx", "r");
     (CVFSManager::GetSingleton()).SetVFS(hVFS);
     (CVFSManager::GetSingleton()).InitVFS(VFS_TRIGGER_VFS);
 
@@ -111,7 +111,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmd
     g_pNet = CNetwork::Instance(hInstance);
     g_pCRange = CRangeTBL::Instance();
 
-    if (!g_pCRange->Load_TABLE("3DDATA\\TERRAIN\\O_Range.TBL")) {
+    if (!g_pCRange->Load_TABLE("3DDATA\\TERRAIN\\O_RANGE.TBL")) {
         g_pCApp->ErrorBOX("3DDATA\\TERRAIN\\O_Range.TBL file open error",
             CUtil::GetCurrentDir(),
             MB_OK);

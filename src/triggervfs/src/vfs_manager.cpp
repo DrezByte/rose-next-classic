@@ -93,7 +93,8 @@ CVFS_Manager::__ReadVEntry(void) {
                     sizeof(char),
                     sLength,
                     m_fpIDX); /// sLength = 뒤에 NULL까지 포함한 갯수
-                pVE->sVFSName = buff;
+                pVE->sVFSName.clear();
+                pVE->sVFSName.insert(0, buff, sLength);
 
                 delete[] buff; /// ==>  원래는 해제해 주어야 하지만 해제 하지 않는다. string은
                                /// heap일 경우 그냥 사용하는 것 같다.
