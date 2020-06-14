@@ -69,7 +69,7 @@ tagBankData::Add_ITEM(tagITEM& sITEM, short nStartSlotNO, short nEndSlotNO) {
     }
 
     short nI;
-    if (sITEM.GetTYPE() >= ITEM_TYPE_USE) {
+    if (sITEM.GetTYPE() >= ITEM_TYPE_USE && sITEM.GetTYPE() < ITEM_TYPE_RIDE_PART) {
         // Áßº¹ µÉ¼ö ÀÖ´Â ¾ÆÀÌÅÛÀÌ´Ù.
         for (nI = 0; nI < nEndSlotNO; nI++) {
             if (this->m_ItemLIST[nI].GetHEADER() != sITEM.GetHEADER())
@@ -113,7 +113,7 @@ tagBankData::Sub_ITEM(short nSlotNO, tagITEM& sITEM) {
         return -1;
     }
 
-    if (sITEM.GetTYPE() >= ITEM_TYPE_USE) {
+    if (sITEM.GetTYPE() >= ITEM_TYPE_USE && sITEM.GetTYPE() < ITEM_TYPE_RIDE_PART) {
         // Áßº¹ µÉ¼ö ÀÖ´Â ¾ÆÀÌÅÛÀÌ´Ù.
 
         if (this->m_ItemLIST[nSlotNO].GetQuantity() > sITEM.GetQuantity()) {

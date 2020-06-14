@@ -31,7 +31,7 @@ std::string param_list(size_t count);
 /// e.g.
 /// std::vector some_vec{'val1', 'val2', 'val3');
 /// value_list(some_vec) => "val1, val2, val3"
-std::string value_list(std::vector<std::string>& vals);
+std::string value_list(std::vector<std::string>& vals, bool quote=false);
 
 template<typename T,
     std::enable_if_t<std::is_integral<T>::value || std::is_floating_point<T>::value, int> = 0>

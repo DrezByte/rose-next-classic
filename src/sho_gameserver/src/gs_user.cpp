@@ -4120,6 +4120,7 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
             }
 
             sMoveITEM.m_iSN = pSourITEM->m_iSN;
+            sMoveITEM.uuid = pSourITEM->uuid;
             sOriITEM = *pSourITEM;
             this->Sub_ITEM(pPacket->m_cli_MOVE_ITEM.m_btFromIDX, sMoveITEM);
 
@@ -4163,16 +4164,14 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
                 bResult = false;
                 goto _RETURN;
             }
-            pSourITEM = &this->m_Bank.m_ItemLIST[pPacket->m_cli_MOVE_ITEM.m_btFromIDX];
 
-            // 렉이 발생하여 같은 아이템을 두번 옮길경우 있을수 있다.
+            pSourITEM = &this->m_Bank.m_ItemLIST[pPacket->m_cli_MOVE_ITEM.m_btFromIDX];
             if (pSourITEM->IsEmpty()) {
                 goto _RETURN;
             }
 
-            // 메모리 조작에 의해 바뀌는거 방지
             if (pSourITEM->GetHEADER() != pPacket->m_cli_MOVE_ITEM.m_MoveITEM.GetHEADER()) {
-                IS_HACKING(this, "Difference withdraw item");
+                LOG_WARN("Cheat: User %s attempting to move invalid storage item", this->Get_NAME());
                 bResult = false;
                 goto _RETURN;
             }
@@ -4198,6 +4197,7 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
 
             sOriITEM = *pSourITEM;
             sMoveITEM.m_iSN = pSourITEM->m_iSN;
+            sMoveITEM.uuid = pSourITEM->uuid;
             sLogITEM = sMoveITEM;
 
             this->m_Bank.Sub_ITEM(pPacket->m_cli_MOVE_ITEM.m_btFromIDX, sMoveITEM);

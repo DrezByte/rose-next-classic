@@ -243,16 +243,20 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         return false;
     }
 
-    std::vector<int> delete_list;
+    std::vector<std::string> valid_items;
 
     // Update inventory info
-    std::string bulk;
+    std::vector<int> inventory_delete_list;
+    std::string inventory_query;
+
     for (size_t i = 0; i < INVENTORY_TOTAL_SIZE; ++i) {
         tagITEM& item = user->m_Inventory.m_ItemLIST[i];
         if (item.GetTYPE() == 0 || item.IsEmpty() || !item.IsValidITEM()) {
-            delete_list.push_back(i);
+            inventory_delete_list.push_back(i);
             continue;
         }
+
+        valid_items.push_back(item.uuid.to_string());
 
         uint16_t gem_id = 0;
         uint16_t grade = 0;
@@ -275,7 +279,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             is_crafted = item.IsCreated();
         }
 
-        bulk += fmt::format(
+        inventory_query += fmt::format(
             "INSERT INTO item (uuid, game_data_id, type_id, stat_id, grade, durability, "
             "lifespan, appraisal, socket, crafted) "
             "VALUES ('{0}', {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}) "
@@ -293,7 +297,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             PG_BOOL(has_socket),
             PG_BOOL(is_crafted));
 
-        bulk += fmt::format(
+        inventory_query += fmt::format(
             "INSERT INTO inventory (owner_id, slot, quantity, item_id) "
             "VALUES ({0}, {1}, {2}, (SELECT id FROM item WHERE uuid='{3}')) "
             "ON CONFLICT (owner_id, slot) "
@@ -304,11 +308,90 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             item.uuid.to_string());
     }
 
-    std::string del = fmt::format("DELETE FROM item WHERE id IN (SELECT item_id FROM inventory WHERE owner_id={} AND slot IN ({}));",
-        user->m_dwDBID,
-        value_list(delete_list));
+    // Update storage info
+    std::vector<int> storage_delete_list;
+    std::string storage_query;
 
-    bulk = del + bulk;
+    for (size_t i = 0; i < BANKSLOT_TOTAL; ++i) {
+        tagITEM& item = user->m_Bank.m_ItemLIST[i];
+        if (item.GetTYPE() == 0 || item.IsEmpty() || !item.IsValidITEM()) {
+            storage_delete_list.push_back(i);
+            continue;
+        }
+
+        valid_items.push_back(item.uuid.to_string());
+
+        uint16_t gem_id = 0;
+        uint16_t grade = 0;
+        uint16_t durability = 0;
+        uint16_t lifespan = 0;
+        bool is_appraisal = false;
+        bool has_socket = false;
+        bool is_crafted = false;
+        uint16_t quantity = 1;
+
+        if (item.IsEnableDupCNT()) {
+            quantity = item.GetQuantity();
+        } else {
+            gem_id = item.GetGemNO();
+            grade = item.GetGrade();
+            durability = item.GetDurability();
+            lifespan = item.GetLife();
+            is_appraisal = item.IsAppraisal();
+            has_socket = item.HasSocket();
+            is_crafted = item.IsCreated();
+        }
+
+        storage_query += fmt::format(
+            "INSERT INTO item (uuid, game_data_id, type_id, stat_id, grade, durability, "
+            "lifespan, appraisal, socket, crafted) "
+            "VALUES ('{0}', {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}) "
+            "ON CONFLICT (uuid) "
+            "DO UPDATE SET uuid='{0}', game_data_id={1}, type_id={2}, stat_id={3}, grade={4}, "
+            "durability={5}, lifespan={6}, appraisal={7}, socket={8}, crafted={9};",
+            item.uuid.to_string(),
+            std::to_string(item.GetItemNO()),
+            std::to_string(item.GetTYPE()),
+            std::to_string(gem_id),
+            std::to_string(grade),
+            std::to_string(durability),
+            std::to_string(lifespan),
+            PG_BOOL(is_appraisal),
+            PG_BOOL(has_socket),
+            PG_BOOL(is_crafted));
+
+        storage_query += fmt::format(
+            "INSERT INTO storage (owner_id, slot, quantity, item_id) "
+            "VALUES ({0}, {1}, {2}, (SELECT id FROM item WHERE uuid='{3}')) "
+            "ON CONFLICT (owner_id, slot) "
+            "DO UPDATE SET quantity={2}, item_id=(SELECT id FROM item WHERE uuid='{3}');",
+            user->m_dwDBID,
+            i,
+            quantity,
+            item.uuid.to_string());
+    }
+
+    std::string delete_invalid_query =
+        fmt::format("DELETE FROM item WHERE "
+                    "(id IN (SELECT item_id FROM inventory WHERE owner_id={0}) OR "
+                    "id IN (SELECT item_id FROM storage WHERE owner_id={0})) AND "
+                    "uuid NOT IN ({1});",
+            user->m_dwDBID,
+            value_list(valid_items, true));
+
+    std::string delete_inventory_query = fmt::format("DELETE FROM inventory WHERE "
+                                                     "owner_id={0} AND slot IN ({1});",
+        user->m_dwDBID,
+        value_list(inventory_delete_list));
+
+    std::string delete_storage_query = fmt::format("DELETE FROM storage WHERE "
+                                                   "owner_id={0} AND slot in ({1});",
+        user->m_dwDBID,
+        value_list(storage_delete_list));
+
+    std::string bulk = delete_invalid_query;
+    bulk += delete_inventory_query + inventory_query;
+    bulk += delete_storage_query + storage_query;
 
     QueryResult bulk_res = this->db_pg.batch(bulk);
     if (!bulk_res.is_ok()) {
@@ -333,9 +416,6 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             trans_res.error_message());
         return false;
     }
-
-    // TODO: Storage
-    // OH BOY
 
     // TODO: Wish list
     // JSON
@@ -589,7 +669,9 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     };
 
     if (!item_res.is_ok()) {
-        LOG_ERROR("Inventory query failed for character '%s': %s", item_res.error_message());
+        LOG_ERROR("Inventory query failed for character '%s': %s",
+            char_name.c_str(),
+            item_res.error_message());
         return false;
     }
 
@@ -821,6 +903,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     }
 
     user->m_Bank.Init();
+    user->m_Bank.m_i64ZULY = char_res.get_int64(0, COL_STORAGE_MONEY);
     user->m_btBankData = BANK_UNLOADED;
 
     user->m_dwLoginTIME = std::chrono::system_clock::now().time_since_epoch().count();
@@ -832,134 +915,79 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
 bool
 GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
-    t_PACKET* pPacket = (t_PACKET*)pSqlPACKET->m_pPacket;
+    t_PACKET* pPacket = reinterpret_cast<t_PACKET*>(pSqlPACKET->m_pPacket);
+    if (!pPacket) {
+        return false;
+    }
 
-    /*
-    if (BANK_REQ_CHANGE_PASSWORD == pPacket->m_cli_BANK_LIST_REQ.m_btREQ) {
-        // Ã¢°í ºñ¹ø º¯°æ...
-        if (pPacket->m_HEADER.m_nSize > sizeof(cli_BANK_LIST_REQ)) {
-            short nOffset = sizeof(cli_BANK_LIST_REQ);
-            char* szPassWD = Packet_GetStringPtr(pPacket, nOffset);
-            if (szPassWD
-                && this->db->ExecSQL(
-                       "UPDATE tblGS_AVATAR SET txtPASSWORD=\'%s\' WHERE txtACCOUNT=\'%s\'",
-                       szPassWD,
-                       pSqlPACKET->m_Name.Get())
-                    < 1) {
-                classUSER* pUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-                if (pUSER) {
-                    pUSER->Send_gsv_BANK_LIST_REPLY(BANK_REPLY_CHANGED_PASSWORD);
-                }
-            }
+    classUSER* user = reinterpret_cast<classUSER*>(g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG));
+    if (!user || !user->Get_ACCOUNT())
+        return false;
+
+    QueryResult storage_res = this->db_pg.query(
+        "SELECT storage.slot, storage.quantity, item.uuid, "
+        "item.game_data_id, item.type_id, item.stat_id, item.grade, "
+        "item.durability, item.lifespan, item.appraisal, item.socket, item.crafted "
+        "FROM storage INNER JOIN item ON storage.item_id = item.id "
+        "WHERE storage.owner_id = $1",
+        {std::to_string(user->m_dwDBID)});
+
+    enum StorageCol {
+        STORAGE_COL_SLOT,
+        STORAGE_COL_QUANTITY,
+        STORAGE_COL_UUID,
+        STORAGE_COL_GAME_DATA_ID,
+        STORAGE_COL_TYPE_ID,
+        STORAGE_COL_STAT_ID,
+        STORAGE_COL_GRADE,
+        STORAGE_COL_DURABILITY,
+        STORAGE_COL_LIFESPAN,
+        STORAGE_COL_APPRAISAL,
+        STORAGE_COL_SOCKET,
+        STORAGE_COL_CRAFTED,
+    };
+
+    if (!storage_res.is_ok()) {
+        LOG_ERROR("Storage query failed for character '%s': %s",
+            user->Get_NAME(),
+            storage_res.error_message());
+        return false;
+    }
+
+    if (storage_res.row_count == 0) {
+        return user->Send_gsv_BANK_ITEM_LIST(true);
+    }
+
+    for (size_t row_idx = 0; row_idx < storage_res.row_count; ++row_idx) {
+        int slot = storage_res.get_int32(row_idx, STORAGE_COL_SLOT);
+        if (slot < 0 || slot >= BANKSLOT_TOTAL) {
+            continue;
+        }
+
+        tagITEM* item = &user->m_Bank.m_ItemLIST[slot];
+        if (!item) {
+            item = new tagITEM();
+            item->init();
+        }
+        item->uuid =
+            Rose::Util::UUID::from_string(storage_res.get_string(row_idx, STORAGE_COL_UUID));
+        item->m_nItemNo = storage_res.get_int32(row_idx, STORAGE_COL_GAME_DATA_ID);
+        item->m_cType = storage_res.get_int32(row_idx, STORAGE_COL_TYPE_ID);
+
+        if (item->IsEnableDupCNT()) {
+            item->m_uiQuantity = storage_res.get_int32(row_idx, STORAGE_COL_QUANTITY);
         } else {
-            if (this->db->ExecSQL(
-                    "UPDATE tblGS_AVATAR SET txtPASSWORD=NULL WHERE txtACCOUNT=\'%s\'",
-                    pSqlPACKET->m_Name.Get())
-                < 1) {
-                classUSER* pUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-                if (pUSER) {
-                    pUSER->Send_gsv_BANK_LIST_REPLY(BANK_REPLY_CLEARED_PASSWORD);
-                }
-            }
-        }
-        return true;
-    }
-    */
-
-    if (!this->db->QuerySQL("{call gs_SelectBANK(\'%s\')}", pSqlPACKET->m_Name.Get())) {
-        /*
-            this->db->MakeQuery( "SELECT * FROM tblGS_BANK WHERE txtACCOUNT=",
-                                    MQ_PARAM_STR, pSqlPACKET->m_Name.Get(),
-                                    MQ_PARAM_END);
-            if ( !this->db->QuerySQLBuffer() ) {
-        */
-        // ???
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-        return false;
-    }
-
-    if (!this->db->GetNextRECORD()) {
-        // LogString(LOG_NORMAL, "Create [ %s ] bank...\n", pSqlPACKET->m_Name.Get() );
-
-        this->db->BindPARAM(1, (BYTE*)&this->m_sEmptyBANK, sizeof(tagBankData));
-
-        // "INSERT tblGS_AVATAR (Account, Name, ZoneNO, BasicINFO) VALUSE( xxx, xxx, xxx, xxx );"
-        this->db->MakeQuery("INSERT tblGS_BANK (txtACCOUNT, blobITEMS) VALUES(",
-            MQ_PARAM_STR,
-            pSqlPACKET->m_Name.Get(),
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_BINDIDX,
-            1,
-            MQ_PARAM_ADDSTR,
-            ");",
-            MQ_PARAM_END);
-        if (this->db->ExecSQLBuffer() < 1) {
-            // ¸¸µé±â ½ÇÆÐ !!!
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "SQL Exec ERROR:: INSERT Bank:%s : %s \n",
-                pSqlPACKET->m_Name.Get(),
-                this->db->GetERROR());
-            return true;
-        }
-
-        classUSER* pUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-        if (!pUSER || !pUSER->Get_ACCOUNT())
-            return false;
-
-        return pUSER->Send_gsv_BANK_ITEM_LIST(true);
-    }
-
-    classUSER* pUSER = (classUSER*)g_pUserLIST->GetSOCKET(pSqlPACKET->m_iTAG);
-    if (!pUSER || !pUSER->Get_ACCOUNT())
-        return false;
-
-    BYTE* pDATA;
-    pDATA = this->db->GetDataPTR(BANKTBL_ITEMS);
-    if (pDATA) {
-        ::CopyMemory(&pUSER->m_Bank, pDATA, sizeof(tagBankData));
-
-        char* szPassword;
-        szPassword = this->db->GetStrPTR(BANKTLB_PASSWORD);
-        if (szPassword) {
-            // ºñ¹Ð¹øÈ£ Ã¼Å©..
-            pUSER->m_BankPASSWORD.Set(szPassword);
-            if (pPacket->m_HEADER.m_nSize > sizeof(cli_BANK_LIST_REQ)) {
-                short nOffset = sizeof(cli_BANK_LIST_REQ);
-                char* szPassWD = Packet_GetStringPtr(pPacket, nOffset);
-                if (!szPassWD || strcmp(szPassword, szPassWD))
-                    return pUSER->Send_gsv_BANK_LIST_REPLY(BANK_REPLY_INVALID_PASSWORD);
-            } else {
-                // ºñ¹ø ÇÊ¿ä...
-                return pUSER->Send_gsv_BANK_LIST_REPLY(BANK_REPLY_NEED_PASSWORD);
-            }
-        }
-
-        int iRewardMoney = this->db->GetInteger(BANKTBL_REWARD);
-        if (iRewardMoney) {
-            // º¸»ó±ÝÀÌ ÀÖ´Ù...
-            this->db->MakeQuery("UPDATE tblGS_BANK SET intREWARD=",
-                MQ_PARAM_INT,
-                0,
-                MQ_PARAM_ADDSTR,
-                "WHERE txtACCOUNT=",
-                MQ_PARAM_STR,
-                pUSER->Get_ACCOUNT(),
-                MQ_PARAM_END);
-            if (this->db->ExecSQLBuffer() < 0) {
-                // °íÄ¡±â ½ÇÆÐ !!!
-                g_LOG.CS_ODS(LOG_NORMAL,
-                    "SQL Exec ERROR:: UPDATE Bank money :%s %s \n",
-                    pUSER->Get_ACCOUNT(),
-                    this->db->GetERROR());
-            } else {
-                // »ó±Ý ´õÇÔ.
-                pUSER->Add_MoneyNSend(iRewardMoney, GSV_REWARD_MONEY);
-            }
+            item->m_bCreated = storage_res.get_bool(row_idx, STORAGE_COL_CRAFTED);
+            item->m_bHasSocket = storage_res.get_bool(row_idx, STORAGE_COL_SOCKET);
+            item->m_bIsAppraisal = storage_res.get_bool(row_idx, STORAGE_COL_APPRAISAL);
+            item->m_cDurability = storage_res.get_int32(row_idx, STORAGE_COL_DURABILITY);
+            item->m_cGrade = storage_res.get_int32(row_idx, STORAGE_COL_GRADE);
+            item->m_nLife = storage_res.get_int32(row_idx, STORAGE_COL_LIFESPAN);
+            item->m_nGEM_OP = storage_res.get_int32(row_idx, STORAGE_COL_STAT_ID);
         }
     }
 
-    return pUSER->Send_gsv_BANK_ITEM_LIST();
+    return user->Send_gsv_BANK_ITEM_LIST();
 }
 
 #define WSVAR_TBL_BLOB 2

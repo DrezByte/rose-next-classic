@@ -22,13 +22,17 @@ param_list(size_t count) {
 }
 
 std::string
-value_list(std::vector<std::string>& vals) {
+value_list(std::vector<std::string>& vals, bool quote) {
     std::string s;
     for (size_t i = 0; i < vals.size(); ++i) {
         if (i != 0) {
             s += ", ";
         }
-        s += vals[i];
+        if (quote) {
+            s += "'" + vals[i] + "'";
+        } else {
+            s += vals[i];
+        }
     }
     return s;
 }
