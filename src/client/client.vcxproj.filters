@@ -1037,9 +1037,6 @@
     <ClCompile Include="Common\CEconomy.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\CHotICON.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\CObjAI.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -1149,6 +1146,9 @@
       <Filter>Common Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\shared\cai_file.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\shared\choticon.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2134,9 +2134,6 @@
     <ClInclude Include="Common\CEconomy.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\CHotICON.h">
-      <Filter>Source Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\CObjAI.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
@@ -2243,6 +2240,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\shared\cai_lib.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shared\choticon.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>

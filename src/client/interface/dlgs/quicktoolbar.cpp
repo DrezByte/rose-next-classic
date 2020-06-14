@@ -761,11 +761,13 @@ CQuickBAR::SetQuickBarType(short nType) {
 
     switch (nType) {
         case QUICKBAR_TYPE_NORMAL:
-            SetStartEndPage(0, MAX_ICONS_PAGES_NORMAL);
+            SetStartEndPage(0, MAX_ICONS_PAGES);
             break;
+        /*
         case QUICKBAR_TYPE_EXTENSION:
             SetStartEndPage(MAX_ICONS_PAGES_NORMAL, MAX_ICONS_PAGES);
             break;
+        */
     }
     m_nCurrentPage = m_nStartPage;
 }

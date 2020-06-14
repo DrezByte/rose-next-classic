@@ -4,7 +4,7 @@
 
 #include "tgamectrl/tdialog.h"
 #include "SubClass/CSlot.h"
-#include "../Common/CHotIcon.h"
+#include "CHotIcon.h"
 #include "../gamecommon/IObserver.h"
 
 class CTCmdDragItemFromQuickBar;

@@ -527,10 +527,12 @@ IT_MGR::InitDLG() {
     pQuickBAR->Create(DIALOG_FILENAME[DLG_TYPE_QUICKBAR]);
     AppendDlg(DLG_TYPE_QUICKBAR, pQuickBAR, pQuickBAR->GetControlID());
 
+    /* Second skillbar? 
     pQuickBAR = new CQuickBAR(DLG_TYPE_QUICKBAR_EXT);
     pQuickBAR->Create(DIALOG_FILENAME[DLG_TYPE_QUICKBAR_EXT]);
     pQuickBAR->SetQuickBarType(QUICKBAR_TYPE_EXTENSION);
     AppendDlg(DLG_TYPE_QUICKBAR_EXT, pQuickBAR, pQuickBAR->GetControlID());
+    */
 
     CQuestDlg* pQuestDlg = new CQuestDlg;
     pQuestDlg->Create(DIALOG_FILENAME[DLG_TYPE_QUEST]);

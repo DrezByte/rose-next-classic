@@ -1,14 +1,13 @@
 #pragma once
 
 #ifdef __SERVER
-    #include "choticon.h"
     #include "io_stb.h"
 #else
-    #include "common/choticon.h"
     #include "common/io_stb.h"
 #endif
 
 #include "calculation.h"
+#include "choticon.h"
 #include "cinventory.h"
 #include "cquest.h"
 

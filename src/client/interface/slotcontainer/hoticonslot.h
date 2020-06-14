@@ -1,7 +1,7 @@
 #ifndef _CHOTICONSLOT_
 #define _CHOTICONSLOT_
 
-#include "../../Common/CHotICON.h"
+#include "CHotICON.h"
 
 class CIcon;
 class CHotICONS;

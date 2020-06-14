@@ -1,10 +1,6 @@
-#ifndef __CHOTICON_H
-#define __CHOTICON_H
+#pragma once
 
-#define MAX_ICONS_PAGES 6 // normal 4 + ext 2
-#define MAX_ICONS_PAGES_NORMAL 4
-#define MAX_ICONS_PAGES_EXT 2
-
+#define MAX_ICONS_PAGES 4
 #define HOT_ICONS_PER_PAGE 8
 
 #define MAX_HOT_ICONS 48
@@ -42,7 +38,3 @@ public:
 #endif
 };
 #pragma pack(pop)
-
-//-------------------------------------------------------------------------------------------------
-#pragma warning(default : 4201)
-#endif
