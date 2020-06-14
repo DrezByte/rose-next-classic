@@ -187,8 +187,9 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         "hp=$7, mp=$8, stamina=$9, max_hp=$10, max_mp=$11, max_stamina=$12, str=$13, dex=$14, "
         "intt=$15, con=$16, cha=$17, sen=$18, stat_points=$19, skill_points=$20 , money=$21, "
         "storage_money=$22, map_id=$23, respawn_x=$24, respawn_y=$25, town_respawn_id=$26, "
-        "town_respawn_x=$27, town_respawn_y=$28, union_id=$29, skills=$30, quests=$31 "
-        "WHERE id=$32");
+        "town_respawn_x=$27, town_respawn_y=$28, union_id=$29, skills=$30, quests=$31, "
+        "hotbar=$32 "
+        "WHERE id=$33");
 
     QueryResult char_res = this->db_pg.query(query,
         {
@@ -223,6 +224,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             std::to_string(user->m_BasicINFO.m_cUnion),
             json(user->m_Skills).dump(),
             json(user->m_Quests).dump(),
+            json(user->m_HotICONS).dump(),
             std::to_string(user->m_dwDBID),
         });
 
@@ -336,9 +338,6 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
     // OH BOY
 
     // TODO: Wish list
-    // JSON
-
-    // TODO: Hoticons
     // JSON
 
     return true;
@@ -513,7 +512,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         "max_stamina, str, dex, intt, con, cha, sen, stat_points, skill_points, money, "
         "storage_money, map_id, "
         "respawn_x, respawn_y, town_respawn_id, town_respawn_x, town_respawn_y, union_id, skills, "
-        "quests "
+        "quests, hotbar "
         "FROM character "
         "WHERE account_username=$1 AND name=$2";
 
@@ -550,6 +549,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         COL_UNION_ID,
         COL_SKILLS,
         COL_QUESTS,
+        COL_HOTBAR,
     };
 
     QueryResult char_res = this->db_pg.query(query, {account_username, char_name});
@@ -659,9 +659,11 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     tagWishLIST wish_list;
     wish_list.Init();
 
-    // TODO: Populate hotbar icons
     CHotICONS hotbar_icons;
     hotbar_icons.Init();
+
+    json hotbar_json = json::parse(char_res.get_string(0, COL_HOTBAR));
+    from_json(hotbar_json, hotbar_icons);
 
     for (size_t row_idx = 0; row_idx < item_res.row_count; ++row_idx) {
         int slot = item_res.get_int32(row_idx, INV_COL_SLOT);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "nlohmann/json_fwd.hpp"
+
 #define MAX_ICONS_PAGES 4
 #define HOT_ICONS_PER_PAGE 8
 
@@ -38,3 +40,6 @@ public:
 #endif
 };
 #pragma pack(pop)
+
+void to_json(nlohmann::json& j, const CHotICONS& s);
+void from_json(const nlohmann::json& j, CHotICONS& s);
