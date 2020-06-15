@@ -23,6 +23,13 @@ param_list(size_t count) {
 
 std::string
 value_list(std::vector<std::string>& vals, bool quote) {
+    // User is likely using this with the `IN` operator so we ensure that that
+    // a vald value list is alway returned.
+    // E.g. `... IN (null)` vs the invalid syntax of `... IN ()`
+    if (vals.size() == 0) {
+        return "null";
+    }
+
     std::string s;
     for (size_t i = 0; i < vals.size(); ++i) {
         if (i != 0) {
