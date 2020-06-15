@@ -141,4 +141,7 @@ Get_ServerLangTYPE() {
     return CLIB_GameSRV::GetInstance()->GetLangTYPE();
 }
 
+inline Rose::Common::ServerConfig& server_config() {
+    return CLIB_GameSRV::GetInstance()->config;
+}
 #endif

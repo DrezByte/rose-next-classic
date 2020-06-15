@@ -22,6 +22,7 @@ enum CommandId {
     LEVELUP,
     MAPS,
     RATES,
+    STATS,
     TELEPORT,
 };
 }
@@ -37,6 +38,11 @@ static const std::vector<CommandInfo> commands = {
         CommandContext::Server},
     {"maps", 100, "List all maps by id.", "Usage: maps", CommandContext::Server},
     {"rates", 100, "List server rates.", "Usage: rates", CommandContext::Server},
+    {"stats",
+        100,
+        "List server side character stats.",
+        "Usage: stats [target_name]",
+        CommandContext::Server},
     {"tp",
         100,
         "Teleport to a location.",

@@ -15,7 +15,8 @@
 #include "CUserDATA.h"
 #include "CObjAI.h"
 #include "status_effects.h"
-//-------------------------------------------------------------------------------------------------
+
+#include "rose/common/character_stats.h"
 
 // #define	__CS_TARGET_LIST
 
@@ -46,6 +47,10 @@ class CGuild;
  *			인공지능 처리 클래스인 CObjAI를 상속받음
  */
 class CObjCHAR: public CObjAI {
+public:
+    Rose::Common::CharacterStats stats;
+
+    virtual uint16_t total_move_speed();
 private:
     void Adjust_HEIGHT() { /* nop */
     }
@@ -202,8 +207,6 @@ public:
     virtual int GetOri_MaxMP() = 0;
 
     virtual short GetOri_WalkSPEED() = 0;
-    virtual short
-    GetOri_RunSPEED() = 0; // 지속 상태를 제외한 패시브 스킬, 아이템 추가 포함된 결과...
     virtual short GetOri_ATKSPEED() = 0;
     virtual int GetOri_ATK() = 0;
     virtual int GetOri_DEF() = 0;
@@ -273,7 +276,7 @@ public:
         if (!m_bRunMODE)
             return GetOri_WalkSPEED();
 
-        short nR = (GetOri_RunSPEED() + m_IngSTATUS.Adj_RUN_SPEED());
+        short nR = (this->total_move_speed() + m_IngSTATUS.Adj_RUN_SPEED());
         return (nR > 200) ? nR : 200.f;
     }
 

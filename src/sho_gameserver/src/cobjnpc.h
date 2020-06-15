@@ -29,6 +29,9 @@ struct tagSavedDAMAGE {
  *			CObjCHAR클래스를 상속받음
  */
 class CObjMOB: public CObjCHAR {
+public:
+    uint16_t total_move_speed() { return NPC_RUN_SPEED(m_nCharIdx); }
+
 private:
     char m_cSkillMotionIDX;
 
@@ -94,7 +97,6 @@ public:
     BYTE Get_RideMODE() { return 0; }
 
     short GetOri_WalkSPEED() { return NPC_WALK_SPEED(m_nCharIdx); }
-    short GetOri_RunSPEED() { return NPC_RUN_SPEED(m_nCharIdx); }
     short GetOri_ATKSPEED() { return NPC_ATK_SPEED(m_nCharIdx); }
 
     int GetOri_ATK() { return NPC_ATK(m_nCharIdx); }

@@ -30,7 +30,7 @@ struct GameConfig {
     GameConfig():
         base_attack_damage(150),
         base_attack_speed(60),
-        base_move_speed(300),
+        base_move_speed(200),
         base_hit(150),
         base_crit(0) {}
 };

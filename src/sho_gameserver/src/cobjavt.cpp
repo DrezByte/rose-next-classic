@@ -15,11 +15,11 @@ CObjAVT::~CObjAVT() {
 void
 CObjAVT::Update_SPEED() {
     float fSpeed = this->Cal_RunSPEED();
-    this->m_nRunSPEED = floor_int(fSpeed);
+    this->stats.move_speed = floor_int(fSpeed);
 
     short nWeaponSpeed;
     if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
-        this->m_fRunAniSPEED = Cal_RunAniSPEED(m_nRunSPEED);
+        this->m_fRunAniSPEED = Cal_RunAniSPEED(this->stats.move_speed);
 
         short nWeaponItemNo = GetPartITEM(BODY_PART_WEAPON_R);
         nWeaponSpeed = WEAPON_ATTACK_SPEED(nWeaponItemNo) + 5;
@@ -28,7 +28,7 @@ CObjAVT::Update_SPEED() {
         this->m_nPassiveAttackSpeed = this->GetPassiveSkillAttackSpeed(fSpeed, nWeaponItemNo);
         this->m_nAtkAniSPEED = (short)(fSpeed + this->m_nPassiveAttackSpeed);
     } else {
-        m_fRunAniSPEED = (m_nRunSPEED + 500) / 1000.f;
+        m_fRunAniSPEED = (this->stats.move_speed + 500) / 1000.f;
 
         nWeaponSpeed = PAT_ITEM_ATK_SPD(m_RideITEM[RIDE_PART_ARMS].m_nItemNo) + 5;
         fSpeed = 1500.f / nWeaponSpeed;
@@ -75,8 +75,7 @@ CObjAVT::Make_gsv_ADD_OBJECT(classPACKET* pCPacket) {
     pCPacket->m_HEADER.m_nSize = sizeof(gsv_AVT_CHAR);
 
     pCPacket->m_gsv_AVT_CHAR.m_btCharRACE = (BYTE)this->m_nCharRACE;
-    pCPacket->m_gsv_AVT_CHAR.m_nRunSpeed =
-        this->GetOri_RunSPEED(); // ÆÐ½Ãºê¿¡ÀÇÇØ¼­¸¸ º¸Á¤/ Áö¼Óº¸Á¤ Á¦¿ÜµÈ°ª.
+    pCPacket->m_gsv_AVT_CHAR.m_nRunSpeed = this->total_move_speed();
     pCPacket->m_gsv_AVT_CHAR.m_nPsvAtkSpeed = this->GetPsv_ATKSPEED();
     pCPacket->m_gsv_AVT_CHAR.m_btWeightRate = this->m_btWeightRate;
     pCPacket->m_gsv_AVT_CHAR.m_dwSubFLAG = this->m_IngSTATUS.m_dwSubStatusFLAG;
@@ -666,10 +665,11 @@ CObjAVT::Save_Damage(int iAttackerIDX, int iDamage) {
             pItem->m_nLife = 0;
             this->Send_gsv_SET_ITEM_LIFE(nInvIDX, 0);
 
-            short nCurSpeed = this->GetOri_RunSPEED();
+            short nCurSpeed = this->total_move_speed();
             this->UpdateAbility(); // ¹æ¾î±¸ ¼ö¸í = 0
-            if (nCurSpeed != this->GetOri_RunSPEED())
+            if (nCurSpeed != this->total_move_speed()) {
                 this->Send_gsv_SPEED_CHANGED(false);
+            }
         }
     }
 
@@ -729,9 +729,9 @@ CObjAVT::Dec_WeaponLife() {
             pWeapon->m_nLife = 0;
             this->Send_gsv_SET_ITEM_LIFE(nInvIDX, 0);
 
-            short nCurSpeed = this->GetOri_RunSPEED();
+            short nCurSpeed = this->total_move_speed();
             this->UpdateAbility(); // ¹«±â ¼ö¸í = 0
-            if (nCurSpeed != this->GetOri_RunSPEED())
+            if (nCurSpeed != this->total_move_speed())
                 this->Send_gsv_SPEED_CHANGED(false);
         }
     }
@@ -782,7 +782,7 @@ void
 CObjAVT::Cal_AruaRunSPD(void) {
     if (this->m_IngSTATUS.IsSubSET(FLAG_SUB_ARUA_FAIRY)) {
         this->m_IngSTATUS.m_nAruaRunSPD =
-            (short)(this->GetOri_RunSPEED() * ARUA_RATE_RUN_SPD); // 0.2f
+            (short)(this->total_move_speed() * ARUA_RATE_RUN_SPD); // 0.2f
     } else
         this->m_IngSTATUS.m_nAruaRunSPD = 0;
 }

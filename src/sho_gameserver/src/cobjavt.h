@@ -140,7 +140,7 @@ public:
     short Get_nAttackSPEED() {
         return (m_btRideMODE) ? GetOri_ATKSPEED() : CObjCHAR::Get_nAttackSPEED();
     }
-    float Get_MoveSPEED() { return (m_btRideMODE) ? GetOri_RunSPEED() : CObjCHAR::Get_MoveSPEED(); }
+    float Get_MoveSPEED() { return (m_btRideMODE) ? this->total_move_speed() : CObjCHAR::Get_MoveSPEED(); }
 
     // virtual function inherit from CObjCHAR -----------------------------------------------------
     int Get_AttackRange(short nSkillIDX);
@@ -195,7 +195,6 @@ public:
     int GetCur_SummonCNT() { return this->m_nSummonCNT; }
 
     short GetOri_WalkSPEED() { return WALK_CmPerSec; }
-    short GetOri_RunSPEED() { return m_nRunSPEED; }
     short GetOri_ATKSPEED() { return this->m_nAtkAniSPEED; }
 
     int GetOri_ATK() { return this->GetDef_ATK(); }
@@ -223,7 +222,6 @@ public:
 protected:
     short m_nPatHP_Mode;
     // CObjAVT ------------------------------------------------------------------------------------
-    short m_nRunSPEED;
     short m_nAtkAniSPEED;
 
     DWORD m_dwGoddnessTIME;

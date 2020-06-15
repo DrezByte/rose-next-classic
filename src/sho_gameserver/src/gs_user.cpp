@@ -1245,7 +1245,7 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
     this->SendPacket(pCPacket);
 
     // TODO: This should be sent as part of the above packet
-    this->send_update_move_speed(this->GetOri_RunSPEED());
+    this->send_update_move_speed(this->total_move_speed());
 
     Packet_ReleaseNUnlock(pCPacket);
 
@@ -2490,8 +2490,8 @@ classUSER::Recv_cli_SET_WEIGHT_RATE(BYTE btWeightRate /*t_PACKET *pPacket*/, boo
         //	this->Del_ActiveSKILL ();
         //	CObjAI::SetCMD_STOP ();
         //}
-        if (this->GetCur_MOVE_MODE() > MOVE_MODE_RUN && this->GetOri_RunSPEED() > 300) {
-            this->m_nRunSPEED = 300;
+        if (this->GetCur_MOVE_MODE() > MOVE_MODE_RUN && this->total_move_speed() > 300) {
+            this->stats.move_speed = 300;
         }
     }
 
@@ -2584,8 +2584,7 @@ classUSER::Send_gsv_EQUIP_ITEM(short nEquipInvIDX, tagITEM* pEquipITEM) {
 
     if (0 == this->GetCur_RIDE_MODE()) {
         pCPacket->m_HEADER.m_nSize += sizeof(short);
-        pCPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0] =
-            this->GetOri_RunSPEED(); // 패시브에의해서만 보정/ 지속보정 제외된값.
+        pCPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0] = this->total_move_speed();
     }
 
     this->GetZONE()->SendPacketToSectors(this, pCPacket);
@@ -2895,8 +2894,7 @@ classUSER::Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket) {
 
         if (this->GetCur_RIDE_MODE()) {
             pCPacket->m_HEADER.m_nSize += sizeof(short);
-            pCPacket->m_gsv_ASSEMBLE_RIDE_ITEM.m_nRunSPEED[0] =
-                this->GetOri_RunSPEED(); // 패시브에의해서만 보정/ 지속보정 제외된값.
+            pCPacket->m_gsv_ASSEMBLE_RIDE_ITEM.m_nRunSPEED[0] = this->total_move_speed();
         }
 
         this->GetZONE()->SendPacketToSectors(this, pCPacket);
@@ -2924,7 +2922,7 @@ classUSER::Send_gsv_SPEED_CHANGED(bool bUpdateSpeed) {
     pCPacket->m_HEADER.m_nSize = sizeof(gsv_SPEED_CHANGED);
 
     pCPacket->m_gsv_SPEED_CHANGED.m_wObjectIDX = this->Get_INDEX();
-    pCPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED = this->GetOri_RunSPEED();
+    pCPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED = this->total_move_speed();
     pCPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED = this->GetPsv_ATKSPEED();
     pCPacket->m_gsv_SPEED_CHANGED.m_btWeightRate = this->m_btWeightRate;
 
@@ -3601,8 +3599,8 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
                 // 아이템 옵션
                 iTEMP = 1 + RANDOM(100);
                 int iITEM_OP = (int)(((this->GetCur_SENSE() + 220 - this->Get_LEVEL() / 2.f)
-                                         * (nPLUS + 20) * 0.4f
-                                     + nITEM_DIF * 35 - 1600 - iTEMP)
+                                             * (nPLUS + 20) * 0.4f
+                                         + nITEM_DIF * 35 - 1600 - iTEMP)
                         / (iTEMP + 17)
                     - 85);
                 if (iITEM_OP > 0) {
@@ -4171,7 +4169,8 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
             }
 
             if (pSourITEM->GetHEADER() != pPacket->m_cli_MOVE_ITEM.m_MoveITEM.GetHEADER()) {
-                LOG_WARN("Cheat: User %s attempting to move invalid storage item", this->Get_NAME());
+                LOG_WARN("Cheat: User %s attempting to move invalid storage item",
+                    this->Get_NAME());
                 bResult = false;
                 goto _RETURN;
             }
@@ -4351,7 +4350,7 @@ classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
 
     this->m_BasicAbility.m_nBasicA[pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO]++;
 
-    nCurSpeed = this->GetOri_RunSPEED();
+    nCurSpeed = this->total_move_speed();
     this->UpdateAbility(); // use_bpoint
 
     nAbilityValue = this->m_BasicAbility.m_nBasicA[pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO];
@@ -4370,8 +4369,7 @@ classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
 
     Packet_ReleaseNUnlock(pCPacket);
 
-    if (nCurSpeed != this->GetOri_RunSPEED()) {
-        // 이동 속도가 바뀌므로 주변에 이동 속도 전송...
+    if (nCurSpeed != this->total_move_speed()) {
         this->Send_gsv_SPEED_CHANGED();
     }
 
@@ -6639,7 +6637,6 @@ classUSER::Proc_CRAFT_UPGRADE_REQ(t_PACKET* pPacket, bool bUseMP) {
             pInITEM->m_cGrade = 0;
         else
             pInITEM->m_cGrade -= nStep;
-
     }
 
     pCPacket->m_gsv_CRAFT_ITEM_REPLY.m_sInvITEM[btOutCNT].m_btInvIDX =
@@ -8240,6 +8237,12 @@ classUSER::level_up(int amount) {
     this->Send_gsv_LEVELUP(end_level - start_level);
 }
 
+uint16_t
+classUSER::total_move_speed() {
+    // TODO: Don't use dummy value, read from config
+    return CObjAVT::total_move_speed() + server_config().game.base_move_speed;
+}
+
 bool
 classUSER::send_packet(Packet& packet) {
     classPACKET p;
@@ -8259,8 +8262,7 @@ classUSER::send_update_stats_all() {
     builder.ForceDefaults(true);
 
     Packets::StatsBuilder stats_builder(builder);
-    stats_builder.add_move_speed(1000); // TODO: Build actual stats
-    // this->stats.move_speed = 1000; // TODO: Magoo
+    stats_builder.add_move_speed(this->total_move_speed());
     const auto stats = stats_builder.Finish();
 
     Packets::UpdateStatsBuilder rep(builder);

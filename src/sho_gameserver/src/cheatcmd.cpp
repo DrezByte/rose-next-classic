@@ -21,6 +21,7 @@ using namespace Rose::Common;
 // clang-format off
 #define REGISTER_COMMAND(ID, FUNC) {commands[ID].name, {FUNC, commands[ID]}}
 
+
 bool
 help(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     if (!user) {
@@ -100,6 +101,23 @@ rates(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
+stats(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+    if (!user) {
+        return false;
+    }
+
+    classUSER* target = user;
+    if (args.size() >= 2) {
+        classUSER* user2 = g_pUserLIST->Find_CHAR(const_cast<char*>(args[1].c_str()));
+        if (user2) {
+            target = user2;
+        }
+    }
+
+    user->send_server_whisper("MSPD: " + std::to_string(target->total_move_speed()));
+}
+
+bool
 teleport(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     if (!user) {
         return false;
@@ -142,6 +160,7 @@ static const std::unordered_map<std::string, std::tuple<CommandFunction, Command
         REGISTER_COMMAND(Command::LEVELUP, levelup),
         REGISTER_COMMAND(Command::MAPS, maps),
         REGISTER_COMMAND(Command::RATES, rates),
+        REGISTER_COMMAND(Command::STATS, stats),
         REGISTER_COMMAND(Command::TELEPORT, teleport),
     };
 
@@ -1166,14 +1185,14 @@ short
 classUSER::Cheat_speed(char* pArg1) {
     float fRate = (float)atof(pArg1);
     // m_nRunSPEED *= fRate;
-    float calcspeed = (float)m_nRunSPEED;
+    float calcspeed = static_cast<float>(this->stats.move_speed);
     calcspeed *= fRate;
     if (calcspeed > MAX_SHORT) {
-        m_nRunSPEED = (MAX_SHORT);
+        this->stats.move_speed = (MAX_SHORT);
     } else if (calcspeed < 100) {
-        m_nRunSPEED = 100;
+        this->stats.move_speed = 100;
     } else {
-        m_nRunSPEED = (short)calcspeed;
+        this->stats.move_speed = static_cast<uint16_t>(calcspeed);
     }
     Send_gsv_SPEED_CHANGED(false);
 

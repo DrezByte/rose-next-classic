@@ -274,7 +274,7 @@ CObjCHAR::Send_gsv_TOGGLE(BYTE btTYPE, bool bUpdateSpeed) {
 
     if (bUpdateSpeed) {
         pCPacket->m_HEADER.m_nSize += sizeof(short);
-        pCPacket->m_gsv_TOGGLE.m_nRunSPEED[0] = this->GetOri_RunSPEED();
+        pCPacket->m_gsv_TOGGLE.m_nRunSPEED[0] = this->total_move_speed();
     }
 
     this->GetZONE()->SendPacketToSectors(this, pCPacket);
@@ -1718,4 +1718,7 @@ CObjCHAR::Proc(void) {
     return 1;
 }
 
-//-------------------------------------------------------------------------------------------------
+uint16_t
+CObjCHAR::total_move_speed() {
+    return this->stats.move_speed;
+}
