@@ -140,6 +140,7 @@ public:
     void level_up(int amount);
 
     uint16_t total_move_speed() override;
+    uint16_t total_attack_speed() override;
 
     template<typename T>
     bool send_packet_from_offset(flatbuffers::FlatBufferBuilder& builder, flatbuffers::Offset<T> offset,

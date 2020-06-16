@@ -1244,8 +1244,7 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
 
     this->SendPacket(pCPacket);
 
-    // TODO: This should be sent as part of the above packet
-    this->send_update_move_speed(this->total_move_speed());
+    this->send_update_stats_all();
 
     Packet_ReleaseNUnlock(pCPacket);
 
@@ -2747,6 +2746,7 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
 _RETURN:
     Packet_ReleaseNUnlock(pCPacket);
     this->InitPassiveSkill();
+    this->Send_gsv_SPEED_CHANGED(false);
 
     return bResult;
 }
@@ -2923,7 +2923,7 @@ classUSER::Send_gsv_SPEED_CHANGED(bool bUpdateSpeed) {
 
     pCPacket->m_gsv_SPEED_CHANGED.m_wObjectIDX = this->Get_INDEX();
     pCPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED = this->total_move_speed();
-    pCPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED = this->GetPsv_ATKSPEED();
+    pCPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED = this->total_attack_speed();
     pCPacket->m_gsv_SPEED_CHANGED.m_btWeightRate = this->m_btWeightRate;
 
     this->GetZONE()->SendPacketToSectors(this, pCPacket);
@@ -8239,8 +8239,12 @@ classUSER::level_up(int amount) {
 
 uint16_t
 classUSER::total_move_speed() {
-    // TODO: Don't use dummy value, read from config
     return CObjAVT::total_move_speed() + server_config().game.base_move_speed;
+}
+
+uint16_t
+classUSER::total_attack_speed() {
+    return CObjAVT::total_attack_speed() + server_config().game.base_attack_speed;
 }
 
 bool
@@ -8263,6 +8267,7 @@ classUSER::send_update_stats_all() {
 
     Packets::StatsBuilder stats_builder(builder);
     stats_builder.add_move_speed(this->total_move_speed());
+    stats_builder.add_attack_speed(this->total_attack_speed());
     const auto stats = stats_builder.Finish();
 
     Packets::UpdateStatsBuilder rep(builder);

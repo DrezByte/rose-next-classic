@@ -1088,8 +1088,6 @@ protected:
     DWORD m_dwSitTIME;
     short m_nPsvAtkSPEED;
 
-    short m_nAtkAniSPEED;
-
     /// 교환할 무기가 세팅되면.. 모션이 끝난후에 바꾼다..
     int m_iDoChangeWeaponR;
     int m_iDoChangeWeaponL;
@@ -1143,7 +1141,6 @@ public:
     /// >
 
     virtual void Update_SPEED() {
-        m_nAtkAniSPEED = Cal_AtkAniSPEED(this->GetPartITEM(BODY_PART_WEAPON_R));
         m_fRunAniSPEED = Cal_RunAniSPEED(this->stats.move_speed);
     }
     /// Virtual function
@@ -1274,7 +1271,7 @@ public:
 
     /*override*/ tagMOTION* Get_MOTION(short nActionIdx = AVT_ANI_STOP1);
 
-    /*override*/ short GetOri_ATKSPEED() { return m_nAtkAniSPEED; }
+    /*override*/ short GetOri_ATKSPEED() { return this->stats.attack_speed; }
     /*override*/ short GetOri_WalkSPEED() { return WALK_CmPerSec; }
     /*override*/ short GetOri_RunSPEED() { return this->stats.move_speed; }
     virtual int GetOri_MaxHP();
@@ -1299,7 +1296,6 @@ public:
     //////////////////////////////////////////////////////////////////////////////////////////
 
     void SetOri_RunSPEED(short nRunSpeed) { this->stats.move_speed = nRunSpeed; }
-    void SetPsv_AtkSPEED(short nPsvAtkSpeed) { m_nPsvAtkSPEED = nPsvAtkSpeed; }
 
     /// 최대 생명력
     void Set_MaxHP(int iMaxHP) { m_iMaxHP = iMaxHP; }

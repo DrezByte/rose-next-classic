@@ -114,7 +114,12 @@ stats(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
         }
     }
 
+    user->send_server_whisper(fmt::format("HP: {}/{}",target->Get_HP(), target->Get_MaxHP()));
+    user->send_server_whisper(fmt::format("MP: {}/{}",target->Get_MP(), target->Get_MaxMP()));
     user->send_server_whisper("MSPD: " + std::to_string(target->total_move_speed()));
+    user->send_server_whisper("ASPD: " + std::to_string(target->total_attack_speed()));
+
+    return true;
 }
 
 bool
@@ -679,7 +684,7 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
                            << ", "
                               "ANI:(M: "
                            << std::fixed << std::setprecision(2) << m_fRunAniSPEED
-                           << ",A:" << m_nAtkAniSPEED << "), "
+                           << ",A:" << pUSER->total_attack_speed() << "), "
                            << "Atk: " << pUSER->Get_ATK() << ", "
                            << "Def: " << pUSER->Get_DEF() << ", "
                            << "Res: " << pUSER->Get_RES() << ", "

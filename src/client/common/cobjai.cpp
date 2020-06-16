@@ -81,18 +81,6 @@ CObjAI::Get_WorldTIME(void) {
 
 //--------------------------------------------------------------------------------
 /// class : CObAI
-/// @param short nRightWeaponItemNO 현재 오른손 무기번호
-/// @brief  : 공식이 바뀔경우 서버랑 맞추기 위해 이곳으로 옮김... 2004. 2. 6
-///				무기 번호로 공격속도를 계산 : 몹/NPC제외 : 아바타/유저만 해당.
-//--------------------------------------------------------------------------------
-
-int
-CObjAI::Cal_AtkAniSPEED(short nRightWeaponItemNO) {
-    return (int)(this->GetPsv_ATKSPEED() + 1500.f / (WEAPON_ATTACK_SPEED(nRightWeaponItemNO) + 5));
-}
-
-//--------------------------------------------------------------------------------
-/// class : CObAI
 /// @param tagMOTION* pMotion
 /// @brief  : 새로운 모션을 현재 모션으로 세팅, 프레임 리셋.
 ///

@@ -1722,3 +1722,8 @@ uint16_t
 CObjCHAR::total_move_speed() {
     return this->stats.move_speed;
 }
+
+uint16_t
+CObjCHAR::total_attack_speed() {
+    return this->stats.attack_speed;
+}

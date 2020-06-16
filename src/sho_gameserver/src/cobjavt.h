@@ -18,6 +18,11 @@
  */
 class CObjAVT: public CObjCHAR, public CUserDATA {
 public:
+    // TODO: Remove this. It exists here because we need to call the update stats
+    // method from CObjAVT::SetCMD_TOGGLE
+    virtual bool send_update_stats_all() = 0;
+
+public:
     // virtual function inherit from CGameOBJ -----------------------------------------------------
     t_ObjTAG Get_TYPE() { return OBJ_AVATAR; }
     char* Get_NAME() { return m_Name.Get(); }
@@ -138,7 +143,7 @@ public:
     bool SetCMD_TOGGLE(BYTE btTYPE, bool bForce = false);
 
     short Get_nAttackSPEED() {
-        return (m_btRideMODE) ? GetOri_ATKSPEED() : CObjCHAR::Get_nAttackSPEED();
+        return (m_btRideMODE) ? this->total_attack_speed() : CObjCHAR::Get_nAttackSPEED();
     }
     float Get_MoveSPEED() { return (m_btRideMODE) ? this->total_move_speed() : CObjCHAR::Get_MoveSPEED(); }
 
@@ -195,7 +200,6 @@ public:
     int GetCur_SummonCNT() { return this->m_nSummonCNT; }
 
     short GetOri_WalkSPEED() { return WALK_CmPerSec; }
-    short GetOri_ATKSPEED() { return this->m_nAtkAniSPEED; }
 
     int GetOri_ATK() { return this->GetDef_ATK(); }
     int GetOri_DEF() { return this->GetDef_DEF(); }
@@ -222,7 +226,6 @@ public:
 protected:
     short m_nPatHP_Mode;
     // CObjAVT ------------------------------------------------------------------------------------
-    short m_nAtkAniSPEED;
 
     DWORD m_dwGoddnessTIME;
     DWORD m_dwPatTIME;

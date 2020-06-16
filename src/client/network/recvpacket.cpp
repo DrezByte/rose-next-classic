@@ -1442,7 +1442,7 @@ CRecvPACKET::Recv_gsv_AVT_CHAR() {
     //	pNewAVT->SetAllPetPARTS ( m_pRecvPacket->m_gsv_AVT_CHAR.m_nRidingITEM );
     pNewAVT->SetAllPetPARTS(m_pRecvPacket->m_gsv_AVT_CHAR.m_RidingITEM);
     pNewAVT->SetOri_RunSPEED(m_pRecvPacket->m_gsv_AVT_CHAR.m_nRunSpeed);
-    pNewAVT->SetPsv_AtkSPEED(m_pRecvPacket->m_gsv_AVT_CHAR.m_nPsvAtkSpeed);
+    pNewAVT->stats.attack_speed = m_pRecvPacket->m_gsv_AVT_CHAR.m_nPsvAtkSpeed;
 
     pNewAVT->Set_HP(m_pRecvPacket->m_gsv_AVT_CHAR.m_iHP);
     //	assert( m_pRecvPacket->m_gsv_AVT_CHAR.m_nHP > 0 );
@@ -3183,10 +3183,8 @@ CRecvPACKET::Recv_gsv_SPEED_CHANGED() {
         g_pObjMGR->Get_ClientCharAVT(m_pRecvPacket->m_gsv_SPEED_CHANGED.m_wObjectIDX, false);
 
     if (pAVTChar) {
-        pAVTChar->SetOri_RunSPEED(
-            m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED); // 패시브 상태를 포함, 지속 상태 제외
-        pAVTChar->SetPsv_AtkSPEED(
-            m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED); // 패시브 값만...
+        pAVTChar->SetOri_RunSPEED(m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED);
+        pAVTChar->stats.attack_speed = m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED;
 
         if (g_pAVATAR && pAVTChar->IsA(OBJ_USER))
             g_pAVATAR->UpdateAbility();

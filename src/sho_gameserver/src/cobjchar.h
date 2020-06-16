@@ -51,6 +51,8 @@ public:
     Rose::Common::CharacterStats stats;
 
     virtual uint16_t total_move_speed();
+    virtual uint16_t total_attack_speed();
+
 private:
     void Adjust_HEIGHT() { /* nop */
     }
@@ -207,7 +209,6 @@ public:
     virtual int GetOri_MaxMP() = 0;
 
     virtual short GetOri_WalkSPEED() = 0;
-    virtual short GetOri_ATKSPEED() = 0;
     virtual int GetOri_ATK() = 0;
     virtual int GetOri_DEF() = 0;
     virtual int GetOri_RES() = 0;
@@ -269,7 +270,7 @@ public:
     tPOINTF Get_BornPOSITION() { return m_PosBORN; }
 
     short Get_nAttackSPEED() {
-        int iR = GetOri_ATKSPEED() + m_IngSTATUS.Adj_ATK_SPEED();
+        int iR = this->total_attack_speed() + m_IngSTATUS.Adj_ATK_SPEED();
         return (iR > 30) ? iR : 30;
     }
     float Get_MoveSPEED() {

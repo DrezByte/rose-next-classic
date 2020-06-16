@@ -26,14 +26,14 @@ CObjAVT::Update_SPEED() {
 
         fSpeed = 1500.f / nWeaponSpeed + m_iAddValue[AT_ATK_SPD];
         this->m_nPassiveAttackSpeed = this->GetPassiveSkillAttackSpeed(fSpeed, nWeaponItemNo);
-        this->m_nAtkAniSPEED = (short)(fSpeed + this->m_nPassiveAttackSpeed);
+        this->stats.attack_speed = (short)(fSpeed + this->m_nPassiveAttackSpeed);
     } else {
         m_fRunAniSPEED = (this->stats.move_speed + 500) / 1000.f;
 
         nWeaponSpeed = PAT_ITEM_ATK_SPD(m_RideITEM[RIDE_PART_ARMS].m_nItemNo) + 5;
         fSpeed = 1500.f / nWeaponSpeed;
-        m_nAtkAniSPEED = floor_int(fSpeed);
-        m_nAtkAniSPEED += this->m_iAddValue[AT_ATK_SPD];
+        this->stats.attack_speed = floor_int(fSpeed);
+        this->stats.attack_speed += this->m_iAddValue[AT_ATK_SPD];
     }
 
     Cal_AruaAtkSPD();
@@ -76,7 +76,7 @@ CObjAVT::Make_gsv_ADD_OBJECT(classPACKET* pCPacket) {
 
     pCPacket->m_gsv_AVT_CHAR.m_btCharRACE = (BYTE)this->m_nCharRACE;
     pCPacket->m_gsv_AVT_CHAR.m_nRunSpeed = this->total_move_speed();
-    pCPacket->m_gsv_AVT_CHAR.m_nPsvAtkSpeed = this->GetPsv_ATKSPEED();
+    pCPacket->m_gsv_AVT_CHAR.m_nPsvAtkSpeed = this->total_attack_speed();
     pCPacket->m_gsv_AVT_CHAR.m_btWeightRate = this->m_btWeightRate;
     pCPacket->m_gsv_AVT_CHAR.m_dwSubFLAG = this->m_IngSTATUS.m_dwSubStatusFLAG;
 
@@ -256,11 +256,9 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
     switch (btTYPE) {
         case TOGGLE_TYPE_RUN: {
             if (this->m_btRideMODE) {
-                // Å¾½ÂÇÏ°í ??
                 return true;
             }
             if (this->m_btWeightRate >= WEIGHT_RATE_WALK) {
-                // ¶Û·Á±¸ ?
                 return true;
             }
 
@@ -419,14 +417,15 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
             }
             this->m_dwRecoverTIME = 0;
 
-            this->UpdateAbility(); // Å¾½Â Åä±Û...
+            this->UpdateAbility();
+            this->send_update_stats_all();
             btTYPE = TOGGLE_TYPE_DRIVE + this->Get_MoveMODE();
             return this->Send_gsv_TOGGLE(btTYPE, true);
         }
     }
 
     // except TOGGLE_TYPE_DRIVE
-    this->Send_gsv_TOGGLE(btTYPE, false);
+    this->Send_gsv_TOGGLE(btTYPE, true);
 
     return true;
 }
@@ -774,7 +773,7 @@ CObjAVT::Send_gsv_GODDNESS_MODE(BYTE btOnOff) {
 void
 CObjAVT::Cal_AruaAtkSPD(void) {
     // if ( this->m_IngSTATUS.IsSubSET( FLAG_SUB_ARUA_FAIRY ) ) {
-    //	this->m_IngSTATUS.m_nAruaAtkSPD = (short)( this->GetOri_ATKSPEED() * ARUA_RATE_ATK_SPD );
+    //	this->m_IngSTATUS.m_nAruaAtkSPD = (short)( this->total_attack_speed() * ARUA_RATE_ATK_SPD );
     //} else
     //	this->m_IngSTATUS.m_nAruaAtkSPD = 0;
 }

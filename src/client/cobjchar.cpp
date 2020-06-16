@@ -4540,7 +4540,7 @@ CObjAVT::Create(const D3DVECTOR& Position, BYTE btCharRACE) {
     charPos.z = g_pTerrain->GetHeightTop(Position.x, Position.y);
 
     if (CObjCHAR::CreateCHAR((char*)m_Name.c_str(), &m_CharMODEL, MAX_BODY_PART, charPos)) {
-        m_nAtkAniSPEED = Cal_AtkAniSPEED(this->GetPartITEM(BODY_PART_WEAPON_R));
+        this->stats.attack_speed = 1500.f / (WEAPON_ATTACK_SPEED(BODY_PART_WEAPON_R) + 5);
 
         m_iHP = 100;
 

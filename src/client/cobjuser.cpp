@@ -284,12 +284,8 @@ void
 CObjUSER::Update_SPEED() {
     if (this->GetPetMode() < 0) {
         m_fRunAniSPEED = Cal_RunAniSPEED(this->stats.move_speed);
-        m_nAtkAniSPEED = Cal_AtkAniSPEED(this->GetPartITEM(BODY_PART_WEAPON_R));
     } else {
         m_fRunAniSPEED = (this->stats.move_speed + 500) / 1000.f;
-        m_nAtkAniSPEED =
-            (1500.f / ((PAT_ITEM_ATK_SPD(m_sPetPartItemIDX[RIDE_PART_ARMS].m_nItemNo)) + 5))
-            + this->m_iAddValue[AT_ATK_SPD];
     }
 };
 

@@ -425,7 +425,7 @@ public:
     float Get_MoveAniSPEED() { return (m_bRunMODE) ? m_fRunAniSPEED : 1.0f; }
 
     void Reset_MoveVEC();
-    int Cal_AtkAniSPEED(short nRightWeaponItemNO);
+
     float Cal_RunAniSPEED(short nCmPerSec) {
         // 이동 동작 딜레이 = ( 이동속도+180) /600
         return ((nCmPerSec + 180.f) / 600.f);
