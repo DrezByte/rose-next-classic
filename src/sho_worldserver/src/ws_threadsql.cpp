@@ -860,6 +860,9 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
             continue;
         }
 
+        // Reset the UUID so that the every created char gets a unique item
+        item.uuid = Rose::Util::UUID::generate();
+
         uint16_t gem_id = 0;
         uint16_t grade = 0;
         uint16_t durability = 0;
