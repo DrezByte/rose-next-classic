@@ -143,7 +143,8 @@ public:
     uint16_t total_attack_speed() override;
 
     template<typename T>
-    bool send_packet_from_offset(flatbuffers::FlatBufferBuilder& builder, flatbuffers::Offset<T> offset,
+    bool send_packet_from_offset(flatbuffers::FlatBufferBuilder& builder,
+        flatbuffers::Offset<T> offset,
         Rose::Network::Packets::PacketType type) {
 
         Packets::PacketDataBuilder pd(builder);
@@ -854,7 +855,14 @@ private:
     short Cheat_toggle(CStrVAR* pStrVAR, char* pArg1);
     short Cheat_regen(CStrVAR* pStrVAR, char* pArg1, char* pArg2);
     short Cheat_speed(char* pArg1);
-};
 
+public:
+    void UpdateAbility() override {
+        CObjAVT::UpdateAbility();
+        this->send_update_stats_all();
+        this->Send_gsv_SPEED_CHANGED();
+    }
+
+};
 //---------------------------------------------------------------------------
 #endif

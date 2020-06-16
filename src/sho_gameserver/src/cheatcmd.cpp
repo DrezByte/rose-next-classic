@@ -114,6 +114,7 @@ stats(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
         }
     }
 
+    user->send_server_whisper(fmt::format("Stats for {}", user->Get_NAME()));
     user->send_server_whisper(fmt::format("HP: {}/{}",target->Get_HP(), target->Get_MaxHP()));
     user->send_server_whisper(fmt::format("MP: {}/{}",target->Get_MP(), target->Get_MaxMP()));
     user->send_server_whisper("MSPD: " + std::to_string(target->total_move_speed()));

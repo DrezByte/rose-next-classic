@@ -18,11 +18,6 @@
  */
 class CObjAVT: public CObjCHAR, public CUserDATA {
 public:
-    // TODO: Remove this. It exists here because we need to call the update stats
-    // method from CObjAVT::SetCMD_TOGGLE
-    virtual bool send_update_stats_all() = 0;
-
-public:
     // virtual function inherit from CGameOBJ -----------------------------------------------------
     t_ObjTAG Get_TYPE() { return OBJ_AVATAR; }
     char* Get_NAME() { return m_Name.Get(); }
@@ -395,7 +390,7 @@ public:
     void SetRideITEM(short nRideInvIDX);
 
     short GetPsv_ATKSPEED() { return this->m_nPassiveAttackSpeed; }
-    void UpdateAbility() {
+    virtual void UpdateAbility() {
         if (this->GetCur_MOVE_MODE() == MOVE_MODE_DRIVE) {
             /*
             m_nPatAniROW = PAT_RELATIVE_MOTION_POS(	m_nRideItemIDX[ RIDE_PART_BODY ] );	// ¸öÃ¼¿¡¼­

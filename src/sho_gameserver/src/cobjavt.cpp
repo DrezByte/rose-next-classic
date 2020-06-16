@@ -263,6 +263,11 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
             }
 
             this->m_bRunMODE = !this->m_bRunMODE;
+            if (!m_bRunMODE) {
+                this->stats.move_speed = GetOri_WalkSPEED();
+            } else {
+                this->Update_SPEED();
+            }
 
             if (Get_STATE() == CS_MOVE) {
                 this->m_fCurMoveSpeed = this->Get_MoveSPEED();
@@ -274,7 +279,6 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
 
         case TOGGLE_TYPE_SIT: {
             if (this->m_btRideMODE) {
-                // Å¾½ÂÇÏ°í ??
                 return true;
             }
 
@@ -297,7 +301,6 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
 
         case TOGGLE_TYPE_DRIVE: {
             if (this->m_btRideMODE) {
-                // ³»¸²..
                 if (this->m_iLinkedCartObjIDX) {
                     classUSER* pUSER = g_pObjMGR->Get_UserOBJ(this->m_iLinkedCartObjIDX);
                     if (RIDE_MODE_GUEST == pUSER->GetCur_RIDE_MODE()) {
@@ -418,7 +421,6 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
             this->m_dwRecoverTIME = 0;
 
             this->UpdateAbility();
-            this->send_update_stats_all();
             btTYPE = TOGGLE_TYPE_DRIVE + this->Get_MoveMODE();
             return this->Send_gsv_TOGGLE(btTYPE, true);
         }

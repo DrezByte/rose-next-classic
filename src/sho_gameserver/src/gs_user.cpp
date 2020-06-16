@@ -8239,7 +8239,10 @@ classUSER::level_up(int amount) {
 
 uint16_t
 classUSER::total_move_speed() {
-    return CObjAVT::total_move_speed() + server_config().game.base_move_speed;
+    if (this->m_bRunMODE && !this->m_btRideMODE) {
+        return CObjAVT::total_move_speed() + server_config().game.base_move_speed;
+    }
+    return CObjAVT::total_move_speed();
 }
 
 uint16_t
