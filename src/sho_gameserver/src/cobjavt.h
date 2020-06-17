@@ -140,7 +140,6 @@ public:
     short Get_nAttackSPEED() {
         return (m_btRideMODE) ? this->total_attack_speed() : CObjCHAR::Get_nAttackSPEED();
     }
-    float Get_MoveSPEED() { return (m_btRideMODE) ? this->total_move_speed() : CObjCHAR::Get_MoveSPEED(); }
 
     // virtual function inherit from CObjCHAR -----------------------------------------------------
     int Get_AttackRange(short nSkillIDX);

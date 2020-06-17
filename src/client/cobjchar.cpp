@@ -4095,9 +4095,11 @@ CObjCHAR::Get_DefaultSPEED() {
     if (!m_bRunMODE && (m_btMoveMODE <= MOVE_MODE_RUN))
         return GetOri_WalkSPEED();
 
+    /* RAM: Disable client-side calc
     short nR = (GetOri_RunSPEED() + m_EndurancePack.GetStateValue(ING_INC_MOV_SPD)
         - m_EndurancePack.GetStateValue(ING_DEC_MOV_SPD));
-
+    */
+    short nR = GetOri_RunSPEED();
     nR += m_AruaAddMoveSpeed;
 
     // Goddess effect doesn't stack with other buffs

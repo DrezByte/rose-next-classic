@@ -720,7 +720,6 @@ classUSER::Do_SelfSKILL(short nSkillIDX) {
     if (this->Skill_ActionCondition(nSkillIDX)) {
         // 실제 필요 수치 소모 적용...
         if (this->SetCMD_Skill2SELF(nSkillIDX)) {
-            // this->Skill_UseAbilityValue( nSkillIDX );
             return true;
         }
     }
@@ -746,8 +745,6 @@ classUSER::Do_TargetSKILL(int iTargetObject, short nSkillIDX) {
 
         if (this->Skill_ActionCondition(nSkillIDX)) {
             if (this->SetCMD_Skill2OBJ(iTargetObject, nSkillIDX)) {
-                // 스킬 성공하면...실제 필요 수치 소모 적용...
-                // this->Skill_UseAbilityValue( nSkillIDX );
                 return true;
             }
         }
@@ -2489,7 +2486,7 @@ classUSER::Recv_cli_SET_WEIGHT_RATE(BYTE btWeightRate /*t_PACKET *pPacket*/, boo
         //	this->Del_ActiveSKILL ();
         //	CObjAI::SetCMD_STOP ();
         //}
-        if (this->GetCur_MOVE_MODE() > MOVE_MODE_RUN && this->total_move_speed() > 300) {
+        if (this->GetCur_MOVE_MODE() > MOVE_MODE_RUN && this->stats.move_speed > 300) {
             this->stats.move_speed = 300;
         }
     }
@@ -4350,7 +4347,7 @@ classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
 
     this->m_BasicAbility.m_nBasicA[pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO]++;
 
-    nCurSpeed = this->total_move_speed();
+    nCurSpeed = this->stats.move_speed;
     this->UpdateAbility(); // use_bpoint
 
     nAbilityValue = this->m_BasicAbility.m_nBasicA[pPacket->m_cli_USE_BPOINT_REQ.m_btAbilityNO];
@@ -4369,7 +4366,7 @@ classUSER::Recv_cli_USE_BPOINT_REQ(t_PACKET* pPacket) {
 
     Packet_ReleaseNUnlock(pCPacket);
 
-    if (nCurSpeed != this->total_move_speed()) {
+    if (nCurSpeed != this->stats.move_speed) {
         this->Send_gsv_SPEED_CHANGED();
     }
 
@@ -8239,10 +8236,11 @@ classUSER::level_up(int amount) {
 
 uint16_t
 classUSER::total_move_speed() {
-    if (this->m_bRunMODE && !this->m_btRideMODE) {
-        return CObjAVT::total_move_speed() + server_config().game.base_move_speed;
+    if (!this->m_bRunMODE || this->m_btRideMODE) {
+        return CObjAVT::total_move_speed();
     }
-    return CObjAVT::total_move_speed();
+
+    return CObjAVT::total_move_speed() + server_config().game.base_move_speed;
 }
 
 uint16_t
@@ -8296,4 +8294,35 @@ classUSER::send_update_move_speed(uint16_t move_speed) {
     const auto pak = rep.Finish();
 
     return this->send_packet_from_offset(builder, pak, Packets::PacketType::UpdateStats);
+}
+
+void
+classUSER::UpdateAbility() {
+    // Force a sync with client everytime stats are updated
+    CObjAVT::UpdateAbility();
+    this->send_update_stats_all();
+    this->Send_gsv_SPEED_CHANGED();
+}
+
+int
+classUSER::ProcCMD_Skill2SELF() {
+    // Force a sync with client everytime a skill is cast on
+    // ourselves as they could affect stats
+    int res = CObjAVT::ProcCMD_Skill2SELF();
+    CObjAVT::UpdateAbility();
+    return res;
+}
+
+int
+classUSER::ProcCMD_Skill2OBJECT() {
+    // Force a sync with client everytime a skill is cast on
+    // an object as they could affect stats
+    int res = CObjAVT::ProcCMD_Skill2OBJECT();
+
+    int target_idx = this->Get_TargetIDX();
+    classUSER* user = g_pObjMGR->Get_UserOBJ(target_idx);
+    if (user) {
+        user->UpdateAbility();
+    }
+    return res;
 }

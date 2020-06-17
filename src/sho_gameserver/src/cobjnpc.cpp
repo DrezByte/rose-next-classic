@@ -269,7 +269,7 @@ CObjMOB::Get_AbilityValue(WORD wType) {
         case AT_AVOID:
             return Get_AVOID();
         case AT_SPEED:
-            return (int)Get_MoveSPEED();
+            return this->total_move_speed();
         case AT_ATK_SPD:
             return Get_nAttackSPEED();
         case AT_WEIGHT:

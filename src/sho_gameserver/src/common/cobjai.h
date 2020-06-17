@@ -284,9 +284,9 @@ public:
     int ProcCMD_MOVE();
     int ProcCMD_PICK_ITEM();
     int ProcCMD_ATTACK();
-    int ProcCMD_Skill2SELF();
+    virtual int ProcCMD_Skill2SELF();
     int ProcCMD_Skill2POSITION();
-    int ProcCMD_Skill2OBJECT();
+    virtual int ProcCMD_Skill2OBJECT();
 
     short Get_RecoverHP(short nRecoverMODE) {
         return (this->GetAdd_RecoverHP() + (this->Get_CON() + 30) / 8 * (nRecoverMODE + 3) / 10);

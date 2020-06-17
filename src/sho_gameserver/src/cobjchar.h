@@ -273,13 +273,7 @@ public:
         int iR = this->total_attack_speed() + m_IngSTATUS.Adj_ATK_SPEED();
         return (iR > 30) ? iR : 30;
     }
-    float Get_MoveSPEED() {
-        if (!m_bRunMODE)
-            return GetOri_WalkSPEED();
-
-        short nR = (this->total_move_speed() + m_IngSTATUS.Adj_RUN_SPEED());
-        return (nR > 200) ? nR : 200.f;
-    }
+    float Get_MoveSPEED() { return this->total_move_speed(); }
 
     int Get_ATK() {
         int iR = GetOri_ATK() + m_IngSTATUS.Adj_APOWER();

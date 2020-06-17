@@ -1629,7 +1629,7 @@ CObjCHAR::Proc_IngSTATUS(DWORD dwPassTime) {
         if (dwClearedFLAGS & (ING_INC_MOV_SPD | ING_DEC_MOV_SPD)) {
             // 이속에 변화가 생겼고 현재 모션이 이동 모션이면...이속 수정
             if (m_pCurMOTION == this->Get_MOTION(this->GetANI_Move())) {
-                m_fCurMoveSpeed = this->Get_MoveSPEED();
+                m_fCurMoveSpeed = this->total_move_speed();
             }
         }
         if (dwClearedFLAGS & (ING_INC_ATK_SPD | ING_DEC_ATK_SPD)) {
@@ -1656,28 +1656,8 @@ CObjCHAR::Proc(void) {
     DWORD dwNeedTIME, dwPassTIME = (this->GetZONE())->GetPassTIME();
     WORD wRamainFRAME;
 
-    // 지속상태 처리...
     if (this->Get_HP() > 0 && this->m_IngSTATUS.GetFLAGs()) {
         this->Proc_IngSTATUS(dwPassTIME);
-        //// 무적 빼고 지속상태가 설정됐다.
-        // dwNeedTIME = this->m_IngSTATUS.Proc( this, dwPassTIME );
-        // if ( dwNeedTIME ) {
-        //	if ( dwNeedTIME & ( ING_INC_MOV_SPD | ING_DEC_MOV_SPD ) ) {
-        //		// 이속에 변화가 생겼고 현재 모션이 이동 모션이면...이속 수정
-        //		if ( m_pCurMOTION == this->Get_MOTION( this->GetANI_Move() ) ) {
-        //			m_fCurMoveSpeed = this->Get_MoveSPEED();
-        //		}
-        //	}
-        //	if ( dwNeedTIME & ( ING_INC_ATK_SPD | ING_DEC_ATK_SPD ) ) {
-        //		// 공속에 변화가 생겼고 현재 모션이 공격 모션이면...공속 수정
-        //		if ( m_pCurMOTION == this->Get_MOTION(this->GetANI_Attack() ) ) {
-        //			m_fCurAniSPEED = ( this->Get_nAttackSPEED() / 100.f );
-        //		}
-        //	}
-
-        //	// 상태가 바뀌었다....
-        //	this->Send_gsv_CLEAR_STATUS( dwNeedTIME );
-        //}
     }
 
     // 현재 동작의 남은 프레임을 계산...
@@ -1720,10 +1700,10 @@ CObjCHAR::Proc(void) {
 
 uint16_t
 CObjCHAR::total_move_speed() {
-    return this->stats.move_speed;
+    return this->stats.move_speed + this->m_IngSTATUS.Adj_RUN_SPEED();
 }
 
 uint16_t
 CObjCHAR::total_attack_speed() {
-    return this->stats.attack_speed;
+    return this->stats.attack_speed + this->m_IngSTATUS.Adj_ATK_SPEED();
 }

@@ -270,7 +270,7 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
             }
 
             if (Get_STATE() == CS_MOVE) {
-                this->m_fCurMoveSpeed = this->Get_MoveSPEED();
+                this->m_fCurMoveSpeed = this->total_move_speed();
                 this->Reset_MoveVEC();
             }
             btTYPE = TOGGLE_TYPE_DRIVE + this->Get_MoveMODE();
@@ -666,9 +666,9 @@ CObjAVT::Save_Damage(int iAttackerIDX, int iDamage) {
             pItem->m_nLife = 0;
             this->Send_gsv_SET_ITEM_LIFE(nInvIDX, 0);
 
-            short nCurSpeed = this->total_move_speed();
+            short nCurSpeed = this->stats.move_speed;
             this->UpdateAbility(); // ¹æ¾î±¸ ¼ö¸í = 0
-            if (nCurSpeed != this->total_move_speed()) {
+            if (nCurSpeed != this->stats.move_speed) {
                 this->Send_gsv_SPEED_CHANGED(false);
             }
         }
@@ -730,9 +730,9 @@ CObjAVT::Dec_WeaponLife() {
             pWeapon->m_nLife = 0;
             this->Send_gsv_SET_ITEM_LIFE(nInvIDX, 0);
 
-            short nCurSpeed = this->total_move_speed();
+            short nCurSpeed = this->stats.move_speed;
             this->UpdateAbility(); // ¹«±â ¼ö¸í = 0
-            if (nCurSpeed != this->total_move_speed())
+            if (nCurSpeed != this->stats.move_speed)
                 this->Send_gsv_SPEED_CHANGED(false);
         }
     }
@@ -783,7 +783,7 @@ void
 CObjAVT::Cal_AruaRunSPD(void) {
     if (this->m_IngSTATUS.IsSubSET(FLAG_SUB_ARUA_FAIRY)) {
         this->m_IngSTATUS.m_nAruaRunSPD =
-            (short)(this->total_move_speed() * ARUA_RATE_RUN_SPD); // 0.2f
+            (short)(this->stats.move_speed * ARUA_RATE_RUN_SPD); // 0.2f
     } else
         this->m_IngSTATUS.m_nAruaRunSPD = 0;
 }

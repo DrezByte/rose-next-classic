@@ -857,12 +857,9 @@ private:
     short Cheat_speed(char* pArg1);
 
 public:
-    void UpdateAbility() override {
-        CObjAVT::UpdateAbility();
-        this->send_update_stats_all();
-        this->Send_gsv_SPEED_CHANGED();
-    }
-
+    void UpdateAbility() override;
+    int ProcCMD_Skill2SELF() override;
+    int ProcCMD_Skill2OBJECT() override;
 };
-//---------------------------------------------------------------------------
+
 #endif
