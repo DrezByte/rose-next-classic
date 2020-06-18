@@ -376,60 +376,58 @@ CUserDATA::Cal_PatMaxHP() {
         this->m_GrowAbility.m_nPatHP = m_Battle.m_nPatMaxHP;
 }
 #endif
+
 int
 CUserDATA::Cal_MaxHP() {
     int iA, iM1, iM2;
-    float fC;
     switch (this->GetCur_JOB()) {
         case CLASS_SOLDIER_111:
-            iA = 5, iM1 = 20, fC = 3.5f;
+            iA = 7, iM1 = 12, iM2 = 2;
             break;
         case CLASS_SOLDIER_121:
-            iA = 5, iM1 = 28, fC = 3.5f;
+            iA = -3, iM1 = 14, iM2 = 2;
             break;
         case CLASS_SOLDIER_122:
-            iA = 5, iM1 = 22, fC = 3.5f;
+            iA = 2, iM1 = 13, iM2 = 2;
             break;
 
         case CLASS_MAGICIAN_211:
-            iA = 4, iM1 = 26, fC = 2.36f;
+            iA = 11, iM1 = 10, iM2 = 2;
             break;
         case CLASS_MAGICIAN_221:
-            iA = 5, iM1 = 26, fC = 2.37f;
+            iA = 11, iM1 = 10, iM2 = 2;
             break;
         case CLASS_MAGICIAN_222:
-            iA = 7, iM1 = 26, fC = 2.4f;
+            iA = 5, iM1 = 11, iM2 = 2;
             break;
 
         case CLASS_MIXER_311:
-            iA = 5, iM1 = 20, fC = 2.7f;
+            iA = 10, iM1 = 11, iM2 = 2;
             break;
         case CLASS_MIXER_321:
-            iA = 5, iM1 = 23, fC = 3.f;
+            iA = 2, iM1 = 13, iM2 = 2;
             break;
         case CLASS_MIXER_322:
-            iA = 5, iM1 = 21, fC = 2.7f;
+            iA = 11, iM1 = 11, iM2 = 2;
             break;
 
         case CLASS_MERCHANT_411:
-            iA = 5, iM1 = 20, fC = 2.7f;
+            iA = 12, iM1 = 10, iM2 = 2;
             break;
         case CLASS_MERCHANT_421:
-            iA = 5, iM1 = 20, fC = 2.7f;
+            iA = 13, iM1 = 10, iM2 = 2;
             break;
         case CLASS_MERCHANT_422:
-            iA = 5, iM1 = 20, fC = 2.7f;
+            iA = 6, iM1 = 11, iM2 = 2;
             break;
 
         // case CLASS_VISITOR :
-        // Áõ°¡Ä¡
         default:
-            iA = 4, iM1 = 26, fC = 2.36f;
+            iA = 12, iM1 = 8, iM2 = 2;
             break;
     }
-    m_Battle.m_nMaxHP = (short)((this->GetCur_LEVEL() + iA) * sqrtf(this->GetCur_LEVEL() + iM1) * fC
-        + (this->GetCur_STR() * 2) + this->m_iAddValue[AT_MAX_HP]);
-
+    m_Battle.m_nMaxHP = (this->GetCur_LEVEL() + iA) * iM1 + (this->GetCur_STR() * iM2)
+        + this->m_iAddValue[AT_MAX_HP];
 
     iA = this->GetPassiveSkillValue(AT_PSV_MAX_HP)
         + (short)(m_Battle.m_nMaxHP * this->GetPassiveSkillRate(AT_PSV_MAX_HP) / 100.f);
