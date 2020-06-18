@@ -1,8 +1,4 @@
-/*
-    $Header: /Client/CObjCHAR.h 353   05-10-20 2:45p Gioend $
-*/
-#ifndef __COBJCHAR_H
-#define __COBJCHAR_H
+#pragma once
 
 #include "IO_Model.h"
 #include "CModelCHAR.h"
@@ -27,8 +23,6 @@
 #ifndef __SERVER
     #include "GameProc\changeactionmode.h"
 #endif
-
-#include "rose/common/character_stats.h"
 
 #define QUEST_EVENT_ON_DEAD 0
 
@@ -57,9 +51,6 @@ class CObjAVT;
 ///
 
 class CObjCHAR: public CObjAI {
-public:
-    Rose::Common::CharacterStats stats;
-
 protected:
     int m_iHP;
     int m_iMP;
@@ -1556,5 +1547,3 @@ public:
 };
 
 extern CGoddessMgr goddessMgr;
-
-#endif

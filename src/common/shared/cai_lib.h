@@ -1,10 +1,7 @@
-#ifndef __CAI_OBJ_H
-#define __CAI_OBJ_H
+#pragma once
 
-///</
-///</ 인공지능 객체의 가상 클레스...
-///</
 class STBDATA;
+
 class CAI_OBJ {
 private:
     ULONG m_ulAICheckTIME[2];
@@ -202,12 +199,4 @@ public:
     void AI_WhenDEAD(CAI_OBJ* pSourCHAR, CAI_OBJ* pDestCHAR, int iDamage);
 };
 
-///<-------------------------------------------------------------------------------------------------
-///
-/// 인공지능 객체에서 참조하는 환경 함수...
-///
-
 extern int AI_SysRANDOM(int iMod);
-
-///<-------------------------------------------------------------------------------------------------
-#endif

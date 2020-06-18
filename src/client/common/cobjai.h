@@ -1,12 +1,11 @@
-/*
-    $Header: /Client/Common/CObjAI.h 132   05-10-27 12:27p Gioend $
-*/
-#ifndef __CCOMMAND_H
-#define __CCOMMAND_H
+#pragma once
+
 #include "CGameOBJ.h"
 #include "IO_Motion.h"
 #include "IO_Skill.h"
 #include "CAI_LIB.h"
+
+#include "rose/common/character_stats.h"
 
 #include <cstdint>
 
@@ -129,6 +128,9 @@ public:
 ///	CObjAI class
 ///
 class CObjAI: public CGameOBJ, public CAI_OBJ, public CObjTARGET {
+public:
+    Rose::Common::CharacterStats stats;
+
 private:
     WORD m_wState;
     WORD m_wCommand;
@@ -476,6 +478,3 @@ public:
 
 #endif
 };
-
-//-------------------------------------------------------------------------------------------------
-#endif

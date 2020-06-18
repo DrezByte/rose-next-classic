@@ -1,12 +1,12 @@
-/*
-    $Header: /7HeartsOnline/Server/SHO_GS/Sho_gs_lib/Common/CObjAI.h 30    05-09-21 4:29p Icarus $
-*/
-#ifndef __CCOMMAND_H
-#define __CCOMMAND_H
+#pragma once
+
 #include "CGameOBJ.h"
 #include "IO_Motion.h"
 #include "IO_Skill.h"
 #include "CAI_LIB.h"
+
+#include "rose/common/character_stats.h"
+
 //-------------------------------------------------------------------------------------------------
 //
 // Character state
@@ -102,14 +102,14 @@ public:
 #define RECOVER_STATE_SIT_ON_GROUND 20 /// 바닥 앉기       :: nRecoverMODE = 20
 #define RECOVER_STATE_STOP_OR_WALK 8 /// 정지,걷기 상태	:: nRecoverMODE = 8
 
-/**
- * \ingroup SHO_GS_LIB
- * \class	CObjAI
- * \author	wookSang.Jo
- * \brief	케릭터 인공지능 처리 클래스
- *			인공지능 데이타클래스(CAI_OBJ)를 상속 받음
- */
 class CObjAI: public CGameOBJ, public CAI_OBJ, public CObjTARGET {
+public:
+    Rose::Common::CharacterStats stats;
+
+public:
+    virtual uint16_t total_move_speed();
+    virtual uint16_t total_attack_speed();
+
 private:
     WORD m_wState;
     WORD m_wCommand;
@@ -356,6 +356,3 @@ public:
 };
 
 #define __BLOCK_WHEN_SKILL
-
-//-------------------------------------------------------------------------------------------------
-#endif

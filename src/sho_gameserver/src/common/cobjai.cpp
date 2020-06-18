@@ -819,4 +819,12 @@ CObjAI::ProcCMD_Skill2OBJECT() {
     return 1;
 }
 
-//-------------------------------------------------------------------------------------------------
+uint16_t
+CObjAI::total_move_speed() {
+    return this->stats.move_speed;
+}
+
+uint16_t
+CObjAI::total_attack_speed() {
+    return this->stats.attack_speed;
+}

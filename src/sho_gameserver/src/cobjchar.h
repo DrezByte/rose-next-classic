@@ -16,8 +16,6 @@
 #include "CObjAI.h"
 #include "status_effects.h"
 
-#include "rose/common/character_stats.h"
-
 // #define	__CS_TARGET_LIST
 
 enum enumRIDE_ANI {
@@ -48,10 +46,8 @@ class CGuild;
  */
 class CObjCHAR: public CObjAI {
 public:
-    Rose::Common::CharacterStats stats;
-
-    virtual uint16_t total_move_speed();
-    virtual uint16_t total_attack_speed();
+    uint16_t total_move_speed() override;
+    uint16_t total_attack_speed() override;
 
 private:
     void Adjust_HEIGHT() { /* nop */

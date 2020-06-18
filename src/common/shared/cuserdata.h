@@ -740,7 +740,11 @@ public:
     virtual void SetCur_SEX(char cValue) = 0;
 #endif
     virtual short GetCur_RACE() = 0; /// 종족,,,, gsv_SELECT_CHAR.m_btCharRACE 값 리턴하면됨
+
+#ifndef __SERVER
     virtual short GetCur_ATK_SPD() = 0;
+#endif
+
     virtual float GetCur_MOVE_SPEED() = 0;
     virtual int GetCur_ATK() = 0;
     virtual int GetCur_DEF() = 0;
