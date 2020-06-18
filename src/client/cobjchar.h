@@ -343,7 +343,6 @@ public:
     /*override*/ virtual float Get_MoveSPEED();
     virtual float Get_DefaultSPEED();
 
-    /*override*/ virtual short Get_nAttackSPEED();
     /*override*/ virtual float Get_fAttackSPEED();
 
     /*override*/ DWORD GetIngDurationStateFLAG() {
@@ -964,11 +963,6 @@ public:
         return nR;
     }
 
-    /*override*/ virtual short Get_nAttackSPEED() {
-        int iR = GetOri_ATKSPEED() + m_EndurancePack.GetStateValue(ING_INC_ATK_SPD)
-            - m_EndurancePack.GetStateValue(ING_DEC_ATK_SPD);
-        return iR;
-    }
     /*override*/ virtual float Get_fAttackSPEED() {
         int iR = GetOri_ATKSPEED() + m_EndurancePack.GetStateValue(ING_INC_ATK_SPD)
             - m_EndurancePack.GetStateValue(ING_DEC_ATK_SPD);

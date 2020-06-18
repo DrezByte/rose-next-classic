@@ -491,15 +491,15 @@ CCharacterDLG::DrawAbilityInfo() {
         193,
         g_dwWHITE,
         "%d",
-        g_pAVATAR->GetCur_ATK_SPD());
+        g_pAVATAR->stats.attack_speed);
     ///이동속도
     ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL_BOLD],
         true,
         171,
         214,
         g_dwWHITE,
-        "%.0f",
-        g_pAVATAR->GetCur_MOVE_SPEED());
+        "%d",
+        g_pAVATAR->stats.move_speed);
 
     ///포인트
     ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL_BOLD],

@@ -668,7 +668,7 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
         if (pUSER) {
             if (this->Get_RIGHT() >= pUSER->Get_RIGHT() && this->GetZONE()) {
                 short nMovSpeed = (short)pUSER->Get_MoveSPEED();
-                short nAtkSpeed = pUSER->Get_nAttackSPEED();
+                short nAtkSpeed = pUSER->total_attack_speed();
                 BYTE btGndATT = (pUSER->GetZONE())
                     ? pUSER->GetZONE()->IsMovablePOS((int)(pUSER->m_PosCUR.x),
                         (int)(pUSER->m_PosCUR.y))
@@ -693,7 +693,7 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
                            << // TODO: RAM: This doesn't match stats window.
                         "Crit: " << pUSER->Get_CRITICAL() << ", "
                            << "Dodge: " << pUSER->Get_AVOID() << ", "
-                           << "Aspd: " << pUSER->Get_nAttackSPEED() << ", "
+                           << "Aspd: " << pUSER->total_attack_speed() << ", "
                            << // TODO: RAM:: This doesn't match stats window.
                         "Mspd: " << (int)pUSER->Get_MoveSPEED();
 

@@ -331,8 +331,7 @@ CGameStateMovePlanet::Render_GameMENU() {
             60,
             g_dwRED,
             "( 공속: %d, 이속: %f 기본속도: %f )",
-            (g_pAVATAR->GetPetMode() < 0) ? g_pAVATAR->Get_nAttackSPEED()
-                                          : g_pAVATAR->m_pObjCART->Get_nAttackSPEED(),
+            g_pAVATAR->stats.attack_speed,
             (g_pAVATAR->GetPetMode() < 0) ? g_pAVATAR->Get_MoveSPEED()
                                           : g_pAVATAR->m_pObjCART->Get_MoveSPEED(),
             (g_pAVATAR->GetPetMode() < 0) ? g_pAVATAR->Get_DefaultSPEED()

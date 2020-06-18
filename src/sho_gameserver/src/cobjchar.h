@@ -269,10 +269,7 @@ public:
     tPOINTF Get_CurPOSITION() { return m_PosCUR; }
     tPOINTF Get_BornPOSITION() { return m_PosBORN; }
 
-    short Get_nAttackSPEED() {
-        int iR = this->total_attack_speed() + m_IngSTATUS.Adj_ATK_SPEED();
-        return (iR > 30) ? iR : 30;
-    }
+    short Get_nAttackSPEED() { return this->total_attack_speed(); }
     float Get_MoveSPEED() { return this->total_move_speed(); }
 
     int Get_ATK() {

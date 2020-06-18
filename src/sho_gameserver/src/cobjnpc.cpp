@@ -271,7 +271,7 @@ CObjMOB::Get_AbilityValue(WORD wType) {
         case AT_SPEED:
             return this->total_move_speed();
         case AT_ATK_SPD:
-            return Get_nAttackSPEED();
+            return this->total_attack_speed();
         case AT_WEIGHT:
             return Get_WEIGHT();
         case AT_CRITICAL:

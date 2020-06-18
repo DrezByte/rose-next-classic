@@ -517,14 +517,9 @@ CObjCART::Get_DefaultSPEED() {
     return ((m_pObjParent) ? m_pObjParent->GetOri_RunSPEED() : 10);
 }
 
-short
-CObjCART::Get_nAttackSPEED() {
-    return (m_pObjParent) ? m_pObjParent->GetOri_ATKSPEED() : 10;
-}
-
 float
 CObjCART::Get_fAttackSPEED() {
-    return (float)Get_nAttackSPEED() / 100.0f;
+    return (float)this->stats.attack_speed / 100.0f;
 }
 int
 CObjCART::Get_AttackRange() {

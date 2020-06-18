@@ -2867,10 +2867,10 @@ CRecvPACKET::Recv_gsv_EFFECT_OF_SKILL() {
                                     int iAbilityValue = 0;
                                     switch (SKILL_INCREASE_ABILITY(iSkillIDX, i)) {
                                         case AT_SPEED:
-                                            iAbilityValue = pEffectedChar->GetOri_RunSPEED();
+                                            iAbilityValue = pEffectedChar->stats.move_speed;
                                             break;
                                         case AT_ATK_SPD:
-                                            iAbilityValue = pEffectedChar->GetOri_ATKSPEED();
+                                            iAbilityValue = pEffectedChar->stats.attack_speed;
                                             break;
                                     }
 

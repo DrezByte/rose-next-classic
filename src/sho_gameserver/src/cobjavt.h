@@ -27,7 +27,6 @@ public:
 public:
     // virtual function inherit from CUserDATA ----------------------------------------------------
 
-    short GetCur_ATK_SPD() { return Get_nAttackSPEED(); }
     float GetCur_MOVE_SPEED() { return Get_MoveSPEED(); }
     BYTE GetCur_MOVE_MODE() { return Get_MoveMODE(); }
     BYTE GetCur_RIDE_MODE() { return m_btRideMODE; }
@@ -136,10 +135,6 @@ public:
     int Def_AttackRange() { return 70; }
 
     bool SetCMD_TOGGLE(BYTE btTYPE, bool bForce = false);
-
-    short Get_nAttackSPEED() {
-        return (m_btRideMODE) ? this->total_attack_speed() : CObjCHAR::Get_nAttackSPEED();
-    }
 
     // virtual function inherit from CObjCHAR -----------------------------------------------------
     int Get_AttackRange(short nSkillIDX);

@@ -4047,22 +4047,6 @@ void
 CObjCHAR::Calc_AruaAddAbility() {}
 
 //-----------------------------------------------------------------------------
-/// @brief 공격속도
-//-----------------------------------------------------------------------------
-short
-CObjCHAR::Get_nAttackSPEED() {
-    int iR = GetOri_ATKSPEED() + m_EndurancePack.GetStateValue(ING_INC_ATK_SPD)
-        - m_EndurancePack.GetStateValue(ING_DEC_ATK_SPD);
-
-    // Goddess effect doesn't stack with other buffs
-    auto goddess_effect = m_EndurancePack.get_goddess_effect();
-    if (goddess_effect) {
-        iR += max(0, goddess_effect->attack_speed - m_EndurancePack.GetStateValue(ING_INC_ATK_SPD));
-    }
-
-    return (iR > 30) ? (iR) : 30;
-}
-//-----------------------------------------------------------------------------
 /// @brief 엔진에 공격속도변경시 이용되는 메쏘드			: 2005/7/13 - nAvy
 //-----------------------------------------------------------------------------
 float

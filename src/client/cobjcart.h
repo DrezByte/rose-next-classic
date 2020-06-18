@@ -204,7 +204,6 @@ public:
     /*override*/ virtual float Get_MoveSPEED();
     virtual float Get_DefaultSPEED();
 
-    /*override*/ virtual short Get_nAttackSPEED();
     /*override*/ virtual float Get_fAttackSPEED();
     /*override*/ virtual int Get_AttackRange();
 

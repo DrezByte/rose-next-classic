@@ -511,9 +511,9 @@ CObjAVT::Get_AbilityValue(WORD wType) {
         case AT_AVOID:
             return GetCur_AVOID();
         case AT_SPEED:
-            return (int)GetCur_MOVE_SPEED();
+            return this->total_move_speed();
         case AT_ATK_SPD:
-            return GetCur_ATK_SPD();
+            return this->total_attack_speed();
         case AT_WEIGHT:
             return GetCur_WEIGHT();
         case AT_CRITICAL:

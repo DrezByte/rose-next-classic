@@ -1635,7 +1635,7 @@ CObjCHAR::Proc_IngSTATUS(DWORD dwPassTime) {
         if (dwClearedFLAGS & (ING_INC_ATK_SPD | ING_DEC_ATK_SPD)) {
             // 공속에 변화가 생겼고 현재 모션이 공격 모션이면...공속 수정
             if (m_pCurMOTION == this->Get_MOTION(this->GetANI_Attack())) {
-                m_fCurAniSPEED = (this->Get_nAttackSPEED() / 100.f);
+                m_fCurAniSPEED = (this->total_attack_speed() / 100.f);
             }
         }
 

@@ -283,8 +283,8 @@ GS_lsvSOCKET::Recv_wsv_CHEAT_REQ() {
             classUSER* pUSER =
                 (classUSER*)g_pUserLIST->GetSOCKET(m_pRecvPket->m_wsv_CHEAT_REQ.m_dwReplyUSER);
             if (pUSER) {
-                short nMovSpeed = (short)pUSER->Get_MoveSPEED();
-                short nAtkSpeed = pUSER->Get_nAttackSPEED();
+                short nMovSpeed = pUSER->total_move_speed();
+                short nAtkSpeed = pUSER->total_attack_speed();
                 m_TmpSTR.Printf("/w %s>HP:%d/%d, MP:%d/%d, LEV:%d, EXP:%d, JOB:%d, SPD(M:%d,A:%d), "
                                 "Hit:%d, Crt:%d, AP:%d, DP:%d, AVD:%d, ATTR:%d, bCST:%d, SKL:%d, "
                                 "FLG:%x, Summon:%d/%d, BP:%d, SP:%d, \\:%I64d",
