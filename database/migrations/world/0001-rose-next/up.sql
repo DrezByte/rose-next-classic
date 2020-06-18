@@ -20,7 +20,7 @@ CREATE TABLE character
     str smallint NOT NULL DEFAULT 15,
     dex smallint NOT NULL DEFAULT 15,
     intt smallint NOT NULL DEFAULT 15,
-    con smallint NOT NULL DEFAULT 10,
+    con smallint NOT NULL DEFAULT 15,
     cha smallint NOT NULL DEFAULT 10,
     sen smallint NOT NULL DEFAULT 10,
     stat_points smallint NOT NULL DEFAULT 0,

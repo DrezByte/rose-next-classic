@@ -813,7 +813,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     std::string char_stmt = fmt::format(
         "INSERT INTO character (account_username, name, "
         "gender_id, job_id, face_id, hair_id, money, "
-        "str, dex, intt, sen, con, cha, "
+        "str, dex, intt, con, cha, sen, "
         "map_id, respawn_x, respawn_y, town_respawn_id, town_respawn_x, town_respawn_y) "
         "VALUES ({}) "
         "RETURNING id",
