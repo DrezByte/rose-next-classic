@@ -106,6 +106,7 @@ CClientStorage::Load() {
         GetPrivateProfileInt("PLAY", "SHOWNPCNAME", c_iDefaultShowName, g_szIniFileName);
     m_PlayOption.iShowMobName =
         GetPrivateProfileInt("PLAY", "SHOWMOBNAME", c_iDefaultShowName, g_szIniFileName);
+    m_PlayOption.iShowMyName = ReadBool("PLAY", "SHOWMYNAME", false);
 
     m_CommunityOption.iWhisper = GetPrivateProfileInt("COMMUNITY", "WHISPER", 1, g_szIniFileName);
     m_CommunityOption.iAddFriend =
@@ -137,6 +138,17 @@ CClientStorage::Load() {
         "QUICKBAREXTDLGTYPE",
         CQuickBAR::TYPE_HORIZONTAL,
         g_szIniFileName);
+}
+
+bool
+CClientStorage::ReadBool(const char* section, const char* key, bool default) {
+    return GetPrivateProfileInt(section, key, default, g_szIniFileName) != 0;
+}
+
+void
+CClientStorage::WriteBool(const char* section, const char* key, bool val) {
+    const char* out = val ? "1" : "0";
+    WritePrivateProfileString(section, key, out, g_szIniFileName);
 }
 
 void
@@ -211,6 +223,8 @@ CClientStorage::Save() {
 
     itoa(m_PlayOption.iShowMobName, szTemp, 10);
     WritePrivateProfileString("PLAY", "SHOWMOBNAME", szTemp, g_szIniFileName);
+
+    WriteBool("PLAY", "SHOWMYNAME", m_PlayOption.iShowMyName);
 
     ///<-community option
     itoa(m_CommunityOption.iWhisper, szTemp, 10);

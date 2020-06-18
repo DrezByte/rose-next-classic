@@ -33,7 +33,9 @@ struct t_OptionPlay {
     UINT uiControlType;
     int iShowNpcName;
     int iShowMobName;
-    int iShowPcName; ///나 이외의 PC
+    int iShowPcName;
+    // Enable/Disable drawing healthbar + name above current player
+    bool iShowMyName;
 };
 
 struct t_OptionCommunity {
@@ -94,6 +96,12 @@ public:
     void Save();
 
     void LoadAvatarData();
+
+    // Get a bool value from the ini
+    bool ReadBool(const char* section, const char* key, bool default = false);
+
+    // Save a bool value to the ini
+    void WriteBool(const char* section, const char* key, bool val);
 
     //
     //	setFogRange( CAMERA_NEAR_FOG, CAMERA_FAR_FOG )
@@ -204,7 +212,7 @@ public:
     void SetJapanRoute(int route);
     void SaveJapanRoute();
 
-protected:
+public:
     bool m_bHasSavedDialogPos; ///이전에 저장된 Dialog Position이 있는가?
     t_OptionVideo m_VideoOption;
     t_OptionSound m_SoundOption;

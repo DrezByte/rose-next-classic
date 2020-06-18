@@ -124,7 +124,9 @@ CNameBox::Draw(CObjCHAR* pCharOBJ, float x, float y, float z) {
             break;
         }
         case OBJ_USER: {
-            DrawMyName(x, y, z, pCharOBJ, bTargetObject);
+            if (g_ClientStorage.m_PlayOption.iShowMyName) {
+                DrawMyName(x, y, z, pCharOBJ, bTargetObject);
+            }
             break;
         }
         case OBJ_AVATAR: {
@@ -385,20 +387,6 @@ CNameBox::DrawAvatarName(float x, float y, float z, CObjCHAR* pCharOBJ, bool bTa
             dwColor = g_dwBLUE;
         }
 
-        if (pName[0] == '[' && pName[1] == 'T' && pName[2] == 'M' && pName[3] == ']') {
-            dwColor = g_dwBLUE;
-        }
-
-        if (pName[0] == 'D' && pName[1] == 'a' && pName[2] == 'g' && pName[3] == 'n'
-            && pName[4] == 'a' && pName[5] == 'r' && pName[6] == 'u' && pName[7] == 's') {
-            dwColor = g_dwGREEN;
-        }
-
-        if (pName[0] == 'S' && pName[1] == 'h' && pName[2] == 'e' && pName[3] == 'r'
-            && pName[4] == 'w' && pName[5] == 'i' && pName[6] == 'n') {
-            dwColor = g_dwBLACK;
-        }
-#ifdef FRAROSE
         if (pName[0] == '[' && pName[1] == 'D' && pName[2] == 'E' && pName[3] == 'V'
             && pName[4] == ']') {
             dwColor = g_dwPINK;
@@ -408,12 +396,6 @@ CNameBox::DrawAvatarName(float x, float y, float z, CObjCHAR* pCharOBJ, bool bTa
             && pName[4] == 'N' && pName[5] == 'T' && pName[6] == ']') {
             dwColor = g_dwGREEN;
         }
-        if (pName[0] == '[' && pName[1] == 'C' && pName[2] == 'H' && pName[3] == 'A'
-            && pName[4] == 'M' && pName[5] == 'P' && pName[6] == 'I' && pName[7] == 'O'
-            && pName[8] == 'N' && pName[9] == ']') {
-            dwColor = 0xFFBB001C;
-        }
-#endif
     }
 
     SIZE size;
@@ -507,18 +489,14 @@ CNameBox::DrawMyName(float x, float y, float z, CObjCHAR* pCharOBJ, bool bTarget
             dwColor = g_dwBLUE;
         }
 
-        if (pName[0] == '[' && pName[1] == 'T' && pName[2] == 'M' && pName[3] == ']') {
-            dwColor = g_dwBLUE;
+        if (pName[0] == '[' && pName[1] == 'D' && pName[2] == 'E' && pName[3] == 'V'
+            && pName[4] == ']') {
+            dwColor = g_dwPINK;
         }
 
-        if (pName[0] == 'D' && pName[1] == 'a' && pName[2] == 'g' && pName[3] == 'n'
-            && pName[4] == 'a' && pName[5] == 'r' && pName[6] == 'u' && pName[7] == 's') {
+        if (pName[0] == '[' && pName[1] == 'E' && pName[2] == 'V' && pName[3] == 'E'
+            && pName[4] == 'N' && pName[5] == 'T' && pName[6] == ']') {
             dwColor = g_dwGREEN;
-        }
-
-        if (pName[0] == 'S' && pName[1] == 'h' && pName[2] == 'e' && pName[3] == 'r'
-            && pName[4] == 'w' && pName[5] == 'i' && pName[6] == 'n') {
-            dwColor = g_dwBLACK;
         }
     }
     int iWidthBackImage = 115;
