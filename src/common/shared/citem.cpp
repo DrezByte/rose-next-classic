@@ -69,7 +69,6 @@ tagBaseITEM::init() {
     // RAM: Adding a constructor breaks a lot of code related to packets so we
     // settle with this init function for now.
     this->Clear();
-    this->uuid = Rose::Util::UUID::generate();
 }
 
 void
@@ -78,7 +77,6 @@ tagBaseITEM::Init(int iItem, unsigned int uiQuantity) {
 
     if (1001 > iItem)
         return;
-    this->uuid = Rose::Util::UUID::generate();
     this->m_cType = (char)(iItem / 1000);
     this->m_nItemNo = iItem % 1000;
     if (this->IsEnableDupCNT()) {
@@ -564,7 +562,6 @@ tagBaseITEM::GetName() {
 
 void
 to_json(nlohmann::json& j, const tagBaseITEM& item) {
-    j["uuid"] = item.uuid.to_string();
     j["type"] = item.m_cType;
     j["id"] = item.m_nItemNo;
 
@@ -587,11 +584,9 @@ from_json(const nlohmann::json& j, tagBaseITEM& item) {
         return;
     }
 
-    if (!j.contains("uuid") || !j.contains("type") || !j.contains("id")) {
+    if (!j.contains("type") || !j.contains("id")) {
         return;
     }
-
-    item.uuid.from_string(j["uuid"]);
     item.m_cType = j["type"];
     item.m_nItemNo = j["id"];
 

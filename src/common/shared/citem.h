@@ -6,7 +6,6 @@
 #include "nlohmann/json_fwd.hpp"
 
 #define MAX_ITEM_LIFE 1000
-
 #define MAX_DUP_ITEM_QUANTITY 999
 
 #pragma pack(push, 1)
@@ -26,7 +25,6 @@ int getItemType(int iFullItemNo);
 int setItemFullNo(int iItemType, int iItemNo);
 
 struct tagBaseITEM {
-    Rose::Util::UUID uuid;
     union {
         struct {
             unsigned short m_cType : 5;
@@ -109,9 +107,6 @@ struct tagBaseITEM {
     }
 
     bool IsValidITEM() {
-        if (this->uuid.is_nil()) {
-            return false;
-        }
         return IsValidITEM(this->GetTYPE(), this->GetItemNO());
     }
 
@@ -163,14 +158,14 @@ struct tagBaseITEM {
 
 #ifdef __SERVER
 struct tagITEM: public tagBaseITEM {
+    Rose::Util::UUID uuid;
     union {
         DWORD m_dwSN[2];
         __int64 m_iSN;
     };
 
-    // 현재 아이템에서 주어진 아이템 만큼 뺀후, 빠진 무게를 리턴한다.
-    short Subtract(tagITEM& sITEM); // 주어진 아이템 만큼 덜어 내고 빠진결과는 sITEM에 들어 있다.
-    void SubtractOnly(tagITEM& sITEM); // 주어진 아이템 만큼 덜어 낸다.
+    short Subtract(tagITEM& sITEM);
+    void SubtractOnly(tagITEM& sITEM);
 
     bool SubQuantity() {
         if (GetQuantity() > 0) {
@@ -190,30 +185,48 @@ struct tagITEM: public tagBaseITEM {
         return false;
     }
 
+    void init() {
+        // RAM: Adding a constructor breaks a lot of code related to packets so we
+        // settle with this init function for now.
+        this->Clear();
+        this->uuid = Rose::Util::UUID::generate();
+    }
+
     void Init(int iItem, unsigned int uiQuantity = 1) {
         tagBaseITEM::Init(iItem, uiQuantity);
+        this->uuid = Rose::Util::UUID::generate();
         m_iSN = 0;
     }
+
     void Clear() {
         tagBaseITEM::Clear();
         m_iSN = 0;
     }
 
-    #ifndef __BORLANDC__
-        #ifdef __ITEM_MAX
-    void operator=(tagBaseITEM& rBASE) {
-        m_dwLSB = rBASE.m_dwLSB;
-        m_dwMSB = rBASE.m_dwMSB;
-        m_iSN = 0;
+    bool IsValidITEM() {
+        if (this->uuid.is_nil()) {
+            return false;
+        }
+        return tagBaseITEM::IsValidITEM(this->GetTYPE(), this->GetItemNO());
     }
-        #else
+
+    static bool IsValidITEM(DWORD item_type, DWORD item_id) {
+        return tagBaseITEM::IsValidITEM(item_type, item_id);
+    }
+
+    static bool IsValidITEM(tagITEM* pItem) {
+        return tagBaseITEM::IsValidITEM(pItem->GetTYPE(), pItem->GetItemNO());
+    }
+
+    static bool IsValidITEM(tagBaseITEM* pItem) {
+        return tagBaseITEM::IsValidITEM(pItem->GetTYPE(), pItem->GetItemNO());
+    }
+
     void operator=(tagBaseITEM& rBASE) {
         m_wLSB = rBASE.m_wLSB;
         m_dwMSB = rBASE.m_dwMSB;
         m_iSN = 0;
     }
-        #endif
-    #endif
 };
 #endif
 #pragma pack(pop)
