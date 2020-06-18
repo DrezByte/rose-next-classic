@@ -894,7 +894,7 @@ CObjAVT::Check_PerFRAME(DWORD dwPassTIME) {
             break;
         default: // HP / MP È¸º¹
         {
-            DWORD dwCheckTime = RECOVER_STATE_CHECK_TIME;
+            DWORD dwCheckTime = 4000;
             if (m_dwRecoverTIME >= dwCheckTime) {
                 m_dwRecoverTIME -= dwCheckTime;
 

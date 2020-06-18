@@ -320,15 +320,6 @@ CUserDATA::Cal_BattleAbility() {
     if (GetCur_MP() > GetCur_MaxMP())
         SetCur_MP(GetCur_MaxMP());
 
-    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
-        // ´ë¸¸ º¸Çà¸ðµå¸é...
-        int iCurAbility;
-        for (short nI = 0; nI < BA_MAX; nI++) {
-            iCurAbility = this->m_BasicAbility.m_nBasicA[nI] + m_iAddValue[AT_STR + nI];
-            m_PassiveAbilityFromRate[nI] = (int)(iCurAbility * m_nPassiveRate[AT_STR + nI] / 100.f);
-        }
-    }
-
     SetDef_IMMUNITY(0);
 
     switch (GetCur_JOB()) {
@@ -759,22 +750,22 @@ CUserDATA::Cal_ATTACK() {
             // ¼Ò¸ðÅº¿¡ µû¸¥ °ø°Ý·Â °è»ê...
             switch (ShotTYPE) {
                 case SHOT_TYPE_ARROW:
-                    iAP = (int)((GetCur_DEX() * 0.52f + GetCur_STR() * 0.1f + GetCur_LEVEL() * 0.1f
-                                    + nItemQ * 0.5f)
-                        + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
-                            * (GetCur_DEX() * 0.04f + GetCur_SENSE() * 0.03f + 29) / 30));
+                    iAP = (int)((GetCur_DEX() * 0.62f + GetCur_STR() * 0.2f + GetCur_LEVEL() * 0.2f
+                                    + nItemQ)
+                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())) + nItemQ * 0.5f + 8)
+                            * (GetCur_DEX() * 0.04f + GetCur_SENSE() * 0.03f + 29) / 30.f));
 
                     break;
                 case SHOT_TYPE_BULLET:
-                    iAP = (int)((GetCur_DEX() * 0.3f + GetCur_CON() * 0.47f + GetCur_LEVEL() * 0.1f
-                                    + nItemQ * 0.8f)
-                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())))
-                            * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 30));
+                    iAP = (int)((GetCur_DEX() * 0.4f + GetCur_CON() * 0.5f + GetCur_LEVEL() * 0.2f
+                                    + nItemQ)
+                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())) + nItemQ * 0.6f + 8)
+                            * (GetCur_CON() * 0.03f + GetCur_SENSE() * 0.05f + 29) / 30));
                     break;
                 case SHOT_TYPE_THROW:
-                    iAP = (int)((GetCur_STR() * 0.32f + GetCur_CON() * 0.45f + GetCur_LEVEL() * 0.1f
-                                    + nItemQ * 0.8f)
-                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())))
+                    iAP = (int)((GetCur_STR() * 0.52f + GetCur_CON() * 0.5f + GetCur_LEVEL() * 0.2f
+                                    + nItemQ)
+                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())) + nItemQ + 12)
                             * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 30));
 
                     break;
@@ -1314,11 +1305,11 @@ CUserDATA::Check_EquipCondition(tagITEM& sITEM) {
 #ifndef __SERVER
 bool
 CUserDATA::Use_ITEM(WORD wUseItemNO) {
-#ifndef __SERVER
+    #ifndef __SERVER
     int iValue = GetCur_AbilityValue(USEITEM_NEED_DATA_TYPE(wUseItemNO));
     if (iValue < USEITEM_NEED_DATA_VALUE(wUseItemNO))
         return false;
-#endif
+    #endif
 
     // ÇöÀç ¹«°Ô °¨¼Ò..
     // m_Battle.m_nWEIGHT -= ITEM_WEIGHT( ITEM_TYPE_USE, wUseItemNO );
@@ -1407,7 +1398,7 @@ CUserDATA::Skill_ToUseAbilityVALUE(short nSkillIDX, short nPropertyIDX) {
                                                               : iValue;
         default:
             break;
-	}
+    }
     return iValue;
 }
 
@@ -1445,7 +1436,7 @@ CUserDATA::Skill_UseAbilityValue(short nSkillIDX) {
 #ifndef __SERVER
             case AT_PATHP:
                 SetCur_PatHP(GetCur_PatHP() - iValue);
-            	break;
+                break;
 #endif
         }
     }
@@ -1735,7 +1726,7 @@ CUserDATA::Skill_ActionCondition(short nSkillIDX) {
     short nNeedWPN, nRWPN, nLWPN;
 
 #ifndef __SERVER
-	nRWPN = WEAPON_TYPE(this->GetCur_R_WEAPON());
+    nRWPN = WEAPON_TYPE(this->GetCur_R_WEAPON());
     nLWPN = SUBWPN_TYPE(this->GetCur_L_WEAPON());
 #else
     if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
