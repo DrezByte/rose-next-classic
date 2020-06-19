@@ -16,13 +16,14 @@ struct CharacterStats {
     uint16_t sensitivity;
 
     uint16_t move_speed;
+    uint16_t attack_speed;
+
+    uint16_t attack_damage;
+    uint32_t hit_rate;
+    uint16_t crit;
+
     uint16_t defense;
     uint16_t magic_resistance;
     uint16_t dodge;
-
-    uint16_t attack_damage;
-    uint16_t attack_speed;
-    uint16_t hit;
-    uint16_t crit;
 };
 } // namespace Rose::Common

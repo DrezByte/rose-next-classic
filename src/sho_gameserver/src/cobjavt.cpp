@@ -505,7 +505,7 @@ CObjAVT::Get_AbilityValue(WORD wType) {
         case AT_DEF:
             return GetCur_DEF();
         case AT_HIT:
-            return GetCur_HIT();
+            return this->total_hit_rate();
         case AT_RES:
             return GetCur_RES();
         case AT_AVOID:
@@ -757,6 +757,39 @@ CObjAVT::Send_gsv_GODDNESS_MODE(BYTE btOnOff) {
     return true;
 }
 
+int
+CObjAVT::Cal_HIT() {
+    int iHitRate;
+    tagITEM* pRightWPN;
+
+    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
+        pRightWPN = this->Get_EquipItemPTR(EQUIP_IDX_WEAPON_R);
+        if (pRightWPN->GetItemNO() && pRightWPN->GetLife() > 0) {
+            iHitRate = (int)((GetCur_CON() + 10) * 0.8f)
+                + (int)((ITEM_QUALITY(ITEM_TYPE_WEAPON, pRightWPN->GetItemNO())) * 0.6f
+                    + ITEMGRADE_HIT(pRightWPN->GetGrade()) + pRightWPN->GetDurability() * 0.8f);
+        } else {
+            iHitRate = (int)((GetCur_CON() + 10) * 0.5f + 15);
+        }
+    } else {
+        pRightWPN = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS];
+        if (pRightWPN->GetLife() > 0)
+            iHitRate = (int)((GetCur_CON() + 10) * 0.8f) + (GetCur_LEVEL() * 0.5f)
+                + (int)(ITEM_QUALITY(ITEM_TYPE_RIDE_PART, pRightWPN->GetItemNO()) * 1.2f);
+        else
+            iHitRate = 0;
+    }
+
+    this->stats.hit_rate = iHitRate + this->m_iAddValue[AT_HIT];
+
+    iHitRate = this->GetPassiveSkillValue(AT_PSV_HIT)
+        + (short)(this->stats.hit_rate * this->GetPassiveSkillRate(AT_PSV_HIT) / 100.f);
+    this->stats.hit_rate += iHitRate;
+
+    this->Cal_AruaHIT();
+    return this->stats.hit_rate;
+}
+
 //-------------------------------------------------------------------------------------------------
 //#define	ARUA_RATE_ATK	0.1f
 //#define	ARUA_RATE_HIT	0.1f
@@ -812,18 +845,12 @@ CObjAVT::Cal_AruaATTACK(void) {
 }
 void
 CObjAVT::Cal_AruaHIT(void) {
-    // if ( this->m_IngSTATUS.IsSubSET( FLAG_SUB_ARUA_FAIRY ) ) {
-    //	this->m_IngSTATUS.m_nAruaHIT = (short)( GetOri_HIT() * ARUA_RATE_HIT );
-    //} else
-    //	this->m_IngSTATUS.m_nAruaHIT = 0;
 }
+
 void
 CObjAVT::Cal_AruaAVOID(void) {
-    // if ( this->m_IngSTATUS.IsSubSET( FLAG_SUB_ARUA_FAIRY ) ) {
-    //	this->m_IngSTATUS.m_nAruaAVOID = (short)( GetOri_AVOID() * ARUA_RATE_AVD );
-    //} else
-    //	this->m_IngSTATUS.m_nAruaAVOID = 0;
 }
+
 void
 CObjAVT::Cal_AruaCRITICAL(void) {
     if (this->m_IngSTATUS.IsSubSET(FLAG_SUB_ARUA_FAIRY)) {

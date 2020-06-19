@@ -1778,3 +1778,8 @@ CObjAI::GetOri_MaxMP() {
     _RPT0(_CRT_WARN, "GetOri_MaxMP() 호출시에 문제 생길수 있다");
     return 0;
 }
+
+uint32_t
+CObjAI::total_hit_rate() {
+    return this->stats.hit_rate;
+}

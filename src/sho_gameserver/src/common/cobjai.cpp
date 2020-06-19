@@ -828,3 +828,8 @@ uint16_t
 CObjAI::total_attack_speed() {
     return this->stats.attack_speed;
 }
+
+uint32_t
+CObjAI::total_hit_rate() {
+    return this->stats.hit_rate;
+}

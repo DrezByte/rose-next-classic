@@ -467,7 +467,7 @@ CCharacterDLG::DrawAbilityInfo() {
         130,
         g_dwWHITE,
         "%d",
-        g_pAVATAR->Get_HIT());
+        g_pAVATAR->total_hit_rate());
     ///크리티컬
     ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL_BOLD],
         true,

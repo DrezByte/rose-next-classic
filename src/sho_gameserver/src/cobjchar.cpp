@@ -1707,3 +1707,8 @@ uint16_t
 CObjCHAR::total_attack_speed() {
     return this->stats.attack_speed + this->m_IngSTATUS.Adj_ATK_SPEED();
 }
+
+uint32_t
+CObjCHAR::total_hit_rate() {
+    return this->stats.hit_rate + this->m_IngSTATUS.Adj_HIT();
+}

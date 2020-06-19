@@ -49,7 +49,6 @@ public:
     int GetCur_ATK() { return Get_ATK(); }
     int GetCur_DEF() { return Get_DEF(); }
     int GetCur_RES() { return Get_RES(); }
-    int GetCur_HIT() { return Get_HIT(); }
     int GetCur_AVOID() { return Get_AVOID(); }
     int GetCur_CRITICAL() { return Get_CRITICAL(); }
 
@@ -193,7 +192,6 @@ public:
     int GetOri_ATK() { return this->GetDef_ATK(); }
     int GetOri_DEF() { return this->GetDef_DEF(); }
     int GetOri_RES() { return this->GetDef_RES(); }
-    int GetOri_HIT() { return this->GetDef_HIT(); }
     int GetOri_AVOID() { return this->GetDef_AVOID(); }
     int GetOri_CRITICAL() { return this->GetDef_CRITICAL(); }
 
@@ -443,6 +441,8 @@ public:
         }
         m_iAppliedPenaltyEXP = 0;
     }
+
+    int Cal_HIT() override;
 
     bool Send_gsv_GODDNESS_MODE(BYTE btOnOff);
     bool Add_Goddess(void);

@@ -141,7 +141,7 @@ public:
         this->get_uint32("game", "base_move_speed", this->game.base_move_speed);
         this->get_uint32("game", "base_attack_damage", this->game.base_attack_damage);
         this->get_uint32("game", "base_attack_speed", this->game.base_attack_speed);
-        this->get_uint32("game", "base_hit", this->game.base_hit);
+        this->get_uint32("game", "base_hit", this->game.base_hit_rate);
         this->get_uint32("game", "base_crit", this->game.base_crit);
 
         return true;

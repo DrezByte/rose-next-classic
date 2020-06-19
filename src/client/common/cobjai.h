@@ -131,6 +131,8 @@ class CObjAI: public CGameOBJ, public CAI_OBJ, public CObjTARGET {
 public:
     Rose::Common::CharacterStats stats;
 
+    virtual uint32 total_hit_rate();
+
 private:
     WORD m_wState;
     WORD m_wCommand;

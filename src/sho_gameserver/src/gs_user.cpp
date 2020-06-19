@@ -8248,6 +8248,11 @@ classUSER::total_attack_speed() {
     return CObjAVT::total_attack_speed() + server_config().game.base_attack_speed;
 }
 
+uint32_t
+classUSER::total_hit_rate() {
+    return CObjAVT::total_hit_rate() + server_config().game.base_hit_rate;
+}
+
 bool
 classUSER::send_packet(Packet& packet) {
     classPACKET p;
@@ -8269,6 +8274,7 @@ classUSER::send_update_stats_all() {
     Packets::StatsBuilder stats_builder(builder);
     stats_builder.add_move_speed(this->total_move_speed());
     stats_builder.add_attack_speed(this->total_attack_speed());
+    stats_builder.add_hit_rate(this->total_hit_rate());
     const auto stats = stats_builder.Finish();
 
     Packets::UpdateStatsBuilder rep(builder);

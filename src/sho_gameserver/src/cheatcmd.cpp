@@ -119,6 +119,7 @@ stats(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     user->send_server_whisper(fmt::format("MP: {}/{}",target->Get_MP(), target->Get_MaxMP()));
     user->send_server_whisper("MSPD: " + std::to_string(target->total_move_speed()));
     user->send_server_whisper("ASPD: " + std::to_string(target->total_attack_speed()));
+    user->send_server_whisper("HIT: " + std::to_string(target->total_hit_rate()));
 
     return true;
 }
@@ -689,7 +690,7 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
                            << "Atk: " << pUSER->Get_ATK() << ", "
                            << "Def: " << pUSER->Get_DEF() << ", "
                            << "Res: " << pUSER->Get_RES() << ", "
-                           << "Hit: " << pUSER->Get_HIT() << ", "
+                           << "Hit: " << pUSER->total_hit_rate() << ", "
                            << // TODO: RAM: This doesn't match stats window.
                         "Crit: " << pUSER->Get_CRITICAL() << ", "
                            << "Dodge: " << pUSER->Get_AVOID() << ", "
@@ -712,7 +713,7 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
                         pUSER->Get_JOB(),
                         nMovSpeed,
                         nAtkSpeed,
-                        pUSER->Get_HIT(),
+                        pUSER->total_hit_rate(),
                         pUSER->Get_CRITICAL(),
                         pUSER->Get_ATK(),
                         pUSER->Get_DEF(),

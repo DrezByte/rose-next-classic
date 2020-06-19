@@ -12,7 +12,6 @@
     #include "../Interface/Dlgs/ChattingDlg.h"
     #include "../Game.h"
 #endif
-#define MAX_INT 0x07fffffff
 
 #ifndef __SERVER
 short
@@ -562,39 +561,6 @@ CUserDATA::Cal_RESIST() {
     return this->m_Battle.m_nRES;
 }
 
-int
-CUserDATA::Cal_HIT() {
-    int iHitRate;
-    tagITEM* pRightWPN;
-
-    if (this->GetCur_MOVE_MODE() > MOVE_MODE_RUN) {
-        pRightWPN = this->Get_EquipItemPTR(EQUIP_IDX_WEAPON_R);
-        if (pRightWPN->GetItemNO() && pRightWPN->GetLife() > 0) {
-            iHitRate = (int)((GetCur_CON() + 10) * 0.8f)
-                + (int)((ITEM_QUALITY(ITEM_TYPE_WEAPON, pRightWPN->GetItemNO())) * 0.6f
-                    + ITEMGRADE_HIT(pRightWPN->GetGrade()) + pRightWPN->GetDurability() * 0.8f);
-        } else {
-            iHitRate = (int)((GetCur_CON() + 10) * 0.5f + 15);
-        }
-    } else {
-        pRightWPN = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS];
-        if (pRightWPN->GetLife() > 0)
-            iHitRate = (int)((GetCur_CON() + 10) * 0.8f) + (GetCur_LEVEL() * 0.5f)
-                + (int)(ITEM_QUALITY(ITEM_TYPE_RIDE_PART, pRightWPN->GetItemNO()) * 1.2f);
-        else
-            iHitRate = 0;
-    }
-
-    this->m_Battle.m_nHIT = iHitRate + this->m_iAddValue[AT_HIT];
-
-    iHitRate = this->GetPassiveSkillValue(AT_PSV_HIT)
-        + (short)(this->m_Battle.m_nHIT * this->GetPassiveSkillRate(AT_PSV_HIT) / 100.f);
-    this->m_Battle.m_nHIT += iHitRate;
-
-    this->Cal_AruaHIT();
-    return this->m_Battle.m_nHIT;
-}
-
 #ifdef __APPLY_2ND_JOB
 // kchs : 2005-08-20 , ¸é¿ª·Â Ãß°¡, ±×¸®°í ÆÐ½Ãºê ´É·ÂÄ¡ Àû¿ë
 int
@@ -830,41 +796,6 @@ CUserDATA::Cal_RunSPEED() {
 
     return fMoveSpeed;
 }
-
-//-------------------------------------------------------------------------------------------------
-// ÆÐ½Ãºê ½ºÅ³¿¡¼­ ÂüÁ¶ÇÒ ¹öÇÁÀüÀÇ ´É·ÂÄ¡...
-/*
-int CUserDATA::GetOri_AbilityValue (WORD wType)
-{
-    switch( wType ) {
-        // ÆÐ½Ãºê ½ºÅ³ ÂüÁ¶½Ã ±âº» ´É·ÂÄ¡´Â ¹Ù·Î ¹è¿­·Î °è»êÇÑ´Ù.
-        //case AT_STR	:		return GetCur_STR ();
-        //case AT_DEX	:		return GetCur_DEX ();
-        //case AT_INT	:		return GetCur_INT ();
-        //case AT_CON	:		return GetCur_CON ();
-        //case AT_CHARM	:		return GetCur_CHARM ();
-        //case AT_SENSE	:		return GetCur_SENSE ();
-
-        case AT_ATK		:		return GetDef_ATK ();
-        case AT_DEF		:		return GetDef_DEF ();
-        case AT_HIT		:		return GetDef_HIT ();
-        case AT_RES		:		return GetDef_RES ();
-        case AT_AVOID	:		return GetDef_AVOID ();
-        case AT_SPEED	:		return (int)GetCur_MOVE_SPEED ();
-        case AT_ATK_SPD :		return GetDef_ATK_SPD ();
-        case AT_WEIGHT	:		return GetDef_WEIGHT ();
-        case AT_CRITICAL   :	return GetDef_CRITICAL ();
-
-        case AT_RECOVER_HP :
-        case AT_RECOVER_MP :	break;
-
-        case AT_MAX_HP :		return GetDef_MaxHP ();
-        case AT_MAX_MP :		return GetDef_MaxMP ();
-    }
-
-    return 0;
-}
-*/
 
 //-------------------------------------------------------------------------------------------------
 bool

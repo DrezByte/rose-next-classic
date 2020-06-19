@@ -934,19 +934,6 @@ CObjUSER::GetCur_DEF() {
         - m_EndurancePack.GetStateValue(ING_DEC_DPOWER) + m_AruaAddDefence;
 }
 
-int
-CObjUSER::GetCur_HIT() {
-    int hit = GetDef_HIT() + m_EndurancePack.GetStateValue(ING_INC_HIT)
-        - m_EndurancePack.GetStateValue(ING_DEC_HIT);
-
-    // Goddess effect doesn't stack with other buffs
-    auto goddess_effect = m_EndurancePack.get_goddess_effect();
-    if (goddess_effect) {
-        hit += max(0, goddess_effect->hit - m_EndurancePack.GetStateValue(ING_INC_HIT));
-    }
-    return hit;
-}
-
 //------------------------------------------------------------------------------------
 /// @brief virtual method from CObjAI					2005/7/13 : nAvy
 //------------------------------------------------------------------------------------
@@ -1061,4 +1048,104 @@ CObjUSER::SetCoolTimeSkill(char* uName, int iSkill) {
 void
 CObjUSER::Set_Block_CartRide(bool ride) {
     GetSkillSlot()->SetActiveSkillEnableByRideState_Aid(ride);
+}
+
+int
+CObjUSER::Get_AbilityValue(WORD wType) {
+    switch (wType) {
+        // case AT_BIRTHSTONE :	break;
+        case AT_SEX:
+            return (GetCur_RACE() & 0x01);
+        case AT_RACE:
+            return (GetCur_RACE() / 0x02);
+
+        case AT_CLASS:
+            return GetCur_JOB();
+        case AT_UNION:
+            return GetCur_UNION();
+        case AT_RANK:
+            return GetCur_RANK();
+        case AT_FAME:
+            return GetCur_FAME();
+
+        case AT_FACE:
+            return m_BasicINFO.m_cFaceIDX;
+        case AT_HAIR:
+            return m_BasicINFO.m_cHairIDX;
+
+        case AT_STR:
+            return GetCur_STR();
+        case AT_DEX:
+            return GetCur_DEX();
+        case AT_INT:
+            return GetCur_INT();
+        case AT_CON:
+            return GetCur_CON();
+        case AT_CHARM:
+            return GetCur_CHARM();
+        case AT_SENSE:
+            return GetCur_SENSE();
+        case AT_HP:
+            return GetCur_HP();
+        case AT_MP:
+            return GetCur_MP();
+        case AT_ATK:
+            return GetCur_ATK();
+        case AT_DEF:
+            return GetCur_DEF();
+        case AT_HIT:
+            return this->stats.hit_rate;
+        case AT_RES:
+            return GetCur_RES();
+        case AT_AVOID:
+            return GetCur_AVOID();
+        case AT_SPEED:
+            return (int)GetCur_MOVE_SPEED();
+        case AT_ATK_SPD:
+            return GetCur_ATK_SPD();
+        case AT_WEIGHT:
+            return GetCur_WEIGHT();
+        case AT_CRITICAL:
+            return GetCur_CRITICAL();
+
+            // case AT_RECOVER_HP :
+            // case AT_RECOVER_MP :	break;
+
+        case AT_EXP:
+            return GetCur_EXP();
+        case AT_LEVEL:
+            return GetCur_LEVEL();
+        case AT_BONUSPOINT:
+            return GetCur_BonusPOINT();
+        case AT_SKILLPOINT:
+            return GetCur_SkillPOINT();
+            // case AT_CHAOS	:
+            // case AT_PK_LEV	:	break;
+
+        case AT_HEAD_SIZE:
+            return GetCur_HeadSIZE();
+        case AT_BODY_SIZE:
+            return GetCur_BodySIZE();
+
+        case AT_MONEY:
+            if (GetCur_MONEY() > MAX_INT)
+                return MAX_INT;
+            return (int)GetCur_MONEY();
+
+        case AT_MAX_HP:
+            return GetCur_MaxHP();
+        case AT_MAX_MP:
+            return GetCur_MaxMP();
+        case AT_STAMINA:
+            return m_GrowAbility.m_nSTAMINA;
+        case AT_PATHP:
+            return GetCur_PatHP();
+        default: {
+            if (wType >= AT_UNION_POINT1 && wType <= AT_UNION_POINT10)
+                return GetCur_UnionPOINT(wType);
+            break;
+        }
+    }
+
+    return 0;
 }

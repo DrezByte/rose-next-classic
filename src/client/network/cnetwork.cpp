@@ -788,6 +788,10 @@ CNetwork::recv_update_stats(Packet& p) {
         target->stats.attack_speed = stats->attack_speed();
     }
 
+    if (flatbuffers::IsFieldPresent(stats, Packets::Stats::VT_HIT_RATE)) {
+        target->stats.hit_rate = stats->hit_rate();
+    }
+
     if (target->IsA(OBJ_USER)) {
         g_pAVATAR->UpdateAbility();
     }

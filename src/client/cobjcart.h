@@ -126,7 +126,6 @@ public:
     /*override*/ virtual int Get_ATK() { return 0; };
     /*override*/ virtual int Get_DEF() { return 0; };
     /*override*/ virtual int Get_RES() { return 0; };
-    /*override*/ virtual int Get_HIT() { return 0; };
     /*override*/ virtual int Get_CHARM() { return 0; };
     /*override*/ virtual int Get_AVOID() { return 0; };
     /*override*/ virtual int Get_SENSE() { return 0; };

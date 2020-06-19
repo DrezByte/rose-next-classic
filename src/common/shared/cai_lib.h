@@ -38,7 +38,6 @@ public:
     virtual int Get_ATK() = 0;
     virtual int Get_DEF() = 0;
     virtual int Get_RES() = 0;
-    virtual int Get_HIT() = 0;
     virtual int Get_CHARM() = 0;
     virtual int Get_AVOID() = 0;
     virtual int Get_SENSE() = 0;

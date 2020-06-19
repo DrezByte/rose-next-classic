@@ -288,7 +288,7 @@ CCal::Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF) // , int &iCriticalSUC )
         if (pDEF->IsUSER()) {
             // PVPÀÏ°æ¿ì ¼º°ø È®·ü...
             iRAND1 = 1 + RANDOM(100);
-            iSuccess = (int)(40 - ((pATK->Get_HIT() + pDEF->Get_AVOID()) / pATK->Get_AVOID()) * 60.f
+            iSuccess = (int)(40 - ((pATK->total_hit_rate() + pDEF->Get_AVOID()) / pATK->Get_AVOID()) * 60.f
                 + iRAND1);
 
         } else {
@@ -300,7 +300,7 @@ CCal::Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF) // , int &iCriticalSUC )
                 return 0;
 
             return (int)(iSuccess
-                * (pATK->Get_HIT() * 1.1f - pDEF->Get_AVOID() * 0.93f + iRAND2 /* *0.7f */ + 5
+                * (pATK->total_hit_rate() * 1.1f - pDEF->Get_AVOID() * 0.93f + iRAND2 /* *0.7f */ + 5
                     + pATK->Get_LEVEL() * 0.2f)
                 / 80.f);
         }
@@ -313,7 +313,7 @@ CCal::Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF) // , int &iCriticalSUC )
             return 0;
 
         return (int)(iSuccess
-            * (pATK->Get_HIT() * 1.1f - pDEF->Get_AVOID() * 0.93f + iRAND2 /* *0.7f */ + 5
+            * (pATK->total_hit_rate() * 1.1f - pDEF->Get_AVOID() * 0.93f + iRAND2 /* *0.7f */ + 5
                 + pATK->Get_LEVEL() * 0.2f)
             / 80.f);
     }
@@ -568,7 +568,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             int iRAND1 = 1 + RANDOM(60);
             int iRAND2 = 1 + RANDOM(70);
             iSuccess = (int)(((pATK->Get_LEVEL() + 20) - pDEF->Get_LEVEL() + (iRAND1 /* *0.6f */))
-                * (pATK->Get_HIT() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.7f */ + 10) / 110.f);
+                * (pATK->total_hit_rate() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.7f */ + 10) / 110.f);
 
             if (iSuccess < 20) {
                 if (iSuccess < 10)
@@ -609,7 +609,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             int iRAND1 = 1 + RANDOM(50);
             int iRAND2 = 1 + RANDOM(70);
             iSuccess = (int)(((pATK->Get_LEVEL() + 30) - pDEF->Get_LEVEL() + (iRAND1))
-                * (pATK->Get_HIT() - pDEF->Get_AVOID() * 0.56f + iRAND2 + 10) / 110.f);
+                * (pATK->total_hit_rate() - pDEF->Get_AVOID() * 0.56f + iRAND2 + 10) / 110.f);
 
             if (iSuccess < 20) {
                 if (iSuccess < 8)
@@ -652,7 +652,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             int iRAND1 = 1 + RANDOM(80);
             int iRAND2 = 1 + RANDOM(50);
             iSuccess = (int)(((pATK->Get_LEVEL() + 10) - pDEF->Get_LEVEL() + (iRAND1))
-                * (pATK->Get_HIT() - pDEF->Get_AVOID() * 0.5f + iRAND2 + 50) / 90.f);
+                * (pATK->total_hit_rate() - pDEF->Get_AVOID() * 0.5f + iRAND2 + 50) / 90.f);
             if (iSuccess < 20) {
                 if (iSuccess < 6)
                     return 0;
@@ -691,7 +691,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             int iRAND1 = 1 + RANDOM(80);
             int iRAND2 = 1 + RANDOM(50);
             iSuccess = (int)(((pATK->Get_LEVEL() + 8) - pDEF->Get_LEVEL() + (iRAND1 /* *0.8 */))
-                * (pATK->Get_HIT() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.5 */ + 50) / 90);
+                * (pATK->total_hit_rate() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.5 */ + 50) / 90);
             if (iSuccess < 20) {
                 if (iSuccess < 10)
                     return 0;

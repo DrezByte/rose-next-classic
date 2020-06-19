@@ -298,7 +298,7 @@ GS_lsvSOCKET::Recv_wsv_CHEAT_REQ() {
                     pUSER->Get_JOB(),
                     nMovSpeed,
                     nAtkSpeed,
-                    pUSER->Get_HIT(),
+                    pUSER->total_hit_rate(),
                     pUSER->Get_CRITICAL(),
                     pUSER->Get_ATK(),
                     pUSER->Get_DEF(),

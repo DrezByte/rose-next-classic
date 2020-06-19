@@ -33,6 +33,8 @@ public:
     uint16_t total_move_speed() override { return NPC_RUN_SPEED(m_nCharIdx); }
     uint16_t total_attack_speed() override { return NPC_ATK_SPEED(m_nCharIdx); };
 
+    uint32_t total_hit_rate() override { return NPC_HIT(m_nCharIdx); };
+
 private:
     char m_cSkillMotionIDX;
 
@@ -102,7 +104,6 @@ public:
     int GetOri_ATK() { return NPC_ATK(m_nCharIdx); }
     int GetOri_DEF() { return NPC_DEF(m_nCharIdx); }
     int GetOri_RES() { return NPC_RES(m_nCharIdx); }
-    int GetOri_HIT() { return NPC_HIT(m_nCharIdx); }
     int GetOri_AVOID() { return NPC_AVOID(m_nCharIdx); }
     int GetOri_CRITICAL() { return m_nCritical; }
 
@@ -212,6 +213,9 @@ public:
  *			CObjMOB클래스를 상속받음
  */
 class CObjSUMMON: public CObjMOB {
+public:
+    uint32_t total_hit_rate() override { return m_iOriHIT; };
+
 private:
     int m_iLevel;
     short m_nSummonedSkillIDX;
@@ -246,7 +250,6 @@ public:
     int Get_LEVEL() { return m_iLevel; }
 
     int GetOri_ATK() { return m_iOriATK; }
-    int GetOri_HIT() { return m_iOriHIT; }
     int GetOri_DEF() { return m_iOriDEF; }
     int GetOri_RES() { return m_iOriRES; }
     int GetOri_AVOID() { return m_iOriAVOID; }

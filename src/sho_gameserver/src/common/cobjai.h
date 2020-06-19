@@ -110,6 +110,8 @@ public:
     virtual uint16_t total_move_speed();
     virtual uint16_t total_attack_speed();
 
+    virtual uint32_t total_hit_rate();
+
 private:
     WORD m_wState;
     WORD m_wCommand;

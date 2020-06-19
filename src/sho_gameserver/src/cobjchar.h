@@ -49,6 +49,8 @@ public:
     uint16_t total_move_speed() override;
     uint16_t total_attack_speed() override;
 
+    uint32_t total_hit_rate() override;
+
 private:
     void Adjust_HEIGHT() { /* nop */
     }
@@ -208,7 +210,6 @@ public:
     virtual int GetOri_ATK() = 0;
     virtual int GetOri_DEF() = 0;
     virtual int GetOri_RES() = 0;
-    virtual int GetOri_HIT() = 0;
     virtual int GetOri_AVOID() = 0;
     virtual int GetOri_CRITICAL() = 0;
 
@@ -279,11 +280,8 @@ public:
     int Get_RES() {
         int iR = GetOri_RES() + m_IngSTATUS.Adj_RES();
         return (iR > 10) ? iR : 10;
-    } // Ç×¸¶·Â
-    int Get_HIT() {
-        int iR = GetOri_HIT() + m_IngSTATUS.Adj_HIT();
-        return (iR > 10) ? iR : 10;
     }
+
     int Get_AVOID() {
         int iR = GetOri_AVOID() + m_IngSTATUS.Adj_AVOID();
         return (iR > 10) ? iR : 10;

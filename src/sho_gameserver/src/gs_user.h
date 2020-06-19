@@ -137,11 +137,16 @@ public:
     classUSER();
     virtual ~classUSER();
 
+    // Utility functions
     void level_up(int amount);
 
+    // Stats functions
     uint16_t total_move_speed() override;
     uint16_t total_attack_speed() override;
 
+    uint32_t total_hit_rate() override;
+
+    // Packet functions
     template<typename T>
     bool send_packet_from_offset(flatbuffers::FlatBufferBuilder& builder,
         flatbuffers::Offset<T> offset,

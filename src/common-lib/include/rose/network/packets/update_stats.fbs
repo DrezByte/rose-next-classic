@@ -11,7 +11,7 @@ table Stats {
 	move_speed: uint16;
 	attack_damage: uint16;
 	attack_speed: uint16;
-	hit: uint16;
+	hit_rate: uint32;
 	crit: uint16;
 	defense: uint16;
 	magic_resistance: uint16;

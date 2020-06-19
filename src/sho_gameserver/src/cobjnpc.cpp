@@ -263,7 +263,7 @@ CObjMOB::Get_AbilityValue(WORD wType) {
         case AT_DEF:
             return Get_DEF();
         case AT_HIT:
-            return Get_HIT();
+            return this->total_hit_rate();
         case AT_RES:
             return Get_RES();
         case AT_AVOID:
@@ -573,7 +573,7 @@ CObjSUMMON::SetCallerOBJ(int iOwnerOBJ,
 
     m_iOriMaxHP = (int)(NPC_HP(m_nCharIdx) * (nSkillLEV + 16) * (iOwnerLEVEL + 85) / 2600.f);
     m_iOriATK = (int)(CObjMOB::GetOri_ATK() * (nSkillLEV + 22) * (iOwnerLEVEL + 100) / 4000.f);
-    m_iOriHIT = (int)(CObjMOB::GetOri_HIT() * (nSkillLEV + 30) * (iOwnerLEVEL + 50) / 3200.f);
+    m_iOriHIT = (int)(CObjMOB::total_hit_rate() * (nSkillLEV + 30) * (iOwnerLEVEL + 50) / 3200.f);
     m_iOriDEF = (int)(CObjMOB::GetOri_DEF() * (nSkillLEV + 30) * (iOwnerLEVEL + 80) / 4400.f);
     m_iOriRES = (int)(CObjMOB::GetOri_RES() * (nSkillLEV + 24) * (iOwnerLEVEL + 90) / 3600.f);
     m_iOriAVOID = (int)(CObjMOB::GetOri_AVOID() * (nSkillLEV + 22) * (iOwnerLEVEL + 90) / 3400.f);

@@ -69,7 +69,6 @@ public:
     /*override*/ int Get_ATK() { return GetCur_ATK(); } // 공격력
     /*override*/ int Get_DEF() { return GetCur_DEF(); } // 방어력
     /*override*/ int Get_RES() { return GetCur_RES(); } // 항마력
-    /*override*/ int Get_HIT() { return GetCur_HIT(); }
     /*override*/ int Get_CHARM() { return GetCur_CHARM(); } // 매력
     /*override*/ int Get_AVOID() { return GetCur_AVOID(); } // 회피력
     /*override*/ int Get_SENSE() { return GetCur_SENSE(); } // 감각
@@ -169,7 +168,6 @@ public:
         return GetDef_RES() + m_EndurancePack.GetStateValue(ING_INC_RES)
             - m_EndurancePack.GetStateValue(ING_DEC_RES);
     }
-    /*override*/ int GetCur_HIT();
 
     /*override*/ int GetCur_AVOID() {
         return GetDef_AVOID() + m_EndurancePack.GetStateValue(ING_INC_AVOID)
@@ -447,6 +445,8 @@ public:
     //------------------------------------------------------------------------
 
     void Set_Block_CartRide(bool ride);
+
+    int Get_AbilityValue(WORD wType) override;
 };
 
 #endif

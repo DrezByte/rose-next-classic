@@ -12,7 +12,6 @@
     #include "../Interface/Dlgs/ChattingDlg.h"
     #include "../Game.h"
 #endif
-#define MAX_INT 0x07fffffff
 
 #ifndef __SERVER
 short
@@ -299,7 +298,6 @@ CUserDATA::Cal_BattleAbility() {
     Cal_MaxHP();
     Cal_MaxMP();
     Cal_ATTACK();
-    Cal_HIT();
     Cal_DEFENCE();
     Cal_RESIST();
     Cal_MaxWEIGHT();
@@ -616,40 +614,6 @@ CUserDATA::Cal_RESIST() {
     return this->m_Battle.m_nRES;
 }
 
-int
-CUserDATA::Cal_HIT() {
-    int iHitRate;
-    tagITEM* pRightWPN;
-
-    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
-        pRightWPN = this->Get_EquipItemPTR(EQUIP_IDX_WEAPON_R);
-        if (pRightWPN->GetItemNO() && pRightWPN->GetLife() > 0) {
-            iHitRate = (int)((GetCur_CON() + 10) * 0.8f)
-                + (int)((ITEM_QUALITY(ITEM_TYPE_WEAPON, pRightWPN->GetItemNO())) * 0.6f
-                    + ITEMGRADE_HIT(pRightWPN->GetGrade()) + pRightWPN->GetDurability() * 0.8f);
-        } else {
-            iHitRate = (int)((GetCur_CON() + 10) * 0.5f + 15);
-        }
-    } else {
-        pRightWPN = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS];
-        if (pRightWPN->GetLife() > 0)
-            iHitRate = (int)((GetCur_CON() + 10) * 0.8f) + (GetCur_LEVEL() * 0.5f)
-                + (int)(ITEM_QUALITY(ITEM_TYPE_RIDE_PART, pRightWPN->GetItemNO()) * 1.2f);
-        else
-            iHitRate = 0;
-    }
-
-    this->m_Battle.m_nHIT = iHitRate + this->m_iAddValue[AT_HIT];
-
-    iHitRate = this->GetPassiveSkillValue(AT_PSV_HIT)
-        + (short)(this->m_Battle.m_nHIT * this->GetPassiveSkillRate(AT_PSV_HIT) / 100.f);
-    this->m_Battle.m_nHIT += iHitRate;
-
-    //	this->Cal_AruaHIT ();
-
-    return this->m_Battle.m_nHIT;
-}
-
 //-------------------------------------------------------------------------------------------------
 int
 CUserDATA::Cal_DEFENCE() {
@@ -945,109 +909,6 @@ CUserDATA::Cal_ATTACK() {
 
     return this->m_Battle.m_nATT;
 }
-
-//-------------------------------------------------------------------------------------------------
-#ifndef __SERVER
-int
-CUserDATA::Get_AbilityValue(WORD wType) {
-    switch (wType) {
-        // case AT_BIRTHSTONE :	break;
-        case AT_SEX:
-            return (GetCur_RACE() & 0x01);
-        case AT_RACE:
-            return (GetCur_RACE() / 0x02);
-
-        case AT_CLASS:
-            return GetCur_JOB();
-        case AT_UNION:
-            return GetCur_UNION();
-        case AT_RANK:
-            return GetCur_RANK();
-        case AT_FAME:
-            return GetCur_FAME();
-
-        case AT_FACE:
-            return m_BasicINFO.m_cFaceIDX;
-        case AT_HAIR:
-            return m_BasicINFO.m_cHairIDX;
-
-        case AT_STR:
-            return GetCur_STR();
-        case AT_DEX:
-            return GetCur_DEX();
-        case AT_INT:
-            return GetCur_INT();
-        case AT_CON:
-            return GetCur_CON();
-        case AT_CHARM:
-            return GetCur_CHARM();
-        case AT_SENSE:
-            return GetCur_SENSE();
-        case AT_HP:
-            return GetCur_HP();
-        case AT_MP:
-            return GetCur_MP();
-        case AT_ATK:
-            return GetCur_ATK();
-        case AT_DEF:
-            return GetCur_DEF();
-        case AT_HIT:
-            return GetCur_HIT();
-        case AT_RES:
-            return GetCur_RES();
-        case AT_AVOID:
-            return GetCur_AVOID();
-        case AT_SPEED:
-            return (int)GetCur_MOVE_SPEED();
-        case AT_ATK_SPD:
-            return GetCur_ATK_SPD();
-        case AT_WEIGHT:
-            return GetCur_WEIGHT();
-        case AT_CRITICAL:
-            return GetCur_CRITICAL();
-
-            // case AT_RECOVER_HP :
-            // case AT_RECOVER_MP :	break;
-
-        case AT_EXP:
-            return GetCur_EXP();
-        case AT_LEVEL:
-            return GetCur_LEVEL();
-        case AT_BONUSPOINT:
-            return GetCur_BonusPOINT();
-        case AT_SKILLPOINT:
-            return GetCur_SkillPOINT();
-            // case AT_CHAOS	:
-            // case AT_PK_LEV	:	break;
-
-        case AT_HEAD_SIZE:
-            return GetCur_HeadSIZE();
-        case AT_BODY_SIZE:
-            return GetCur_BodySIZE();
-
-        case AT_MONEY:
-            if (GetCur_MONEY() > MAX_INT)
-                return MAX_INT;
-            return (int)GetCur_MONEY();
-
-        case AT_MAX_HP:
-            return GetCur_MaxHP();
-        case AT_MAX_MP:
-            return GetCur_MaxMP();
-        case AT_STAMINA:
-            return m_GrowAbility.m_nSTAMINA;
-        case AT_PATHP:
-            return GetCur_PatHP();
-        default: {
-            if (wType >= AT_UNION_POINT1 && wType <= AT_UNION_POINT10)
-                return GetCur_UnionPOINT(wType);
-            break;
-        }
-    }
-
-    return 0;
-}
-#endif
 
 //-------------------------------------------------------------------------------------------------
 bool
@@ -1965,9 +1826,6 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
 
                         case AT_PSV_RES:
                             Cal_RESIST();
-                            break;
-                        case AT_PSV_HIT:
-                            Cal_HIT();
                             break;
                         case AT_PSV_CRITICAL:
                             Cal_CRITICAL();

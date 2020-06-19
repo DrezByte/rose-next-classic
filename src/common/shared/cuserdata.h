@@ -21,6 +21,8 @@
     #include <crtdbg.h>
 #endif
 
+#define MAX_INT 0x07fffffff
+
 #pragma pack(push, 1)
 struct tagBasicINFO {
     // NAME
@@ -357,7 +359,6 @@ struct tagBattleAbility {
     short m_nATT;
     short m_nDEF;
     short m_nMAG;
-    short m_nHIT;
     short m_nRES;
     short m_nAVOID;
     short m_nSPD;
@@ -401,7 +402,10 @@ protected:
     int Cal_MaxHP();
     int Cal_MaxMP();
 
-    int Cal_HIT();
+#ifdef __SERVER
+    virtual int Cal_HIT() = 0;
+#endif
+
     int Cal_DEFENCE();
 
     int Cal_RESIST();
@@ -439,7 +443,6 @@ public:
     int GetDef_ATK() { return this->m_Battle.m_nATT; }
     int GetDef_DEF() { return this->m_Battle.m_nDEF; }
     int GetDef_RES() { return this->m_Battle.m_nRES; }
-    int GetDef_HIT() { return this->m_Battle.m_nHIT; }
     int GetDef_AVOID() { return this->m_Battle.m_nAVOID; }
     int GetDef_CRITICAL() { return this->m_Battle.m_iCritical; }
 
@@ -749,7 +752,6 @@ public:
     virtual int GetCur_ATK() = 0;
     virtual int GetCur_DEF() = 0;
     virtual int GetCur_RES() = 0;
-    virtual int GetCur_HIT() = 0;
     virtual int GetCur_AVOID() = 0;
     virtual int GetCur_CRITICAL() = 0;
 
@@ -799,7 +801,7 @@ public:
     virtual int GetCur_AbilityValue(WORD nType) = 0;
 #else
     int GetCur_AbilityValue(WORD nType) { return Get_AbilityValue(nType); }
-    int Get_AbilityValue(WORD nType);
+    virtual int Get_AbilityValue(WORD nType) = 0;
     void RefreshLookUpTable() { m_Inventory.MakeItemIndexList(); }
     virtual void UpdateModelData() = 0 { *(int*)0 = 10; } /// 모델 데이터 갱신..
 #endif
@@ -1057,7 +1059,6 @@ public:
     DWORD m_dwCoolItemEndTime[MAX_USEITEM_COOLTIME_TYPE];
 #endif
 };
-
 
 // Json conversions
 

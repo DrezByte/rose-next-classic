@@ -24,14 +24,14 @@ struct GameConfig {
     uint32_t base_attack_damage;
     uint32_t base_attack_speed;
     uint32_t base_move_speed;
-    uint32_t base_hit;
+    uint32_t base_hit_rate;
     uint32_t base_crit;
 
     GameConfig():
-        base_attack_damage(150),
-        base_attack_speed(60),
-        base_move_speed(200),
-        base_hit(150),
+        base_attack_damage(0),
+        base_attack_speed(0),
+        base_move_speed(0),
+        base_hit_rate(0),
         base_crit(0) {}
 };
 
