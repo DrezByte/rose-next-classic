@@ -317,25 +317,6 @@ CUserDATA::Cal_BattleAbility() {
         SetCur_HP(GetCur_MaxHP());
     if (GetCur_MP() > GetCur_MaxMP())
         SetCur_MP(GetCur_MaxMP());
-
-    SetDef_IMMUNITY(0);
-
-    switch (GetCur_JOB()) {
-        case CLASS_SOLDIER_121: // 2Â÷ ³ªÀÌÆ®
-        case CLASS_SOLDIER_122: // 2Â÷ Ã¨ÇÁ
-        case CLASS_MAGICIAN_221: // 2Â÷ ¸ÞÁö¼Ç
-        case CLASS_MAGICIAN_222: // 2Â÷ Å¬·¯¸¯
-        case CLASS_MIXER_321: // 2Â÷ ·¹ÀÌ´õ
-        case CLASS_MIXER_322: // 2Â÷ ½ºÄ«¿ìÆ®
-        case CLASS_MERCHANT_421: // 2Â÷ ºÎÁîÁÖ¾Æ
-        case CLASS_MERCHANT_422: // 2Â÷ ¾ÆÆ¼Àò
-            this->m_Battle.m_nMaxHP += 300;
-            this->m_Battle.m_nATT += 30;
-            this->m_Battle.m_nDEF += 25;
-            this->m_Battle.m_nRES += 20;
-            SetDef_IMMUNITY(30);
-            break;
-    }
 }
 
 void
@@ -1856,8 +1837,6 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                             break;
                     }
 
-                    SetDef_IMMUNITY(0);
-
                     switch (GetCur_JOB()) {
                         case CLASS_SOLDIER_121: // 2Â÷ ³ªÀÌÆ®
                         case CLASS_SOLDIER_122: // 2Â÷ Ã¨ÇÁ
@@ -1871,7 +1850,6 @@ CUserDATA::Skill_LEARN(short nSkillSLOT, short nSkillIDX, bool bSubPOINT) {
                             this->m_Battle.m_nATT += 30;
                             this->m_Battle.m_nDEF += 25;
                             this->m_Battle.m_nRES += 20;
-                            SetDef_IMMUNITY(30);
                             break;
                     }
                 }
@@ -2354,13 +2332,5 @@ void
 CUserDATA::SetCur_PatCoolTIME(DWORD dwCoolTIME) {
 #ifdef _GBC
     m_GrowAbility.m_dwPatCoolTIME = dwCoolTIME;
-#endif
-}
-
-// È«±Ù.
-void
-CUserDATA::SetDef_IMMUNITY(int iImmunity) {
-#ifdef __APPLY_2ND_JOB
-    m_Battle.m_nImmunity = iImmunity;
 #endif
 }

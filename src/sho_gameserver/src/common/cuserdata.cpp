@@ -303,9 +303,6 @@ CUserDATA::Cal_BattleAbility() {
     Cal_MaxWEIGHT();
     Cal_AvoidRATE(); // Cal_DEFENCEº¸´Ù µÚ¿¡ ¿À°Ô..
     Cal_CRITICAL();
-#ifdef __APPLY_2ND_JOB
-    Cal_IMMUNITY();
-#endif
 
     /// ÇöÀç ¼ÒÁöÇÏ°í ÀÖ´Â ¾ÆÀÌÅÛµéÀÇ ¹«°Ô¸¦ °è»ê...
     m_Battle.m_nWEIGHT = 0;
@@ -322,9 +319,6 @@ CUserDATA::Cal_BattleAbility() {
 #ifdef __KCHS_BATTLECART__
     Cal_PatMaxHP();
 #endif
-
-    /// 2Â÷ ÀüÁ÷ ´É·ÂÄ¡ Àû¿ë
-    Apply_2ndJob_Ability();
 }
 
 void
@@ -560,16 +554,6 @@ CUserDATA::Cal_RESIST() {
 
     return this->m_Battle.m_nRES;
 }
-
-#ifdef __APPLY_2ND_JOB
-// kchs : 2005-08-20 , ¸é¿ª·Â Ãß°¡, ±×¸®°í ÆÐ½Ãºê ´É·ÂÄ¡ Àû¿ë
-int
-CUserDATA::Cal_IMMUNITY() {
-    this->m_Battle.m_nImmunity += (short)this->GetPassiveSkillValue(AT_PSV_IMMUNITY)
-        + (short)(this->m_Battle.m_nImmunity * this->GetPassiveSkillRate(AT_PSV_IMMUNITY) / 100.f);
-    return this->m_Battle.m_nImmunity;
-}
-#endif
 
 //-------------------------------------------------------------------------------------------------
 int
@@ -2238,36 +2222,4 @@ CUserDATA::SetCur_HP(short nValue) {
 #endif
 
     this->m_GrowAbility.m_nHP = nValue;
-} // »ý¸í·Â
-
-//-------------------------------------------------------------------------------------------------
-/// 2Â÷ÀüÁ÷ ¶§¹®¿¡ »ó½ÂµÇ´Â ´É·ÂÄ¡ Àû¿ë
-void
-CUserDATA::Apply_2ndJob_Ability(void) {
-#ifdef __APPLY_2ND_JOB
-    this->m_Battle.m_nImmunity = 0;
-    switch (GetCur_JOB()) {
-        case CLASS_SOLDIER_121: // 2Â÷ ³ªÀÌÆ®
-        case CLASS_SOLDIER_122: // 2Â÷ Ã¨ÇÁ
-        case CLASS_MAGICIAN_221: // 2Â÷ ¸ÞÁö¼Ç
-        case CLASS_MAGICIAN_222: // 2Â÷ Å¬·¯¸¯
-        case CLASS_MIXER_321: // 2Â÷ ·¹ÀÌ´õ
-        case CLASS_MIXER_322: // 2Â÷ ½ºÄ«¿ìÆ®
-        case CLASS_MERCHANT_421: // 2Â÷ ºÎÁîÁÖ¾Æ
-        case CLASS_MERCHANT_422: // 2Â÷ ¾ÆÆ¼Àò
-            this->m_Battle.m_nMaxHP += 300;
-            this->m_Battle.m_nATT += 30;
-            this->m_Battle.m_nDEF += 25;
-            this->m_Battle.m_nRES += 20;
-            // this->m_Battle.m_nImmunity = 30;
-            break;
-    }
-#endif
-}
-// È«±Ù.
-void
-CUserDATA::SetDef_IMMUNITY(int iImmunity) {
-#ifdef __APPLY_2ND_JOB
-    m_Battle.m_nImmunity = iImmunity;
-#endif
 }

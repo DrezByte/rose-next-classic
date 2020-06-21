@@ -392,15 +392,8 @@ public:
 
 #define NPC_ATTRIBUTE(I) g_TblNPC.m_ppVALUE[I][43].GetINT()
 
-//-------------------------------------------------------------------------------------------------
-
-#define ATTRIBUTE_FORM(SA, NA) g_TblATTR.m_ppDATA[NA][SA] // SA:스킬속성, NA:npc속성
-
-//-------------------------------------------------------------------------------------------------
-
 #define FILE_MOTION(WEAPON, ACTION) g_TblAniTYPE.m_ppDATA[ACTION][WEAPON]
 
-//-------------------------------------------------------------------------------------------------
 #define EFFECT_NAME(I) (NULL) // g_TblEFFECT.m_ppDATA[ I ][ 0 ]
 #define EFFECT_TYPE(I) g_TblEFFECT.m_ppDATA[I][1]
 #define EFFECT_POINT_CNT 4
@@ -724,9 +717,7 @@ extern STBDATA g_TblUnion;
 extern STBDATA g_TblClass;
 extern STBDATA g_TblStepSound; /// 발자국소리..
 
-extern STBDATA g_TblItemGRADE; /// 장비 아이템별 등급 적용 수치
-
-extern STBDATA g_TblATTR;
+extern STBDATA g_TblItemGRADE;
 
 #ifndef __SERVER
 extern STBDATA g_TblHELP;

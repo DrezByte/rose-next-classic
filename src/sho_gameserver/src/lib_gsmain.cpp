@@ -73,7 +73,6 @@ STBDATA g_TblClass;
 STBDATA g_TblItemGRADE;
 
 STBDATA g_TblSkillPoint;
-STBDATA g_TblATTR;
 
 CObjMNG* g_pObjMGR = NULL;
 CAI_LIST g_AI_LIST;
@@ -586,11 +585,6 @@ CLIB_GameSRV::Load_BasicDATA() {
     g_TblSkillPoint.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Skill_P.STB"),
         false,
         false);
-#ifdef __APPLY_2ND_JOB
-    g_TblATTR.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ATTRIBUTE.STB"),
-        false,
-        false);
-#endif
 
     if (!g_MotionFILE.Load("3DDATA\\STB\\FILE_MOTION.stb", 0, BASE_DATA_DIR))
         return false;

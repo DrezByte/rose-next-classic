@@ -1112,21 +1112,11 @@ CObjCHAR::Skill_ApplyIngSTATUS(short nSkillIDX, CObjCHAR* pSpeller) {
 
         if (SKILL_SUCCESS_RATIO(nSkillIDX)) {
             if (STATE_PRIFITS_LOSSES(nIngSTB)) {
-#ifdef __APPLY_2ND_JOB
-                // 후에 면역력 수치 넣어서 계산식 수정할곳...
                 if (SKILL_SUCCESS_RATIO(nSkillIDX)
                         * (pSpeller->Get_LEVEL() * 2 + pSpeller->Get_INT() + 20)
                         / (this->Get_RES() * 0.6f + 5 + this->Get_AVOID())
                     <= (1 + RANDOM(100)))
                     continue;
-#else
-                if (SKILL_SUCCESS_RATIO(nSkillIDX)
-                        * (pSpeller->Get_LEVEL() * 2 + pSpeller->Get_INT() + 20)
-                        / (this->Get_RES() * 0.6f + 5 + this->Get_AVOID())
-                    <= (1 + RANDOM(100)))
-                    continue;
-#endif
-                //#endif
             } else {
                 // 유리
                 // 성공룔(12번칼럼) > [상대 레벨 - 자신레벨 + 랜덤수치(1~100) ]  일경우 상태적용

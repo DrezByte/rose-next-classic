@@ -373,7 +373,6 @@ struct tagBattleAbility {
 
 #ifdef __KCHS_BATTLECART__
     short m_nPatMaxHP;
-    short m_nImmunity;
 #endif
 };
 
@@ -412,9 +411,6 @@ protected:
     int Cal_MaxWEIGHT();
     int Cal_AvoidRATE();
     int Cal_CRITICAL();
-#ifdef __APPLY_2ND_JOB
-    int Cal_IMMUNITY();
-#endif
 
     short GetPassiveSkillAttackPower(int iCurAP, short nRightWeaponItemNo);
 
@@ -445,8 +441,6 @@ public:
     int GetDef_RES() { return this->m_Battle.m_nRES; }
     int GetDef_AVOID() { return this->m_Battle.m_nAVOID; }
     int GetDef_CRITICAL() { return this->m_Battle.m_iCritical; }
-
-    void SetDef_IMMUNITY(int iImmunity);
 
     int GetCur_BIRTH() { return this->m_BasicINFO.m_cBirthStone; }
     int GetCur_RANK() { return this->m_BasicINFO.m_cRank; }
@@ -1049,8 +1043,6 @@ public:
     virtual void Cal_AruaRunSPD() = 0;
 
     virtual short Get_WeightRATE() = 0;
-
-    void Apply_2ndJob_Ability(void);
 #endif
 
 #ifndef __SERVER

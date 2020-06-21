@@ -732,16 +732,6 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
         // iDamage |= DMG_BIT_DUMMY;
     }
 
-#ifdef __APPLY_2ND_JOB
-    if (IsTAIWAN()) {
-        // ¼Ó¼º Å×ÀÌºí ÂüÁ¶ÇÏ¿© Àç°è»ê
-        short nSA = SKILL_ATTRIBUTE(nSkillIDX);
-        short nNA = pDEF->Get_ATTRIBUTE();
-        int iNewDamage = (int)(iDamage * ATTRIBUTE_FORM(nSA, nNA) / 100.f);
-        iDamage = iNewDamage;
-    }
-#endif
-
     if (iDamage < 5)
         iDamage = 5;
 
