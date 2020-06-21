@@ -443,7 +443,7 @@ CCharacterDLG::DrawAbilityInfo() {
         67,
         g_dwWHITE,
         "%d",
-        g_pAVATAR->Get_ATK());
+        g_pAVATAR->stats.attack_power);
     ///방어력
     ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL_BOLD],
         true,
@@ -467,7 +467,7 @@ CCharacterDLG::DrawAbilityInfo() {
         130,
         g_dwWHITE,
         "%d",
-        g_pAVATAR->total_hit_rate());
+        g_pAVATAR->stats.hit_rate);
     ///크리티컬
     ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL_BOLD],
         true,

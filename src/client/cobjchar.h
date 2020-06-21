@@ -845,8 +845,6 @@ public:
 ///
 
 class CObjMOB: public CObjCHAR {
-    uint32_t total_hit_rate() override { return NPC_HIT(m_nCharIdx); };
-
 private:
     short m_nQuestIDX;
     int m_iMobAniSkill;
@@ -878,7 +876,6 @@ public:
     /*override*/ virtual void Run_AWAY(int iDistance);
 
     /*override*/ virtual int Get_LEVEL() { return NPC_LEVEL(m_nCharIdx); }
-    /*override*/ virtual int Get_ATK() { return NPC_ATK(m_nCharIdx); }
     /*override*/ virtual int Get_DEF() { return NPC_DEF(m_nCharIdx); }
     /*override*/ virtual int Get_RES() { return NPC_RES(m_nCharIdx); }
     /*override*/ virtual int Get_CHARM() { return 0; }
@@ -1165,7 +1162,6 @@ public:
     }
 
     /*override*/ virtual int Get_LEVEL() { return m_iLevel; }
-    /*override*/ virtual int Get_ATK() { return 1; }
     /*override*/ virtual int Get_DEF() { return 1; }
     /*override*/ virtual int Get_RES() { return 1; }
     /*override*/ virtual int Get_CHARM() { return 1; }

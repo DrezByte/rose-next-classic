@@ -46,7 +46,6 @@ public:
     int GetCur_MaxHP() { return this->Get_MaxHP(); }
     int GetCur_MaxMP() { return this->Get_MaxMP(); }
 
-    int GetCur_ATK() { return Get_ATK(); }
     int GetCur_DEF() { return Get_DEF(); }
     int GetCur_RES() { return Get_RES(); }
     int GetCur_AVOID() { return Get_AVOID(); }
@@ -189,7 +188,6 @@ public:
 
     short GetOri_WalkSPEED() { return WALK_CmPerSec; }
 
-    int GetOri_ATK() { return this->GetDef_ATK(); }
     int GetOri_DEF() { return this->GetDef_DEF(); }
     int GetOri_RES() { return this->GetDef_RES(); }
     int GetOri_AVOID() { return this->GetDef_AVOID(); }
@@ -442,6 +440,8 @@ public:
         m_iAppliedPenaltyEXP = 0;
     }
 
+    // CUserDATA overrides
+    int Cal_ATTACK() override;
     int Cal_HIT() override;
 
     bool Send_gsv_GODDNESS_MODE(BYTE btOnOff);

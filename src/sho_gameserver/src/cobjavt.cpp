@@ -501,7 +501,7 @@ CObjAVT::Get_AbilityValue(WORD wType) {
         case AT_MP:
             return GetCur_MP();
         case AT_ATK:
-            return GetCur_ATK();
+            return this->total_attack_power();
         case AT_DEF:
             return GetCur_DEF();
         case AT_HIT:
@@ -758,6 +758,118 @@ CObjAVT::Send_gsv_GODDNESS_MODE(BYTE btOnOff) {
 }
 
 int
+CObjAVT::Cal_ATTACK() {
+    int iAP = 0;
+
+    tagITEM* pRightWPN = this->Get_EquipItemPTR(EQUIP_IDX_WEAPON_R);
+    int iWeaponAP;
+
+    if (pRightWPN->GetHEADER() && pRightWPN->GetLife() > 0)
+        iWeaponAP = WEAPON_ATTACK_POWER(pRightWPN->m_nItemNo);
+    else
+        iWeaponAP = 0;
+
+    if (this->GetCur_MOVE_MODE() <= MOVE_MODE_RUN) {
+        t_eSHOT ShotTYPE = pRightWPN->GetShotTYPE();
+        if (ShotTYPE < MAX_SHOT_TYPE) {
+            tagITEM* pShotITEM = &this->m_Inventory.m_ItemSHOT[ShotTYPE];
+
+            short nItemQ, nItemW;
+            if (pShotITEM->IsEtcITEM()) {
+                nItemQ = ITEM_QUALITY(pShotITEM->GetTYPE(), pShotITEM->GetItemNO());
+                nItemW = ITEM_WEIGHT(pShotITEM->GetTYPE(), pShotITEM->GetItemNO());
+            } else {
+                nItemQ = nItemW = 0;
+            }
+
+            switch (ShotTYPE) {
+                case SHOT_TYPE_ARROW:
+                    iAP = (int)((GetCur_DEX() * 0.62f + GetCur_STR() * 0.2f + GetCur_LEVEL() * 0.2f
+                                    + nItemQ)
+                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())) + nItemQ * 0.5f + 8)
+                            * (GetCur_DEX() * 0.04f + GetCur_SENSE() * 0.03f + 29) / 30.f));
+                    break;
+                case SHOT_TYPE_BULLET:
+                    iAP = (int)((GetCur_DEX() * 0.4f + GetCur_CON() * 0.5f + GetCur_LEVEL() * 0.2f
+                                    + nItemQ)
+                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())) + nItemQ * 0.6f + 8)
+                            * (GetCur_CON() * 0.03f + GetCur_SENSE() * 0.05f + 29) / 30));
+                    break;
+
+                case SHOT_TYPE_THROW:
+                    iAP = (int)((GetCur_STR() * 0.52f + GetCur_CON() * 0.5f + GetCur_LEVEL() * 0.2f
+                                    + nItemQ)
+                        + (((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())) + nItemQ + 12)
+                            * (GetCur_CON() * 0.04f + GetCur_SENSE() * 0.05f + 29) / 30));
+            }
+        } else {
+            switch (WEAPON_TYPE(pRightWPN->m_nItemNo) / 10) {
+                case 21: // ÇÑ¼Õ
+                case 22: // ¾ç¼Õ		// ±ÙÁ¢ ¹«±â
+                    iAP = (int)((GetCur_STR() * 0.75f + GetCur_LEVEL() * 0.2f)
+                        + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                            * (GetCur_STR() * 0.05f + 29) / 30.f));
+                    break;
+                case 24: // ¸¶¹ý ¹«±â
+                    if (241 == WEAPON_TYPE(pRightWPN->m_nItemNo)) {
+                        // ¸¶¹ý ÁöÆÎÀÌ.
+                        iAP = (int)((GetCur_STR() * 0.4f + GetCur_INT() * 0.4f
+                                        + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                * (GetCur_INT() * 0.05f + 29) / 30.f));
+                    } else {
+                        iAP = (int)((GetCur_INT() * 0.6f + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                * (GetCur_SENSE() * 0.1f + 26) / 27.f));
+                    }
+                    break;
+                case 25: // Ä«Å¸¸£
+                    if (252 == WEAPON_TYPE(pRightWPN->m_nItemNo)) {
+                        // ÀÌµµ·ù
+                        iAP = (int)((GetCur_STR() * 0.63f + GetCur_DEX() * 0.45f
+                                        + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                * (GetCur_DEX() * 0.05f + 25) / 26.f));
+                    } else {
+                        iAP = (int)((GetCur_STR() * 0.42f + GetCur_DEX() * 0.55f
+                                        + GetCur_LEVEL() * 0.2f)
+                            + ((iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade()))
+                                * (GetCur_DEX() * 0.05f + 20) / 21.f));
+                    }
+                    break;
+                case 0: // ½ºÅ³¸Ç¼Õ °ø°Ý·Â : ¹«µµ°¡ Á÷¾÷¿¡ Æ¯ÇÑµÈ ½ºÅ³·Î, ÆÐ½Ãºê ¼º°ÝÀÇ ¸Ç¼Õ
+                        // °ø°Ý·ÂÀ» Á¦°øÇÑ´Ù.
+                    iAP = (int)(GetCur_STR() * 0.5f + GetCur_DEX() * 0.3f + GetCur_LEVEL() * 0.2f);
+                    break;
+            }
+        }
+
+        // this->m_nPassiveAttackSpeed = this->GetPassiveSkillAttackSpeed( pRightWPN->m_nItemNo );
+
+        iAP += this->m_iAddValue[AT_ATK];
+        this->stats.attack_power =
+            iAP + this->GetPassiveSkillAttackPower(iAP, pRightWPN->m_nItemNo);
+    } else {
+        t_eSHOT ShotTYPE = pRightWPN->GetShotTYPE();
+        /// ¼ö¸íÀÌ ´ÙÇÑ ¹«±â´Â ¹«±âÀÇ ±âº» °ø°Ý·ÂÀ» 0 À¸·Î..
+        if (pRightWPN->GetHEADER() && pRightWPN->GetLife() > 0)
+            iWeaponAP = WEAPON_ATTACK_POWER(pRightWPN->m_nItemNo);
+        else
+            iWeaponAP = 0;
+        int iWeaponTERM = iWeaponAP + ITEMGRADE_ATK(pRightWPN->GetGrade())
+            + PAT_ITEM_ATK_POW(this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].GetItemNO());
+
+        iAP = (GetCur_LEVEL() * 3) + GetCur_CON()
+            + PAT_ITEM_ATK_POW(this->m_Inventory.m_ItemRIDE[RIDE_PART_ARMS].GetItemNO());
+        this->stats.attack_power = iAP + this->m_iAddValue[AT_ATK];
+    }
+
+    this->Cal_AruaATTACK();
+
+    return this->stats.attack_power;
+}
+
+int
 CObjAVT::Cal_HIT() {
     int iHitRate;
     tagITEM* pRightWPN;
@@ -839,17 +951,15 @@ CObjAVT::Cal_AruaMaxMP(void) {
 void
 CObjAVT::Cal_AruaATTACK(void) {
     if (this->m_IngSTATUS.IsSubSET(FLAG_SUB_ARUA_FAIRY)) {
-        this->m_IngSTATUS.m_nAruaATK = (short)(this->GetOri_ATK() * ARUA_RATE_ATK);
+        this->m_IngSTATUS.m_nAruaATK = (short)(this->stats.attack_power * ARUA_RATE_ATK);
     } else
         this->m_IngSTATUS.m_nAruaATK = 0;
 }
 void
-CObjAVT::Cal_AruaHIT(void) {
-}
+CObjAVT::Cal_AruaHIT(void) {}
 
 void
-CObjAVT::Cal_AruaAVOID(void) {
-}
+CObjAVT::Cal_AruaAVOID(void) {}
 
 void
 CObjAVT::Cal_AruaCRITICAL(void) {

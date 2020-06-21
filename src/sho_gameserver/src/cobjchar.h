@@ -49,6 +49,7 @@ public:
     uint16_t total_move_speed() override;
     uint16_t total_attack_speed() override;
 
+    uint32_t total_attack_power() override;
     uint32_t total_hit_rate() override;
 
 private:
@@ -207,7 +208,6 @@ public:
     virtual int GetOri_MaxMP() = 0;
 
     virtual short GetOri_WalkSPEED() = 0;
-    virtual int GetOri_ATK() = 0;
     virtual int GetOri_DEF() = 0;
     virtual int GetOri_RES() = 0;
     virtual int GetOri_AVOID() = 0;
@@ -269,10 +269,6 @@ public:
     short Get_nAttackSPEED() { return this->total_attack_speed(); }
     float Get_MoveSPEED() { return this->total_move_speed(); }
 
-    int Get_ATK() {
-        int iR = GetOri_ATK() + m_IngSTATUS.Adj_APOWER();
-        return (iR > 10) ? iR : 10;
-    } // °ø°Ý·Â
     int Get_DEF() {
         int iR = GetOri_DEF() + m_IngSTATUS.Adj_DPOWER();
         return (iR > 10) ? iR : 10;

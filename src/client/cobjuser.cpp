@@ -914,21 +914,6 @@ CObjUSER::GetCur_CRITICAL() {
 }
 
 int
-CObjUSER::GetCur_ATK() {
-    int attack = GetDef_ATK() + m_EndurancePack.GetStateValue(ING_INC_APOWER)
-        - m_EndurancePack.GetStateValue(ING_DEC_APOWER) + m_AruaAddAttackPower;
-
-    // Goddess effect doesn't stack with other buffs
-    auto goddess_effect = m_EndurancePack.get_goddess_effect();
-    if (goddess_effect) {
-        attack +=
-            max(0, goddess_effect->attack_damage - m_EndurancePack.GetStateValue(ING_INC_APOWER));
-    }
-
-    return attack;
-}
-
-int
 CObjUSER::GetCur_DEF() {
     return GetDef_DEF() + m_EndurancePack.GetStateValue(ING_INC_DPOWER)
         - m_EndurancePack.GetStateValue(ING_DEC_DPOWER) + m_AruaAddDefence;
@@ -1090,7 +1075,7 @@ CObjUSER::Get_AbilityValue(WORD wType) {
         case AT_MP:
             return GetCur_MP();
         case AT_ATK:
-            return GetCur_ATK();
+            return this->stats.attack_power;
         case AT_DEF:
             return GetCur_DEF();
         case AT_HIT:

@@ -144,6 +144,7 @@ public:
     uint16_t total_move_speed() override;
     uint16_t total_attack_speed() override;
 
+    uint32_t total_attack_power() override;
     uint32_t total_hit_rate() override;
 
     // Packet functions

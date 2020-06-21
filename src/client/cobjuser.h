@@ -66,7 +66,6 @@ public:
     /*override*/ int Get_HP() { return GetCur_HP(); } // 생명력
 
     /*override*/ int Get_LEVEL() { return GetCur_LEVEL(); }
-    /*override*/ int Get_ATK() { return GetCur_ATK(); } // 공격력
     /*override*/ int Get_DEF() { return GetCur_DEF(); } // 방어력
     /*override*/ int Get_RES() { return GetCur_RES(); } // 항마력
     /*override*/ int Get_CHARM() { return GetCur_CHARM(); } // 매력
@@ -162,7 +161,6 @@ public:
     /*override*/ short GetCur_RACE() { return this->m_btRace; };
     /*override*/ short GetCur_ATK_SPD() { return this->stats.attack_speed; }
     /*override*/ float GetCur_MOVE_SPEED() { return Get_DefaultSPEED(); }
-    /*override*/ int GetCur_ATK();
     /*override*/ int GetCur_DEF();
     /*override*/ int GetCur_RES() {
         return GetDef_RES() + m_EndurancePack.GetStateValue(ING_INC_RES)

@@ -1779,6 +1779,11 @@ CObjAI::GetOri_MaxMP() {
     return 0;
 }
 
+uint32
+CObjAI::total_attack_power() {
+    return this->stats.attack_power;
+}
+
 uint32_t
 CObjAI::total_hit_rate() {
     return this->stats.hit_rate;

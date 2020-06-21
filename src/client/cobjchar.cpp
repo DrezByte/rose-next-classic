@@ -4204,6 +4204,12 @@ CObjMOB::Create(short nCharIdx, const D3DVECTOR& Position, short nQuestIDX, bool
             ::setVisibleGlowRecursive(this->GetZMODEL(), 2, color.r, color.g, color.b);
         }
 
+        this->stats.move_speed = NPC_RUN_SPEED(m_nCharIdx);
+        this->stats.attack_speed = NPC_ATK_SPEED(m_nCharIdx);
+
+        this->stats.attack_power = NPC_ATK(m_nCharIdx);
+        this->stats.hit_rate = NPC_HIT(m_nCharIdx);
+
         return true;
     }
 

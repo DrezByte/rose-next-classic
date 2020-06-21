@@ -300,7 +300,7 @@ GS_lsvSOCKET::Recv_wsv_CHEAT_REQ() {
                     nAtkSpeed,
                     pUSER->total_hit_rate(),
                     pUSER->Get_CRITICAL(),
-                    pUSER->Get_ATK(),
+                    pUSER->total_attack_power(),
                     pUSER->Get_DEF(),
                     pUSER->Get_AVOID(),
                     (pUSER->GetZONE())

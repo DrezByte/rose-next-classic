@@ -9,8 +9,9 @@ table Stats {
 	sen: uint16;
 
 	move_speed: uint16;
-	attack_damage: uint16;
 	attack_speed: uint16;
+
+	attack_power: uint32;
 	hit_rate: uint32;
 	crit: uint16;
 	defense: uint16;

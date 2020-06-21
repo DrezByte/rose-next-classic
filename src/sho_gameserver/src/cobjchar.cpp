@@ -1699,6 +1699,11 @@ CObjCHAR::total_attack_speed() {
 }
 
 uint32_t
+CObjCHAR::total_attack_power() {
+    return this->stats.attack_power + this->m_IngSTATUS.Adj_APOWER();
+}
+
+uint32_t
 CObjCHAR::total_hit_rate() {
     return this->stats.hit_rate + this->m_IngSTATUS.Adj_HIT();
 }

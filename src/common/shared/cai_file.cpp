@@ -46,7 +46,7 @@ AI_Get_Ability(CAI_OBJ* pCHAR, int iAbTYPE) {
         case 0: //레벨
             return pCHAR->Get_LEVEL();
         case 1: // 공격력
-            return pCHAR->Get_ATK();
+            return pCHAR->total_attack_power();
         case 2: // 방어력
             return pCHAR->Get_DEF();
         case 3: // 항마력

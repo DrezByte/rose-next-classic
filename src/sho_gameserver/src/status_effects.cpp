@@ -387,7 +387,7 @@ StatusEffects::Adj_APOWER() {
 
     // Goddess buff doesn't stack with other buffs
     if (is_enabled(StatusEffectType::Goddess)) {
-        val += max(0, goddess_effect.attack_damage - m_nAdjVALUE[ING_INC_APOWER]);
+        val += max(0, goddess_effect.attack_power - m_nAdjVALUE[ING_INC_APOWER]);
     }
 
     return val;

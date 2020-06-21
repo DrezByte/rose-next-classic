@@ -403,6 +403,7 @@ protected:
 
 #ifdef __SERVER
     virtual int Cal_HIT() = 0;
+    virtual int Cal_ATTACK() = 0;
 #endif
 
     int Cal_DEFENCE();
@@ -427,7 +428,6 @@ protected:
 #endif
 
     void Cal_BattleAbility();
-    int Cal_ATTACK();
 
 public:
     short GetCur_HP() { return this->m_GrowAbility.m_nHP; }
@@ -436,7 +436,6 @@ public:
 
     int GetCur_LEVEL() { return this->m_GrowAbility.m_nLevel; }
 
-    int GetDef_ATK() { return this->m_Battle.m_nATT; }
     int GetDef_DEF() { return this->m_Battle.m_nDEF; }
     int GetDef_RES() { return this->m_Battle.m_nRES; }
     int GetDef_AVOID() { return this->m_Battle.m_nAVOID; }
@@ -743,7 +742,6 @@ public:
 #endif
 
     virtual float GetCur_MOVE_SPEED() = 0;
-    virtual int GetCur_ATK() = 0;
     virtual int GetCur_DEF() = 0;
     virtual int GetCur_RES() = 0;
     virtual int GetCur_AVOID() = 0;

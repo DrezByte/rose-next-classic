@@ -130,6 +130,7 @@ stats(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     user->send_server_whisper(fmt::format("MP: {}/{}",target->Get_MP(), target->Get_MaxMP()));
     user->send_server_whisper("MSPD: " + std::to_string(target->total_move_speed()));
     user->send_server_whisper("ASPD: " + std::to_string(target->total_attack_speed()));
+    user->send_server_whisper("ATK: " + std::to_string(target->total_attack_power()));
     user->send_server_whisper("HIT: " + std::to_string(target->total_hit_rate()));
 
     return true;
@@ -699,7 +700,7 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
                               "ANI:(M: "
                            << std::fixed << std::setprecision(2) << m_fRunAniSPEED
                            << ",A:" << pUSER->total_attack_speed() << "), "
-                           << "Atk: " << pUSER->Get_ATK() << ", "
+                           << "Atk: " << pUSER->total_attack_power() << ", "
                            << "Def: " << pUSER->Get_DEF() << ", "
                            << "Res: " << pUSER->Get_RES() << ", "
                            << "Hit: " << pUSER->total_hit_rate() << ", "
@@ -727,7 +728,7 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
                         nAtkSpeed,
                         pUSER->total_hit_rate(),
                         pUSER->Get_CRITICAL(),
-                        pUSER->Get_ATK(),
+                        pUSER->total_attack_power(),
                         pUSER->Get_DEF(),
                         pUSER->Get_AVOID(),
                         btGndATT,

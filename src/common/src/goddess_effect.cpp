@@ -11,7 +11,12 @@ const short GODDESS_ASPEED_VALS[10] = {18, 20, 22, 24, 26, 28, 30, 32, 34, 36};
 const short GODDESS_CRIT_VALS[10] = {40, 45, 50, 55, 60, 65, 70, 75, 80, 90};
 
 GoddessEffect::GoddessEffect():
-    move_speed(0), attack_damage(0), hit(0), crit(0), attack_speed(0), additional_damage(0) {}
+    move_speed(0),
+    attack_power(0),
+    hit(0),
+    crit(0),
+    attack_speed(0),
+    additional_damage(0) {}
 
 void
 GoddessEffect::update(int level) {
@@ -42,7 +47,7 @@ GoddessEffect::update(int level) {
     if (level >= 11) {
         const int idx = get_index(level, 20);
         float val = GODDESS_ATTACK_VALS[idx] * scalar;
-        this->attack_damage = static_cast<short>(val);
+        this->attack_power = static_cast<short>(val);
     }
     if (level >= 21) {
         const int idx = get_index(level, 30);

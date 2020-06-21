@@ -18,7 +18,7 @@ struct CharacterStats {
     uint16_t move_speed;
     uint16_t attack_speed;
 
-    uint16_t attack_damage;
+    uint32_t attack_power;
     uint32_t hit_rate;
     uint16_t crit;
 

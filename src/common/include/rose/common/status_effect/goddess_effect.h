@@ -9,7 +9,7 @@ namespace Common {
 class GoddessEffect {
 public:
     short move_speed;
-    short attack_damage;
+    short attack_power;
     short hit;
     short attack_speed;
     short crit;

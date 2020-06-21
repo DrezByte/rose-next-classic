@@ -338,20 +338,20 @@ CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     iCriSuc = Get_CriSuccessRATE(pATK);
 
     // ¸Â´Â µ¿ÀÛ È®·ü.
-    int iHitActRATE = (28 - iCriSuc) * (pATK->Get_ATK() + 20) / (pDEF->Get_DEF() + 5);
+    int iHitActRATE = (28 - iCriSuc) * (pATK->total_attack_power() + 20) / (pDEF->Get_DEF() + 5);
 
     if (iCriSuc < 20) {
         // Critical damage !!!
         if (pATK->IsUSER() && pDEF->IsUSER()) {
             // PVP :: Å©¸®Æ¼ÄÃ ¹°¸® µ¥¹ÌÁö
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 35)
-                    * (pATK->Get_ATK() - pDEF->Get_DEF() + 430)
+            iDamage = (int)(pATK->total_attack_power() * (iSuc * 0.05f + 35)
+                    * (pATK->total_attack_power() - pDEF->Get_DEF() + 430)
                     / ((pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 10) * 300)
                 + 25);
         } else {
             // ¸ó½ºÅÍ :: Å©¸®Æ¼ÄÃ ¹°¸® µ¥¹ÌÁö
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 29)
-                * (pATK->Get_ATK() - pDEF->Get_DEF() + 230)
+            iDamage = (int)(pATK->total_attack_power() * (iSuc * 0.05f + 29)
+                * (pATK->total_attack_power() - pDEF->Get_DEF() + 230)
                 / ((pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.3f + 5) * 100));
         }
         // Ãß°¡ µ¥¹ÌÁö ½ºÅ³ ...
@@ -378,13 +378,13 @@ CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     } else {
         // Normal damage
         if (pATK->IsUSER() && pDEF->IsUSER()) {
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 25)
-                    * (pATK->Get_ATK() - pDEF->Get_DEF() + 400)
+            iDamage = (int)(pATK->total_attack_power() * (iSuc * 0.05f + 25)
+                    * (pATK->total_attack_power() - pDEF->Get_DEF() + 400)
                     / ((pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 5) * 420)
                 + 20);
         } else {
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.03f + 26)
-                * (pATK->Get_ATK() - pDEF->Get_DEF() + 250)
+            iDamage = (int)(pATK->total_attack_power() * (iSuc * 0.03f + 26)
+                * (pATK->total_attack_power() - pDEF->Get_DEF() + 250)
                 / ((pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 5) * 145));
         }
         // Ãß°¡ µ¥¹ÌÁö ½ºÅ³ ...
@@ -420,18 +420,18 @@ CCal::Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     iCriSuc = Get_CriSuccessRATE(pATK);
 
     // ¸Â´Â µ¿ÀÛ È®·ü.
-    int iHitActRATE = (28 - iCriSuc) * (pATK->Get_ATK() + 20) / (pDEF->Get_RES() + 5);
+    int iHitActRATE = (28 - iCriSuc) * (pATK->total_attack_power() + 20) / (pDEF->Get_RES() + 5);
 
     if (iCriSuc < 20) {
         // Critical damage !!!
         if (pATK->IsUSER() && pDEF->IsUSER()) { // ¸¶¹ý Å©¸®Æ¼ÄÃ PVP
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.08f + 33)
-                    * (pATK->Get_ATK() - pDEF->Get_DEF() + 340)
+            iDamage = (int)(pATK->total_attack_power() * (iSuc * 0.08f + 33)
+                    * (pATK->total_attack_power() - pDEF->Get_DEF() + 340)
                     / ((pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 20) * 360)
                 + 25);
         } else {
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.05f + 33)
-                * (pATK->Get_ATK() - pDEF->Get_DEF() * 0.8f + 310)
+            iDamage = (int)(pATK->total_attack_power() * (iSuc * 0.05f + 33)
+                * (pATK->total_attack_power() - pDEF->Get_DEF() * 0.8f + 310)
                 / ((pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 5) * 200));
         }
 
@@ -459,13 +459,13 @@ CCal::Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     } else {
         // Normal damage
         if (pATK->IsUSER() && pDEF->IsUSER()) { // ¸¶¹ý ÀÏ¹Ý PVP
-            iDamage = (int)((float)pATK->Get_ATK() * (iSuc * 0.06f + 29)
-                    * (pATK->Get_ATK() - pDEF->Get_DEF() * 0.8f + 350)
+            iDamage = (int)((float)pATK->total_attack_power() * (iSuc * 0.06f + 29)
+                    * (pATK->total_attack_power() - pDEF->Get_DEF() * 0.8f + 350)
                     / ((pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 5) * 640)
                 + 20);
         } else {
-            iDamage = (int)(pATK->Get_ATK() * (iSuc * 0.03f + 30)
-                * (pATK->Get_ATK() - pDEF->Get_DEF() * 0.8f + 280)
+            iDamage = (int)(pATK->total_attack_power() * (iSuc * 0.03f + 30)
+                * (pATK->total_attack_power() - pDEF->Get_DEF() * 0.8f + 280)
                 / ((pDEF->Get_RES() + pDEF->Get_AVOID() * 0.3f + 5) * 280));
         }
 
@@ -519,14 +519,14 @@ CCal::Get_WeaponSkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, int
         // DMG= (SKILL_POW/100) *(D_LV/A_LV) * A_ATT * ( SUC*0.03+26)*(1.8* A_ATT - D_DEF +150) /
         // (1.1* D_DEF + D_AVO *0.4+50)/145
         iDamage = (int)((SKILL_POWER(nSkillIDX) / 100.f)
-            * ((float)pDEF->Get_LEVEL() / pATK->Get_LEVEL()) * (pATK->Get_ATK())
-            * (iSuccess * 0.03f + 26) * (1.8f * pATK->Get_ATK() - pDEF->Get_DEF() + 150)
+            * ((float)pDEF->Get_LEVEL() / pATK->Get_LEVEL()) * (pATK->total_attack_power())
+            * (iSuccess * 0.03f + 26) * (1.8f * pATK->total_attack_power() - pDEF->Get_DEF() + 150)
             / (1.1f * pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 50) / 126.f);
     } else {
         // DMG = (SKILL_POW/100 ) * A_ATT * ( SUC*0.03+26)*(1.8* A_ATT - D_DEF +150) / (1.1* D_DEF +
         // D_AVO *0.4+50)/145
-        iDamage = (int)((SKILL_POWER(nSkillIDX) / 100.f) * (pATK->Get_ATK())
-            * (iSuccess * 0.03f + 26) * (1.8f * pATK->Get_ATK() - pDEF->Get_DEF() + 150)
+        iDamage = (int)((SKILL_POWER(nSkillIDX) / 100.f) * (pATK->total_attack_power())
+            * (iSuccess * 0.03f + 26) * (1.8f * pATK->total_attack_power() - pDEF->Get_DEF() + 150)
             / (1.1f * pDEF->Get_DEF() + pDEF->Get_AVOID() * 0.4f + 50) / 126.f);
     }
 
@@ -541,14 +541,14 @@ CCal::Get_MagicSkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, int 
         // DMG = (SKILL_POW/100) *(D_LV/A_LV) * A_ATT *( SUC *0.03+25)*(1.8 *A_ATT - D_DEF
         // +150)/(1.1* D_RES + D_AVO *0.4+50)/140
         iDamage = (int)((SKILL_POWER(nSkillIDX) / 100.f)
-            * ((float)pDEF->Get_LEVEL() / pATK->Get_LEVEL()) * (pATK->Get_ATK())
-            * (iSuccess * 0.03f + 25) * (1.8f * pATK->Get_ATK() - pDEF->Get_DEF() + 150)
+            * ((float)pDEF->Get_LEVEL() / pATK->Get_LEVEL()) * (pATK->total_attack_power())
+            * (iSuccess * 0.03f + 25) * (1.8f * pATK->total_attack_power() - pDEF->Get_DEF() + 150)
             / (1.1f * pDEF->Get_RES() + pDEF->Get_AVOID() * 0.4f + 50) / 120.f);
     } else {
         // DMG = (SKILL_POW/100)  * A_ATT *( SUC *0.03+25)*(1.8 *A_ATT - D_DEF +150)/(1.1* D_RES +
         // D_AVO *0.4+50)/120
-        iDamage = (int)((SKILL_POWER(nSkillIDX) / 100.f) * (pATK->Get_ATK())
-            * (iSuccess * 0.03f + 25) * (1.8f * pATK->Get_ATK() - pDEF->Get_DEF() + 150)
+        iDamage = (int)((SKILL_POWER(nSkillIDX) / 100.f) * (pATK->total_attack_power())
+            * (iSuccess * 0.03f + 25) * (1.8f * pATK->total_attack_power() - pDEF->Get_DEF() + 150)
             / (1.1f * pDEF->Get_RES() + pDEF->Get_AVOID() * 0.4f + 50) / 120.f);
     }
 
@@ -574,15 +574,15 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
                 if (iSuccess < 10)
                     return 0;
 
-                iDamage = (int)(((SKILL_POWER(nSkillIDX) * 0.4f) * (pATK->Get_ATK() + 50)
+                iDamage = (int)(((SKILL_POWER(nSkillIDX) * 0.4f) * (pATK->total_attack_power() + 50)
                                     * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 1.2f + 340))
                         / (pDEF->Get_DEF() + pDEF->Get_RES() + 20)
                         / (250 + pDEF->Get_LEVEL() - pATK->Get_LEVEL())
                     + 20);
             } else {
                 if (pATK->IsUSER() && pDEF->IsUSER()) {
-                    iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->Get_ATK() * 0.2f)
-                                        * (pATK->Get_ATK() + 60)
+                    iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->total_attack_power() * 0.2f)
+                                        * (pATK->total_attack_power() + 60)
                                         * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 0.7 + 370))
                             * 0.01 * (320 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
                             / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.8f + pDEF->Get_AVOID() * 0.4f
@@ -591,8 +591,8 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
                         + 60);
                 } else {
                     // [���� ��ų��] ������ ����
-                    iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->Get_ATK() * 0.2f)
-                                        * (pATK->Get_ATK() + 60)
+                    iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->total_attack_power() * 0.2f)
+                                        * (pATK->total_attack_power() + 60)
                                         * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 0.7f + 370))
                             * 0.01 * (120 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
                             / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.8f + pDEF->Get_AVOID() * 0.4f
@@ -614,8 +614,8 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             if (iSuccess < 20) {
                 if (iSuccess < 8)
                     return 0;
-                iDamage =
-                    (int)((SKILL_POWER(nSkillIDX) * (pATK->Get_ATK() * 0.8f + pATK->Get_INT() + 80)
+                iDamage = (int)((SKILL_POWER(nSkillIDX)
+                                    * (pATK->total_attack_power() * 0.8f + pATK->Get_INT() + 80)
                               * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 1.3f + 280) * 0.2f)
                             / (pDEF->Get_DEF() * 0.3f + pDEF->Get_RES() + 30)
                             / (250 + pDEF->Get_LEVEL() - pATK->Get_LEVEL())
@@ -624,7 +624,8 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
                 if (pATK->IsUSER() && pDEF->IsUSER()) {
                     iDamage =
                         (int)(((SKILL_POWER(nSkillIDX) + 50)
-                                  * (pATK->Get_ATK() * 0.8f + pATK->Get_INT() * 1.2f + 100)
+                                  * (pATK->total_attack_power() * 0.8f + pATK->Get_INT() * 1.2f
+                                      + 100)
                                   * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 0.7f + 350) * 0.01f)
                                 * (380 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
                                 / (pDEF->Get_DEF() * 0.4f + pDEF->Get_RES()
@@ -634,7 +635,8 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
                 } else {
                     iDamage =
                         (int)((SKILL_POWER(nSkillIDX)
-                                  * (pATK->Get_ATK() * 0.8f + pATK->Get_INT() * 1.2f + 100)
+                                  * (pATK->total_attack_power() * 0.8f + pATK->Get_INT() * 1.2f
+                                      + 100)
                                   * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 0.7f + 350) * 0.01f)
                                 * (150 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
                                 / (pDEF->Get_DEF() * 0.3f + pDEF->Get_RES()
@@ -695,7 +697,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             if (iSuccess < 20) {
                 if (iSuccess < 10)
                     return 0;
-                iDamage = (int)(((SKILL_POWER(nSkillIDX) + 40) * (pATK->Get_ATK() + 40)
+                iDamage = (int)(((SKILL_POWER(nSkillIDX) + 40) * (pATK->total_attack_power() + 40)
                                     * ((1 + RANDOM(30)) + pATK->Get_CRITICAL() * 0.2f + 40))
                         * 0.4f
                         / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.3f + pDEF->Get_AVOID() * 0.4f + 10)
@@ -704,7 +706,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             } else {
                 if (pATK->IsUSER() && pDEF->IsUSER()) {
                     iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->Get_CRITICAL() * 0.15f + 40)
-                                        * (pATK->Get_ATK())
+                                        * (pATK->total_attack_power())
                                         * ((1 + RANDOM(30)) + pATK->Get_CRITICAL() * 0.32f + 35))
                             * 0.01f * (350 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
                             / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.3f + pDEF->Get_AVOID() * 0.4f
@@ -713,7 +715,7 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
                         + 20);
                 } else {
                     iDamage = (int)(((SKILL_POWER(nSkillIDX) + pATK->Get_CRITICAL() * 0.15f + 40)
-                                        * (pATK->Get_ATK())
+                                        * (pATK->total_attack_power())
                                         * ((1 + RANDOM(30)) + pATK->Get_CRITICAL() * 0.32f + 35))
                             * 0.01f * (120 - pDEF->Get_LEVEL() + pATK->Get_LEVEL())
                             / (pDEF->Get_DEF() + pDEF->Get_RES() * 0.3f + pDEF->Get_AVOID() * 0.4f

@@ -32,7 +32,7 @@ struct FairyEffect {
     short hp_recovery;
     short mp_recovery;
     short magic_res;
-    short attack_damage;
+    short attack_power;
 };
 
 struct PotionEffect {

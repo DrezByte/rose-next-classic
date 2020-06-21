@@ -3,6 +3,10 @@
 class STBDATA;
 
 class CAI_OBJ {
+public:
+    virtual uint32_t total_attack_power() = 0;
+    virtual uint32_t total_hit_rate() = 0;
+
 private:
     ULONG m_ulAICheckTIME[2];
 
@@ -35,7 +39,6 @@ public:
     virtual int Get_CharNO() = 0 { *(int*)0 = 10; } ///< 객체의 케릭터 번호를 얻는다.
 
     virtual int Get_LEVEL() = 0;
-    virtual int Get_ATK() = 0;
     virtual int Get_DEF() = 0;
     virtual int Get_RES() = 0;
     virtual int Get_CHARM() = 0;

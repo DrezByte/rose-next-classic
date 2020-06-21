@@ -21,14 +21,14 @@ const int DELETE_TIME_SEC = 3600; // 1-hour
 namespace Common {
 
 struct GameConfig {
-    uint32_t base_attack_damage;
+    uint32_t base_attack_power;
     uint32_t base_attack_speed;
     uint32_t base_move_speed;
     uint32_t base_hit_rate;
     uint32_t base_crit;
 
     GameConfig():
-        base_attack_damage(0),
+        base_attack_power(0),
         base_attack_speed(0),
         base_move_speed(0),
         base_hit_rate(0),

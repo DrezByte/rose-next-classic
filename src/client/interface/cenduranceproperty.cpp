@@ -501,7 +501,7 @@ CEndurancePack::Draw() {
                         int goddess_move =
                             max(0, ent->goddess_effect.move_speed - GetStateValue(ING_INC_MOV_SPD));
                         int goddess_attack = max(0,
-                            ent->goddess_effect.attack_damage - GetStateValue(ING_INC_APOWER));
+                            ent->goddess_effect.attack_power - GetStateValue(ING_INC_APOWER));
                         int goddess_hit =
                             max(0, ent->goddess_effect.hit - GetStateValue(ING_INC_HIT));
                         int goddess_aspd = max(0,
