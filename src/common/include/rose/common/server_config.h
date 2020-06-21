@@ -90,6 +90,7 @@ struct GameServerConfig {
 
 class ServerConfig {
 public:
+    std::string path;
     DatabaseConfig database;
     LoginServerConfig loginserver;
     WorldServerConfig worldserver;
@@ -102,6 +103,8 @@ public:
     ~ServerConfig() { toml_free(this->toml); }
 
     bool load(const std::string& path, const std::string& prefix) {
+        this->path = path;
+
         this->toml = toml_load(path.c_str());
 
         if (!this->toml) {

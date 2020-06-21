@@ -104,6 +104,8 @@ public:
             // 존에 들어 있으면 존에서 삭제후 직접 this->DeleteUSER 호출...
         */
     }
+
+    void for_each_user(std::function<void(classUSER*)> func);
 };
 
 extern CUserLIST* g_pUserLIST;

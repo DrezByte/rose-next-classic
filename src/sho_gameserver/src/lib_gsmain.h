@@ -90,6 +90,7 @@ private:
 
 public:
     bool connect_database();
+    bool reload_game_config();
 
     bool Start(HWND hMainWND,
         BYTE btChannelNO,
@@ -143,5 +144,10 @@ Get_ServerLangTYPE() {
 
 inline Rose::Common::ServerConfig& server_config() {
     return CLIB_GameSRV::GetInstance()->config;
+}
+
+inline bool
+reload_server_game_config() {
+    return CLIB_GameSRV::GetInstance()->reload_game_config();
 }
 #endif

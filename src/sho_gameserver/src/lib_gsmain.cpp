@@ -33,7 +33,6 @@
 #define INC_SEND_IO_POOL_SIZE 8192
 #define DEF_SEND_IO_POOL_SIZE 32768
 
-
 STBDATA g_TblHAIR;
 STBDATA g_TblFACE;
 STBDATA g_TblARMOR;
@@ -105,7 +104,6 @@ using namespace Rose::Common;
 #define WM_LSVSOCK_MSG (WM_SOCKETWND_MSG + 0)
 #define WORLD_TIME_TICK 10000 // 10 sec
 
-
 VOID CALLBACK
 GS_TimerProc(HWND hwnd /* handle to window */,
     UINT uMsg /* WM_TIMER message */,
@@ -142,7 +140,6 @@ void
 WriteLOG(char* szMSG) {
     LOG_INFO(szMSG);
 }
-
 
 CLIB_GameSRV::CLIB_GameSRV() {
 #if !defined(__SERVER)
@@ -815,12 +812,23 @@ CLIB_GameSRV::connect_database() {
     return true;
 }
 
+bool
+CLIB_GameSRV::reload_game_config() {
+    Rose::Common::ServerConfig config;
+    bool config_loaded = config.load(this->config.path, "ROSE");
+    if (!config_loaded) {
+        return false;
+    }
+
+    this->config.game = config.game;
+
+    g_pUserLIST->for_each_user([](classUSER* user) { user->UpdateAbility(); });
+    return true;
+}
+
 //-------------------------------------------------------------------------------------------------
 bool
-CLIB_GameSRV::Start(HWND hMainWND,
-    BYTE btChannelNO,
-    BYTE btLowAge,
-    BYTE btHighAge) {
+CLIB_GameSRV::Start(HWND hMainWND, BYTE btChannelNO, BYTE btLowAge, BYTE btHighAge) {
     srand(timeGetTime());
 
     m_dwUserLIMIT = MAX_ZONE_USER_BUFF;

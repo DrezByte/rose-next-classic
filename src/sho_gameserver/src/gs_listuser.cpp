@@ -9,10 +9,12 @@
 
 using namespace Rose;
 
-
 CUserLIST::CUserLIST(UINT uiInitDataCNT, UINT uiIncDataCNT):
-    CDataPOOL<classUSER>("CUserPOOL", uiInitDataCNT, uiIncDataCNT), m_csHashACCOUNT(4000),
-    m_csHashCHAR(4000), m_csNullZONE(4000), IOCPSocketSERVER("GS_SocketSERVER", 2, 2, true) {
+    CDataPOOL<classUSER>("CUserPOOL", uiInitDataCNT, uiIncDataCNT),
+    m_csHashACCOUNT(4000),
+    m_csHashCHAR(4000),
+    m_csNullZONE(4000),
+    IOCPSocketSERVER("GS_SocketSERVER", 2, 2, true) {
     m_pHashACCOUNT = new classHASH<classUSER*>(1024 * 2);
     m_pHashCHAR = new classHASH<classUSER*>(1024 * 2);
 
@@ -421,6 +423,26 @@ CUserLIST::Send_cli_STRESS_TEST(classPACKET* pCPacket) {
         pSocket = this->GetSOCKET(dwI);
         if (pSocket) {
             ((classUSER*)pSocket)->SendPacket(pCPacket);
+        }
+    }
+}
+
+void
+CUserLIST::for_each_user(std::function<void(classUSER*)> func) {
+    tagHASH<classUSER*>* user_node = NULL;
+
+    for (int iT = 0; iT < m_pHashACCOUNT->GetTableCount(); iT++) {
+        user_node = m_pHashACCOUNT->GetEntryNode(iT);
+
+        while (user_node) {
+            if (!user_node->m_DATA) {
+                user_node = user_node->m_NEXT;
+                continue;
+            }
+
+            func(user_node->m_DATA);
+
+            user_node = user_node->m_NEXT;
         }
     }
 }

@@ -101,6 +101,17 @@ rates(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
+reload_config(classUSER* user, CommandInfo, std::vector<std::string>&) {
+    const bool res = reload_server_game_config();
+    if (res) {
+        user->send_server_whisper("Server game config reloaded");
+    } else {
+        user->send_server_whisper("Server game config failed");
+    }
+    return res;
+}
+
+bool
 stats(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     if (!user) {
         return false;
@@ -167,6 +178,7 @@ static const std::unordered_map<std::string, std::tuple<CommandFunction, Command
         REGISTER_COMMAND(Command::LEVELUP, levelup),
         REGISTER_COMMAND(Command::MAPS, maps),
         REGISTER_COMMAND(Command::RATES, rates),
+        REGISTER_COMMAND(Command::RELOAD_CONFIG, reload_config),
         REGISTER_COMMAND(Command::STATS, stats),
         REGISTER_COMMAND(Command::TELEPORT, teleport),
     };
