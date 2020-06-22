@@ -184,8 +184,6 @@ public:
 
     int GetCur_SummonCNT() { return this->m_nSummonCNT; }
 
-    short GetOri_WalkSPEED() { return WALK_CmPerSec; }
-
     int GetOri_DEF() { return this->GetDef_DEF(); }
     int GetOri_RES() { return this->GetDef_RES(); }
     int GetOri_AVOID() { return this->GetDef_AVOID(); }

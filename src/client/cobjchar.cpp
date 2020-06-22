@@ -5062,7 +5062,7 @@ int
 CObjAVT::Get_DefaultAbilityValue(int iType) {
     switch (iType) {
         case AT_SPEED: {
-            return this->GetOri_WalkSPEED();
+            return Rose::GameStaticConfig::DEFAULT_WALK_SPEED;
         } break;
 
         case AT_ATK_SPD: {

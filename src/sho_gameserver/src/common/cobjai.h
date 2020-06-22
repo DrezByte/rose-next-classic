@@ -60,8 +60,6 @@ enum {
     COMMON_COMMAND_ATTACK = 6,
 };
 
-#define WALK_CmPerSec 200
-
 #define WEIGHT_RATE_WALK 100
 #define WEIGHT_RATE_CANT_ATK 110
 

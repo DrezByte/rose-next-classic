@@ -93,8 +93,6 @@ public:
     BYTE Get_MoveMODE() { return m_bRunMODE; }
     BYTE Get_RideMODE() { return 0; }
 
-    short GetOri_WalkSPEED() { return NPC_WALK_SPEED(m_nCharIdx); }
-
     int GetOri_DEF() { return NPC_DEF(m_nCharIdx); }
     int GetOri_RES() { return NPC_RES(m_nCharIdx); }
     int GetOri_AVOID() { return NPC_AVOID(m_nCharIdx); }

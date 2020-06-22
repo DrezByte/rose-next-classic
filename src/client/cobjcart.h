@@ -180,9 +180,6 @@ public:
     /*override*/ virtual tagMOTION* Get_MOTION(short nActionIdx);
 
     /*override*/ virtual void Add_EXP(short nExp) {}
-    /*override*/ virtual short GetOri_WalkSPEED() {
-        return ((m_pObjParent) ? m_pObjParent->GetOri_WalkSPEED() : 10);
-    }
     /*override*/ virtual short GetOri_ATKSPEED() {
         return ((m_pObjParent) ? m_pObjParent->GetOri_ATKSPEED() : 10);
     }

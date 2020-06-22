@@ -207,7 +207,6 @@ public:
     virtual int GetOri_MaxHP() = 0;
     virtual int GetOri_MaxMP() = 0;
 
-    virtual short GetOri_WalkSPEED() = 0;
     virtual int GetOri_DEF() = 0;
     virtual int GetOri_RES() = 0;
     virtual int GetOri_AVOID() = 0;

@@ -16,6 +16,8 @@ const int MAX_MAIL_MESSAGES = 50;
 
 const int DELETE_TIME_SEC = 3600; // 1-hour
 
+const int DEFAULT_WALK_SPEED = 200;
+
 }; // namespace GameStaticConfig
 
 namespace Common {

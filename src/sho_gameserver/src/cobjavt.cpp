@@ -264,7 +264,7 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
 
             this->m_bRunMODE = !this->m_bRunMODE;
             if (!m_bRunMODE) {
-                this->stats.move_speed = GetOri_WalkSPEED();
+                this->stats.move_speed = Rose::GameStaticConfig::DEFAULT_WALK_SPEED;;
             } else {
                 this->Update_SPEED();
             }

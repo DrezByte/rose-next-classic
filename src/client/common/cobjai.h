@@ -80,9 +80,6 @@ enum {
     COMMON_COMMAND_BOARD_CART = 13, // 카트 탑승 스킬.
 };
 
-#define WALK_CmPerSec 200
-
-//-------------------------------------------------------------------------------------------------
 
 class CObjCHAR;
 class CObjAI;

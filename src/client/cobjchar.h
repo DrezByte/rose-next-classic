@@ -598,7 +598,6 @@ public:
     virtual int Sub_MP(int iSub) { return (m_iMP -= iSub); }
 
     virtual void Add_EXP(short nExp) = 0 { *(int*)0 = 10; };
-    virtual short GetOri_WalkSPEED() = 0 { *(int*)0 = 10; };
     virtual short GetOri_ATKSPEED() = 0 { *(int*)0 = 10; };
 
     /// 아바타의 경우 현재 소모중인 총알에 영향을 받는다.
@@ -955,7 +954,6 @@ public:
         return m_pCharMODEL->GetMOTION(nActionIdx);
     }
 
-    /*override*/ short GetOri_WalkSPEED() { return NPC_WALK_SPEED(m_nCharIdx); }
     /*override*/ short GetOri_ATKSPEED() { return NPC_ATK_SPEED(m_nCharIdx); }
 
     /// 지속형의 변경수치 적용을 위해서 현재 적용되어있는 능력수치( 패시브 스킬 포함 )
@@ -1235,7 +1233,6 @@ public:
     /*override*/ tagMOTION* Get_MOTION(short nActionIdx = AVT_ANI_STOP1);
 
     /*override*/ short GetOri_ATKSPEED() { return this->stats.attack_speed; }
-    /*override*/ short GetOri_WalkSPEED() { return WALK_CmPerSec; }
     virtual int GetOri_MaxHP();
 
     /*override*/ virtual int Get_BulletNO();
