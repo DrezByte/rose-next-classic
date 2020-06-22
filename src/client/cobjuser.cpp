@@ -1085,7 +1085,7 @@ CObjUSER::Get_AbilityValue(WORD wType) {
         case AT_AVOID:
             return GetCur_AVOID();
         case AT_SPEED:
-            return (int)GetCur_MOVE_SPEED();
+            return this->stats.move_speed;
         case AT_ATK_SPD:
             return GetCur_ATK_SPD();
         case AT_WEIGHT:

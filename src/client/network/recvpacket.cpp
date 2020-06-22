@@ -870,7 +870,7 @@ CRecvPACKET::Recv_gsv_TOGGLE() {
         /// 속도가 변했다면 속도 세팅
         if (m_pRecvPacket->m_HEADER.m_nSize == (sizeof(gsv_TOGGLE) + sizeof(short))) {
             if (pCHAR->IsUSER()) {
-                ((CObjAVT*)pCHAR)->SetOri_RunSPEED(m_pRecvPacket->m_gsv_TOGGLE.m_nRunSPEED[0]);
+                ((CObjAVT*)pCHAR)->stats.move_speed = m_pRecvPacket->m_gsv_TOGGLE.m_nRunSPEED[0];
             }
         }
     }
@@ -1441,7 +1441,7 @@ CRecvPACKET::Recv_gsv_AVT_CHAR() {
     pNewAVT->SetAllPARTS(m_pRecvPacket->m_gsv_AVT_CHAR.m_PartITEM);
     //	pNewAVT->SetAllPetPARTS ( m_pRecvPacket->m_gsv_AVT_CHAR.m_nRidingITEM );
     pNewAVT->SetAllPetPARTS(m_pRecvPacket->m_gsv_AVT_CHAR.m_RidingITEM);
-    pNewAVT->SetOri_RunSPEED(m_pRecvPacket->m_gsv_AVT_CHAR.m_nRunSpeed);
+    pNewAVT->stats.move_speed = m_pRecvPacket->m_gsv_AVT_CHAR.m_nRunSpeed;
     pNewAVT->stats.attack_speed = m_pRecvPacket->m_gsv_AVT_CHAR.m_nPsvAtkSpeed;
 
     pNewAVT->Set_HP(m_pRecvPacket->m_gsv_AVT_CHAR.m_iHP);
@@ -1470,8 +1470,6 @@ CRecvPACKET::Recv_gsv_AVT_CHAR() {
     m_pRecvPacket->m_gsv_AVT_CHAR.m_btWeightRate;
 
     pNewAVT->Update_SPEED();
-
-    LogString(LOG_NORMAL, "ADD_USER[ %s ], MoveSpeed: %f \n", szName, pNewAVT->GetOri_RunSPEED());
 
     D3DVECTOR PosCUR;
     PosCUR.x = m_pRecvPacket->m_gsv_AVT_CHAR.m_PosCUR.x;
@@ -2179,7 +2177,7 @@ CRecvPACKET::Recv_gsv_EQUIP_ITEM() {
         /// 속도가 변했다면 속도 세팅
         if (m_pRecvPacket->m_HEADER.m_nSize == (sizeof(gsv_EQUIP_ITEM) + sizeof(short))) {
             if (pCHAR->IsUSER()) {
-                ((CObjAVT*)pCHAR)->SetOri_RunSPEED(m_pRecvPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0]);
+                ((CObjAVT*)pCHAR)->stats.move_speed = m_pRecvPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0];
             }
         }
 
@@ -2188,11 +2186,8 @@ CRecvPACKET::Recv_gsv_EQUIP_ITEM() {
             ((CObjUSER*)pCHAR)->UpdateAbility();
         }
 
-#ifndef __VIRTUAL_SERVER
-        // 서버에서 받은 이동 속도 적용..
-        pCHAR->SetOri_RunSPEED(m_pRecvPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0]);
+        pCHAR->stats.move_speed = m_pRecvPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0];
         pCHAR->Update_SPEED();
-#endif
     }
 }
 
@@ -3183,7 +3178,7 @@ CRecvPACKET::Recv_gsv_SPEED_CHANGED() {
         g_pObjMGR->Get_ClientCharAVT(m_pRecvPacket->m_gsv_SPEED_CHANGED.m_wObjectIDX, false);
 
     if (pAVTChar) {
-        pAVTChar->SetOri_RunSPEED(m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED);
+        pAVTChar->stats.move_speed = m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nRunSPEED;
         pAVTChar->stats.attack_speed = m_pRecvPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED;
 
         if (g_pAVATAR && pAVTChar->IsA(OBJ_USER))
@@ -4036,7 +4031,7 @@ CRecvPACKET::Recv_gsv_ASSEMBLE_RIDE_ITEM() {
 
         /// 속도가 변했다면 속도 세팅
         if (m_pRecvPacket->m_HEADER.m_nSize == (sizeof(gsv_ASSEMBLE_RIDE_ITEM) + sizeof(short))) {
-            pAVT->SetOri_RunSPEED(m_pRecvPacket->m_gsv_ASSEMBLE_RIDE_ITEM.m_nRunSPEED[0]);
+            pAVT->stats.move_speed = m_pRecvPacket->m_gsv_ASSEMBLE_RIDE_ITEM.m_nRunSPEED[0];
         }
 
     } else {

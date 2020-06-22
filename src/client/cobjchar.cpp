@@ -75,17 +75,13 @@ CObjCHAR::AI_FindNextOBJ() {
 
 void
 CObjCHAR::Adj_MoveSPEED(WORD wSrvDIST, const D3DVECTOR& PosGOTO) {
-    int iClientDIST; // 클라이언트에서의 현재-목표 위치 차이. 단위 CM
+    int iClientDIST;
     float fCurSpeed, fNewSpeed, fNeedTime;
 
-    fCurSpeed = this->Get_DefaultSPEED(); // 식에 의해 계산된 현재 기본 속도
+    fCurSpeed = this->stats.move_speed;
 
-    if (0 == fCurSpeed) { // 속도가 0이라면, 현재 위치와 PosGOTO 가 동일해야 하나?
-        m_fAdjustSPEED = 0;
-
-        // assert(m_PosCUR.x == PosGOTO.x);
-        // assert(m_PosCUR.y == PosGOTO.y);
-
+    if (0 == fCurSpeed) {
+        this->adjusted_move_speed = 0;
         return;
     }
 
@@ -97,33 +93,24 @@ CObjCHAR::Adj_MoveSPEED(WORD wSrvDIST, const D3DVECTOR& PosGOTO) {
 
     assert(iClientDIST >= 0);
 
-    if (0 == iClientDIST) { // 목표 지점에 이미 도달했다면,
-        // 클라이언트는 이동하지 않아도 된다.
-        m_fAdjustSPEED = 0;
+    if (0 == iClientDIST) {
+        this->adjusted_move_speed = 0;
         return;
-    }
-    /// 서버에서 가야할 거리가 클라이언트에서 가야할 거리보다 크다면
-    else if (iClientDIST <= wSrvDIST) {
-        /// 현재 속도를 그대로 유지해도 된다.
-        /// 클라이언트가 먼저가서 기다리면 되기 때문.
-        m_fAdjustSPEED = fCurSpeed;
-        return;
-    } else // wSrvDIST < iClientDIST. 클라이언트에서의 거리가 서버에서의 거리보다 먼 경우, 속도
-           // 증가.
-    {
-        fNewSpeed = float(iClientDIST) / fNeedTime; // 제 시간안에 도달하기 위한 새로운 속도 계산
+    } else if (iClientDIST <= wSrvDIST) {
+        this->adjusted_move_speed = fCurSpeed;
+        return; 
+    } else {
+        fNewSpeed = float(iClientDIST) / fNeedTime;
 
-        /// 주체가 나일경우는 그냥 빨린 달린다.( 점프없이 )
         if (this->IsA(OBJ_USER) == false) {
             int iDiffDistance =
-                iClientDIST - wSrvDIST; // 서버거리와 클라이언트 거리 차 계산. 단위 : cm
+                iClientDIST - wSrvDIST;
 
             float fNeedTimeDiff =
-                float(iDiffDistance) / fNewSpeed; // 거리 차를 극복하기 위해 걸리는 시간
+                float(iDiffDistance) / fNewSpeed;
 
             if (fNeedTimeDiff > 1.0f) {
-                // 거리차를 극복하기 위해, 1초 이상 지연된다면(너무 느리다.)
-                fNewSpeed = fCurSpeed; // 강제로 그 변위만큼 이동
+                fNewSpeed = fCurSpeed;
 
                 D3DXVECTOR3 vDir = (D3DXVECTOR3)PosGOTO - m_PosCUR;
                 float fRatio = (float)iDiffDistance / (float)iClientDIST;
@@ -136,7 +123,7 @@ CObjCHAR::Adj_MoveSPEED(WORD wSrvDIST, const D3DVECTOR& PosGOTO) {
         }
     }
 
-    m_fAdjustSPEED = fCurSpeed;
+    this->adjusted_move_speed = fCurSpeed;
 }
 
 //--------------------------------------------------------------------------------
@@ -1828,10 +1815,10 @@ CObjCHAR::ApplyEffectOfSkill(int iSkillIDX,
                                 int iAbilityValue = 0;
                                 switch (SKILL_INCREASE_ABILITY(iSkillIDX, i)) {
                                     case AT_SPEED:
-                                        iAbilityValue = pEffectedChar->GetOri_RunSPEED();
+                                        iAbilityValue = pEffectedChar->stats.move_speed;
                                         break;
                                     case AT_ATK_SPD:
-                                        iAbilityValue = pEffectedChar->GetOri_ATKSPEED();
+                                        iAbilityValue = pEffectedChar->stats.attack_speed;
                                         break;
                                 }
 
@@ -2704,22 +2691,12 @@ CObjCHAR::Add_ModelDIR(float fAngleDegree) {
 
 void
 CObjCHAR::Move_COMPLETED() {
-    /*
-    케릭터의 이동 속도를 클라이언트가 결정하면 안됨...
-    if ( !this->IsUSER() )
-    {
-        this->m_fMoveCmPerSec = this->Get_DefaultSPEED();
-    }
-    */
-    /// x-y 위치만 강제 이동. 안그러면 투명몹 가능성 있음.
-    /// z 위치는 우선 이전위치와 동일하게 세팅.
     m_PosGOTO.z = m_PosCUR.z;
     m_PosCUR = m_PosGOTO;
 
     ::setPosition(this->m_hNodeMODEL, m_PosCUR.x, m_PosCUR.y, m_PosCUR.z);
 
-    /// 2003. 12.16 :: 패킷 수신후 보정되었던 이동 속도를 현재 상태의 속도로 바꾼다.
-    m_fAdjustSPEED = this->Get_DefaultSPEED();
+    this->adjusted_move_speed = this->stats.move_speed;
 }
 
 //--------------------------------------------------------------------------------
@@ -4062,39 +4039,6 @@ CObjCHAR::Get_fAttackSPEED() {
 
     return (iR > 30) ? (iR / 100.f) : 0.3f;
 }
-//---------------------------------------------------------------------------------------------------------------
-/// @brief 엔진에 공격속도변경시 이용되는 메쏘드 : 아루아 상태일경우 추가 속도 증가하도록 수정 :
-/// 2005/7/13 - nAvy
-//---------------------------------------------------------------------------------------------------------------
-float
-CObjCHAR::Get_MoveSPEED() {
-    return m_fAdjustSPEED;
-}
-
-//-----------------------------------------------------------------------------
-/// @brief 아루아 상태일경우 추가 이동속도 증가하도록 수정 : 2005/7/13 - nAvy
-//-----------------------------------------------------------------------------
-float
-CObjCHAR::Get_DefaultSPEED() {
-    if (!m_bRunMODE && (m_btMoveMODE <= MOVE_MODE_RUN))
-        return GetOri_WalkSPEED();
-
-    /* RAM: Disable client-side calc
-    short nR = (GetOri_RunSPEED() + m_EndurancePack.GetStateValue(ING_INC_MOV_SPD)
-        - m_EndurancePack.GetStateValue(ING_DEC_MOV_SPD));
-    */
-    short nR = GetOri_RunSPEED();
-    nR += m_AruaAddMoveSpeed;
-
-    // Goddess effect doesn't stack with other buffs
-    auto goddess_effect = m_EndurancePack.get_goddess_effect();
-    if (goddess_effect) {
-        nR += max(0, goddess_effect->move_speed - m_EndurancePack.GetStateValue(ING_INC_MOV_SPD));
-    }
-
-    return (nR > 200.0f) ? nR : 200.0f;
-}
-//---------------------------------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------
 /// class : CObjMOB
@@ -4883,19 +4827,17 @@ CObjAVT::ToggleSitMODE() {
 
 bool
 CObjAVT::ToggleRunMODE(float fAdjRate) {
-    /// float fAdjRate = this->Get_MoveSPEED() / this->Get_DefaultSPEED ();
-    // m_bRunMODE = !m_bRunMODE;
     if (Get_STATE() == CS_MOVE) {
-        m_fAdjustSPEED = this->Get_DefaultSPEED() * fAdjRate;
+        this->adjusted_move_speed = this->stats.move_speed * fAdjRate;
 
         this->Set_CurMOTION(this->Get_MOTION(this->GetANI_Move()));
 #ifdef _DEBUG
-        float fMoveSpeed = this->Get_MoveSPEED();
+        float fMoveSpeed = this->adjusted_move_speed;
         _ASSERT(fMoveSpeed >= 0.f && fMoveSpeed < 2000.f);
 #endif
 
         // 이동 속도 모션 스피드 설정...
-        this->Set_ModelSPEED(this->Get_MoveSPEED());
+        this->Set_ModelSPEED(this->adjusted_move_speed);
 
         ::attachMotion(this->m_hNodeMODEL, this->Get_ZMOTION());
         ::setAnimatableSpeed(this->m_hNodeMODEL, (m_bRunMODE) ? this->m_fRunAniSPEED : 1.0f);

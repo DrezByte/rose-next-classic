@@ -160,7 +160,6 @@ public:
     /// 지속 스킬에 의해 보정된 값을 리턴할 함수...
     /*override*/ short GetCur_RACE() { return this->m_btRace; };
     /*override*/ short GetCur_ATK_SPD() { return this->stats.attack_speed; }
-    /*override*/ float GetCur_MOVE_SPEED() { return Get_DefaultSPEED(); }
     /*override*/ int GetCur_DEF();
     /*override*/ int GetCur_RES() {
         return GetDef_RES() + m_EndurancePack.GetStateValue(ING_INC_RES)

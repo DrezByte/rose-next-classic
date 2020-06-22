@@ -681,7 +681,7 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
 
         if (pUSER) {
             if (this->Get_RIGHT() >= pUSER->Get_RIGHT() && this->GetZONE()) {
-                short nMovSpeed = (short)pUSER->Get_MoveSPEED();
+                short nMovSpeed = (short)pUSER->total_move_speed();
                 short nAtkSpeed = pUSER->total_attack_speed();
                 BYTE btGndATT = (pUSER->GetZONE())
                     ? pUSER->GetZONE()->IsMovablePOS((int)(pUSER->m_PosCUR.x),
@@ -704,12 +704,10 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
                            << "Def: " << pUSER->Get_DEF() << ", "
                            << "Res: " << pUSER->Get_RES() << ", "
                            << "Hit: " << pUSER->total_hit_rate() << ", "
-                           << // TODO: RAM: This doesn't match stats window.
-                        "Crit: " << pUSER->Get_CRITICAL() << ", "
+                           << "Crit: " << pUSER->Get_CRITICAL() << ", "
                            << "Dodge: " << pUSER->Get_AVOID() << ", "
                            << "Aspd: " << pUSER->total_attack_speed() << ", "
-                           << // TODO: RAM:: This doesn't match stats window.
-                        "Mspd: " << (int)pUSER->Get_MoveSPEED();
+                           << "Mspd: " << (int)pUSER->total_move_speed();
 
                     this->Send_gsv_WHISPER(pUSER->Get_NAME(), (char*)output.str().c_str());
                     return CHEAT_NOLOG;

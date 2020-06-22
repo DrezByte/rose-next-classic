@@ -498,25 +498,6 @@ CObjCART::SetCMD_ATTACK(int iServerTarget, WORD wSrvDIST, const D3DVECTOR& PosGO
     PlaySound(m_iCurrentCartState);
 }
 
-//----------------------------------------------------------------------------------------------------
-/// @brief 카트계열은 LIST_PAT 에서 공격관련 데이터는 얻어온다.
-///        Move Speed 등은 펫을 탓다는 가정하에 계산이 부모에게 계산이 된다. 결국 부모의 스피드를
-///        이용하면된다.
-///			이는 부모의 SpeedUpdate 를 할때 펫 탑승여부가 고려되어서 계산되기 때문이다.
-///			그러나 Attack Speed 따위는 틀리다. 이는 테이블에서 얻어와야한다.( 아바타는 무기에
-///의존하고 기타등등..
-//----------------------------------------------------------------------------------------------------
-
-float
-CObjCART::Get_MoveSPEED() {
-    return m_fAdjustSPEED;
-}
-
-float
-CObjCART::Get_DefaultSPEED() {
-    return ((m_pObjParent) ? m_pObjParent->GetOri_RunSPEED() : 10);
-}
-
 float
 CObjCART::Get_fAttackSPEED() {
     return (float)this->stats.attack_speed / 100.0f;

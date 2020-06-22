@@ -152,10 +152,10 @@ CObjectMANAGER::Set_EmptySlot(short nSlotNO, WORD wServerObjectIndex, CGameOBJ* 
                 pObject->m_pListNODE = m_CharLIST.AllocNAppend(nSlotNO);
 
                 CObjCHAR* pCHAR = (CObjCHAR*)pObject;
-                pCHAR->m_fAdjustSPEED = pCHAR->Get_DefaultSPEED();
+                pCHAR->adjusted_move_speed = pCHAR->stats.move_speed;
 
-#ifndef __VIRTUAL_SERVER
-                _ASSERT(pCHAR->m_fAdjustSPEED >= 0.f && pCHAR->m_fAdjustSPEED < 2000.f);
+#ifdef _DEBUG
+                _ASSERT(pCHAR->adjusted_move_speed >= 0.f && pCHAR->adjusted_move_speed < 2000.f);
 #endif
             } break;
 

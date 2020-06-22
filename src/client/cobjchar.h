@@ -327,13 +327,6 @@ public:
     /// 모델의 이동 속도를 얻어온다.
     /*override*/ float Get_ModelSPEED() { return m_fModelSPEED; }
 
-    /*
-    각 계층간의 오브젝트 타입들은 Get_WalkSPEED(), GetOri_RunSPEED() 의 구현을 통해서 이동속도를
-    구한다.!! 결국 Get_WalkSPEED(), GetOri_RunSPEED() 의 상속구현에 신경써라..
-    */
-    /*override*/ virtual float Get_MoveSPEED();
-    virtual float Get_DefaultSPEED();
-
     /*override*/ virtual float Get_fAttackSPEED();
 
     /*override*/ DWORD GetIngDurationStateFLAG() {
@@ -607,7 +600,6 @@ public:
     virtual void Add_EXP(short nExp) = 0 { *(int*)0 = 10; };
     virtual short GetOri_WalkSPEED() = 0 { *(int*)0 = 10; };
     virtual short GetOri_ATKSPEED() = 0 { *(int*)0 = 10; };
-    virtual short GetOri_RunSPEED() = 0 { *(int*)0 = 10; };
 
     /// 아바타의 경우 현재 소모중인 총알에 영향을 받는다.
     virtual int Get_BulletNO();
@@ -940,18 +932,6 @@ public:
 
     /*override*/ virtual void Do_DeadEvent(CObjCHAR* pAtk);
 
-    /*override*/ virtual float Get_DefaultSPEED() {
-        if (!m_bRunMODE)
-            return GetOri_WalkSPEED();
-
-        /* RAM: Disable client-side calc
-        short nR = (GetOri_RunSPEED() + m_EndurancePack.GetStateValue(ING_INC_MOV_SPD)
-            - m_EndurancePack.GetStateValue(ING_DEC_MOV_SPD));
-        */
-        short nR = GetOri_RunSPEED();
-        return nR;
-    }
-
     /*override*/ virtual float Get_fAttackSPEED() {
         int iR = GetOri_ATKSPEED() + m_EndurancePack.GetStateValue(ING_INC_ATK_SPD)
             - m_EndurancePack.GetStateValue(ING_DEC_ATK_SPD);
@@ -976,7 +956,6 @@ public:
     }
 
     /*override*/ short GetOri_WalkSPEED() { return NPC_WALK_SPEED(m_nCharIdx); }
-    /*override*/ short GetOri_RunSPEED() { return NPC_RUN_SPEED(m_nCharIdx); }
     /*override*/ short GetOri_ATKSPEED() { return NPC_ATK_SPEED(m_nCharIdx); }
 
     /// 지속형의 변경수치 적용을 위해서 현재 적용되어있는 능력수치( 패시브 스킬 포함 )
@@ -1257,7 +1236,6 @@ public:
 
     /*override*/ short GetOri_ATKSPEED() { return this->stats.attack_speed; }
     /*override*/ short GetOri_WalkSPEED() { return WALK_CmPerSec; }
-    /*override*/ short GetOri_RunSPEED() { return this->stats.move_speed; }
     virtual int GetOri_MaxHP();
 
     /*override*/ virtual int Get_BulletNO();
@@ -1275,13 +1253,6 @@ public:
     //----------------------------------------------------------------------------------------------------
     /*override*/ int Proc();
 
-    /// <
-    /// < end
-    //////////////////////////////////////////////////////////////////////////////////////////
-
-    void SetOri_RunSPEED(short nRunSpeed) { this->stats.move_speed = nRunSpeed; }
-
-    /// 최대 생명력
     void Set_MaxHP(int iMaxHP) { m_iMaxHP = iMaxHP; }
 
     short GetPartITEM(short nPartIdx) { return m_sPartItemIDX[nPartIdx].m_nItemNo; }

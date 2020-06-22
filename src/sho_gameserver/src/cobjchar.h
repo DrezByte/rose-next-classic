@@ -267,7 +267,6 @@ public:
     tPOINTF Get_BornPOSITION() { return m_PosBORN; }
 
     short Get_nAttackSPEED() { return this->total_attack_speed(); }
-    float Get_MoveSPEED() { return this->total_move_speed(); }
 
     int Get_DEF() {
         int iR = GetOri_DEF() + m_IngSTATUS.Adj_DPOWER();

@@ -32,7 +32,7 @@ CObjTARGET::Get_TargetOBJ(bool bCheckHP) {
 }
 
 //-------------------------------------------------------------------------------------------------
-CObjAI::CObjAI() {
+CObjAI::CObjAI(): stats({}) {
     m_pCurMOTION = NULL;
     m_iCurMotionFRAME = 0, m_fAccMotionFRAME = 0.f;
 
@@ -255,7 +255,7 @@ CObjAI::Restart_MOVE(t_POSITION& PosGOTO) {
 
     m_PosGOTO = PosGOTO;
 
-    this->Start_MOVE(this->Get_MoveSPEED());
+    this->Start_MOVE(this->total_move_speed());
 }
 
 bool
@@ -369,7 +369,7 @@ CObjAI::SetCMD_MOVE(tPOINTF& PosFROM, tPOINTF& PosTO, int iServerTarget) {
         else
             m_wState = CS_NEXT_STOP;
     } else {
-        this->Start_MOVE(this->Get_MoveSPEED());
+        this->Start_MOVE(this->total_move_speed());
     }
     return true;
 }
@@ -611,7 +611,7 @@ bool
 CObjAI::Goto_POSITION(int iRange) {
     if (!(Get_STATE() & CS_BIT_MOV)) {
         // 이동중이 아니면 이동 시작...
-        this->Start_MOVE(this->Get_MoveSPEED());
+        this->Start_MOVE(this->total_move_speed());
     }
 
     int iDistance =
@@ -709,7 +709,7 @@ CObjAI::ProcCMD_ATTACK() {
                     // 범위를 벗어 났으면 이동...
                     m_wState = CS_STOP;
                     m_PosGOTO = pTarget->m_PosCUR;
-                    this->Start_MOVE(this->Get_MoveSPEED());
+                    this->Start_MOVE(this->total_move_speed());
                     return 1;
                 }
 
@@ -726,7 +726,7 @@ CObjAI::ProcCMD_ATTACK() {
             this->Start_ATTACK(pTarget);
         } else {
             if (!(Get_STATE() & CS_BIT_MOV)) {
-                this->Start_MOVE(this->Get_MoveSPEED());
+                this->Start_MOVE(this->total_move_speed());
             } else
                 this->Do_AttackMoveAI(pTarget); /// MOB 공격 이동중 인공지능 처리..
         }
@@ -785,7 +785,7 @@ CObjAI::ProcCMD_Skill2OBJECT() {
             if (!Goto_TARGET(pTarget, this->Get_AttackRange(m_nToDoSkillIDX))) {
                 if (!(Get_STATE() & CS_BIT_MOV)) {
                     // 이동중이 아니면..
-                    this->Start_MOVE(this->Get_MoveSPEED());
+                    this->Start_MOVE(this->total_move_speed());
                 }
                 return 1;
             }

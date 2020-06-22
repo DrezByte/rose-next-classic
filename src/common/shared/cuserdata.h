@@ -741,7 +741,6 @@ public:
     virtual short GetCur_ATK_SPD() = 0;
 #endif
 
-    virtual float GetCur_MOVE_SPEED() = 0;
     virtual int GetCur_DEF() = 0;
     virtual int GetCur_RES() = 0;
     virtual int GetCur_AVOID() = 0;

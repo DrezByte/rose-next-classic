@@ -358,10 +358,10 @@ CGameStateMain::Render_GameMENU() {
             g_dwRED,
             "( 공속: %d, 이속: %f 기본속도: %f )",
             g_pAVATAR->stats.attack_speed,
-            (g_pAVATAR->GetPetMode() < 0) ? g_pAVATAR->Get_MoveSPEED()
-                                          : g_pAVATAR->m_pObjCART->Get_MoveSPEED(),
-            (g_pAVATAR->GetPetMode() < 0) ? g_pAVATAR->Get_DefaultSPEED()
-                                          : g_pAVATAR->m_pObjCART->Get_DefaultSPEED());
+            (g_pAVATAR->GetPetMode() < 0) ? g_pAVATAR->adjusted_move_speed
+                                          : g_pAVATAR->m_pObjCART->adjusted_move_speed,
+            (g_pAVATAR->GetPetMode() < 0) ? g_pAVATAR->stats.move_speed
+                                          : g_pAVATAR->m_pObjCART->stats.move_speed);
 
         ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL],
             false,

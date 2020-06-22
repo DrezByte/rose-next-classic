@@ -773,7 +773,7 @@ classPARSESTR::DoSpeed(char* pStr) {
     pARG = ParseString(pStr, 1);
     int multiply = StrToInt(pARG);
 
-    g_pAVATAR->Set_ModelSPEED(g_pAVATAR->Get_MoveSPEED() * multiply);
+    g_pAVATAR->Set_ModelSPEED(g_pAVATAR->adjusted_move_speed * multiply);
     g_pAVATAR->UpdateAbility();
     return true;
 }

@@ -134,6 +134,8 @@ public:
     uint32 total_attack_power() override;
     uint32 total_hit_rate() override;
 
+    float adjusted_move_speed;
+
 private:
     WORD m_wState;
     WORD m_wCommand;
@@ -222,11 +224,8 @@ protected:
 
 #ifndef __SERVER
 public:
-    float m_fAdjustSPEED;
     virtual void Adj_MoveSPEED(WORD wSrvDIST, const D3DVECTOR& PosGOTO) = 0 { *(int*)0 = 10; };
     virtual void Adj_AniSPEED(float fAniSpeed) = 0 { *(int*)0 = 10; };
-    ;
-    virtual float Get_DefaultSPEED() = 0 { *(int*)0 = 10; };
 
     virtual void Reset_Position() = 0 { *(int*)0 = 10; }; /// 이동 시작시, 현재 위치를 재조정
 #endif
@@ -234,10 +233,7 @@ public:
 protected:
     virtual short GetPsv_ATKSPEED(float fCurSpeed, short nRightWeaponItemNo) { return 0; }
     virtual short GetPsv_ATKSPEED() { return 0; }
-    virtual float Get_fAttackSPEED() = 0 {
-        *(int*)0 = 10;
-    }; /// 기본속도 1.0을 기준 :: 기본 공격 속도( m_fAtkAniSPEED ) + 스킬에 의해 보정된 값 ...
-    virtual float Get_MoveSPEED() = 0 { *(int*)0 = 10; };
+    virtual float Get_fAttackSPEED() = 0 { *(int*)0 = 10; };
     virtual int Get_AttackRange() = 0 { *(int*)0 = 10; };
     virtual float Get_SCALE() = 0 { *(int*)0 = 10; };
 
@@ -331,7 +327,7 @@ public:
     virtual int ProcCMD_Skill2OBJECT_PET() { return 0; };
     //카트 스킬 사용후 다음 행동을 정의 하기 위해 선언함 .
     virtual void SetNewCommandAfterSkill_PET(int iSkillNO) {}
-        //-----------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------
 
 #endif
 

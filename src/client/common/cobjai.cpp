@@ -33,7 +33,7 @@ CObjTARGET::Get_TargetOBJ() {
     return (m_iServerTarget) ? g_pObjMGR->Get_ClientCharOBJ(m_iServerTarget, true) : NULL;
 }
 
-CObjAI::CObjAI() {
+CObjAI::CObjAI(): stats({}) {
     m_pCurMOTION = NULL;
     m_iCurMotionFRAME = 0;
 
@@ -489,7 +489,7 @@ CObjAI::Restart_MOVE(t_POSITION& PosGOTO) {
 
     m_PosGOTO = PosGOTO;
 
-    this->Start_MOVE(this->Get_MoveSPEED());
+    this->Start_MOVE(this->adjusted_move_speed);
 }
 
 void
@@ -497,7 +497,7 @@ CObjAI::Restart_MOVE_AL(t_POSITION& PosGOTO) {
 
     m_PosGOTO = PosGOTO;
 
-    this->Start_MOVE(this->Get_MoveSPEED());
+    this->Start_MOVE(this->adjusted_move_speed);
 }
 
 //--------------------------------------------------------------------------------
@@ -727,7 +727,7 @@ CObjAI::SetCMD_MOVE(WORD wSrvDIST, const D3DVECTOR& PosTO, int iServerTarget) {
     if (CS_BIT_INT & m_wState) {
         m_wState = CS_NEXT_STOP;
     } else {
-        this->Start_MOVE(this->Get_MoveSPEED());
+        this->Start_MOVE(this->adjusted_move_speed);
     }
 }
 
@@ -846,9 +846,9 @@ CObjAI::SetCMD_TOGGLE(BYTE btTYPE) {
                 if (this->GetPetMode() >= 0)
                     this->RideCartToggle(false);
 
-                float fAdjRate = this->Get_MoveSPEED() / this->Get_DefaultSPEED();
-                float fMove = this->Get_MoveSPEED();
-                float fDefault = this->Get_DefaultSPEED();
+                float fAdjRate = this->adjusted_move_speed / this->stats.move_speed;
+                float fMove = this->adjusted_move_speed;
+                float fDefault = this->stats.move_speed;
 
                 LogString(LOG_NORMAL, "WALK : %.3f, %.3f \n", fMove, fDefault);
 
@@ -861,9 +861,9 @@ CObjAI::SetCMD_TOGGLE(BYTE btTYPE) {
                 if (this->GetPetMode() >= 0)
                     this->RideCartToggle(false);
 
-                float fAdjRate = this->Get_MoveSPEED() / this->Get_DefaultSPEED();
-                float fMove = this->Get_MoveSPEED();
-                float fDefault = this->Get_DefaultSPEED();
+                float fAdjRate = this->adjusted_move_speed / this->stats.move_speed;
+                float fMove = this->adjusted_move_speed;
+                float fDefault = this->stats.move_speed;
 
                 LogString(LOG_NORMAL, "RUN : %.3f, %.3f \n", fMove, fDefault);
 
@@ -1326,7 +1326,7 @@ bool
 CObjAI::Goto_POSITION(int iRange) {
     if (!(Get_STATE() & CS_BIT_MOV)) {
         // 이동중이 아니면 이동 시작...
-        this->Start_MOVE(this->Get_MoveSPEED());
+        this->Start_MOVE(this->adjusted_move_speed);
     }
 
     int iDistance = CD3DUtil::distance((int)m_PosCUR.x,
@@ -1509,7 +1509,7 @@ CObjAI::ProcCMD_ATTACK() {
                     // 범위를 벗어 났으면 이동...
                     m_wState = CS_STOP;
                     m_PosGOTO = pTarget->m_PosCUR;
-                    this->Start_MOVE(this->Get_MoveSPEED());
+                    this->Start_MOVE(this->adjusted_move_speed);
                     return 1;
                 }
 
@@ -1526,7 +1526,7 @@ CObjAI::ProcCMD_ATTACK() {
             this->Start_ATTACK(pTarget);
         } else {
             if (!(Get_STATE() & CS_BIT_MOV)) {
-                this->Start_MOVE(this->Get_MoveSPEED());
+                this->Start_MOVE(this->adjusted_move_speed);
             } else
                 this->Do_AttackMoveAI(pTarget); /// MOB 공격 이동중 인공지능 처리..
         }
@@ -1651,7 +1651,7 @@ CObjAI::ProcCMD_Skill2OBJECT() {
             if (this->Goto_TARGET(pTarget, iAttackRange) == false) {
                 if (!(Get_STATE() & CS_BIT_MOV)) {
                     LogString(LOG_NORMAL, "ProcCMD_Skill2Object::Start_Move[ %x ]\n", Get_STATE());
-                    this->Start_MOVE(this->Get_MoveSPEED());
+                    this->Start_MOVE(this->adjusted_move_speed);
                 }
 
                 return 1;

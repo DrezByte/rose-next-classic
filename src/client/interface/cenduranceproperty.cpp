@@ -386,32 +386,12 @@ CEndurancePack::SetStateValue(int iType, int iValue) {
     switch (iType) {
         case ING_INC_MOV_SPD:
         case ING_DEC_MOV_SPD: {
-            /// 이동 속도에 관한것이라면 한번 갱신해준다.
-            float fAdjRate = m_pObjCHAR->Get_MoveSPEED() / m_pObjCHAR->Get_DefaultSPEED();
+            float fAdjRate = m_pObjCHAR->adjusted_move_speed / m_pObjCHAR->stats.move_speed;
 
             m_CurrentStateValue[iType] = iValue;
 
-            m_pObjCHAR->m_fAdjustSPEED = m_pObjCHAR->Get_DefaultSPEED() * fAdjRate;
-
-            // 이동 속도 모션 스피드 설정...
-            // if( m_pObjCHAR->Get_STATE() | CS_MOVE )
-            //	m_pObjCHAR->Set_ModelSPEED( m_pObjCHAR->Get_MoveSPEED() );
+            m_pObjCHAR->adjusted_move_speed = m_pObjCHAR->stats.move_speed * fAdjRate;
         } break;
-
-            /*case ING_INC_MAX_HP:
-                {
-                    m_CurrentStateValue[ iType ] = iValue;
-
-                    g_pAVATAR->Add_HP( iValue );
-                }
-                break;
-            case ING_INC_MAX_MP:
-                {
-                    m_CurrentStateValue[ iType ] = iValue;
-
-                    g_pAVATAR->Add_MP( iValue );
-                }
-                break;*/
 
         default:
             m_CurrentStateValue[iType] = iValue;
@@ -780,21 +760,13 @@ CEndurancePack::DeleteEntityByStateType(int iStateType) {
 
         m_dwStateFlag &= ~c_dwIngFLAG[iStateType]; /// 상태 플래그 리셋..
 
-        /// 유효한 속성이라면
-        // if( std::find( m_CurrentStateValue.begin(), m_CurrentStateValue.end(), iStateType ) ==
-        // m_CurrentStateValue.end() )
         {
             switch (iStateType) {
                 case ING_INC_MOV_SPD:
                 case ING_DEC_MOV_SPD: {
-                    /// 이동 속도에 관한것이라면 한번 갱신해준다.
-                    float fAdjRate = m_pObjCHAR->Get_MoveSPEED() / m_pObjCHAR->Get_DefaultSPEED();
+                    float fAdjRate = m_pObjCHAR->adjusted_move_speed / m_pObjCHAR->stats.move_speed;
                     m_CurrentStateValue[iStateType] = 0;
-                    m_pObjCHAR->m_fAdjustSPEED = m_pObjCHAR->Get_DefaultSPEED() * fAdjRate;
-
-                    // 이동 속도 모션 스피드 설정...
-                    // if( m_pObjCHAR->Get_STATE() | CS_MOVE )
-                    //	m_pObjCHAR->Set_ModelSPEED( m_pObjCHAR->Get_MoveSPEED() );
+                    m_pObjCHAR->adjusted_move_speed = m_pObjCHAR->stats.move_speed * fAdjRate;
                 } break;
                 case ING_INC_MAX_HP: {
                     m_CurrentStateValue[iStateType] = 0;

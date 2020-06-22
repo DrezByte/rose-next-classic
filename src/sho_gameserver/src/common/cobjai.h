@@ -175,18 +175,10 @@ protected:
     virtual int GetAdd_RecoverHP() { return 0; } // 유저일 경우 return pAVATAR->m_btRecoverHP;
     virtual int GetAdd_RecoverMP() { return 0; } // 유저일 경우 return pAVATAR->m_btRecoverHP;
 
-#ifndef __SERVER
-public:
-    float m_fAdjustSPEED;
-    virtual void Adj_MoveSPEED(tPOINTF PosCUR, tPOINTF PosGOTO) = 0;
-    virtual float Get_DefaultSPEED() = 0;
-#endif
-
 protected:
     virtual short GetPsv_ATKSPEED() { return 0; }
-    virtual short Get_nAttackSPEED() = 0; /// 기본속도 100을 기준 :: 기본 공격 속도( m_fAtkAniSPEED
-                                          /// ) + 스킬에 의해 보정된 값 ...
-    virtual float Get_MoveSPEED() = 0;
+    virtual short Get_nAttackSPEED() = 0;
+
     virtual int Get_AttackRange(short /*nSKillIDX*/) = 0;
     virtual float Get_SCALE() = 0;
 

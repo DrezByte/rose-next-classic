@@ -50,6 +50,12 @@ CObjMOB::Init(CZoneTHREAD* pZONE,
 
     ::ZeroMemory(m_iAiVAR, sizeof(int) * MAX_MOB_VAR_CNT);
 
+    this->stats.move_speed = NPC_RUN_SPEED(m_nCharIdx);
+    this->stats.attack_speed = NPC_ATK_SPEED(m_nCharIdx);
+
+    this->stats.attack_power = NPC_ATK(m_nCharIdx);
+    this->stats.hit_rate = NPC_HIT(m_nCharIdx);
+
     if (NULL == this->GetZONE()) {
         CObjAI::SetCMD_STOP();
         return pZONE->Add_OBJECT(this); // 몹 생성
@@ -57,12 +63,6 @@ CObjMOB::Init(CZoneTHREAD* pZONE,
 
     // 정지 명령후 전송...
     SetCMD_STOP();
-
-    this->stats.move_speed = NPC_RUN_SPEED(m_nCharIdx);
-    this->stats.attack_speed = NPC_ATK_SPEED(m_nCharIdx);
-
-    this->stats.attack_power = NPC_ATK(m_nCharIdx);
-    this->stats.hit_rate = NPC_HIT(m_nCharIdx);
 
     return true;
 }

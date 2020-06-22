@@ -26,8 +26,6 @@ public:
 
 public:
     // virtual function inherit from CUserDATA ----------------------------------------------------
-
-    float GetCur_MOVE_SPEED() { return Get_MoveSPEED(); }
     BYTE GetCur_MOVE_MODE() { return Get_MoveMODE(); }
     BYTE GetCur_RIDE_MODE() { return m_btRideMODE; }
 
