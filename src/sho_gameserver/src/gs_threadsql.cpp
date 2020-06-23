@@ -243,6 +243,42 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         return false;
     }
 
+    // Update union points
+    std::string union_query =
+        "UPDATE union_points SET union1=$1, union2=$2, union3=$3, union4=$4, union5=$5, union6=$6, "
+        "union7=$7, union8=$8, union9=$9, union10=$10 "
+        "WHERE character_id=$11";
+
+    QueryResult union_res = this->db_pg.query(union_query,
+        {
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[0]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[1]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[2]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[3]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[4]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[5]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[6]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[7]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[8]),
+            std::to_string(user->m_GrowAbility.m_nUnionPOINT[9]),
+            std::to_string(user->m_dwDBID),
+        });
+
+    if (!union_res.is_ok()) {
+        LOG_ERROR("Failed to save union info for '{}': {}",
+            user->Get_NAME(),
+            union_res.error_message());
+
+        trans_res = this->db_pg.query("ROLLBACK", {});
+        if (!trans_res.is_ok()) {
+            LOG_ERROR("Failed to rollback transaction when saving character '{}': {}",
+                char_name,
+                trans_res.error_message());
+        }
+
+        return false;
+    }
+
     std::vector<std::string> valid_items;
 
     // Update inventory info
@@ -564,13 +600,10 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     short nOutStrLen = 0;
     char* pCharName = Packet_GetStringPtr(pPacket, nOffset, nOutStrLen);
     if (!pCharName || nOutStrLen < 4) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: CharName == NULL \n");
         return false;
     }
-#define MAX_AVATAR_NAME 20
 
-    if (nOutStrLen > MAX_AVATAR_NAME) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Proc_cli_SELECT_CHAR:: CharName == '%s'\n", pCharName);
+    if (nOutStrLen > GameStaticConfig::MAX_CHARACTER_NAME) {
         return false;
     }
 
@@ -587,14 +620,13 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     std::string account_username = user->Get_ACCOUNT();
 
     std::string query =
-        "SELECT id, gender_id, job_id, face_id, hair_id, level, exp, hp, mp, stamina, max_hp, "
-        "max_mp, "
-        "max_stamina, str, dex, intt, con, cha, sen, stat_points, skill_points, money, "
-        "storage_money, map_id, "
-        "respawn_x, respawn_y, town_respawn_id, town_respawn_x, town_respawn_y, union_id, skills, "
-        "quests, hotbar "
-        "FROM character "
-        "WHERE account_username=$1 AND name=$2";
+        "SELECT character.id, gender_id, job_id, face_id, hair_id, level, exp, hp, mp, stamina, "
+        "max_hp, max_mp, max_stamina, str, dex, intt, con, cha, sen, stat_points, skill_points, "
+        "money, storage_money, map_id, respawn_x, respawn_y, town_respawn_id, town_respawn_x, "
+        "town_respawn_y, union_id, skills, quests, hotbar, "
+        "union1, union2, union3, union4, union5, union6, union7, union8, union9, union10 "
+        "FROM character, union_points WHERE "
+        "account_username=$1 AND name=$2 AND character.id=union_points.character_id;";
 
     enum CharCol {
         COL_ID = 0,
@@ -630,6 +662,16 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         COL_SKILLS,
         COL_QUESTS,
         COL_HOTBAR,
+        COL_UNION1,
+        COL_UNION2,
+        COL_UNION3,
+        COL_UNION4,
+        COL_UNION5,
+        COL_UNION6,
+        COL_UNION7,
+        COL_UNION8,
+        COL_UNION9,
+        COL_UNION10,
     };
 
     QueryResult char_res = this->db_pg.query(query, {account_username, char_name});
@@ -713,9 +755,18 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     grow_ability.m_nBonusPoint = char_res.get_int32(0, COL_STAT_POINTS);
     grow_ability.m_nSkillPoint = char_res.get_int32(0, COL_SKILL_POINTS);
     grow_ability.m_nSTAMINA = char_res.get_int32(0, COL_STAMINA);
+    grow_ability.m_nUnionPOINT[0] = char_res.get_int32(0, COL_UNION1);
+    grow_ability.m_nUnionPOINT[1] = char_res.get_int32(0, COL_UNION2);
+    grow_ability.m_nUnionPOINT[2] = char_res.get_int32(0, COL_UNION3);
+    grow_ability.m_nUnionPOINT[3] = char_res.get_int32(0, COL_UNION4);
+    grow_ability.m_nUnionPOINT[4] = char_res.get_int32(0, COL_UNION5);
+    grow_ability.m_nUnionPOINT[5] = char_res.get_int32(0, COL_UNION6);
+    grow_ability.m_nUnionPOINT[6] = char_res.get_int32(0, COL_UNION7);
+    grow_ability.m_nUnionPOINT[7] = char_res.get_int32(0, COL_UNION8);
+    grow_ability.m_nUnionPOINT[8] = char_res.get_int32(0, COL_UNION9);
+    grow_ability.m_nUnionPOINT[9] = char_res.get_int32(0, COL_UNION10);
 
     // TODO: In grow_ability
-    // short m_nUnionPOINT[MAX_UNION_COUNT];
     // m_btBodySIZE / m_btHeadSIZE -- Would be fun to get these working!
     // m_lPenalEXP -- What is this?
     // m_nPKFlag -- What is this?
