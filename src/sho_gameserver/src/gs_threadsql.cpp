@@ -175,7 +175,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
     // Begin the database transaction
     QueryResult trans_res = this->db_pg.query("BEGIN", {});
     if (!trans_res.is_ok()) {
-        LOG_ERROR("Failed to begin transaction when saving character '%s': %s",
+        LOG_ERROR("Failed to begin transaction when saving character '{}': {}",
             char_name,
             trans_res.error_message());
         return false;
@@ -229,13 +229,13 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         });
 
     if (!char_res.is_ok()) {
-        LOG_ERROR("Failed to save character info for '%s': %s",
+        LOG_ERROR("Failed to save character info for '{}': {}",
             user->Get_NAME(),
             char_res.error_message());
 
         trans_res = this->db_pg.query("ROLLBACK", {});
         if (!trans_res.is_ok()) {
-            LOG_ERROR("Failed to rollback transaction when saving character '%s': %s",
+            LOG_ERROR("Failed to rollback transaction when saving character '{}': {}",
                 char_name,
                 trans_res.error_message());
         }
@@ -395,13 +395,13 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
 
     QueryResult bulk_res = this->db_pg.batch(bulk);
     if (!bulk_res.is_ok()) {
-        LOG_ERROR("Failed to update items for character '%s': %s",
+        LOG_ERROR("Failed to update items for character '{}': {}",
             char_name,
             bulk_res.error_message());
 
         trans_res = this->db_pg.query("ROLLBACK", {});
         if (!trans_res.is_ok()) {
-            LOG_ERROR("Failed to rollback transaction when creating '%s': %s",
+            LOG_ERROR("Failed to rollback transaction when creating '{}': {}",
                 char_name,
                 trans_res.error_message());
         }
@@ -411,7 +411,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
     // Commit the transaction
     trans_res = this->db_pg.query("COMMIT", {});
     if (!trans_res.is_ok()) {
-        LOG_ERROR("Failed to commit transaction when saving character '%s': %s",
+        LOG_ERROR("Failed to commit transaction when saving character '{}': {}",
             char_name,
             trans_res.error_message());
         return false;
@@ -634,7 +634,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
 
     QueryResult char_res = this->db_pg.query(query, {account_username, char_name});
     if (!char_res.is_ok()) {
-        LOG_ERROR("Failed to get character '%s' for account '%s': %s",
+        LOG_ERROR("Failed to get character '{}' for account '{}': {}",
             account_username.c_str(),
             char_name.c_str(),
             char_res.error_message());
@@ -669,7 +669,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     };
 
     if (!item_res.is_ok()) {
-        LOG_ERROR("Inventory query failed for character '%s': %s",
+        LOG_ERROR("Inventory query failed for character '{}': {}",
             char_name.c_str(),
             item_res.error_message());
         return false;
@@ -948,7 +948,7 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
     };
 
     if (!storage_res.is_ok()) {
-        LOG_ERROR("Storage query failed for character '%s': %s",
+        LOG_ERROR("Storage query failed for character '{}': {}",
             user->Get_NAME(),
             storage_res.error_message());
         return false;

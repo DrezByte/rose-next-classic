@@ -900,7 +900,7 @@ CThreadGUILD::Test_del(char* pGuildName) {
     SDWORD cbSize1 = SQL_NTS;
 
     this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanDELETE(\'%s\')}", pGuildName)) {
+    if (this->db->QuerySQL((char*)"{?=call ws_ClanDELETE(\'{}\')}", pGuildName)) {
         DWORD dwClanID = 0;
         while (this->db->GetNextRECORD()) {
             // 성공...
@@ -916,10 +916,10 @@ CThreadGUILD::Test_del(char* pGuildName) {
         }
         switch (iResultSP) {
             case 0: // 성공
-                LOG_INFO("Delete clan success : dwCladID::%d", dwClanID);
+                LOG_INFO("Delete clan success : dwCladID::{}", dwClanID);
                 break;
             default: // 실패
-                LOG_INFO("Delete clan failed : %d", iResultSP);
+                LOG_INFO("Delete clan failed : {}", iResultSP);
         }
     } else {
         // 디비 SP 오류...

@@ -104,7 +104,7 @@ CZoneLIST::InitZoneLIST(char* szBaseDIR) {
     for (nZ = 1; nZ < m_nZoneCNT; nZ++) {
         if (m_ppThreadZONE[nZ]) {
             g_pThreadSQL->IO_ZoneDATA(m_ppThreadZONE[nZ]);
-            LOG_INFO("Adding zone: #%d - %s", nZ, ZONE_NAME(nZ));
+            LOG_INFO("Adding zone: #{} - {}", nZ, ZONE_NAME(nZ));
             // m_ppThreadZONE[ nZ ]->Resume ();
         }
     }
@@ -129,7 +129,7 @@ CZoneLIST::FreeZoneLIST() {
             if (m_ppThreadZONE[nI]) {
                 if (m_ppThreadZONE[nI]->Free()) {
                     if (m_ppThreadZONE[nI]->m_pListITEM) {
-                        LOG_INFO("Deleting zone item %s", m_ppThreadZONE[nI]->m_pListITEM);
+                        LOG_INFO("Deleting zone item {}", m_ppThreadZONE[nI]->m_pListITEM);
                     }
 
                     SAFE_DELETE(m_ppThreadZONE[nI]);

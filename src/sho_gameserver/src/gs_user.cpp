@@ -4166,7 +4166,7 @@ classUSER::Recv_cli_MOVE_ITEM(t_PACKET* pPacket) {
             }
 
             if (pSourITEM->GetHEADER() != pPacket->m_cli_MOVE_ITEM.m_MoveITEM.GetHEADER()) {
-                LOG_WARN("Cheat: User %s attempting to move invalid storage item",
+                LOG_WARN("Cheat: User {} attempting to move invalid storage item",
                     this->Get_NAME());
                 bResult = false;
                 goto _RETURN;

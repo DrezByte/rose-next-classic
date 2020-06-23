@@ -120,7 +120,7 @@ SC_LoadModel(ZSTRING pModelName, HNODE hSkeleton, HNODE hMotion, float ScaleInLo
     HNODE hNodeMODEL = ::loadModel(pModelName, hSkeleton, hMotion, 1.0f);
 
     if (hNodeMODEL == NULL)
-        LOG_ERROR("SC_LoadModel failed(in system sript)[ %s ]", pModelName);
+        LOG_ERROR("SC_LoadModel failed(in system sript)[ {} ]", pModelName);
 
     return hNodeMODEL;
 }
@@ -130,7 +130,7 @@ SC_LoadSkeleton(ZSTRING pSkeletonName, ZSTRING pSkeletonPath) {
     HNODE hSkeleton = ::loadSkeleton(pSkeletonName, pSkeletonPath);
 
     if (hSkeleton == NULL)
-        LOG_ERROR("SC_LoadSkeleton failed(in system sript)[ %s ]", pSkeletonName);
+        LOG_ERROR("SC_LoadSkeleton failed(in system sript)[ {} ]", pSkeletonName);
 
     return hSkeleton;
 }
@@ -140,7 +140,7 @@ SC_GetSkeleton(int iIsfeMale) {
     HNODE hSkeleton = g_DATA.Get_SKELETON(iIsfeMale);
 
     if (hSkeleton == NULL)
-        LOG_ERROR("SC_GetSkeleton failed(in system sript)[ %d ]", iIsfeMale);
+        LOG_ERROR("SC_GetSkeleton failed(in system sript)[ {} ]", iIsfeMale);
 
     return hSkeleton;
 }
@@ -150,7 +150,7 @@ SC_FindNode(ZSTRING pNodeName) {
     HNODE hNode = ::findNode(pNodeName);
 
     if (hNode == NULL)
-        LOG_ERROR("SC_FindNode failed(in system sript)[ %s ]", pNodeName);
+        LOG_ERROR("SC_FindNode failed(in system sript)[ {} ]", pNodeName);
 
     return hNode;
 }
@@ -172,9 +172,9 @@ SC_LoadMotion(ZSTRING pMotionName,
         bForModel);
 
     if (hNode == NULL)
-        LOG_ERROR("SC_LoadMotion failed(in system sript)[ %s ]\n", pMotionName);
+        LOG_ERROR("SC_LoadMotion failed(in system sript)[ {} ]", pMotionName);
 
-    LOG_INFO("SC_LoadMotion (in system sript)[ %s ]\n", pMotionName);
+    LOG_INFO("SC_LoadMotion (in system sript)[ {} ]", pMotionName);
 
     return hNode;
 }
@@ -212,7 +212,7 @@ SC_LoadCamera(ZSTRING pCameraName, ZSTRING pCameraPath, HNODE hCameraMotion) {
     HNODE hNode = ::loadCamera(pCameraName, pCameraPath, hCameraMotion);
 
     if (hNode == NULL)
-        LOG_ERROR("SC_LoadCamera failed(in system sript)[ %s ]", pCameraPath);
+        LOG_ERROR("SC_LoadCamera failed(in system sript)[ {} ]", pCameraPath);
 
     ::controlAnimatable(hNode, 0);
     ::setCameraAspectRatio(hNode, 1.3333);

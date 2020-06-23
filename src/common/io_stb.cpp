@@ -313,7 +313,7 @@ STBDATA::LoadWSTB(bool bCheckQuotationMark, char* szFileName, int iKeyColIDX, ..
                                     // ::MessageBox( NULL, CStr::Printf("[ %s: %s / %s ] dupicated
                                     // key ...", szFileName, cFILE.GetNAME(nY),
                                     // cFILE.GetNAME(nFindKEY) ), "ERROR", MB_OK );
-                                    LOG_WARN("Duplicate key [%d:%s] in %s", nY, pStr, szFileName);
+                                    LOG_WARN("Duplicate key [{}:{}] in {}", nY, pStr, szFileName);
                                     break;
                                 }
                             }

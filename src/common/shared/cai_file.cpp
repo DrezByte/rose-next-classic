@@ -565,7 +565,7 @@ CAI_FILE::Load(char* szFileName, STBDATA* pSTB, int iLangCol) {
 #ifndef __SERVER
             ::MessageBox(NULL, szFileName, "AI File ERROR", MB_OK);
 #else
-			LOG_ERROR("Error loading AI file: %s", szFileName);
+			LOG_ERROR("Error loading AI file: {}", szFileName);
 #endif
             fclose(fp);
             return false;

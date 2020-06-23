@@ -279,7 +279,7 @@ classODBC::Connect(char* szDSN, char* szUserName, char* szPassword) {
             SQLGetDiagRec(SQL_HANDLE_DBC, m_hDBC1, 1, state, &err_code, err_message, 256, NULL
 
             );
-        LOG_ERROR("SQLConnect() failed with error state: %s (DSN: %s)", (char*)state, szDSN);
+        LOG_ERROR("SQLConnect() failed with error state: {} (DSN: {})", (char*)state, szDSN);
         LOG_ERROR((char*)err_message);
         return false;
     }
@@ -987,7 +987,7 @@ classODBC::bind(uint32_t idx,
     SQLSMALLINT sql_type) {
 
     if (idx >= MAX_BIND_PARAMS) {
-        LOG_WARN("Attempting to bind more parameters than the max of %d", MAX_BIND_PARAMS);
+        LOG_WARN("Attempting to bind more parameters than the max of {}", MAX_BIND_PARAMS);
         return false;
     }
 
@@ -1010,7 +1010,7 @@ classODBC::bind(uint32_t idx,
         strlen_or_indptr);
 
     if (res != SQL_SUCCESS) {
-        LOG_WARN("Failed to bind the SQL parameter at index %d", idx);
+        LOG_WARN("Failed to bind the SQL parameter at index {}", idx);
 
         for (const std::string& msg: this->get_error_messages()) {
             LOG_WARN(msg.c_str());
@@ -1240,7 +1240,7 @@ classODBC::get_error_messages(SQLHANDLE handle, SQLSMALLINT type) {
         if (res == SQL_SUCCESS) {
             messages.push_back((char*)sql_msg);
         } else if (res == SQL_SUCCESS_WITH_INFO) {
-            LOG_WARN("Could not get a sql error message because buffer was too small")
+            LOG_WARN("Could not get a sql error message because buffer was too small");
         } else if (res == SQL_ERROR) {
             LOG_WARN("An error occurred when trying to get a sql error message");
         } else if (res == SQL_INVALID_HANDLE) {

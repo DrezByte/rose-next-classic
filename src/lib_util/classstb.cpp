@@ -106,7 +106,7 @@ classSTB::Open(char* szFileName, long lFilePtr) {
     } u;
 
     if (0 != fopen_s(&m_fp, szFileName, "rb")) {
-        LOG_ERROR("Failed to open file %s", szFileName);
+        LOG_ERROR("Failed to open file {}", szFileName);
         //::MessageBox (NULL, "File open error...", szFileName, MB_OK);
         return false;
     }

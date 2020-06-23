@@ -254,7 +254,7 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
                 return false;
             }
             default: {
-                LOG_WARN("Received unknown packet type %d", packet_type);
+                LOG_WARN("Received unknown packet type {}", packet_type);
                 break; // TODO: Don't fall through once old packet handling has been replaced
             }
         }

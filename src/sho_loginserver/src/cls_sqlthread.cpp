@@ -112,7 +112,7 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
     }
 
     if (req->username()->size() == 0 || req->username()->size() > USERNAME_MAX) {
-        LOG_DEBUG("Username was string was empty or too long: %s", req->username()->c_str());
+        LOG_DEBUG("Username was string was empty or too long: {}", req->username()->c_str());
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_NOT_FOUND_ACCOUNT);
         return false;
     }
@@ -125,7 +125,7 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
 
     QueryResult res = this->db_pg.query(stmt, {req->username()->c_str()});
     if (!res.is_ok()) {
-        LOG_ERROR("Failed to query account info for username: (%s)", req->username()->c_str());
+        LOG_ERROR("Failed to query account info for username: ({})", req->username()->c_str());
         LOG_ERROR(this->db_pg.last_error_message());
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_FAILED);
         return false;

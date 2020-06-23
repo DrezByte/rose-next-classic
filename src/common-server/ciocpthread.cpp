@@ -77,9 +77,8 @@ CIocpTHREAD::Free(void) {
 
     do {
         if (0 == ::PostQueuedCompletionStatus(m_hIOCP, -1, 0, NULL)) {
-            LOG_DEBUG(
-                "ThreadWORKER::Free() PostQueuedCompletionStatus() return 0, LastERROR: %d(0x%x)",
-                GetLastError(),
+            LOG_DEBUG("ThreadWORKER::Free() PostQueuedCompletionStatus() return 0, LastERROR: "
+                      "{0}({0:#x})",
                 GetLastError());
             break;
         }

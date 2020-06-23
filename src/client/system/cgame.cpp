@@ -233,20 +233,6 @@ CGame::Init() {
 
     ::activateLog(true);
 
-    LOG_DEBUG("tagBasicINFO: %d, tagBasicAbility: %d, tagGrowAbility: %d, tagSkillAbility: %d, "
-              "tagQuestData: %d, CInventory: %d = %d",
-        sizeof(tagBasicINFO),
-        sizeof(tagBasicAbility),
-        sizeof(tagGrowAbility),
-        sizeof(tagSkillAbility),
-        sizeof(tagQuestData),
-        sizeof(CInventory),
-        sizeof(tagBasicINFO) + sizeof(tagBasicAbility) + sizeof(tagGrowAbility)
-            + sizeof(tagSkillAbility) + sizeof(tagQuestData) + sizeof(CInventory));
-
-    // g_GameDATA.m_nScrWidth  = getScreenWidth();
-    // g_GameDATA.m_nScrHeight = getScreenHeight();
-
     g_GameDATA.m_bWireMode = false;
 
     if (g_pNet == NULL) {

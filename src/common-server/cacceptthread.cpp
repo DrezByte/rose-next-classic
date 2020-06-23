@@ -34,7 +34,7 @@ CAcceptTHREAD::Execute() {
             // If user hits Ctrl+C or Ctrl+Brk or console window is closed, the control
             // handler will close the g_sdListen socket. The above WSAAccept call will
             // fail and we thus break out the loop,
-            LOG_DEBUG("Accept return INVALID_SOCKET, LastERROR: %d(0x%x)",
+            LOG_DEBUG("Accept return INVALID_SOCKET, LastERROR: {}({:#x})",
                 WSAGetLastError(),
                 WSAGetLastError());
             Socket_Error("CAcceptTHREAD::Execute");
@@ -66,14 +66,14 @@ CAcceptTHREAD::Init(int iTCPPort, int iKeepAliveSec) {
     m_ListenSocket = INVALID_SOCKET;
 
     if ((iRet = ::WSAStartup(MAKEWORD(2, 2), &wsaData)) != 0) {
-        LOG_ERROR("WSAStartup failed: %d", iRet);
+        LOG_ERROR("WSAStartup failed: {}", iRet);
         return false;
     }
 
     // Create a listening socket
     m_ListenSocket = ::WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
     if (m_ListenSocket == INVALID_SOCKET) {
-        LOG_ERROR("WSASocket() failed with error %d", WSAGetLastError());
+        LOG_ERROR("WSASocket() failed with error {}", WSAGetLastError());
         return false;
     }
 
@@ -85,7 +85,7 @@ CAcceptTHREAD::Init(int iTCPPort, int iKeepAliveSec) {
 
     iRet = ::bind(m_ListenSocket, (SOCKADDR*)&sSockAddr, sizeof(SOCKADDR_IN));
     if (iRet == SOCKET_ERROR) {
-        LOG_ERROR("bind failed with error :: %d", WSAGetLastError());
+        LOG_ERROR("bind failed with error :: {}", WSAGetLastError());
         return false;
     }
     /*
@@ -138,7 +138,7 @@ CAcceptTHREAD::Init(int iTCPPort, int iKeepAliveSec) {
     iRet = ::listen(m_ListenSocket, 5);
     if (iRet == SOCKET_ERROR) {
         m_ListenSocket = INVALID_SOCKET;
-        LOG_ERROR("listen() failed with error %d", WSAGetLastError());
+        LOG_ERROR("listen() failed with error {}", WSAGetLastError());
         return false;
     }
 

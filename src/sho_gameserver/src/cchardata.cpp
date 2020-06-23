@@ -136,7 +136,7 @@ CCharDatLIST::Load_MOBorNPC(char* szBaseDIR, char* szFileName) {
         }
 
         if (!CUtil::Is_FileExist(pFullPath)) {
-            LOG_WARN("Could not load mob or npc file: %s", pFullPath);
+            LOG_WARN("Could not load mob or npc file: {}", pFullPath);
         }
         pAniKEY[nI] = g_MotionFILE.Add_FILE(pFullPath);
         assert(pAniKEY[nI]);

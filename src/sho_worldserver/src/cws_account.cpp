@@ -8,6 +8,6 @@
 CWS_Account::~CWS_Account() {
     if (0 == m_btLoginBIT) {
         const char* szAccount = this->m_Account.Get() ? this->m_Account.Get() : "unknown user";
-        LOG_WARN("Invalid logout process found for %s", szAccount);
+        LOG_WARN("Invalid logout process found for {}", szAccount);
     }
 }

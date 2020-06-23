@@ -748,7 +748,7 @@ CNetwork::recv_packet(t_PACKET* packet) {
                 return this->recv_update_stats(p);
             }
             default: {
-                LOG_WARN("Received unknown packet type %d", packet_type);
+                LOG_WARN("Received unknown packet type {}", packet_type);
                 break;
             }
         }

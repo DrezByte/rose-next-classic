@@ -146,7 +146,7 @@ public:
         m_LIST.DeleteNode(&pServer->m_ListNODE);
         this->UnlockLIST();
 
-        LOG_INFO("World server %s (%s) disconnected",
+        LOG_INFO("World server {} ({}) disconnected",
             pServer->m_ServerNAME.Get(),
             pSOCKET->m_IP.Get());
 

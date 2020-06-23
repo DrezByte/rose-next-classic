@@ -3,13 +3,23 @@
 #pragma once
 
 #include "rose/common/common_interface.h"
-#include <mutex>
 
-#define LOG_TRACE(msg, ...) g_LOG.trace(__FILE__, __LINE__, msg, ##__VA_ARGS__);
-#define LOG_DEBUG(msg, ...) g_LOG.debug(__FILE__, __LINE__, msg, ##__VA_ARGS__);
-#define LOG_INFO(msg, ...) g_LOG.info(__FILE__, __LINE__, msg, ##__VA_ARGS__);
-#define LOG_WARN(msg, ...) g_LOG.warn(__FILE__, __LINE__, msg, ##__VA_ARGS__);
-#define LOG_ERROR(msg, ...) g_LOG.error(__FILE__, __LINE__, msg, ##__VA_ARGS__);
+#include "fmt/format.h"
+
+#define LOG_TRACE(msg, ...) \
+    g_LOG.log(Rose::Common::LogLevel::Trace, __FILE__, __LINE__, msg, __VA_ARGS__)
+
+#define LOG_DEBUG(msg, ...) \
+    g_LOG.log(Rose::Common::LogLevel::Debug, __FILE__, __LINE__, msg, __VA_ARGS__)
+
+#define LOG_INFO(msg, ...) \
+    g_LOG.log(Rose::Common::LogLevel::Info, __FILE__, __LINE__, msg, __VA_ARGS__)
+
+#define LOG_WARN(msg, ...) \
+    g_LOG.log(Rose::Common::LogLevel::Warn, __FILE__, __LINE__, msg, __VA_ARGS__)
+
+#define LOG_ERROR(msg, ...) \
+    g_LOG.log(Rose::Common::LogLevel::Error, __FILE__, __LINE__, msg, __VA_ARGS__)
 
 // -- Legacy defines for OutputString/CS_ODS
 #define LOG_NORMAL 0x01
@@ -18,41 +28,41 @@
 
 #define LOG_BUFFER_SIZE 1024
 
+class Log;
+extern Log g_LOG;
+
 class Log {
-private:
-    char _buffer[LOG_BUFFER_SIZE];
-    std::mutex _log_mutex;
-
 public:
-    Log();
-    ~Log();
-
     // -- Legacy logging functions (TODO: deprecated, references need to be removed)
-    void static OutputString(unsigned short wLogMODE, char* fmt, ...);
-    void CS_ODS(unsigned short wLogMODE, char* fmt, ...);
-    void CS_ODS(unsigned short log_mode, const char* msg, ...);
+    template<typename... Args>
+    void static OutputString(unsigned short wLogMODE, char* msg, Args&&... args) {
+        g_LOG.log(Rose::Common::LogLevel::Debug, "", 0, msg, std::forward<Args>(args)...);
+    }
 
+    template<typename... Args>
+    void CS_ODS(unsigned short wLogMODE, char* msg, Args&&... args) {
+        log(Rose::Common::LogLevel::Debug, "", 0, msg, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void CS_ODS(unsigned short log_mode, const char* msg, Args&&... args) {
+        log(Rose::Common::LogLevel::Debug, "", 0, msg, std::forward<Args>(args)...);
+    }
     // -- End Legacy
 
-    // New logging facades
+    // New logging facade
+    template<typename... Args>
     void log(Rose::Common::LogLevel level,
         const char* file,
         uint32_t line,
-        const char* message,
-        va_list args);
+        const char* format_str,
+        Args&&... args) {
 
-    void
-    log(Rose::Common::LogLevel level, const char* file, uint32_t line, const char* message, ...);
-
-    void trace(const char* file, uint32_t line, const char* message, ...);
-    void debug(const char* file, uint32_t line, const char* message, ...);
-    void info(const char* file, uint32_t line, const char* message, ...);
-    void warn(const char* file, uint32_t line, const char* message, ...);
-    void error(const char* file, uint32_t line, const char* message, ...);
+        std::string msg = fmt::format(format_str, args...);
+        Rose::Common::logger_write(level, file, line, msg.c_str());
+    }
 };
 
 #define LogString g_LOG.OutputString
-
-extern Log g_LOG;
 
 #endif // CLOG_H

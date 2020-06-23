@@ -309,7 +309,7 @@ STBDATA::LoadWSTB(bool bCheckQuotationMark, char* szFileName, int iKeyColIDX, ..
                                 if (!pStr[iP])
                                     break;
                                 if (pStr[iP] != ' ') {
-                                    LOG_WARN("Duplicate key[ %d:%s ] in %s", nY, pStr, szFileName);
+                                    LOG_WARN("Duplicate key[ {}:{} ] in %s", nY, pStr, szFileName);
                                     break;
                                 }
                             }

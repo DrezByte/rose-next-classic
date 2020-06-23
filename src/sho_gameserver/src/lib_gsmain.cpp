@@ -783,7 +783,7 @@ CLIB_GameSRV::connect_database() {
 
     if (!g_pThreadSQL->db_pg.connect(this->config.database.connection_string)) {
         std::string error_message = g_pThreadSQL->db_pg.last_error_message();
-        LOG_ERROR("Failed to connect to the database: %s", error_message.c_str());
+        LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
 
         g_pThreadSQL = NULL;
         return false;

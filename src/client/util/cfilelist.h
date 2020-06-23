@@ -229,7 +229,7 @@ CFileLIST<dType>::Add_FILE(char* szFileName,
         t_HASHKEY uiHashKey2;
         uiHashKey2 = StrToHashKey(pData->m_FileName.Get());
 
-        LOG_DEBUG((char*)"HashKey Collision (%d:%s,  %d:%s)\n",
+        LOG_DEBUG("HashKey Collision ({}:{},  {}:{})",
             uiHashKey,
             szFileName,
             uiHashKey2,

@@ -67,7 +67,7 @@ CWS_Server::Free() {
         }
     }
 
-    LOG_INFO("Channel disconnected: (%s:%d)", m_ServerIP.Get(), m_wListenPORT);
+    LOG_INFO("Channel disconnected: ({}:{})", m_ServerIP.Get(), m_wListenPORT);
 
     _ASSERT(0 == this->m_iSocketIDX);
     this->Clear_LIST();
@@ -194,7 +194,7 @@ CWS_Server::Recv_zws_SERVER_INFO(t_PACKET* pPacket) {
 
     this->SendPacket(pCPacket);
 
-    LOG_INFO("Channel connected: %s (%s:%d)", szServerName, m_ServerIP.Get(), m_wListenPORT);
+    LOG_INFO("Channel connected: {} ({}:{})", szServerName, m_ServerIP.Get(), m_wListenPORT);
 
     return true;
 }

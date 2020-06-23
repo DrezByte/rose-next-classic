@@ -174,7 +174,7 @@ CLS_Server::Recv_zws_SERVER_INFO(t_PACKET* pPacket) {
     this->m_wListenPORT = pPacket->m_zws_SERVER_INFO.m_wPortNO;
     this->m_dwRandomSEED = pPacket->m_zws_SERVER_INFO.m_dwSeed;
 
-    LOG_INFO("World server %s (%s) connected.", szServerName, m_ServerIP.Get());
+    LOG_INFO("World server {} ({}) connected.", szServerName, m_ServerIP.Get());
     return true;
 }
 

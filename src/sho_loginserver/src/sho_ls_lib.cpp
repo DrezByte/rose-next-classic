@@ -199,7 +199,7 @@ SHO_LS::connect_database(const DatabaseConfig& db_config) {
         char* name = (char*)db_config.name.c_str();
 
         if (!g_pThreadSQL->Connect(USE_ODBC, ip, username, password, name, 32, 1024 * 4)) {
-            LOG_ERROR("Failed to connect to the databases: %s@%s(%s)", username, name, ip);
+            LOG_ERROR("Failed to connect to the databases: {}@{}({})", username, name, ip);
 
             g_pThreadSQL->Destroy();
             g_pThreadSQL = NULL;
@@ -208,7 +208,7 @@ SHO_LS::connect_database(const DatabaseConfig& db_config) {
 
         if (!g_pThreadSQL->db_pg.connect(db_config.connection_string)) {
             std::string error_message = g_pThreadSQL->db_pg.last_error_message();
-            LOG_ERROR("Failed to connect to the database: %s", error_message.c_str());
+            LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
 
             g_pThreadSQL->Destroy();
             g_pThreadSQL = NULL;

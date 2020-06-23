@@ -217,7 +217,7 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
     QueryResult res = this->db_pg.query(stmt, {username});
     if (!res.is_ok()) {
         std::string msg = this->db_pg.last_error_message();
-        LOG_ERROR("Error getting character list for account %s: %s", username.c_str(), msg.c_str());
+        LOG_ERROR("Error getting character list for account {}: {}", username.c_str(), msg.c_str());
         return false;
     }
 
@@ -274,7 +274,7 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
                 {char_id});
 
         if (!equip_res.is_ok()) {
-            LOG_DEBUG("Inventory query failed: %s", equip_res.error_message());
+            LOG_DEBUG("Inventory query failed: {}", equip_res.error_message());
             continue;
         }
 
@@ -306,7 +306,7 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
 
         QueryResult del_item_res = this->db_pg.query(del_item, delete_list);
         if (!del_item_res.is_ok()) {
-            LOG_ERROR("Failed to delete items for character(s): %s", del_item_res.error_message());
+            LOG_ERROR("Failed to delete items for character(s): {}", del_item_res.error_message());
         }
 
         std::string q =
@@ -314,7 +314,7 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
 
         QueryResult delete_res = this->db_pg.query(q, delete_list);
         if (!delete_res.is_ok()) {
-            LOG_ERROR("Failed to delete character(s): %s", delete_res.error_message());
+            LOG_ERROR("Failed to delete character(s): {}", delete_res.error_message());
         }
     }
 
@@ -339,7 +339,7 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     const char* stmt = "SELECT id, account_username, map_id FROM character WHERE name=$1";
     QueryResult res = this->db_pg.query(stmt, {char_name});
     if (!res.is_ok()) {
-        LOG_ERROR("Failed to select character with name %s: %s", char_name, res.error_message());
+        LOG_ERROR("Failed to select character with name {}: {}", char_name, res.error_message());
         return false;
     }
 
@@ -372,7 +372,7 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     const char* mail_stmt = "SELECT COUNT(*) FROM mail WHERE recipient_id=$1";
     QueryResult mail_res = this->db_pg.query(mail_stmt, {char_id});
     if (!mail_res.is_ok()) {
-        LOG_ERROR("Failed to get mail count for character %s: %s",
+        LOG_ERROR("Failed to get mail count for character {}: {}",
             char_name,
             mail_res.error_message());
         return false;
@@ -414,7 +414,7 @@ CWS_ThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
         this->db_pg.queryb(stmt, {delete_by_param, pSqlPACKET->m_Name.Get(), char_name});
 
     if (!res.is_ok()) {
-        LOG_ERROR("Failed to delete character %s: %s", char_name.c_str(), res.error_message());
+        LOG_ERROR("Failed to delete character {}: {}", char_name.c_str(), res.error_message());
         return false;
     }
 
@@ -440,12 +440,12 @@ CWS_ThreadSQL::Load_WORLDVAR(int16_t* buffer, size_t count) {
     QueryResult res = this->db_pg.query(stmt, {WORLD_VAR});
     if (!res.is_ok()) {
         std::string msg = this->db_pg.last_error_message();
-        LOG_ERROR("Failed to load world var: %s", msg.c_str());
+        LOG_ERROR("Failed to load world var: {}", msg.c_str());
         return false;
     }
 
     if (res.row_count > 1) {
-        LOG_ERROR("Found too many world var rows: %d", res.row_count);
+        LOG_ERROR("Found too many world var rows: {}", res.row_count);
         return false;
     }
 
@@ -518,7 +518,7 @@ CWS_ThreadSQL::Proc_SAVE_WORLDVAR(sql_ZONE_DATA* pSqlZONE) {
     QueryResult res = this->db_pg.query(stmt, {WORLD_VAR, j.dump()});
     if (!res.is_ok()) {
         std::string msg = this->db_pg.last_error_message();
-        LOG_ERROR("Failed to save WORLDVAR: %s", msg.c_str());
+        LOG_ERROR("Failed to save WORLDVAR: {}", msg.c_str());
         return false;
     }
 
@@ -547,7 +547,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
             QueryResult res = this->db_pg.query(stmt, {user_id});
             if (!res.is_ok()) {
-                LOG_ERROR("Failed to get mail count for character %s: %s",
+                LOG_ERROR("Failed to get mail count for character {}: {}",
                     char_name.c_str(),
                     res.error_message());
                 return false;
@@ -568,7 +568,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
             QueryResult res = this->db_pg.query(stmt, {user_id});
             if (!res.is_ok()) {
-                LOG_ERROR("Failed to get mail for character %s: %s",
+                LOG_ERROR("Failed to get mail for character {}: {}",
                     user->Get_DBID(),
                     res.error_message());
                 return false;
@@ -612,7 +612,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
                     param_list(delete_list.size()));
                 QueryResult delete_res = this->db_pg.query(delete_stmt, {delete_list});
                 if (!delete_res.is_ok()) {
-                    LOG_ERROR("Failed to delete mail for character %s: %s",
+                    LOG_ERROR("Failed to delete mail for character {}: {}",
                         char_name.c_str(),
                         delete_res.error_message());
                     return false;
@@ -633,7 +633,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
             const char* stmt = "SELECT id FROM character WHERE character.name=$1";
             QueryResult res = this->db_pg.query(stmt, {target_char});
             if (!res.is_ok()) {
-                LOG_ERROR("Failed to get character id for character %s: %s",
+                LOG_ERROR("Failed to get character id for character {}: {}",
                     target_char,
                     res.error_message());
                 return false;
@@ -657,7 +657,7 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
             QueryResult count_res = this->db_pg.query(count_stmt, {target_char});
             if (!count_res.is_ok()) {
-                LOG_ERROR("Failed to get mail count for character %s: %s",
+                LOG_ERROR("Failed to get mail count for character {}: {}",
                     target_char,
                     count_res.error_message());
                 return false;
@@ -673,10 +673,10 @@ CWS_ThreadSQL::Proc_cli_MEMO(tagQueryDATA* pSqlPACKET) {
 
             QueryResult add_res = this->db_pg.query(stmt, {target_char_id, user_id, message});
             if (!add_res.is_ok()) {
-                LOG_ERROR("Failed to add character mail from %s to %s: %s",
+                LOG_ERROR("Failed to add character mail from {} to {}: {}",
                     pSqlPACKET->m_Name.Get(),
                     target_char_id,
-                    add_res.error_message())
+                    add_res.error_message());
                 return false;
             }
 
@@ -735,7 +735,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     const char* stmt = "SELECT COUNT(*) FROM character WHERE name=$1";
     QueryResult res = this->db_pg.query(stmt, {char_name});
     if (!res.is_ok() || res.row_count != 1) {
-        LOG_ERROR("Failed to count characters with name '%s': %s", char_name, res.error_message());
+        LOG_ERROR("Failed to count characters with name '{}': {}", char_name, res.error_message());
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
         return false;
     }
@@ -756,7 +756,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     const char* count_stmt = "SELECT COUNT (*) from character WHERE account_username=$1";
     QueryResult count_res = this->db_pg.query(stmt, {account_name});
     if (!count_res.is_ok() || count_res.row_count != 1) {
-        LOG_ERROR("Failed to count characters for username '%s': %s",
+        LOG_ERROR("Failed to count characters for username '{}': {}",
             account_name.c_str(),
             res.error_message());
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
@@ -803,7 +803,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
 
     QueryResult trans_res = this->db_pg.query("BEGIN", {});
     if (!trans_res.is_ok()) {
-        LOG_ERROR("Failed to begin transaction when creating '%s': %s",
+        LOG_ERROR("Failed to begin transaction when creating '{}': {}",
             char_name,
             trans_res.error_message());
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
@@ -821,14 +821,14 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
 
     QueryResult char_res = this->db_pg.query(char_stmt, params);
     if (!char_res.is_ok()) {
-        LOG_ERROR("Failed to create character '%s' for username '%s': %s",
+        LOG_ERROR("Failed to create character '{}' for username '{}': {}",
             char_name,
             account_name.c_str(),
             char_res.error_message());
 
         trans_res = this->db_pg.query("ROLLBACK", {});
         if (!trans_res.is_ok()) {
-            LOG_ERROR("Failed to rollback transaction when creating '%s': %s",
+            LOG_ERROR("Failed to rollback transaction when creating '{}': {}",
                 char_name,
                 trans_res.error_message());
         }
@@ -838,11 +838,11 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     }
 
     if (!char_res.row_count == 1) {
-        LOG_ERROR("No ID returned for inserted character '%s'", char_name);
+        LOG_ERROR("No ID returned for inserted character '{}'", char_name);
 
         trans_res = this->db_pg.query("ROLLBACK", {});
         if (!trans_res.is_ok()) {
-            LOG_ERROR("Failed to rollback transaction when creating '%s': %s",
+            LOG_ERROR("Failed to rollback transaction when creating '{}': {}",
                 char_name,
                 trans_res.error_message());
         }
@@ -909,13 +909,13 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
 
     QueryResult bulk_res = this->db_pg.batch(bulk);
     if (!bulk_res.is_ok()) {
-        LOG_ERROR("Failed to insert default items for character '%s': %s",
+        LOG_ERROR("Failed to insert default items for character '{}': {}",
             char_name,
             bulk_res.error_message());
 
         trans_res = this->db_pg.query("ROLLBACK", {});
         if (!trans_res.is_ok()) {
-            LOG_ERROR("Failed to rollback transaction when creating '%s': %s",
+            LOG_ERROR("Failed to rollback transaction when creating '{}': {}",
                 char_name,
                 trans_res.error_message());
         }
@@ -925,7 +925,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
 
     trans_res = this->db_pg.query("COMMIT", {});
     if (!trans_res.is_ok()) {
-        LOG_ERROR("Failed to commit transaction when creating '%s': %s",
+        LOG_ERROR("Failed to commit transaction when creating '{}': {}",
             char_name,
             trans_res.error_message());
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);

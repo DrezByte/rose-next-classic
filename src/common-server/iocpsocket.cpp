@@ -124,7 +124,7 @@ iocpSOCKET::Recv_Complete(tagIO_DATA* recv_data) {
         this->UnlockSOCKET();
         this->Free_RecvIODATA(recv_data);
 
-        LOG_WARN("Received a packet with no data from %s", this->m_IP.Get());
+        LOG_WARN("Received a packet with no data from {}", this->m_IP.Get());
         return eRESULT_PACKET_BLOCK;
     }
 
@@ -207,7 +207,7 @@ iocpSOCKET::Recv_Complete(tagIO_DATA* recv_data) {
 bool
 iocpSOCKET::Send_Continue(tagIO_DATA* pSendDATA) {
     if (pSendDATA->bytes >= pSendDATA->packet.size) {
-        LOG_WARN(">>ERROR:: Sending packet: Len: %d, completed: %d, IP:%s\n",
+        LOG_WARN(">>ERROR:: Sending packet: Len: {}, completed: {}, IP:{}",
             pSendDATA->packet.size,
             pSendDATA->bytes,
             this->Get_IP());
@@ -330,13 +330,13 @@ iocpSOCKET::Recv_Done(tagIO_DATA* pRecvDATA) {
     do {
         short nTotalPacketLEN = pPacket->m_nSize;
         if (pPacket->m_nSize > pRecvDATA->bytes) {
-            LOG_WARN("Invalid packet: size > bytes read. [%s].", this->m_IP.Get());
+            LOG_WARN("Invalid packet: size > bytes read. [{}].", this->m_IP.Get());
             this->Free_RecvIODATA(pRecvDATA);
             return false;
         }
 
         if (pPacket->m_nSize == 0) {
-            LOG_WARN("Invalid packet: size == 0. [%s].", this->m_IP.Get());
+            LOG_WARN("Invalid packet: size == 0. [{}].", this->m_IP.Get());
             this->Free_RecvIODATA(pRecvDATA);
             return false;
         }

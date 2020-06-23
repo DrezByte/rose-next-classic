@@ -574,7 +574,7 @@ CWS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
                 return this->recv_char_create_req(p);
             }
             default: {
-                LOG_WARN("Received unknown packet type %d", packet_type);
+                LOG_WARN("Received unknown packet type {}", packet_type);
                 break; // TODO: Don't fall through once old packet handling has been replaced
             }
         }
@@ -867,7 +867,7 @@ CWS_ListCLIENT::Del_ACCOUNT(char* szAccount, BYTE btDelLoginBIT, CWS_Server* pCl
                             }
                         } else {
                             LOG_ERROR(
-                                "****ERROR:: NULL == pAccount->m_pCLIENT[ %s, Cur:%x, Sub:%x ] ",
+                                "****ERROR:: NULL == pAccount->m_pCLIENT[ {}, Cur:{:#x}, Sub:{:#x} ] ",
                                 szAccount,
                                 pAccount->m_btLoginBIT,
                                 btDelLoginBIT);
@@ -901,7 +901,7 @@ CWS_ListCLIENT::Del_ACCOUNT(char* szAccount, BYTE btDelLoginBIT, CWS_Server* pCl
                         else {
                             // classTIME::GetCurrentAbsSecond ()
                             // pAccount->m_dwLoginTIME;
-                            LOG_ERROR("%d Account, Sub_ACCOUNT( %s)",
+                            LOG_ERROR("{} Account, Sub_ACCOUNT({})",
                                 m_pHashACCOUNT->GetCount(),
                                 pAccount->Get_ACCOUNT());
                         }
