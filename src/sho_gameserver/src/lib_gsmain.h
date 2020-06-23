@@ -79,13 +79,6 @@ private:
     bool ConnectToLSV();
     void DisconnectFromLSV();
 
-    void TranslateNameWithDescKey(STBDATA* pOri, char* szStbFile, int iNameCol);
-    void TranslateNameWithColoumKey(STBDATA* pOri,
-        char* szStbFile,
-        int iLangCol,
-        int iNameCol,
-        int iDescCol);
-
     friend VOID CALLBACK GS_TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 public:

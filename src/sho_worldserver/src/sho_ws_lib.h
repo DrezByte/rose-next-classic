@@ -49,13 +49,6 @@ private:
 
     DWORD m_dwRandomSEED;
 
-    void TranslateNameWithDescKey(STBDATA* pOri, char* szStbFile, int iLangCol);
-    void TranslateNameWithColoumKey(STBDATA* pOri,
-        char* szStbFile,
-        int iLangCol,
-        int iNameCol,
-        int iDescCol);
-
 public:
     bool connect_database(Rose::Common::DatabaseConfig& config);
 
