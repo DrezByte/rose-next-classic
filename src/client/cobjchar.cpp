@@ -4319,6 +4319,12 @@ CObjMOB::PlayStopSound() {
 
 /*override*/ int
 CObjMOB::Proc() {
+    if (this->m_btMoveMODE == MOVE_MODE_WALK) {
+        this->stats.move_speed = NPC_WALK_SPEED(this->m_nCharIdx);
+    } else {
+        this->stats.move_speed = NPC_RUN_SPEED(this->m_nCharIdx);
+    }
+
     int iResult = CObjCHAR::Proc();
 
     //--------------------------------------------------------------------------------
