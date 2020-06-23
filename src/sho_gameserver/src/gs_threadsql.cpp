@@ -188,8 +188,8 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         "intt=$15, con=$16, cha=$17, sen=$18, stat_points=$19, skill_points=$20 , money=$21, "
         "storage_money=$22, map_id=$23, respawn_x=$24, respawn_y=$25, town_respawn_id=$26, "
         "town_respawn_x=$27, town_respawn_y=$28, union_id=$29, skills=$30, quests=$31, "
-        "hotbar=$32 "
-        "WHERE id=$33");
+        "hotbar=$32, wishlist=$33 "
+        "WHERE id=$34");
 
     QueryResult char_res = this->db_pg.query(query,
         {
@@ -225,6 +225,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             json(user->m_Skills).dump(),
             json(user->m_Quests).dump(),
             json(user->m_HotICONS).dump(),
+            json(user->m_WishLIST).dump(),
             std::to_string(user->m_dwDBID),
         });
 
@@ -623,7 +624,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         "SELECT character.id, gender_id, job_id, face_id, hair_id, level, exp, hp, mp, stamina, "
         "max_hp, max_mp, max_stamina, str, dex, intt, con, cha, sen, stat_points, skill_points, "
         "money, storage_money, map_id, respawn_x, respawn_y, town_respawn_id, town_respawn_x, "
-        "town_respawn_y, union_id, skills, quests, hotbar, "
+        "town_respawn_y, union_id, skills, quests, hotbar, wishlist, "
         "union1, union2, union3, union4, union5, union6, union7, union8, union9, union10 "
         "FROM character, union_points WHERE "
         "account_username=$1 AND name=$2 AND character.id=union_points.character_id;";
@@ -662,6 +663,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         COL_SKILLS,
         COL_QUESTS,
         COL_HOTBAR,
+        COL_WISHLIST,
         COL_UNION1,
         COL_UNION2,
         COL_UNION3,
@@ -769,18 +771,16 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     // TODO: In grow_ability
     // m_btBodySIZE / m_btHeadSIZE -- Would be fun to get these working!
     // m_lPenalEXP -- What is this?
-    // m_nPKFlag -- What is this?
+   // m_nPKFlag -- What is this?
 
     tagSkillAbility skill_ability;
     skill_ability.Init();
-
     json skill_json = json::parse(char_res.get_string(0, COL_SKILLS));
     from_json(skill_json, skill_ability);
 
     tagQuestData quest_data;
     quest_data.Init();
     quest_data.CheckExpiredTIME();
-
     json quest_json = json::parse(char_res.get_string(0, COL_QUESTS));
     from_json(quest_json, quest_data);
 
@@ -788,13 +788,13 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     inventory.Clear();
     inventory.m_i64Money = char_res.get_int64(0, COL_MONEY);
 
-    // TODO: Populate wish list
     tagWishLIST wish_list;
     wish_list.Init();
+    json wish_json = json::parse(char_res.get_string(0, COL_WISHLIST));
+    from_json(wish_json, wish_list);
 
     CHotICONS hotbar_icons;
     hotbar_icons.Init();
-
     json hotbar_json = json::parse(char_res.get_string(0, COL_HOTBAR));
     from_json(hotbar_json, hotbar_icons);
 

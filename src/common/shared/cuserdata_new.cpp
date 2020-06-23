@@ -132,3 +132,24 @@ from_json(const nlohmann::json& j, tagSkillAbility& s) {
         s.m_nSkillINDEX[idx] = j[idx];
     }
 }
+
+void
+to_json(nlohmann::json& j, const tagWishLIST& w) {
+    j = json::array();
+
+    for (size_t i = 0; i < MAX_WISH_ITEMS; ++i) {
+        j.push_back(w.m_WishITEM[i]);
+    }
+}
+
+void
+from_json(const nlohmann::json& j, tagWishLIST& w) {
+    if (!j.is_array()) {
+        return;
+    }
+
+    size_t wishlist_count = min(j.size(), MAX_WISH_ITEMS);
+    for (size_t i = 0; i < wishlist_count; ++i) {
+        w.m_WishITEM[i] = j[i];
+    }
+}

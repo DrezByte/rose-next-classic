@@ -1061,4 +1061,7 @@ void from_json(const nlohmann::json& j, tagQuestData& q);
 void to_json(nlohmann::json& j, const tagSkillAbility& s);
 void from_json(const nlohmann::json& j, tagSkillAbility& s);
 
+void to_json(nlohmann::json& j, const tagWishLIST& w);
+void from_json(const nlohmann::json& j, tagWishLIST& w);
+
 #pragma warning(default : 4201)
