@@ -234,6 +234,8 @@ iocpSOCKET::Send_Continue(tagIO_DATA* pSendDATA) {
 //-------------------------------------------------------------------------------------------------
 bool
 iocpSOCKET::Send_Start(const classPACKET& packet) {
+    LOG_TRACE("Sending to client #{} packet {:#x}", this->m_iSocketIDX, packet.type);
+
     if (m_Socket == INVALID_SOCKET)
         return false;
 
@@ -325,8 +327,9 @@ iocpSOCKET::Send_Complete(tagIO_DATA* pSendDATA) {
 //-------------------------------------------------------------------------------------------------
 bool
 iocpSOCKET::Recv_Done(tagIO_DATA* pRecvDATA) {
+    t_PACKETHEADER* pPacket = reinterpret_cast<t_PACKETHEADER*>(&pRecvDATA->packet.bytes);
+    LOG_TRACE("Received from client #{} packet {:#x}", this->m_iSocketIDX, pPacket->m_wType);
 
-    t_PACKETHEADER* pPacket = (t_PACKETHEADER*)&pRecvDATA->packet.bytes;
     do {
         short nTotalPacketLEN = pPacket->m_nSize;
         if (pPacket->m_nSize > pRecvDATA->bytes) {

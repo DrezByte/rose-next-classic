@@ -7948,6 +7948,9 @@ classUSER::Recv_Done(tagIO_DATA* pRecvDATA) {
         return iocpSOCKET::Recv_Done(pRecvDATA);
     }
 
+    t_PACKETHEADER* pPacket = reinterpret_cast<t_PACKETHEADER*>(&pRecvDATA->packet.bytes);
+    LOG_TRACE("Received from client #{} packet {:#x}", this->m_iSocketIDX, pPacket->m_wType);
+
     // Otherwise, queue it to be processed on each tick
     m_csRecvQ.Lock();
     { this->recv_list.push(pRecvDATA); }
