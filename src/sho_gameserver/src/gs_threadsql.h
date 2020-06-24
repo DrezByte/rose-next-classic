@@ -48,21 +48,10 @@ private:
     classDLLIST<tagSqlUSER> m_AddUserLIST;
     classDLLIST<tagSqlUSER> m_RunUserLIST;
 
-    tagBasicETC m_sBE;
-    CHotICONS m_HotICON;
-    tagBankData m_sEmptyBANK;
-
-    CStrVAR m_TmpSTR;
     DWORD m_dwCurTIME;
 
     // inherit virtual function from CSqlTHREAD...
     bool Run_SqlPACKET(tagQueryDATA* pSqlPACKET);
-
-    bool Proc_LOAD_ZONE_DATA(int iZoneNO);
-    bool Proc_SAVE_ZONE_DATA(int iZoneNO, sql_ZONE_DATA* pSqlZONE);
-
-    bool Proc_LOAD_OBJVAR(tagQueryDATA* pSqlPACKET);
-    bool Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET);
 
     bool Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET);
     bool Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET);
@@ -71,13 +60,8 @@ private:
 
 public:
     GS_CThreadSQL();
-    virtual ~GS_CThreadSQL();
 
     void Set_EVENT() { m_pEVENT->SetEvent(); }
-
-    bool IO_ZoneDATA(CZoneTHREAD* pZONE, bool bSave = false);
-    bool IO_NpcObjDATA(CObjNPC* pObjNPC, bool bSave = false);
-    bool IO_EventObjDATA(CObjEVENT* pObjEVENT, bool bSave = false);
 
     bool Add_SqlPacketWithACCOUNT(classUSER* pUSER, t_PACKET* pPacket);
     bool Add_SqlPacketWithAVATAR(classUSER* pUSER, t_PACKET* pPacket);

@@ -10,7 +10,7 @@
 #include "Sound\IO_Sound.h"
 #include "Object.h"
 #include "Common\CRegenAREA.h"
-#include "Common\CEconomy.h"
+#include "CEconomy.h"
 
 #include "Util\\CFileSystem.h"
 #include "Terrain\WideTerrain.h"

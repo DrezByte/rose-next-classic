@@ -518,37 +518,6 @@ struct srv_SET_WORLD_VAR: public t_PACKETHEADER {
     short m_nValue[1];
 };
 
-/*
-//-------------------------------------------------------------------------------------------------
-struct srv_DO_TRIGGER_NCPOBJ : public t_PACKETHEADER {
-    short		m_nNpcIDX;
-    t_HASHKEY	m_HashTRIGGER;
-} ;
-
-struct srv_DO_TRIGGER_EVENTOBJ : public t_PACKETHEADER {
-    t_HASHKEY	m_HashNAME;
-    t_HASHKEY	m_HashTRIGGER;
-} ;
-
-//-------------------------------------------------------------------------------------------------
-struct srv_SET_NPCOBJ_VAR : public t_PACKETHEADER {
-    short		m_nNpcIDX;			// 음수일 경우 전체 데이타
-    // short	m_nVAR[ xxx ];
-} ;
-
-struct srv_SET_EVENTOBJ_VAR : public t_PACKETHEADER {
-    t_HASHKEY	m_HashNAME;
-    // short	m_nVAR[ xxx ];
-} ;
-*/
-
-//-------------------------------------------------------------------------------------------------
-#define SQL_ZONE_DATA_ECONOMY_LOAD 0x00
-#define SQL_ZONE_DATA_ECONOMY_SAVE 0x01
-#define SQL_ZONE_DATA_NPCOBJ_LOAD 0x02
-#define SQL_ZONE_DATA_NPCOBJ_SAVE 0x03
-#define SQL_ZONE_DATA_EVENTOBJ_LOAD 0x04
-#define SQL_ZONE_DATA_EVENTOBJ_SAVE 0x05
 #define SQL_ZONE_DATA_WORLDVAR_SAVE 0x06
 struct sql_ZONE_DATA: public t_PACKETHEADER {
     BYTE m_btDataTYPE;

@@ -344,8 +344,6 @@ CZoneTHREAD::Init(char* szBaseDIR, short nZoneNO) {
 //-------------------------------------------------------------------------------------------------
 bool
 CZoneTHREAD::Free(void) {
-    g_pThreadSQL->IO_ZoneDATA(this, true);
-
     this->Terminate();
 
     if (!IsFinished() || !m_bEndExecuteFunc) {
@@ -443,8 +441,6 @@ CZoneTHREAD::SendPacketToZONE(t_PACKET* pSendPacket) {
 //-------------------------------------------------------------------------------------------------
 void
 CZoneTHREAD::Send_EconomyDATA() {
-    g_pThreadSQL->IO_ZoneDATA(this, true);
-
     t_PACKET* pPacket = (t_PACKET*)new char[MAX_PACKET_SIZE];
 
     pPacket->m_HEADER.m_wType = GSV_SET_GLOBAL_VAR;

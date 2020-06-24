@@ -188,6 +188,7 @@
   <ItemGroup>
     <ClCompile Include="..\common\calculation.cpp" />
     <ClCompile Include="..\common\shared\cai_file.cpp" />
+    <ClCompile Include="..\common\shared\ceconomy.cpp" />
     <ClCompile Include="..\common\shared\choticon.cpp" />
     <ClCompile Include="..\common\shared\cinventory.cpp" />
     <ClCompile Include="..\common\shared\citem.cpp" />
@@ -506,7 +507,6 @@
     <ClCompile Include="Event\QF_SKILL.CPP" />
     <ClCompile Include="Event\QuestRewardQueue.cpp" />
     <ClCompile Include="BULLET.CPP" />
-    <ClCompile Include="Common\CEconomy.cpp" />
     <ClCompile Include="Common\CObjAI.cpp" />
     <ClCompile Include="Common\cregenarea.cpp" />
     <ClCompile Include="Common\CUserDATA.cpp" />
@@ -543,6 +543,7 @@
     <ClInclude Include="..\common\net_prototype.h" />
     <ClInclude Include="..\common\shared\cai_file.h" />
     <ClInclude Include="..\common\shared\cai_lib.h" />
+    <ClInclude Include="..\common\shared\ceconomy.h" />
     <ClInclude Include="..\common\shared\choticon.h" />
     <ClInclude Include="..\common\shared\cinventory.h" />
     <ClInclude Include="..\common\shared\citem.h" />
@@ -878,7 +879,6 @@
     <ClInclude Include="Event\Quest_FUNC.h" />
     <ClInclude Include="Event\QuestRewardQueue.h" />
     <ClInclude Include="BULLET.H" />
-    <ClInclude Include="Common\CEconomy.h" />
     <ClInclude Include="Common\CObjAI.h" />
     <ClInclude Include="Common\CRegenAREA.h" />
     <ClInclude Include="Common\IO_AI.H" />

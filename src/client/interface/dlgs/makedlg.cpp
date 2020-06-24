@@ -8,7 +8,7 @@
 #include "tgamectrl/tlistcellrenderer.h"
 
 #include "../../Common/IO_Skill.h"
-#include "../../Common/CEconomy.h"
+#include "CEconomy.h"
 #include "../../Network/CNetwork.h"
 
 #include "../../Game.h"

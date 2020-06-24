@@ -53,6 +53,26 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sho_worldserver", "src\sho_
 		{07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3} = {07F4D39F-4AAF-4848-BEC1-F0FB9A7A69B3}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common-shared", "common-shared", "{3B7AC165-5D32-4DA0-B266-9AF7A1AEFDE2}"
+	ProjectSection(SolutionItems) = preProject
+		src\common\shared\cai_file.cpp = src\common\shared\cai_file.cpp
+		src\common\shared\cai_file.h = src\common\shared\cai_file.h
+		src\common\shared\cai_lib.h = src\common\shared\cai_lib.h
+		src\common\shared\ceconomy.cpp = src\common\shared\ceconomy.cpp
+		src\common\shared\ceconomy.h = src\common\shared\ceconomy.h
+		src\common\shared\choticon.cpp = src\common\shared\choticon.cpp
+		src\common\shared\choticon.h = src\common\shared\choticon.h
+		src\common\shared\cinventory.cpp = src\common\shared\cinventory.cpp
+		src\common\shared\cinventory.h = src\common\shared\cinventory.h
+		src\common\shared\citem.cpp = src\common\shared\citem.cpp
+		src\common\shared\citem.h = src\common\shared\citem.h
+		src\common\shared\cquest.cpp = src\common\shared\cquest.cpp
+		src\common\shared\cquest.h = src\common\shared\cquest.h
+		src\common\shared\cuserdata.h = src\common\shared\cuserdata.h
+		src\common\shared\cuserdata_new.cpp = src\common\shared\cuserdata_new.cpp
+		src\common\shared\datatype.h = src\common\shared\datatype.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|x86 = debug|x86

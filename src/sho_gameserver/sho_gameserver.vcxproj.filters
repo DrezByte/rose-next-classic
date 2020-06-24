@@ -88,9 +88,6 @@
     <ClInclude Include="src\zonesector.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\ceconomy.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\cobjai.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
@@ -161,6 +158,9 @@
       <Filter>Common Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\shared\choticon.h">
+      <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shared\ceconomy.h">
       <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -234,9 +234,6 @@
     <ClCompile Include="src\zonesector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\ceconomy.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\cobjai.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -302,6 +299,9 @@
       <Filter>Common Files</Filter>
     </ClCompile>
     <ClCompile Include="..\common\shared\choticon.cpp">
+      <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\shared\ceconomy.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>

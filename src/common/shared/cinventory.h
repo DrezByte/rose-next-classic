@@ -78,6 +78,5 @@ public:
 };
 #pragma pack(pop)
 
-
 #pragma warning(default : 4201)
 #endif

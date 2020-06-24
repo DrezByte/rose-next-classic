@@ -1,14 +1,22 @@
 #include "stdAFX.h"
 
 #include "CEconomy.h"
-#include "IO_STB.h"
 
 #ifdef __SERVER
+    #include "IO_STB.h"
     #include "ZoneLIST.H"
 #else
+    #include "common/io_stb.h"
+#endif
+
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
 short g_nWorldRate = 100;
 short g_nWorldProc = 100;
 
+#ifndef __SERVER
 short
 Get_WorldRATE() {
     return g_nWorldRate;
@@ -45,9 +53,6 @@ CEconomy::Init(void) {
 #if defined(__SERVER) || defined(__VIRTUAL_SERVER)
     m_dwUpdateTIME = 0;
     m_dwCheckTIME = 0;
-
-    m_btSave_TOWN_RATE = 0;
-    ::ZeroMemory(m_btSave_ItemRATE, sizeof(BYTE) * MAX_PRICE_TYPE);
 #endif
 
     for (short nP = MIN_PRICE_TYPE; nP < MAX_PRICE_TYPE; nP++) {
@@ -60,6 +65,7 @@ CEconomy::Init(void) {
     // load from db ...
 }
 
+#ifdef __SERVER
 bool
 CEconomy::Load(FILE* fp) {
     int iTownCounter, iPopBase, iDevBase, iValue;
@@ -74,7 +80,7 @@ CEconomy::Load(FILE* fp) {
         iTownCounter = 60 * 24;
 
     m_iTownCounter = iTownCounter;
-#define ECONMY_1MIN (1000 * 60) // 1 min
+    #define ECONMY_1MIN (1000 * 60) // 1 min
     m_dwTown_COUNTER = iTownCounter * ECONMY_1MIN;
 
     m_nTown_POP_BASE = iPopBase;
@@ -91,8 +97,8 @@ CEconomy::Load(FILE* fp) {
     return true;
 }
 
-#define MIN_TOWN_ITEM 100
-#define MAX_TOWN_ITEM 32000
+    #define MIN_TOWN_ITEM 100
+    #define MAX_TOWN_ITEM 32000
 
 bool
 CEconomy::Proc(DWORD dwCurTIME) {
@@ -134,11 +140,7 @@ CEconomy::Proc(DWORD dwCurTIME) {
     m_nCur_WorldPROD = ::Get_WorldPROD();
     m_nCur_WorldRATE = ::Get_WorldRATE();
 
-    if (0 == ::memcmp(m_btSave_DATA, m_btCur_DATA, sizeof(m_btSave_DATA)))
-        return false;
-
     m_dwUpdateTIME = dwCurTIME;
-    ::memcpy(m_btSave_DATA, m_btCur_DATA, sizeof(m_btSave_DATA));
 
     return true;
 }
@@ -174,6 +176,7 @@ CEconomy::SellITEM(tagITEM& sITEM, int iQuantity) {
         }
     }
 }
+#endif
 
 //-------------------------------------------------------------------------------------------------
 void
@@ -306,4 +309,107 @@ CEconomy::Get_ItemSellPRICE(tagITEM& sITEM, short nSellSkillVALUE) {
     return iPrice;
 }
 
-//-------------------------------------------------------------------------------------------------
+void
+to_json(nlohmann::json& j, const tagECONOMY& e) {
+    j = json::object();
+
+#ifdef __SERVER
+    json town_consumables = json::array();
+    json town_items = json::array();
+
+    for (size_t i = 0; i < MAX_PRICE_TYPE; ++i) {
+        town_consumables.push_back(e.m_nTown_CONSUM[i]);
+        town_items.push_back(e.m_iTownITEM[i]);
+    }
+
+    j["town_counter"] = e.m_dwTown_COUNTER;
+    j["town_pop_base"] = e.m_nTown_POP_BASE;
+    j["town_dev_base"] = e.m_nTown_DEV_BASE;
+    j["town_consumable_rates"] = town_consumables;
+    j["town_item_rates"] = town_items;
+    j["town_dev"] = e.m_nTownDEV;
+    j["town_pop"] = e.m_iTownPOP;
+    j["check_time"] = e.m_dwCheckTIME;
+
+#endif
+    json item_rates = json::array();
+    for (size_t i = 0; i < MAX_PRICE_TYPE; ++i) {
+        item_rates.push_back(e.m_btItemRATE[i]);
+    }
+
+    j["update_time"] = e.m_dwUpdateTIME;
+    j["town_rate"] = e.m_btTOWN_RATE;
+    j["item_rates"] = item_rates;
+    j["world_prod"] = e.m_nCur_WorldPROD;
+    j["world_rate"] = e.m_nCur_WorldRATE;
+}
+
+void
+from_json(const nlohmann::json& j, tagECONOMY& e) {
+    if (!j.is_object()) {
+        return;
+    }
+
+#ifdef __SERVER
+    if (j.contains("town_counter")) {
+        e.m_dwTown_COUNTER = j["town_counter"];
+    }
+
+    if (j.contains("town_pop_base")) {
+        e.m_nTown_POP_BASE = j["town_pop_base"];
+    }
+
+    if (j.contains("town_dev_base")) {
+        e.m_nTown_DEV_BASE = j["town_dev_base"];
+    }
+
+    if (j.contains("town_consumable_rates") && j["town_consumable_rates"].is_array()) {
+        json town_consumables = j["town_consumable_rates"];
+        for (size_t i = 0; min(j.size(), MAX_PRICE_TYPE); ++i) {
+            e.m_nTown_CONSUM[i] = town_consumables[i];
+        }
+    }
+
+    if (j.contains("town_item_rates") && j["town_item_rates"].is_array()) {
+        json town_items = j["town_item_rates"];
+        for (size_t i = 0; min(j.size(), MAX_PRICE_TYPE); ++i) {
+            e.m_iTownITEM[i] = town_items[i];
+        }
+    }
+
+    if (j.contains("town_dev")) {
+        e.m_nTownDEV = j["town_dev"];
+    }
+
+    if (j.contains("town_pop")) {
+        e.m_iTownPOP = j["town_pop"];
+    }
+
+    if (j.contains("check_time")) {
+        e.m_dwCheckTIME = j["check_time"];
+    }
+#endif
+
+    if (j.contains("update_time")) {
+        e.m_dwUpdateTIME = j["update_time"];
+    }
+
+    if (j.contains("town_rate")) {
+        e.m_btTOWN_RATE = j["town_rate"];
+    }
+
+    if (j.contains("item_rates") && j["item_rates"].is_array()) {
+        json item_rates = j["item_rates"];
+        for (size_t i = 0; min(j.size(), MAX_PRICE_TYPE); ++i) {
+            e.m_btItemRATE[i] = item_rates[i];
+        }
+    }
+
+    if (j.contains("world_prod")) {
+        e.m_nCur_WorldPROD = j["world_prod"];
+    }
+
+    if (j.contains("world_rate")) {
+        e.m_nCur_WorldRATE = j["world_rate"];
+    }
+}

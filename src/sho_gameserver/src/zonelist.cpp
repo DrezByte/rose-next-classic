@@ -93,7 +93,7 @@ CZoneLIST::InitZoneLIST(char* szBaseDIR) {
             continue;
 
         // TODO:: if ( nz is checked !!!
-        m_ppThreadZONE[nZ] = new CZoneTHREAD(true);
+        m_ppThreadZONE[nZ] = new CZoneTHREAD(false);
         if (!m_ppThreadZONE[nZ]->Init(szBaseDIR, nZ)) {
             // Invalid Zone !!!
             m_ppThreadZONE[nZ]->Free();
@@ -103,9 +103,7 @@ CZoneLIST::InitZoneLIST(char* szBaseDIR) {
 
     for (nZ = 1; nZ < m_nZoneCNT; nZ++) {
         if (m_ppThreadZONE[nZ]) {
-            g_pThreadSQL->IO_ZoneDATA(m_ppThreadZONE[nZ]);
             LOG_INFO("Adding zone: #{} - {}", nZ, ZONE_NAME(nZ));
-            // m_ppThreadZONE[ nZ ]->Resume ();
         }
     }
 
@@ -115,11 +113,6 @@ CZoneLIST::InitZoneLIST(char* szBaseDIR) {
 //-------------------------------------------------------------------------------------------------
 void
 CZoneLIST::FreeZoneLIST() {
-    for (short nI = 0; nI < g_TblNPC.m_nDataCnt; nI++) {
-        if (m_ppNpcLIST[nI])
-            g_pThreadSQL->IO_NpcObjDATA(m_ppNpcLIST[nI], true);
-    }
-
     ::ZeroMemory(m_pValidZONE, sizeof(bool) * m_nZoneCNT);
 
     bool bAllClosed;
@@ -145,11 +138,8 @@ void
 CZoneLIST::Add_LocalNPC(CObjNPC* pObjNPC) {
     if (pObjNPC->Get_CharNO() < 1 || pObjNPC->Get_CharNO() >= g_TblNPC.m_nDataCnt)
         return;
-
-    m_ppNpcLIST[pObjNPC->Get_CharNO()] = pObjNPC;
-
-    g_pThreadSQL->IO_NpcObjDATA(pObjNPC);
 }
+
 CObjNPC*
 CZoneLIST::Get_LocalNPC(int iNpcNO) {
     if (iNpcNO < 1 || iNpcNO >= g_TblNPC.m_nDataCnt)
@@ -157,6 +147,7 @@ CZoneLIST::Get_LocalNPC(int iNpcNO) {
 
     return m_ppNpcLIST[iNpcNO];
 }
+
 void
 CZoneLIST::Add_EventOBJ(CObjEVENT* pObjEVENT) {
     if (m_EventOBJECT.Search(pObjEVENT->Get_ID())) {
@@ -165,9 +156,8 @@ CZoneLIST::Add_EventOBJ(CObjEVENT* pObjEVENT) {
     }
 
     m_EventOBJECT.Insert(pObjEVENT->Get_ID(), pObjEVENT);
-
-    g_pThreadSQL->IO_EventObjDATA(pObjEVENT);
 }
+
 CObjEVENT*
 CZoneLIST::Get_EventOBJ(short nZoneNO, t_HASHKEY HashKEY) {
     CObjEVENT* pEventOBJ;
@@ -186,23 +176,6 @@ CZoneLIST::Get_EventOBJ(short nZoneNO, t_HASHKEY HashKEY) {
     return NULL;
 }
 
-void
-CZoneLIST::Init_NpcObjVAR(short nNpcIDX, BYTE* pVAR) {
-    ::CopyMemory(m_ppNpcLIST[nNpcIDX]->m_pVAR, pVAR, sizeof(tagObjVAR));
-}
-void
-CZoneLIST::Init_EventObjVAR(t_HASHKEY HashID, BYTE* pVAR) {
-    CObjEVENT* pObjEVT;
-
-    tagHASH<CObjEVENT*>* pHashNode;
-    pHashNode = m_EventOBJECT.Search(HashID);
-    pObjEVT = pHashNode ? pHashNode->m_DATA : NULL;
-    assert(pObjEVT && "m_EventOBJECT.Search( HashID )");
-
-    ::CopyMemory(pObjEVT->m_pVAR, pVAR, sizeof(tagObjVAR));
-}
-
-//-------------------------------------------------------------------------------------------------
 tagEVENTPOS*
 CZoneLIST::Add_EventPOS(t_HASHKEY HashKEY,
     short nZoneNO,

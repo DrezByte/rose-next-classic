@@ -3,7 +3,7 @@
 #include ".\cmanufacture.h"
 #include "../object.h"
 #include "../gamecommon/item.h"
-#include "../common/CEconomy.h"
+#include "CEconomy.h"
 #include "Event/CTEventItem.h"
 #include "Event/CTEventManufacture.h"
 

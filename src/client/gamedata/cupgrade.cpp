@@ -6,7 +6,7 @@
 #include "../interface/typeresource.h"
 #include "event/CTEventItem.h"
 #include "../Network/CNetwork.h"
-#include "../common/CEconomy.h"
+#include "CEconomy.h"
 
 CUpgrade::CUpgrade(void) {
     m_pTargetItem = NULL;

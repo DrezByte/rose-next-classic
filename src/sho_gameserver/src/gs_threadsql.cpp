@@ -23,28 +23,7 @@ using namespace Rose::Database;
 
 using json = nlohmann::json;
 
-enum BANKTBL_COL_IDX { BANKTBL_ACCOUNT = 0, BANKTBL_ITEMS, BANKTBL_REWARD, BANKTLB_PASSWORD };
-
-GS_CThreadSQL::GS_CThreadSQL(): CSqlTHREAD(true), m_csUserLIST(4000), m_TmpSTR(512) {
-    COMPILE_TIME_ASSERT(4 == sizeof(void*));
-
-    COMPILE_TIME_ASSERT(MAX_RIDING_PART == 4);
-
-    COMPILE_TIME_ASSERT(sizeof(tagBasicETC) <= 96); // db field size
-    COMPILE_TIME_ASSERT(sizeof(tagBasicINFO) <= 32);
-    COMPILE_TIME_ASSERT(sizeof(tagBasicAbility) <= 48);
-    COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) <= 384);
-    COMPILE_TIME_ASSERT(sizeof(tagSkillAbility) <= 240);
-
-    COMPILE_TIME_ASSERT(sizeof(m_sBE) == sizeof(tagBasicETC));
-    COMPILE_TIME_ASSERT(sizeof(tagHotICON) == sizeof(WORD));
-
-    m_bWaiting = false;
-    m_HotICON.Init();
-    m_sEmptyBANK.Init();
-}
-
-__fastcall GS_CThreadSQL::~GS_CThreadSQL() {}
+GS_CThreadSQL::GS_CThreadSQL(): CSqlTHREAD(true), m_csUserLIST(4000), m_bWaiting(false) {}
 
 bool
 GS_CThreadSQL::Add_SqlPacketWithACCOUNT(classUSER* pUSER, t_PACKET* pPacket) {
@@ -62,89 +41,8 @@ GS_CThreadSQL::Add_SqlPacketWithAVATAR(classUSER* pUSER, t_PACKET* pPacket) {
 }
 
 bool
-GS_CThreadSQL::IO_ZoneDATA(CZoneTHREAD* pZONE, bool bSave) {
-    sql_ZONE_DATA* pPacket;
-
-    if (bSave) {
-        // Á¸ÀÌ »Ç°³Áö¸é¼­ È£ÃâµÉ°æ¿ì Ã³¸®½Ã Á¸ÀÇ µ¥ÀÌÅ¸¸¦ ÂüÁ¶ÇÏ¸é ¾ÈµÊ...
-        // ÆÐÅ¶¿¡ º¹»çµÈ »ý¼º...
-        pPacket = (sql_ZONE_DATA*)new BYTE[sizeof(sql_ZONE_DATA) + sizeof(tagECONOMY)];
-        pPacket->m_nDataSIZE = sizeof(tagECONOMY);
-        ::CopyMemory(pPacket->m_btZoneDATA, pZONE->m_Economy.m_pEconomy, pPacket->m_nDataSIZE);
-        pPacket->m_btDataTYPE = SQL_ZONE_DATA_ECONOMY_SAVE;
-    } else {
-        pPacket = new sql_ZONE_DATA;
-        pPacket->m_nDataSIZE = 0;
-        pPacket->m_btDataTYPE = SQL_ZONE_DATA_ECONOMY_LOAD;
-    }
-    pPacket->m_wType = SQL_ZONE_DATA;
-    pPacket->m_nSize = sizeof(sql_ZONE_DATA) + pPacket->m_nDataSIZE;
-
-    CSqlTHREAD::Add_SqlPACKET(pZONE->Get_ZoneNO(),
-        pZONE->Get_NAME(),
-        (BYTE*)pPacket,
-        pPacket->m_nSize);
-
-    SAFE_DELETE_ARRAY(pPacket);
-    return true;
-}
-
-bool
-GS_CThreadSQL::IO_NpcObjDATA(CObjNPC* pObjNPC, bool bSave) {
-    sql_ZONE_DATA* pPacket;
-
-    pPacket = (sql_ZONE_DATA*)new BYTE[sizeof(sql_ZONE_DATA) + sizeof(tagObjVAR)];
-
-    pPacket->m_nDataSIZE = sizeof(tagObjVAR);
-
-    pPacket->m_wType = SQL_ZONE_DATA;
-    pPacket->m_nSize = sizeof(sql_ZONE_DATA) + pPacket->m_nDataSIZE;
-
-    pPacket->m_btDataTYPE = (bSave) ? SQL_ZONE_DATA_NPCOBJ_SAVE : SQL_ZONE_DATA_NPCOBJ_LOAD;
-    ::CopyMemory(pPacket->m_btZoneDATA, pObjNPC->m_pVAR, pPacket->m_nDataSIZE);
-
-    m_TmpSTR.Printf("%s_NPC_%s",
-        CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(),
-        pObjNPC->Get_NAME());
-
-    CSqlTHREAD::Add_SqlPACKET(pObjNPC->Get_CharNO(),
-        m_TmpSTR.Get(),
-        (BYTE*)pPacket,
-        pPacket->m_nSize);
-
-    SAFE_DELETE_ARRAY(pPacket);
-    return true;
-}
-bool
-GS_CThreadSQL::IO_EventObjDATA(CObjEVENT* pObjEVENT, bool bSave) {
-    sql_ZONE_DATA* pPacket;
-
-    pPacket = (sql_ZONE_DATA*)new BYTE[sizeof(sql_ZONE_DATA) + sizeof(tagObjVAR)];
-
-    pPacket->m_nDataSIZE = sizeof(tagObjVAR);
-
-    pPacket->m_wType = SQL_ZONE_DATA;
-    pPacket->m_nSize = sizeof(sql_ZONE_DATA) + pPacket->m_nDataSIZE;
-
-    pPacket->m_btDataTYPE = (bSave) ? SQL_ZONE_DATA_EVENTOBJ_SAVE : SQL_ZONE_DATA_EVENTOBJ_LOAD;
-    ::CopyMemory(pPacket->m_btZoneDATA, pObjEVENT->m_pVAR, pPacket->m_nDataSIZE);
-
-    m_TmpSTR.Printf("%s_EVT_%s",
-        CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(),
-        pObjEVENT->Get_NAME());
-
-    CSqlTHREAD::Add_SqlPACKET(pObjEVENT->Get_ID(),
-        m_TmpSTR.Get(),
-        (BYTE*)pPacket,
-        pPacket->m_nSize);
-    SAFE_DELETE_ARRAY(pPacket);
-    return true;
-}
-
-bool
 GS_CThreadSQL::Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE) {
     if (pUSER->m_btLogOutMODE != btLogOutMODE) {
-        // ÀúÀåÇÒ ÇÊ¿ä ¾ø´Ù.
         return true;
     }
 
@@ -153,8 +51,6 @@ GS_CThreadSQL::Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE) {
         classDLLNODE<tagSqlUSER>* pNewNODE;
         pNewNODE = new classDLLNODE<tagSqlUSER>;
 
-        // bLogOutÀÌ ¾Æ´Ñ °æ¿ì°¡ ÀÌ¹Ì µî·Ï µÇ¾î ÀÖ´Â °æ¿ì°¡ ÀÖ¾î
-        // pUSER->m_bLogOutÀ¸·Î ÆÇ´ÜÇÏ¸é ¾ÈµÈ´Ù.
         pNewNODE->DATA.m_btLogOutMODE = btLogOutMODE;
         pNewNODE->DATA.m_pUSER = pUSER;
         m_AddUserLIST.AppendNode(pNewNODE);
@@ -165,8 +61,6 @@ GS_CThreadSQL::Add_BackUpUSER(classUSER* pUSER, BYTE btLogOutMODE) {
 
     return true;
 }
-
-#define BEGINNER_ZONE_NO 20
 
 bool
 GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
@@ -489,7 +383,6 @@ GS_CThreadSQL::Execute() {
             }
         }
 
-        // °ÔÀÓ ·Î±× ÀúÀå..
         this->Proc_QuerySTRING();
 
         this->m_CS.Lock();
@@ -559,33 +452,8 @@ GS_CThreadSQL::Run_SqlPACKET(tagQueryDATA* pSqlPACKET) {
             Proc_cli_BANK_LIST_REQ(pSqlPACKET);
             break;
 
-        case SQL_ZONE_DATA: {
-            sql_ZONE_DATA* pSqlZONE = (sql_ZONE_DATA*)pSqlPACKET->m_pPacket;
-            switch (pSqlZONE->m_btDataTYPE) {
-                case SQL_ZONE_DATA_NPCOBJ_LOAD:
-                case SQL_ZONE_DATA_EVENTOBJ_LOAD:
-                    Proc_LOAD_OBJVAR(pSqlPACKET);
-                    break;
-
-                case SQL_ZONE_DATA_ECONOMY_LOAD: // Á¸ ¾²·¹µå°¡ ¾Æ·¡ ÇÔ¼ö¾È¿¡¼­ ½ÃÀÛµÈ´Ù.
-                    Proc_LOAD_ZONE_DATA(pSqlPACKET->m_iTAG);
-                    break;
-
-                case SQL_ZONE_DATA_ECONOMY_SAVE:
-                    Proc_SAVE_ZONE_DATA(pSqlPACKET->m_iTAG, pSqlZONE);
-                    break;
-
-                case SQL_ZONE_DATA_NPCOBJ_SAVE:
-                case SQL_ZONE_DATA_EVENTOBJ_SAVE:
-                    Proc_SAVE_OBJVAR(pSqlPACKET);
-                    break;
-            }
-            break;
-        }
-
         default:
-            g_LOG.CS_ODS(0xffff,
-                "Undefined sql packet Type: %x, Size: %d \n",
+            LOG_WARN("Unknown sql packet Type: {:#x}, Size: {}",
                 pSqlPACKET->m_pPacket->m_wType,
                 pSqlPACKET->m_pPacket->m_nSize);
     }
@@ -771,7 +639,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     // TODO: In grow_ability
     // m_btBodySIZE / m_btHeadSIZE -- Would be fun to get these working!
     // m_lPenalEXP -- What is this?
-   // m_nPKFlag -- What is this?
+    // m_nPKFlag -- What is this?
 
     tagSkillAbility skill_ability;
     skill_ability.Init();
@@ -962,8 +830,6 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     return true;
 }
 
-#define BEGINNER_ZONE 20
-
 bool
 GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
     t_PACKET* pPacket = reinterpret_cast<t_PACKET*>(pSqlPACKET->m_pPacket);
@@ -1039,189 +905,4 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
     }
 
     return user->Send_gsv_BANK_ITEM_LIST();
-}
-
-#define WSVAR_TBL_BLOB 2
-#define ZONE_VAR_ECONOMY "%s_EC_Zone%d"
-
-bool
-GS_CThreadSQL::Proc_LOAD_ZONE_DATA(int iZoneNO) {
-    CZoneTHREAD* pZONE = g_pZoneLIST->GetZONE(iZoneNO);
-    assert(pZONE);
-
-    m_TmpSTR.Printf(ZONE_VAR_ECONOMY,
-        CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(),
-        iZoneNO);
-
-    this->db->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
-        MQ_PARAM_STR,
-        m_TmpSTR.Get(),
-        MQ_PARAM_END);
-    if (!this->db->QuerySQLBuffer()) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-        return false;
-    }
-
-    if (!this->db->GetNextRECORD()) {
-        // insert !!!
-        this->db->BindPARAM(1, pZONE->m_Economy.m_pEconomy, sizeof(tagECONOMY));
-
-        this->db->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
-            MQ_PARAM_STR,
-            m_TmpSTR.Get(),
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_STR,
-            "TODO: FIX ME, was: g_pThreadLOG->GetCurDateTimeSTR()",
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_BINDIDX,
-            1,
-            MQ_PARAM_ADDSTR,
-            ");",
-            MQ_PARAM_END);
-        if (this->db->ExecSQLBuffer() < 1) {
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "SQL Exec ERROR:: INSERT %s : %s \n",
-                m_TmpSTR.Get(),
-                this->db->GetERROR());
-            return true;
-        }
-    } else {
-        BYTE* pDATA = this->db->GetDataPTR(WSVAR_TBL_BLOB);
-
-        ::CopyMemory(pZONE->m_Economy.m_pEconomy, pDATA, sizeof(tagECONOMY));
-    }
-
-    // Start Zone THREAD !!!!
-    pZONE->Resume();
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-bool
-GS_CThreadSQL::Proc_SAVE_ZONE_DATA(int iZoneNO, sql_ZONE_DATA* pSqlZONE) {
-    m_TmpSTR.Printf(ZONE_VAR_ECONOMY,
-        CLIB_GameSRV::GetInstance()->config.gameserver.server_name.c_str(),
-        iZoneNO);
-
-    this->db->BindPARAM(1, pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
-
-    this->db->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
-        MQ_PARAM_STR,
-        "TODO FIX ME: WAS g_pThreadLOG->GetCurDateTimeSTR()",
-        MQ_PARAM_ADDSTR,
-        ",binDATA=",
-        MQ_PARAM_BINDIDX,
-        1,
-        MQ_PARAM_ADDSTR,
-        "WHERE txtNAME=",
-        MQ_PARAM_STR,
-        m_TmpSTR.Get(),
-        MQ_PARAM_END);
-    if (this->db->ExecSQLBuffer() < 0) {
-        // °íÄ¡±â ½ÇÆÐ !!!
-        g_LOG.CS_ODS(LOG_NORMAL,
-            "SQL Exec ERROR:: UPDATE %s %s \n",
-            m_TmpSTR.Get(),
-            this->db->GetERROR());
-    }
-
-    return true;
-}
-
-//-------------------------------------------------------------------------------------------------
-bool
-GS_CThreadSQL::Proc_LOAD_OBJVAR(tagQueryDATA* pSqlPACKET) {
-    sql_ZONE_DATA* pSqlZONE = (sql_ZONE_DATA*)pSqlPACKET->m_pPacket;
-    /*
-        if ( pSqlZONE->m_btDataTYPE == SQL_ZONE_DATA_NPCOBJ_LOAD )
-            m_TmpSTR.Printf( ZONE_VAR_NPCOBJ, pSqlPACKET->m_Name.Get() );
-        else
-            m_TmpSTR.Printf( ZONE_VAR_EVENTOBJ, pSqlPACKET->m_Name.Get() );
-    */
-    this->db->MakeQuery("SELECT * FROM tblWS_VAR WHERE txtNAME=",
-        MQ_PARAM_STR,
-        pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
-        MQ_PARAM_END);
-    if (!this->db->QuerySQLBuffer()) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
-        g_LOG.CS_ODS(LOG_NORMAL, "      %s\n", this->db->GetQueryBuffPTR());
-        return false;
-    }
-
-    if (!this->db->GetNextRECORD()) {
-        // insert !!!
-        this->db->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
-
-        this->db->MakeQuery("INSERT tblWS_VAR (txtNAME, dateUPDATE, binDATA) VALUES(",
-            MQ_PARAM_STR,
-            pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_STR,
-            "TODO FIX ME: WAS g_pThreadLOG->GetCurDateTimeSTR()",
-            MQ_PARAM_ADDSTR,
-            ",",
-            MQ_PARAM_BINDIDX,
-            1,
-            MQ_PARAM_ADDSTR,
-            ");",
-            MQ_PARAM_END);
-        if (this->db->ExecSQLBuffer() < 1) {
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "SQL Exec ERROR:: INSERT %s : %s \n",
-                pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
-                this->db->GetERROR());
-            return true;
-        }
-    } else {
-        BYTE* pDATA = this->db->GetDataPTR(WSVAR_TBL_BLOB);
-
-        switch (pSqlZONE->m_btDataTYPE) {
-            case SQL_ZONE_DATA_NPCOBJ_LOAD:
-                g_pZoneLIST->Init_NpcObjVAR(pSqlPACKET->m_iTAG, pDATA);
-                break;
-            case SQL_ZONE_DATA_EVENTOBJ_LOAD:
-                g_pZoneLIST->Init_EventObjVAR(pSqlPACKET->m_iTAG, pDATA);
-                break;
-        }
-    }
-
-    return true;
-}
-
-bool
-GS_CThreadSQL::Proc_SAVE_OBJVAR(tagQueryDATA* pSqlPACKET) {
-    sql_ZONE_DATA* pSqlZONE = (sql_ZONE_DATA*)pSqlPACKET->m_pPacket;
-    /*
-        if ( pSqlZONE->m_btDataTYPE == SQL_ZONE_DATA_NPCOBJ_SAVE )
-            m_TmpSTR.Printf( ZONE_VAR_NPCOBJ, pSqlPACKET->m_Name.Get() );
-        else
-            m_TmpSTR.Printf( ZONE_VAR_EVENTOBJ, pSqlPACKET->m_Name.Get() );
-    */
-    this->db->BindPARAM(1, (BYTE*)pSqlZONE->m_btZoneDATA, pSqlZONE->m_nDataSIZE);
-
-    this->db->MakeQuery("UPDATE tblWS_VAR SET dateUPDATE=",
-        MQ_PARAM_STR,
-        "TODO FIX ME: WAS g_pThreadLOG->GetCurDateTimeSTR()",
-        MQ_PARAM_ADDSTR,
-        ",binDATA=",
-        MQ_PARAM_BINDIDX,
-        1,
-        MQ_PARAM_ADDSTR,
-        "WHERE txtNAME=",
-        MQ_PARAM_STR,
-        pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
-        MQ_PARAM_END);
-    if (this->db->ExecSQLBuffer() < 0) {
-        // °íÄ¡±â ½ÇÆÐ !!!
-        g_LOG.CS_ODS(LOG_NORMAL,
-            "SQL Exec ERROR:: UPDATE %s %s \n",
-            pSqlPACKET->m_Name.Get() /* m_TmpSTR.Get() */,
-            this->db->GetERROR());
-    }
-
-    return true;
 }

@@ -44,9 +44,6 @@ public:
     void Add_EventOBJ(CObjEVENT* pObjEVENT);
     CObjEVENT* Get_EventOBJ(short nZoneNO, t_HASHKEY HashKEY);
 
-    void Init_NpcObjVAR(short nNpcIDX, BYTE* pVAR);
-    void Init_EventObjVAR(t_HASHKEY HashID, BYTE* pVAR);
-
     bool InitZoneLIST(char* szBaseDIR);
     void FreeZoneLIST();
 
