@@ -1,5 +1,5 @@
-#ifndef __CTHREAD_MSGR_H
-#define __CTHREAD_MSGR_H
+#pragma once
+
 #if defined(__SHO_WS)
     //-------------------------------------------------------------------------------------------------
 
@@ -13,6 +13,10 @@ class CWS_Client;
 
     #include "CSqlTHREAD.h"
 
+struct MessengerFriend {
+    uint32_t id;
+    std::string name;
+};
     //-------------------------------------------------------------------------------------------------
     #pragma pack(push, 1)
 struct tagFriend_H {
@@ -64,8 +68,8 @@ public:
     void MSGR_Status2ALL(BYTE btNewStatus);
     void MSGR_Msg(t_PACKET* pPacket);
 
-    void MSGR_LogIN(int iCount, BYTE* pLIST);
-    int MSGR_LogOUT(BYTE* pOutBUFF);
+    void MSGR_LogIN(const std::vector<MessengerFriend>& friends);
+    void MSGR_LogOUT();
 
     BYTE MSGR_OnOffLine(classPACKET* pCPacket, CMessenger* pFriend, DWORD dwDBID, BYTE btStatus);
 };
@@ -100,7 +104,6 @@ private:
 
     CDLList<tagMSGR_CMD> m_ProcCMD;
     CDLList<tagMSGR_CMD> m_WaitCMD;
-    BYTE* m_pListBUFF;
 
     // inherit virtual function from CSqlTHREAD...
     bool Run_SqlPACKET(tagQueryDATA* pSqlPACKET) { return true; }
@@ -109,9 +112,11 @@ private:
     bool LogIN(tagMSGR_CMD* pCMD);
     void LogOUT(CMessenger* pMSGR);
 
+    bool add_friend(uint32_t friend1_id, uint32_t friend2_id);
+    bool del_friend(uint32_t friend1_id, uint32_t friend2_id);
+
 public:
     CThreadMSGR(UINT uiInitDataCNT, UINT uiIncDataCNT);
-    virtual ~CThreadMSGR();
 
     void Set_EVENT() { m_pEVENT->SetEvent(); }
     void Add_MessengerCMD(char* szCharName,
@@ -123,5 +128,4 @@ public:
 };
 extern CThreadMSGR* g_pThreadMSGR;
 //-------------------------------------------------------------------------------------------------
-#endif
 #endif

@@ -495,7 +495,7 @@ bool
 CWS_Server::Recv_srv_ACTIVE_MODE(t_PACKET* pPacket) {
     g_pListSERVER->Set_ChannelACTIVE(this->m_btChannelNO, pPacket->m_srv_ACTIVE_MODE.m_bActive);
 
-    g_LOG.CS_ODS(0xffff, "Server %s Active: %d\n", this->m_ServerNAME.Get(), this->m_bActive);
+    LOG_DEBUG("Server {} Active: {}", this->m_ServerNAME.Get(), this->m_bActive);
     return true;
 }
 bool
@@ -506,10 +506,7 @@ CWS_Server::Recv_srv_USER_LIMIT(t_PACKET* pPacket) {
     else if (m_dwLimitUserCNT >= MAX_ZONE_USER_BUFF)
         m_dwLimitUserCNT = MAX_ZONE_USER_BUFF;
 
-    g_LOG.CS_ODS(0xffff,
-        "Server %s user limit count : %d\n",
-        this->m_ServerNAME.Get(),
-        m_dwLimitUserCNT);
+    LOG_INFO("Server {} user limit count: {}", this->m_ServerNAME.Get(), m_dwLimitUserCNT);
     return true;
 }
 
@@ -591,10 +588,8 @@ CWS_Server::HandlePACKET(t_PACKETHEADER* pPacket) {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 CWS_ListSERVER::CWS_ListSERVER(UINT uiInitDataCNT, UINT uiIncDataCNT):
-    IOCPSocketSERVER((char*)"CWS_ServerSOCKET", 1, 1, false), CDataPOOL<CWS_Server>(
-                                                                  (char*)"CServerPOOL",
-                                                                  uiInitDataCNT,
-                                                                  uiIncDataCNT),
+    IOCPSocketSERVER((char*)"CWS_ServerSOCKET", 1, 1, false),
+    CDataPOOL<CWS_Server>((char*)"CServerPOOL", uiInitDataCNT, uiIncDataCNT),
     m_csLIST(4000) {
     m_nChannelCNT = 0;
     ::ZeroMemory(m_ppChannelSERVER, sizeof(CWS_Server*) * MAX_CHANNEL_SERVER);

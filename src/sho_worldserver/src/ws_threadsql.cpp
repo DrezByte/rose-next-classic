@@ -360,8 +360,6 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    g_pUserLIST->Add_CHAR(user, char_name);
-
     user->m_dwDBID = std::stoi(char_id);
     user->ClanINIT();
 
@@ -378,6 +376,7 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
+    g_pUserLIST->Add_CHAR(user, char_name);
     g_pUserLIST->Send_wsv_MEMO(pSqlPACKET->m_iTAG, MEMO_REQ_RECEIVED_CNT, mail_res.get_int32(0, 0));
 
     return true;

@@ -1,4 +1,9 @@
 #include "stdAFX.h"
+
+#include "rose/database/database.h"
+
+using namespace Rose::Database;
+
 #if defined(__SHO_WS)
 
     #ifdef __SHO_WS
@@ -12,12 +17,8 @@
 //-------------------------------------------------------------------------------------------------
 CThreadMSGR::CThreadMSGR(UINT uiInitDataCNT, UINT uiIncDataCNT):
     CSqlTHREAD(true), /* m_csListCMD( 4000 ) */
-    m_Pools((char*)"CMessengerPOOL", uiInitDataCNT, uiIncDataCNT), m_HashMSGR(1024 * 3) {
-    m_pListBUFF = new BYTE[2048];
-}
-CThreadMSGR::~CThreadMSGR() {
-    SAFE_DELETE_ARRAY(m_pListBUFF);
-}
+    m_Pools((char*)"CMessengerPOOL", uiInitDataCNT, uiIncDataCNT),
+    m_HashMSGR(1024 * 3) {}
 
 void
 CThreadMSGR::Check_FRIENDS() {
@@ -51,17 +52,6 @@ CThreadMSGR::Check_FRIENDS() {
                     FR.m_dwDBID = pFrH->m_dwDBID;
                     FR.m_btSTATUS = pFrH->m_btSTATUS;
                     FR.m_Name.Set( pName );
-
-
-
-
-
-
-
-
-
-
-
 
                     // check name & dbid...
                     if ( !this->db->QuerySQL( "SELECT txtNAME FROM tblGS_AVATAR WHERE
@@ -194,30 +184,37 @@ CThreadMSGR::Run_MessengerPACKET(tagMSGR_CMD* pMsgCMD) {
                 pMsgCMD->m_pPacket->m_cli_MCMD_APPEND_REPLY.m_wUserIDX);
             short nOffset = sizeof(cli_MCMD_APPEND_REPLY);
             char* szName = Packet_GetStringPtr(pMsgCMD->m_pPacket, nOffset);
-            if (pRequestUSER && szName && !_strcmpi(szName, pRequestUSER->Get_NAME())) {
-                CMessenger* pMSGR1 = this->SearchMSGR(pMsgCMD->m_Name.Get());
-                if (pMSGR1) {
-                    if (pMSGR1->Get_FriendCNT() < MAX_FRIEND_COUNT) {
-                        CMessenger* pMSGR2 = this->SearchMSGR(pRequestUSER->Get_NAME());
-                        if (pMSGR2 && pMSGR1->m_dwDBID != pMSGR2->m_dwDBID) {
-                            if (pMSGR2->Get_FriendCNT() < MAX_FRIEND_COUNT) {
-                                pMSGR1->MSGR_Add(pMSGR2);
-                                pMSGR2->MSGR_Add(pMSGR1);
-                                return true;
-                            }
-                            // pMSGR2���� ģ�� �߰� ���� ����
-                        }
-                    }
-                    // pMSGR1���� ģ�� �߰� ���� ����
-                }
+
+            if (!pRequestUSER || !szName || _strcmpi(szName, pRequestUSER->Get_NAME())) {
+                return false;
             }
+
+            CMessenger* pMSGR1 = this->SearchMSGR(pMsgCMD->m_Name.Get());
+            if (!pMSGR1 || pMSGR1->Get_FriendCNT() >= MAX_FRIEND_COUNT) {
+                return false;
+            }
+
+            CMessenger* pMSGR2 = this->SearchMSGR(pRequestUSER->Get_NAME());
+            if (!pMSGR2 || pMSGR2->Get_FriendCNT() >= MAX_FRIEND_COUNT
+                || pMSGR1->m_dwDBID == pMSGR2->m_dwDBID) {
+                return false;
+            }
+
+            this->add_friend(pMSGR1->Get_DBID(), pMSGR2->Get_DBID());
+            pMSGR1->MSGR_Add(pMSGR2);
+            pMSGR2->MSGR_Add(pMSGR1);
             return true;
         }
 
         case MSGR_CMD_DELETE: {
             CMessenger* pMSGR = this->SearchMSGR(pMsgCMD->m_Name.Get());
-            if (pMSGR)
-                pMSGR->MSGR_Del(pMsgCMD->m_pPacket->m_cli_MCMD_TAG.m_dwUserTAG);
+            if (!pMSGR) {
+                return false;
+            }
+
+            DWORD id = pMsgCMD->m_pPacket->m_cli_MCMD_TAG.m_dwUserTAG;
+            this->del_friend(pMSGR->Get_DBID(), id);
+            pMSGR->MSGR_Del(id);
             return true;
         }
 
@@ -247,45 +244,45 @@ CThreadMSGR::Run_MessengerPACKET(tagMSGR_CMD* pMsgCMD) {
     return false;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
-    if (!this->db->QuerySQL((char*)"{call ws_GetFRIEND(%d)}", pCMD->m_dwDBID)) {
-        //	if ( !this->db->QuerySQL( "SELECT intFriendCNT, blobFRIENDS FROM tblWS_FRIEND WHERE
-        // intCharID=%d", pCMD->m_dwDBID ) ) {
-        g_LOG.CS_ODS(LOG_NORMAL, "Query ERROR:: %s \n", this->db->GetERROR());
+    QueryResult res =
+        this->db_pg.query("SELECT character.id, character.name FROM character, friends "
+                          "WHERE friends.friend_id = character.id AND friends.character_id=$1",
+            {std::to_string(pCMD->m_dwDBID)});
+
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to query friends list for character {}: {}",
+            pCMD->m_Name.Get(),
+            res.error_message());
         return false;
     }
 
     CMessenger* pMSGR;
     pMSGR = this->SearchMSGR(pCMD->m_Name.Get());
-    if (pMSGR)
+    if (pMSGR) {
         return true;
+    }
 
     pMSGR = this->AllocMEM();
-    if (NULL == pMSGR)
+    if (!pMSGR) {
         return false;
+    }
 
     pMSGR->Init(pCMD->m_Name.Get(), pCMD->m_dwDBID, pCMD->m_iSocketIDX);
-    if (!this->db->GetNextRECORD()) {
-        // insert !!!
-        if (this->db->ExecSQL((char*)"INSERT tblWS_FRIEND ( intCharID ) VALUES(%d);",
-                pCMD->m_dwDBID)
-            < 1) {
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "SQL Exec ERROR:: INSERT %s friend : %s \n",
-                pCMD->m_Name.Get(),
-                this->db->GetERROR());
-            this->FreeMEM(pMSGR);
-            return true;
-        }
-    } else {
-        int iFriendCNT = this->db->GetInteger(0);
-        if (iFriendCNT > 0) {
-            BYTE* pDATA = this->db->GetDataPTR(1);
-            pMSGR->MSGR_LogIN(iFriendCNT, pDATA);
-        }
+
+    std::vector<MessengerFriend> friends;
+    for (size_t i = 0; i < res.row_count; ++i) {
+        MessengerFriend my_friend;
+        my_friend.id = res.get_int32(i, 0);
+        my_friend.name = res.get_string(i, 1);
+        friends.push_back(my_friend);
     }
+
+    if (friends.size() > 0) {
+        pMSGR->MSGR_LogIN(friends);
+    }
+
     pMSGR->m_btMsgrSTATUS = FRIEND_STATUS_ONLINE;
 
     t_HASHKEY HashKEY = CStr::GetHASH(pCMD->m_Name.Get());
@@ -294,66 +291,49 @@ CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 void
 CThreadMSGR::LogOUT(CMessenger* pMSGR) {
-    // update db...
-    int iFriendCNT = pMSGR->Get_FriendCNT();
-    int iBuffLEN = pMSGR->MSGR_LogOUT(this->m_pListBUFF);
-
-    if (pMSGR->MSGR_IsUPDATE()) {
-        if (iFriendCNT > 0) {
-            this->db->BindPARAM(1, this->m_pListBUFF, iBuffLEN);
-            this->db->MakeQuery((char*)"UPDATE tblWS_FRIEND SET blobFRIENDS=",
-                MQ_PARAM_BINDIDX,
-                1,
-                MQ_PARAM_ADDSTR,
-                ",intFriendCNT=",
-                MQ_PARAM_INT,
-                iFriendCNT,
-                MQ_PARAM_ADDSTR,
-                "WHERE intCharID=",
-                MQ_PARAM_INT,
-                pMSGR->Get_DBID(),
-                MQ_PARAM_END);
-        } else {
-            this->db->MakeQuery((char*)"UPDATE tblWS_FRIEND SET blobFRIENDS=NULL",
-                MQ_PARAM_ADDSTR,
-                ",intFriendCNT=",
-                MQ_PARAM_INT,
-                iFriendCNT,
-                MQ_PARAM_ADDSTR,
-                "WHERE intCharID=",
-                MQ_PARAM_INT,
-                pMSGR->Get_DBID(),
-                MQ_PARAM_END);
-        }
-        if (this->db->ExecSQLBuffer() < 0) {
-            // ��ġ�� ���� !!!
-            g_LOG.CS_ODS(LOG_NORMAL,
-                "SQL Exec ERROR:: UPDATE messenger:%d %s \n",
-                pMSGR->Get_DBID(),
-                this->db->GetERROR());
-        }
-    }
-
-    #ifdef _DEBUG
-    if (pMSGR->Get_FriendCNT()) {
-        g_LOG.CS_ODS(0xffff,
-            "ERROR:: pMSGR->m_ListFRIEND.GetNodeCount() must 0 / %d ",
-            pMSGR->Get_FriendCNT(),
-            pMSGR->m_dwDBID);
-    }
-    #endif
+    pMSGR->MSGR_LogOUT();
 
     t_HASHKEY HashKEY = CStr::GetHASH(pMSGR->m_Name.Get());
     this->m_HashMSGR.Delete(HashKEY, pMSGR);
-
     this->FreeMEM(pMSGR);
 }
 
-//-------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------
+bool
+CThreadMSGR::add_friend(uint32_t friend1_id, uint32_t friend2_id) {
+    QueryResult res = this->db_pg.query("INSERT INTO friends (character_id, friend_id) "
+                                        "VALUES ($1, $2), ($2, $1) "
+                                        "ON CONFLICT DO NOTHING;",
+        {std::to_string(friend1_id), std::to_string(friend2_id)});
+
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to add friends for character ids '{}' and '{}': {}",
+            friend1_id,
+            friend2_id,
+            res.error_message());
+        return false;
+    }
+
+    return true;
+}
+
+bool
+CThreadMSGR::del_friend(uint32_t friend1_id, uint32_t friend2_id) {
+    QueryResult res = this->db_pg.query("DELETE FROM friends WHERE (character_id=$1 AND "
+                                        "friend_id=$2) OR (friend_id=$1 AND character_id=$2)",
+        {std::to_string(friend1_id), std::to_string(friend2_id)});
+
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to delete friends character ids '{}' and '{}': {}",
+            friend1_id,
+            friend2_id,
+            res.error_message());
+        return false;
+    }
+    return true;
+}
+
 bool
 CMessenger::SendPacket(int iClientSocketIDX, DWORD dwDBID, classPACKET* packet) {
     // Temporary until all packets are refactored
@@ -370,9 +350,8 @@ CMessenger::SendPacket(int iClientSocketIDX, DWORD dwDBID, classPACKET* packet) 
     return false;
 }
 
-//-------------------------------------------------------------------------------------------------
 void
-CMessenger::MSGR_LogIN(int iCount, BYTE* pLIST) {
+CMessenger::MSGR_LogIN(const std::vector<MessengerFriend>& friends) {
     classPACKET* pToFR = Packet_AllocNLock();
     classPACKET* pToME = Packet_AllocNLock();
 
@@ -387,59 +366,30 @@ CMessenger::MSGR_LogIN(int iCount, BYTE* pLIST) {
     pToME->m_HEADER.m_nSize = sizeof(wsv_MCMD_LIST);
 
     pToME->m_wsv_MCMD_LIST.m_btCMD = MSGR_CMD_LIST;
-    pToME->m_wsv_MCMD_LIST.m_btFriendCNT = iCount;
+    pToME->m_wsv_MCMD_LIST.m_btFriendCNT = friends.size();
 
-    tagFriend_H sFrStatus;
+    for (const MessengerFriend& friend_data: friends) {
+        char* friend_name = const_cast<char*>(friend_data.name.c_str());
 
-    char* pName;
-    tagFriend_H* pFrH;
-
-    CMessenger* pFindMSGR;
-    CDLList<tagMyFriend>::tagNODE* pNODE;
-    for (int iC = 0; iC < iCount; iC++) {
-        pFrH = (tagFriend_H*)pLIST;
-        pName = (char*)(pLIST + sizeof(tagFriend_H));
-
-        if (this->m_dwDBID == pFrH->m_dwDBID) {
-            // �ڱ� �ڽ��� ��ϵ� ������ �ִ°� ?
-            CStrVAR tmpName;
-            tmpName.Set(pName);
-            pLIST += (sizeof(tagFriend_H) + tmpName.BuffLength() + 1);
-            this->m_bFriendUPDATE = true;
-            continue;
+        int friend_status = FRIEND_STATUS_OFFLINE;
+        CMessenger* friend_messenger = g_pThreadMSGR->SearchMSGR(friend_name);
+        if (friend_messenger) {
+            friend_status = FRIEND_STATUS_ONLINE;
+            friend_messenger->MSGR_OnOffLine(pToFR, this, this->Get_DBID(), FRIEND_STATUS_ONLINE);
         }
 
-        pNODE = m_ListFRIEND.AllocNAppend();
+        CDLList<tagMyFriend>::tagNODE* pNODE = m_ListFRIEND.AllocNAppend();
+        pNODE->m_VALUE.m_btSTATUS = friend_status;
+        pNODE->m_VALUE.m_dwDBID = friend_data.id;
+        pNODE->m_VALUE.m_pMSGR = friend_messenger;
+        pNODE->m_VALUE.m_Name.Set(friend_name);
 
-        pNODE->m_VALUE.m_dwDBID = pFrH->m_dwDBID;
-        pNODE->m_VALUE.m_btSTATUS = pFrH->m_btSTATUS;
-        pNODE->m_VALUE.m_Name.Set(pName);
-        pNODE->m_VALUE.m_pMSGR = NULL;
-
-        pLIST += (sizeof(tagFriend_H) + pNODE->m_VALUE.m_Name.BuffLength() + 1);
-
-        if (!(FRIEND_STATUS_REFUSED & pNODE->m_VALUE.m_btSTATUS)) {
-            pFindMSGR = g_pThreadMSGR->SearchMSGR(pName);
-            if (pFindMSGR) {
-                pNODE->m_VALUE.m_btSTATUS =
-                    pFindMSGR->MSGR_OnOffLine(pToFR, this, this->Get_DBID(), FRIEND_STATUS_ONLINE);
-                if (FRIEND_STATUS_DELETED != pNODE->m_VALUE.m_btSTATUS) {
-                    // pFindMSGR��Ͽ� ���� �ִ�...
-                    pNODE->m_VALUE.m_pMSGR = pFindMSGR;
-                }
-            } else {
-                pNODE->m_VALUE.m_btSTATUS = FRIEND_STATUS_OFFLINE;
-            }
-        } /* else {
-            // ���� �����ϰų� ���� �����ѳ��̱� ���� �� ���� �뺸�� �ʿ����.
-            // ���� �̳��� �α׾ƿ� ���·� ���̰���...
-        } */
-
-        sFrStatus.m_dwDBID = pNODE->m_VALUE.m_dwDBID;
-        sFrStatus.m_btSTATUS = pNODE->m_VALUE.m_btSTATUS;
+        tagFriend_H sFrStatus;
+        sFrStatus.m_dwDBID = friend_data.id;
+        sFrStatus.m_btSTATUS = friend_status;
 
         pToME->AppendData(&sFrStatus, sizeof(tagFriend_H));
-        pToME->AppendString(pName);
+        pToME->AppendString(friend_name);
         if (pToME->m_HEADER.m_nSize > MAX_PACKET_SIZE - 30) {
             this->m_bFriendUPDATE = true;
             break;
@@ -452,14 +402,8 @@ CMessenger::MSGR_LogIN(int iCount, BYTE* pLIST) {
     Packet_ReleaseNUnlock(pToFR);
 }
 
-//-------------------------------------------------------------------------------------------------
-/*
-2. �α׾ƿ���
-    . ���� ����� ģ������Ʈ ��ȸ..
-        NODE->m_VALUE.m_pUSER != NULL �̸� �α׾ƿ� ����.
-*/
-int
-CMessenger::MSGR_LogOUT(BYTE* pOutBUFF) {
+void
+CMessenger::MSGR_LogOUT() {
     classPACKET* pCPacket = Packet_AllocNLock();
 
     pCPacket->m_HEADER.m_wType = WSV_MESSENGER;
@@ -469,84 +413,28 @@ CMessenger::MSGR_LogOUT(BYTE* pOutBUFF) {
     pCPacket->m_wsv_MCMD_STATUS_REPLY.m_dwUserTAG = this->Get_DBID();
     pCPacket->m_wsv_MCMD_STATUS_REPLY.m_btStatus = FRIEND_STATUS_OFFLINE;
 
-    int iBuffLEN = 0;
-    tagFriend_H* pFR;
-
-    CMessenger* pFindMSGR;
-    CDLList<tagMyFriend>::tagNODE* pNODE;
-    pNODE = m_ListFRIEND.GetHeadNode();
+    CDLList<tagMyFriend>::tagNODE* pNODE = m_ListFRIEND.GetHeadNode();
     while (pNODE) {
-        pFR = (tagFriend_H*)&pOutBUFF[iBuffLEN];
-
-        pFR->m_btSTATUS = pNODE->m_VALUE.m_btSTATUS;
-        pFR->m_dwDBID = pNODE->m_VALUE.m_dwDBID;
-
-        iBuffLEN += sizeof(tagFriend_H);
-        ::CopyMemory(&pOutBUFF[iBuffLEN],
-            pNODE->m_VALUE.m_Name.Get(),
-            pNODE->m_VALUE.m_Name.BuffLength());
-        iBuffLEN += pNODE->m_VALUE.m_Name.BuffLength();
-        pOutBUFF[iBuffLEN++] = 0;
-
-        pFindMSGR = g_pThreadMSGR->SearchMSGR(pNODE->m_VALUE.m_Name.Get());
+        CMessenger* pFindMSGR = g_pThreadMSGR->SearchMSGR(pNODE->m_VALUE.m_Name.Get());
         if (pFindMSGR) {
-            if (pFR->m_btSTATUS == FRIEND_STATUS_OFFLINE) {
-                // ������ �ִµ�, ������ ���¸� ��Ͼ��ߴٴ°��� ���� �����߰ų�, ����
-                // �����ߴٴ°�...
-                pFR->m_btSTATUS = FRIEND_STATUS_DELETED;
-            }
             pFindMSGR->MSGR_OnOffLine(pCPacket, NULL, this->Get_DBID(), FRIEND_STATUS_OFFLINE);
-        } else {
-            if (pNODE->m_VALUE.m_pMSGR) {
-                // ���� ???
-                g_LOG.CS_ODS(0xffff,
-                    "**ERROR in MSGR_LogOUT owner[ 0x%x:%d:%s ], frined[ 0x%x, %d:%s ]\n",
-                    this->m_btMsgrSTATUS,
-                    this->m_dwDBID,
-                    this->m_Name.Get(),
-                    pNODE->m_VALUE.m_btSTATUS,
-                    pNODE->m_VALUE.m_dwDBID,
-                    pNODE->m_VALUE.m_Name.Get());
-            }
         }
-        /*
-                if ( pNODE->m_VALUE.m_pMSGR ) {
-                    if ( pFindMSGR == pNODE->m_VALUE.m_pMSGR ) {
-                        pNODE->m_VALUE.m_pMSGR->MSGR_OnOffLine( pCPacket, NULL, this->Get_DBID(),
-           FRIEND_STATUS_OFFLINE ); } else {
-                        // ����~~~ :: � ���� ???
-                        g_LOG.CS_ODS( 0xffff, "**ERROR in MSGR_LogOUT owner[ 0x%x:%d:%s ], frined[
-           0x%x, %d:%s ]\n", this->m_btMsgrSTATUS, this->m_dwDBID, this->m_Name.Get(),
-           pNODE->m_VALUE.m_btSTATUS, pNODE->m_VALUE.m_dwDBID, pNODE->m_VALUE.m_Name.Get() );
-                    }
-                } else
-                if ( pFindMSGR && pFR->m_btSTATUS == FRIEND_STATUS_OFFLINE ) {
-                    // ������ �ִµ�, ������ ���¸� ��Ͼ��ߴٴ°��� ���� �����߰ų�, ����
-           �����ߴٴ°�... pFR->m_btSTATUS = FRIEND_STATUS_DELETED;
-                }
-        */
         m_ListFRIEND.DeleteNFree(pNODE);
         pNODE = m_ListFRIEND.GetHeadNode();
     }
 
     Packet_ReleaseNUnlock(pCPacket);
-
-    return iBuffLEN;
+    return;
 }
 
 bool
 CMessenger::MSGR_Add(CMessenger* pFriend) {
-    CDLList<tagMyFriend>::tagNODE* pNODE;
-
-    pNODE = m_ListFRIEND.GetHeadNode();
+    CDLList<tagMyFriend>::tagNODE* pNODE = m_ListFRIEND.GetHeadNode();
     while (pNODE) {
         if (pNODE->m_VALUE.m_dwDBID == pFriend->Get_DBID()) {
-            // �̹� ��ϵ� ����ڴ�... �����Ǿ������� �ٽ� �߰��� ���..
             pNODE->m_VALUE.m_btSTATUS = pFriend->m_btMsgrSTATUS;
             pNODE->m_VALUE.m_pMSGR = pFriend;
-            this->MSGR_Status2ONE(pFriend->Get_DBID(),
-                pFriend->m_btMsgrSTATUS,
-                pFriend); // CMessenger::MSGR_Add
+            this->MSGR_Status2ONE(pFriend->Get_DBID(), pFriend->m_btMsgrSTATUS, pFriend);
             return true;
         }
         pNODE = pNODE->GetNext();

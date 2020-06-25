@@ -459,7 +459,7 @@ bool
 CLS_Server::Recv_srv_ACTIVE_MODE(t_PACKET* pPacket) {
     this->m_bActive = pPacket->m_srv_ACTIVE_MODE.m_bActive;
 
-    g_LOG.CS_ODS(0xffff, "Server %s Active: %d\n", this->m_ServerNAME.Get(), this->m_bActive);
+    LOG_DEBUG("Server {} Active: {}", this->m_ServerNAME.Get(), this->m_bActive);
     return true;
 }
 
