@@ -493,9 +493,12 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         "max_hp, max_mp, max_stamina, str, dex, intt, con, cha, sen, stat_points, skill_points, "
         "money, storage_money, map_id, respawn_x, respawn_y, town_respawn_id, town_respawn_x, "
         "town_respawn_y, union_id, skills, quests, hotbar, wishlist, "
-        "union1, union2, union3, union4, union5, union6, union7, union8, union9, union10 "
-        "FROM character, union_points WHERE "
-        "account_username=$1 AND name=$2 AND character.id=union_points.character_id;";
+        "coalesce(union1, 0), coalesce(union2, 0), coalesce(union3, 0), coalesce(union4, 0), "
+        "coalesce(union5, 0), coalesce(union6, 0), coalesce(union7, 0), coalesce(union8, 0), "
+        "coalesce(union9, 0), coalesce(union10, 0) "
+        "FROM character "
+        "LEFT JOIN union_points ON union_points.character_id = character.id "
+        "WHERE account_username=$1 AND name=$2;";
 
     enum CharCol {
         COL_ID = 0,
@@ -554,6 +557,9 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     }
 
     if (char_res.row_count != 1) {
+        LOG_ERROR("No characters returned for account name '{} and character name '{}",
+            account_username,
+            char_name);
         return false;
     }
 
