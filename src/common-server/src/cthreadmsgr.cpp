@@ -247,7 +247,7 @@ CThreadMSGR::Run_MessengerPACKET(tagMSGR_CMD* pMsgCMD) {
 bool
 CThreadMSGR::LogIN(tagMSGR_CMD* pCMD) {
     QueryResult res =
-        this->db_pg.query("SELECT character.id, character.name FROM character, friends "
+        this->db.query("SELECT character.id, character.name FROM character, friends "
                           "WHERE friends.friend_id = character.id AND friends.character_id=$1",
             {std::to_string(pCMD->m_dwDBID)});
 
@@ -302,7 +302,7 @@ CThreadMSGR::LogOUT(CMessenger* pMSGR) {
 
 bool
 CThreadMSGR::add_friend(uint32_t friend1_id, uint32_t friend2_id) {
-    QueryResult res = this->db_pg.query("INSERT INTO friends (character_id, friend_id) "
+    QueryResult res = this->db.query("INSERT INTO friends (character_id, friend_id) "
                                         "VALUES ($1, $2), ($2, $1) "
                                         "ON CONFLICT DO NOTHING;",
         {std::to_string(friend1_id), std::to_string(friend2_id)});
@@ -320,7 +320,7 @@ CThreadMSGR::add_friend(uint32_t friend1_id, uint32_t friend2_id) {
 
 bool
 CThreadMSGR::del_friend(uint32_t friend1_id, uint32_t friend2_id) {
-    QueryResult res = this->db_pg.query("DELETE FROM friends WHERE (character_id=$1 AND "
+    QueryResult res = this->db.query("DELETE FROM friends WHERE (character_id=$1 AND "
                                         "friend_id=$2) OR (friend_id=$1 AND character_id=$2)",
         {std::to_string(friend1_id), std::to_string(friend2_id)});
 

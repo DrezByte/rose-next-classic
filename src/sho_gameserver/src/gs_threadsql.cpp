@@ -67,7 +67,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
     const char* char_name = user->Get_NAME();
 
     // Begin the database transaction
-    QueryResult trans_res = this->db_pg.query("BEGIN", {});
+    QueryResult trans_res = this->db.query("BEGIN", {});
     if (!trans_res.is_ok()) {
         LOG_ERROR("Failed to begin transaction when saving character '{}': {}",
             char_name,
@@ -85,7 +85,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         "hotbar=$32, wishlist=$33 "
         "WHERE id=$34");
 
-    QueryResult char_res = this->db_pg.query(query,
+    QueryResult char_res = this->db.query(query,
         {
             std::to_string(user->m_nCharRACE),
             std::to_string(user->m_BasicINFO.m_nClass),
@@ -128,7 +128,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             user->Get_NAME(),
             char_res.error_message());
 
-        trans_res = this->db_pg.query("ROLLBACK", {});
+        trans_res = this->db.query("ROLLBACK", {});
         if (!trans_res.is_ok()) {
             LOG_ERROR("Failed to rollback transaction when saving character '{}': {}",
                 char_name,
@@ -144,7 +144,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
         "union7=$7, union8=$8, union9=$9, union10=$10 "
         "WHERE character_id=$11";
 
-    QueryResult union_res = this->db_pg.query(union_query,
+    QueryResult union_res = this->db.query(union_query,
         {
             std::to_string(user->m_GrowAbility.m_nUnionPOINT[0]),
             std::to_string(user->m_GrowAbility.m_nUnionPOINT[1]),
@@ -164,7 +164,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
             user->Get_NAME(),
             union_res.error_message());
 
-        trans_res = this->db_pg.query("ROLLBACK", {});
+        trans_res = this->db.query("ROLLBACK", {});
         if (!trans_res.is_ok()) {
             LOG_ERROR("Failed to rollback transaction when saving character '{}': {}",
                 char_name,
@@ -324,13 +324,13 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
     bulk += delete_inventory_query + inventory_query;
     bulk += delete_storage_query + storage_query;
 
-    QueryResult bulk_res = this->db_pg.batch(bulk);
+    QueryResult bulk_res = this->db.batch(bulk);
     if (!bulk_res.is_ok()) {
         LOG_ERROR("Failed to update items for character '{}': {}",
             char_name,
             bulk_res.error_message());
 
-        trans_res = this->db_pg.query("ROLLBACK", {});
+        trans_res = this->db.query("ROLLBACK", {});
         if (!trans_res.is_ok()) {
             LOG_ERROR("Failed to rollback transaction when creating '{}': {}",
                 char_name,
@@ -340,7 +340,7 @@ GS_CThreadSQL::UpdateUserRECORD(classUSER* user) {
     }
 
     // Commit the transaction
-    trans_res = this->db_pg.query("COMMIT", {});
+    trans_res = this->db.query("COMMIT", {});
     if (!trans_res.is_ok()) {
         LOG_ERROR("Failed to commit transaction when saving character '{}': {}",
             char_name,
@@ -382,8 +382,6 @@ GS_CThreadSQL::Execute() {
                 break;
             }
         }
-
-        this->Proc_QuerySTRING();
 
         this->m_CS.Lock();
         m_RunPACKET.AppendNodeList(&m_AddPACKET);
@@ -547,7 +545,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         COL_UNION10,
     };
 
-    QueryResult char_res = this->db_pg.query(query, {account_username, char_name});
+    QueryResult char_res = this->db.query(query, {account_username, char_name});
     if (!char_res.is_ok()) {
         LOG_ERROR("Failed to get character '{}' for account '{}': {}",
             account_username.c_str(),
@@ -563,7 +561,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    QueryResult item_res = this->db_pg.query(
+    QueryResult item_res = this->db.query(
         "SELECT inventory.slot, inventory.quantity, item.uuid, "
         "item.game_data_id, item.type_id, item.stat_id, item.grade, "
         "item.durability, item.lifespan, item.appraisal, item.socket, item.crafted "
@@ -847,7 +845,7 @@ GS_CThreadSQL::Proc_cli_BANK_LIST_REQ(tagQueryDATA* pSqlPACKET) {
     if (!user || !user->Get_ACCOUNT())
         return false;
 
-    QueryResult storage_res = this->db_pg.query(
+    QueryResult storage_res = this->db.query(
         "SELECT storage.slot, storage.quantity, item.uuid, "
         "item.game_data_id, item.type_id, item.stat_id, item.grade, "
         "item.durability, item.lifespan, item.appraisal, item.socket, item.crafted "

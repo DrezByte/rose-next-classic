@@ -107,8 +107,6 @@ SHO_WS::DisconnectFromLSV() {
     g_pSockLSV->Disconnect();
 }
 
-#define USE_MY_SQL_AGENT 0
-
 #include "../SHO_WS.ver"
 DWORD
 GetServerBuildNO() {
@@ -222,49 +220,22 @@ SHO_WS::connect_database(DatabaseConfig& config) {
     m_LogDBPassword.Set(password);
 
     g_pThreadSQL = new CWS_ThreadSQL; // suspend 모드로 시작됨.
-    if (!g_pThreadSQL->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
-            ip,
-            username,
-            password,
-            name,
-            32,
-            1024 * 8)) {
-        return false;
-    }
-    if (!g_pThreadSQL->db_pg.connect(config.connection_string)) {
-        std::string error_message = g_pThreadSQL->db_pg.last_error_message();
+    if (!g_pThreadSQL->db.connect(config.connection_string)) {
+        std::string error_message = g_pThreadSQL->db.last_error_message();
         LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
         return false;
     }
     g_pThreadSQL->Resume();
 
     g_pThreadMSGR = new CThreadMSGR(16384, 1024);
-    if (!g_pThreadMSGR->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
-            ip,
-            username,
-            password,
-            name,
-            32,
-            1024 * 8)) {
-        return false;
-    }
-    if(!g_pThreadMSGR->db_pg.connect(config.connection_string)) {
-        std::string error_message = g_pThreadSQL->db_pg.last_error_message();
+    if(!g_pThreadMSGR->db.connect(config.connection_string)) {
+        std::string error_message = g_pThreadSQL->db.last_error_message();
         LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
         return false;
     }
     g_pThreadMSGR->Resume();
 
     g_pThreadGUILD = new CThreadGUILD(8192, 512);
-    if (!g_pThreadGUILD->Connect(USE_MY_SQL_AGENT ? USE_MY_SQL : USE_ODBC,
-            ip,
-            username,
-            password,
-            name,
-            32,
-            1024 * 8)) {
-        return false;
-    }
     g_pThreadGUILD->Resume();
 
     g_pThreadSQL->Load_WORLDVAR(g_ZoneLIST.m_nWorldVAR, MAX_WORLD_VAR_CNT);

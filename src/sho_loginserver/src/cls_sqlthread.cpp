@@ -123,10 +123,10 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
 
     const char* stmt = "SELECT password, access_level FROM account WHERE username=$1";
 
-    QueryResult res = this->db_pg.query(stmt, {req->username()->c_str()});
+    QueryResult res = this->db.query(stmt, {req->username()->c_str()});
     if (!res.is_ok()) {
         LOG_ERROR("Failed to query account info for username: ({})", req->username()->c_str());
-        LOG_ERROR(this->db_pg.last_error_message());
+        LOG_ERROR(this->db.last_error_message());
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_FAILED);
         return false;
     }

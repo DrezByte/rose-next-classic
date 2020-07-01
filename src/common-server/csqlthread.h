@@ -1,8 +1,7 @@
-#ifndef __CSQLTHREAD_H
-#define __CSQLTHREAD_H
+#pragma once
+
 #include "classSYNCOBJ.h"
 #include "classTHREAD.h"
-#include "classODBC.h"
 #include "classSTR.h"
 #include "CDLList.h"
 #include "PacketHEADER.h"
@@ -24,9 +23,6 @@ struct tagQueryDATA {
     };
 };
 
-#define USE_MY_SQL 0x000
-#define USE_ODBC 0x001
-
 /// A network packet that needs to be processed by the sql thread
 struct QueuedPacket {
     int32_t socket_id;
@@ -35,8 +31,7 @@ struct QueuedPacket {
 
 class CSqlTHREAD: public classTHREAD {
 public:
-    Rose::Database::Client db_pg;
-    std::unique_ptr<classODBC> db;
+    Rose::Database::Client db;
 
     std::mutex queue_mutex;
     std::queue<QueuedPacket> packet_queue;
@@ -48,13 +43,8 @@ protected:
     CDLList<tagQueryDATA> m_RunPACKET;
     CDLList<tagQueryDATA> m_AddPACKET;
 
-    CDLList<char*> m_RunQUERY;
-    CDLList<char*> m_AddQUERY;
-
     CDLList<tagQueryDATA>::tagNODE* Del_SqlPACKET(CDLList<tagQueryDATA>::tagNODE* pDelNODE);
     virtual bool Run_SqlPACKET(tagQueryDATA* pQueryDATA) = 0;
-
-    virtual bool Proc_QuerySTRING();
 
 public:
     CSqlTHREAD(bool bCreateSuspended);
@@ -62,17 +52,9 @@ public:
 
     //	virtual void Execute() = 0;
 
-    bool Connect(BYTE btSqlTYPE,
-        char* szServerIP,
-        char* szUser,
-        char* szPassword,
-        char* szDBName,
-        short nBindParamCNT = 64,
-        WORD wQueryBufferLEN = 8192);
     void Free();
 
     bool Add_SqlPACKET(int iTAG, char* szName, BYTE* pDATA, int iDataSize);
-    bool Add_QueryString(char* szQuery);
 
     void tick();
     void queue_packet(int32_t socket_id,
@@ -80,5 +62,3 @@ public:
 
     virtual void handle_queued_packet(QueuedPacket& p){};
 };
-
-#endif

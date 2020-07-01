@@ -99,7 +99,6 @@ FILE* g_fpTXT = NULL;
 
 using namespace Rose::Common;
 
-#define USE_MY_SQL_AGENT 0
 #define WM_LSVSOCK_MSG (WM_SOCKETWND_MSG + 0)
 #define WORLD_TIME_TICK 10000 // 10 sec
 
@@ -623,18 +622,8 @@ CLIB_GameSRV::connect_database() {
     }
 
     g_pThreadSQL = new GS_CThreadSQL;
-    if (!g_pThreadSQL->Connect(USE_ODBC,
-            (char*)this->config.database.ip.c_str(),
-            (char*)this->config.database.username.c_str(),
-            (char*)this->config.database.password.c_str(),
-            (char*)this->config.database.name.c_str(),
-            32,
-            1024 * 8)) {
-        return false;
-    }
-
-    if (!g_pThreadSQL->db_pg.connect(this->config.database.connection_string)) {
-        std::string error_message = g_pThreadSQL->db_pg.last_error_message();
+    if (!g_pThreadSQL->db.connect(this->config.database.connection_string)) {
+        std::string error_message = g_pThreadSQL->db.last_error_message();
         LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
 
         g_pThreadSQL = NULL;
@@ -643,16 +632,6 @@ CLIB_GameSRV::connect_database() {
     g_pThreadSQL->Resume();
 
     g_pThreadGUILD = new CThreadGUILD(32, 16);
-    if (!g_pThreadGUILD
-        || !g_pThreadGUILD->Connect(USE_ODBC,
-            (char*)this->config.database.ip.c_str(),
-            (char*)this->config.database.username.c_str(),
-            (char*)this->config.database.password.c_str(),
-            (char*)this->config.database.name.c_str(),
-            32,
-            1024 * 8)) {
-        return false;
-    }
     g_pThreadGUILD->Resume();
 
     return true;

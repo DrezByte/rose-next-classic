@@ -40,12 +40,6 @@
     <ClCompile Include="ioDataPOOL.cpp">
       <Filter>Source Files\IOCP</Filter>
     </ClCompile>
-    <ClCompile Include="classODBC.cpp">
-      <Filter>Source Files\SQL</Filter>
-    </ClCompile>
-    <ClCompile Include="classSQL.cpp">
-      <Filter>Source Files\SQL</Filter>
-    </ClCompile>
     <ClCompile Include="CSqlTHREAD.cpp">
       <Filter>Source Files\SQL</Filter>
     </ClCompile>
@@ -83,12 +77,6 @@
     </ClInclude>
     <ClInclude Include="ioDataPOOL.h">
       <Filter>Source Files\IOCP</Filter>
-    </ClInclude>
-    <ClInclude Include="classODBC.h">
-      <Filter>Source Files\SQL</Filter>
-    </ClInclude>
-    <ClInclude Include="classSQL.h">
-      <Filter>Source Files\SQL</Filter>
     </ClInclude>
     <ClInclude Include="CSqlTHREAD.h">
       <Filter>Source Files\SQL</Filter>

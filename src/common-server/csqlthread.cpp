@@ -20,37 +20,6 @@ CSqlTHREAD::~CSqlTHREAD() {
     SAFE_DELETE(m_pEVENT);
 }
 
-bool
-CSqlTHREAD::Connect(BYTE btSqlTYPE,
-    char* szServerIP,
-    char* szUser,
-    char* szPassword,
-    char* szDBName,
-    short nBindParamCNT,
-    WORD wQueryBufferLEN) {
-
-    this->db = std::make_unique<classODBC>(nBindParamCNT, wQueryBufferLEN);
-    if (!this->db) {
-        return false;
-    }
-
-    if (!this->db->ReigsterDsnIfNone(szDBName, szDBName, szServerIP, szUser)) {
-        return false;
-    }
-
-    char* szDNSorIP = szDBName;
-    if (!this->db->Connect(szDNSorIP, szUser, szPassword)) {
-        return false;
-    }
-
-    if (!this->db->SelectDB(szDBName)) {
-        this->db->Disconnect();
-        return false;
-    }
-
-    return true;
-}
-
 void
 CSqlTHREAD::Free() {
     this->Terminate();
@@ -98,51 +67,6 @@ CSqlTHREAD::Add_SqlPACKET(int iTAG, char* szName, BYTE* pDATA, int iDataSize) {
     m_CS.Unlock();
     m_pEVENT->SetEvent();
 
-    return true;
-}
-
-bool
-CSqlTHREAD::Add_QueryString(char* szQuery) {
-    CDLList<char*>::tagNODE* pNewNODE;
-
-    pNewNODE = new CDLList<char*>::tagNODE;
-    if (!pNewNODE) {
-        // out of memory !!!
-        return false;
-    }
-
-    int iStrLen = strlen(szQuery);
-    pNewNODE->m_VALUE = new char[iStrLen + 1];
-    ::CopyMemory(pNewNODE->m_VALUE, szQuery, iStrLen);
-    pNewNODE->m_VALUE[iStrLen] = 0;
-
-    m_CS.Lock();
-    m_AddQUERY.AppendNode(pNewNODE);
-    m_CS.Unlock();
-    m_pEVENT->SetEvent();
-
-    return true;
-}
-
-bool
-CSqlTHREAD::Proc_QuerySTRING() {
-    this->m_CS.Lock();
-    m_RunQUERY.AppendNodeList(&m_AddQUERY);
-    m_AddQUERY.Init();
-    this->m_CS.Unlock();
-
-    CDLList<char*>::tagNODE *pNode, *pDel;
-    pNode = m_RunQUERY.GetHeadNode();
-    while (pNode) {
-        if (this->db->ExecSQLBuffer(pNode->m_VALUE)) {
-            pDel = pNode;
-            pNode = pNode->GetNext();
-
-            SAFE_DELETE_ARRAY(pDel->m_VALUE);
-            m_RunQUERY.DeleteNFree(pDel);
-        } else
-            pNode = pNode->GetNext();
-    }
     return true;
 }
 
