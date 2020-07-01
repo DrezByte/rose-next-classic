@@ -852,6 +852,7 @@ CThreadGUILD::~CThreadGUILD() {
 //-------------------------------------------------------------------------------------------------
 void
 CThreadGUILD::Test_add(char* pGuildName, char* pGuildDesc) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -893,9 +894,11 @@ CThreadGUILD::Test_add(char* pGuildName, char* pGuildDesc) {
 
         int iii = 999;
     }
+    */
 }
 void
 CThreadGUILD::Test_del(char* pGuildName) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -924,6 +927,7 @@ CThreadGUILD::Test_del(char* pGuildName) {
     } else {
         // 디비 SP 오류...
     }
+    */
 }
 
 void
@@ -1418,6 +1422,7 @@ CThreadGUILD::Find_CLAN(DWORD dwClanID) {
 //-------------------------------------------------------------------------------------------------
 CClan*
 CThreadGUILD::Load_CLAN(DWORD dwClanID) {
+    /* TODO: RAM: Port to postgres
     if (this->db->QuerySQL((char*)"{call ws_ClanSELECT(%d)}", dwClanID)) {
         if (this->db->GetNextRECORD()) {
             // this->db->GetInteger(0); cladID
@@ -1505,12 +1510,14 @@ CThreadGUILD::Load_CLAN(DWORD dwClanID) {
             return NULL;
         }
     }
+    */
     return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
 CClan*
 CThreadGUILD::Query_CreateCLAN(int iSocketIDX, t_PACKET* pPacket) {
+    /* TODO: RAM: Port to postgres
     short nOffset = sizeof(cli_CLAN_CREATE);
     char* pGuildName = Packet_GetStringPtr(pPacket, nOffset);
     if (!pGuildName)
@@ -1567,11 +1574,12 @@ CThreadGUILD::Query_CreateCLAN(int iSocketIDX, t_PACKET* pPacket) {
     } else {
         // 디비 SP 오류...
     }
-
+    */
     return NULL;
 }
 bool
 CThreadGUILD::Query_DeleteCLAN(char* szClanName) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1609,12 +1617,14 @@ CThreadGUILD::Query_DeleteCLAN(char* szClanName) {
     } else {
         // 디비 SP 오류...
     }
+    */
     return false;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool
 CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClanPos) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1648,10 +1658,12 @@ CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClan
     } else {
         // 디비 SP 오류...
     }
+    */
     return false;
 }
 bool
 CThreadGUILD::Query_DeleteClanMember(char* szCharName) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1681,11 +1693,13 @@ CThreadGUILD::Query_DeleteClanMember(char* szCharName) {
     } else {
         // 디비 SP 오류...
     }
+    */
     return false;
 }
 
 bool
 CThreadGUILD::Query_AdjustClanMember(char* szCharName, int iAdjContr, int iAdjPos) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1713,12 +1727,14 @@ CThreadGUILD::Query_AdjustClanMember(char* szCharName, int iAdjContr, int iAdjPo
     } else {
         // 디비 SP 오류...
     }
+    */
     return false;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool
 CThreadGUILD::Query_UpdateClanMOTD(DWORD dwClanID, char* szMessage) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1743,12 +1759,14 @@ CThreadGUILD::Query_UpdateClanMOTD(DWORD dwClanID, char* szMessage) {
     } else {
         // 디비 SP 오류...
     }
+    */
     return false;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool
 CThreadGUILD::Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1773,11 +1791,13 @@ CThreadGUILD::Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage) {
     } else {
         // 디비 SP 오류...
     }
+    */
     return false;
 }
 
 bool
 CThreadGUILD::Query_LoginClanMember(char* szCharName, int iSenderSockIDX) {
+    /* TODO: RAM: Port to postgres
     if (this->db->QuerySQL((char*)"{call ws_ClanCharGET(\'%s\')}", szCharName)) {
         if (this->db->GetNextRECORD()) {
             // 클랜 있다.
@@ -1794,6 +1814,7 @@ CThreadGUILD::Query_LoginClanMember(char* szCharName, int iSenderSockIDX) {
             return pClan->LogIn_ClanUSER(szCharName, iSenderSockIDX, iContribute);
         }
     }
+    */
     return false;
 }
 
@@ -1801,6 +1822,7 @@ bool
 CThreadGUILD::Query_UpdateClanDATA(char* szField,
     t_PACKET* pPacket) // BYTE btAdjType, int iAdjValue)
 {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1865,12 +1887,14 @@ CThreadGUILD::Query_UpdateClanDATA(char* szField,
             szField,
             iAdjValue);
     }
+    */
     return false;
 }
 
 //-------------------------------------------------------------------------------------------------
 bool
 CThreadGUILD::Query_UpdateClanBINARY(DWORD dwClanID, BYTE* pDATA, unsigned int uiSize) {
+    /* TODO: RAM: Port to postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1898,12 +1922,14 @@ CThreadGUILD::Query_UpdateClanBINARY(DWORD dwClanID, BYTE* pDATA, unsigned int u
         // 디비 SP 오류...
         g_LOG.CS_ODS(0xffff, "Query ERROR :: ws_ClanBinUPDATE( %d ) \n", dwClanID);
     }
+    */
     return false;
 }
 
 //-------------------------------------------------------------------------------------------------
 WORD
 CThreadGUILD::Query_UpdateClanMARK(CClan* pClan, WORD wMarkCRC, BYTE* pDATA, unsigned int uiSize) {
+    /* TODO: RAM: Port to Postgres
     long iResultSP = -99;
     SDWORD cbSize1 = SQL_NTS;
 
@@ -1948,6 +1974,7 @@ CThreadGUILD::Query_UpdateClanMARK(CClan* pClan, WORD wMarkCRC, BYTE* pDATA, uns
         // 디비 SP 오류...
         g_LOG.CS_ODS(0xffff, "Query ERROR :: ws_ClanMarkUPDATE( %d ) \n", pClan->m_dwClanID);
     }
+    */
     return RESULT_CLANMAKR_SP_ERROR;
 }
 
