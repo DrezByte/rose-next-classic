@@ -3,7 +3,11 @@ connection_string = "postgres://postgres:postgres@localhost/rose-next"
 
 [loginserver]
 ip = "127.0.0.1"
+port = 29000
 server_port = 19000
+password = "password"
+log_level = 0
+log_path = "C:\\rose-next\\server\\logs\\loginserver.log"
 
 [worldserver]
 ip = "127.0.0.1"

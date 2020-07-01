@@ -4,6 +4,7 @@ param (
     [switch]$client = $false,
     [switch]$server = $false,
     [switch]$tools = $false,
+    [switch]$database = $false,
     [string]$out = (Join-Path $PSScriptRoot .. "dist/" $config)
 )
 
@@ -14,9 +15,12 @@ $doc_root = Join-Path $rose_next_root doc
 $client_out = Join-Path $out client/
 $server_out = Join-Path $out server/
 $tool_out = Join-Path $out tool/
+$db_out = Join-Path $out database/
 
 $directxtex_ver = "2020.2.15"
 $texconv = Join-Path $rose_next_root thirdparty directxtex-$directxtex_ver texconv.exe
+
+$squash_script = Join-Path $PSScriptRoot "squash-migrations.ps1"
 
 Write-Host $texconv
 
@@ -47,4 +51,15 @@ if ($tools -eq $true) {
     xcopy /Y $texconv $tool_out
 } else {
     Write-Host "Skipping tools"
+}
+
+if ($database -eq $true) {
+    Write-Host "Squashing database migrations"
+    If(!(test-path $db_out)) {
+        New-Item -ItemType Directory -Force -Path $db_out
+    }
+
+    & $squash_script -out $db_out
+} else {
+    Write-Host "Skipping database"
 }
