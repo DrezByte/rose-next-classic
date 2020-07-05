@@ -2923,7 +2923,9 @@ classUSER::Send_gsv_SPEED_CHANGED(bool bUpdateSpeed) {
     pCPacket->m_gsv_SPEED_CHANGED.m_nPsvAtkSPEED = this->total_attack_speed();
     pCPacket->m_gsv_SPEED_CHANGED.m_btWeightRate = this->m_btWeightRate;
 
-    this->GetZONE()->SendPacketToSectors(this, pCPacket);
+    if (this->GetZONE()) {
+        this->GetZONE()->SendPacketToSectors(this, pCPacket);
+    }
 
     Packet_ReleaseNUnlock(pCPacket);
 
