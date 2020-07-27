@@ -14,7 +14,15 @@ server/
 *.sdf
 *.vcxproj.user
 
+# Visual studio code
+.vscode/
+
 # Generated files
 *.inc
 src/common-lib/include/rose/common/common_interface.h
 src/engine/include/zz_build_count
+
+# Python
+__pycache__/
+*.pyc
+
