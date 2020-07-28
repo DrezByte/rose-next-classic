@@ -88,6 +88,7 @@ DATABASES = {
         "PORT": os.environ.get("WEBSITE_DATABASE_PORT", 5432),
     },
     "account": {
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("ACCOUNT_DATABASE_NAME", "rose-next-account"),
         "USER": os.environ.get("ACCOUNT_DATABASE_USERNAME", "postgres"),
         "PASSWORD": os.environ.get("ACCOUNT_DATABASE_PASSWORD", "postgres"),
@@ -95,6 +96,7 @@ DATABASES = {
         "PORT": os.environ.get("ACCOUNT_DATABASE_PORT", 5432),
     },
     "game": {
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("GAME_DATABASE_NAME", "rose-next"),
         "USER": os.environ.get("GAME_DATABASE_USERNAME", "postgres"),
         "PASSWORD": os.environ.get("GAME_DATABASE_PASSWORD", "postgres"),

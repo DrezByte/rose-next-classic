@@ -1,34 +1,60 @@
+import hashlib
+
+from django.db import connections
 from django.dispatch import receiver
+
 from allauth.account.signals import (
+    email_changed,
     email_confirmed,
-    user_signed_up,
     password_set,
     password_changed,
     password_reset,
+    user_signed_up,
 )
-from pprint import pprint
+
+
+def md5(s):
+    return hashlib.md5(s.encode("utf-8")).hexdigest()
 
 
 @receiver(user_signed_up)
 def on_user_signed_up(request, user, **kwargs):
-    # TODO: Create a user in the game database
-    # username: user.username
-    # email: user.email
-    # password: request.POST.password1
-    # md5 hash the password
-    pass
+    md5_password = md5(request.POST["password1"])
+    print(md5_password)
+    with connections["account"].cursor() as cursor:
+        # TODO: Handle failure case
+        cursor.execute(
+            "INSERT INTO account (username, password, email, access_level) VALUES (%s, %s, %s, 0) ON CONFLICT DO NOTHING",
+            [user.username, md5_password, user.email],
+        )
+
+
+@receiver(email_changed)
+def on_email_changed(request, user, from_email_address, to_email_address, **kwargs):
+    with connections["account"].cursor() as cursor:
+        # TODO: Handle failure case
+        cursor.execute(
+            "UPDATE account SET email = %s WHERE username = %s",
+            [str(to_email_address), user.username],
+        )
 
 
 @receiver(email_confirmed)
-def my_callback(request, email_address, **kwargs):
-    # TODO: Update the user access_level based on email_address
-    pass
+def on_email_confirmed(request, email_address, **kwargs):
+    with connections["account"].cursor() as cursor:
+        # TODO: Handle failure case
+        cursor.execute(
+            "UPDATE account SET access_level = 1 WHERE email = %s", [str(email_address)]
+        )
 
 
 @receiver([password_set, password_changed, password_reset])
 def on_password_updated(request, user, **kwargs):
-    # TODO: Update the user password based on username
-    # username: user.username
-    # password: request.POST.password1
-    # md5 has the password
-    pass
+    md5_password = md5(request.POST["password1"])
+
+    with connections["account"].cursor() as cursor:
+        # TODO: Handle failure case
+        cursor.execute(
+            "UPDATE account SET password = %s WHERE username = %s",
+            [md5_password, user.username],
+        )
