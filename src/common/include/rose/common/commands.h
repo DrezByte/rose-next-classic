@@ -22,38 +22,49 @@ enum CommandId {
     LEVELUP,
     MAPS,
     RATES,
-    RELOAD_CONFIG,
     STATS,
     TELEPORT,
+
+    RELOAD_CONFIG,
 };
 }
 
-static const std::vector<CommandInfo> commands = {
-    {"help", 1, "Display this help.", "Usage: help", CommandContext::Client},
+const char* HELP_HELP = "Display this help.";
+const char* HELP_USAGE = "Usage: help";
 
-    {"daytime", 100, "Set time of day.", "Usage: daytime <morning|night>", CommandContext::Server},
-    {"levelup",
-        100,
-        "Level up by the given amount.",
-        "Usage: levelup <amount>",
-        CommandContext::Server},
-    {"maps", 100, "List all maps by id.", "Usage: maps", CommandContext::Server},
-    {"rates", 100, "List server rates.", "Usage: rates", CommandContext::Server},
-    {"reloadconfig",
-        500,
-        "Reload server game configs.",
-        "Usage: reloadconfig",
-        CommandContext::Server},
-    {"stats",
-        100,
-        "List server side character stats.",
-        "Usage: stats [target_name]",
-        CommandContext::Server},
-    {"tp",
-        100,
-        "Teleport to a location.",
-        " Usage: tp <map_id> [x_coord] [y_coord]",
-        CommandContext::Server},
+const char* DAYTIME_HELP = "Set time of day.";
+const char* DAYTIME_USAGE = "Usage: daytime <morning|night>";
+
+const char* LEVELUP_HELP = "Level up by the given amount.";
+const char* LEVELUP_USAGE = "Usage: levelup <amount>";
+
+const char* MAPS_HELP = "List all maps by id.";
+const char* MAPS_USAGE = "Usage: maps";
+
+const char* RATES_HELP = "List server rates.";
+const char* RATES_USAGE = "Usage: rates";
+
+const char* STATS_HELP = "List server side character stats.";
+const char* STATS_USAGE = "Usage: stats [target_name]";
+
+const char* TP_HELP = "Teleport to a location.";
+const char* TP_USAGE = "Usage: tp <map_id> [x_coord] [y_coord]";
+
+const char* RELOADCONFIG_HELP = "Reload server game configs.";
+const char* RELOADCONFIG_USAGE = "Usage: reloadconfig";
+
+
+static const std::vector<CommandInfo> commands = {
+    {"help", 1, HELP_HELP, HELP_USAGE, CommandContext::Client},
+
+    {"daytime", 100, DAYTIME_HELP, DAYTIME_USAGE, CommandContext::Server},
+    {"levelup", 100, LEVELUP_HELP, LEVELUP_USAGE, CommandContext::Server},
+    {"maps", 100, MAPS_HELP, MAPS_USAGE, CommandContext::Server},
+    {"rates", 100, RATES_HELP, RATES_USAGE, CommandContext::Server},
+    {"stats", 100, STATS_HELP, STATS_USAGE, CommandContext::Server},
+    {"tp", 100, TP_HELP, TP_USAGE, CommandContext::Server},
+
+    {"reloadconfig", 500, RELOADCONFIG_HELP, RELOADCONFIG_USAGE, CommandContext::Server},
 };
 
 } // namespace Rose::Common

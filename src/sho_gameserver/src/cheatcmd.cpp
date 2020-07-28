@@ -179,9 +179,9 @@ static const std::unordered_map<std::string, std::tuple<CommandFunction, Command
         REGISTER_COMMAND(Command::LEVELUP, levelup),
         REGISTER_COMMAND(Command::MAPS, maps),
         REGISTER_COMMAND(Command::RATES, rates),
-        REGISTER_COMMAND(Command::RELOAD_CONFIG, reload_config),
         REGISTER_COMMAND(Command::STATS, stats),
         REGISTER_COMMAND(Command::TELEPORT, teleport),
+        REGISTER_COMMAND(Command::RELOAD_CONFIG, reload_config),
     };
 
 char* l_szAbility[] = {"STR",
@@ -218,8 +218,6 @@ classUSER::TWGM_Cheater() {
     return this->m_dwRIGHT & (RIGHT_TWG | RIGHT_MG | RIGHT_DEV | RIGHT_MASTER);
 }
 
-//-------------------------------------------------------------------------------------------------
-// C등급..
 short
 classUSER::Cheat_where(CStrVAR* pStrVAR,
     char* pArg1 /*szCharName*/,
@@ -249,7 +247,7 @@ classUSER::Cheat_where(CStrVAR* pStrVAR,
     }
     return CHEAT_NOLOG;
 }
-// C등급..
+
 short
 classUSER::Cheat_account(char* pArg1, char* szCode) {
     // 케릭 이름으로 계정 얻기
@@ -263,7 +261,7 @@ classUSER::Cheat_account(char* pArg1, char* szCode) {
     }
     return CHEAT_NOLOG;
 }
-// C등급..
+
 short
 classUSER::Cheat_move(char* pArg1, char* pArg2, char* szCode) {
     classUSER* pUSER = NULL;
