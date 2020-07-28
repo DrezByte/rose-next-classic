@@ -40,7 +40,7 @@ $account_out = Join-Path $out ($out_name + "-account.sql")
 Write-Host "Executing account database migrations"
 
 & $pg_createdb $pg_database
-Foreach($migration in $account_migrations) {
+Foreach ($migration in $account_migrations) {
     & $psql -f (Join-Path $migration up.sql)
 }
 
@@ -50,20 +50,20 @@ Write-Host "Dumping account database to $account_out"
 & $pg_dropdb $pg_database
 
 
-# World database
-$world_db_root = Join-Path $db_root migrations world
-$world_migrations = Get-ChildItem -Path $world_db_root -Directory | Sort-Object
-$world_out = Join-Path $out ($out_name + ".sql")
+# game database
+$game_db_root = Join-Path $db_root migrations game
+$game_migrations = Get-ChildItem -Path $game_db_root -Directory | Sort-Object
+$game_out = Join-Path $out ($out_name + ".sql")
 
-Write-Host "Executing world database migrations"
+Write-Host "Executing game database migrations"
 
 & $pg_createdb $pg_database
-Foreach($migration in $world_migrations) {
+Foreach ($migration in $game_migrations) {
     & $psql -f (Join-Path $migration up.sql)
 }
 
-Write-Host "Dumping world database to $world_out"
+Write-Host "Dumping game database to $game_out"
 
-& $pg_dump @pg_flags -f $world_out $pg_database 
+& $pg_dump @pg_flags -f $game_out $pg_database 
 & $pg_dropdb $pg_database
 
