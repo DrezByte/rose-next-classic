@@ -147,3 +147,6 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 DISCORD_URL = "https://discord.gg/syW7RBP"
+
+# ROSE Next config
+CLIENT_DOWNLOAD_URL = "https://www.rosenext.com/game/latest.zip"
