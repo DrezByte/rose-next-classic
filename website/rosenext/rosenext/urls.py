@@ -14,8 +14,8 @@ oauth2_endpoint_views = [
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="home.html")),
-    path("accounts/", include("allauth.urls")),
+    path("account/", include("allauth.urls")),
     path("admin/", admin.site.urls),
     path("oauth/", include((oauth2_endpoint_views, "oauth"))),
-    path("users/", include("users.urls")),
+    path("user/", include("users.urls", namespace="user")),
 ]
