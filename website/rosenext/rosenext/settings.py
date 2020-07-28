@@ -23,7 +23,8 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.staticfiles",
     # Apps
-    "users",
+    "apps.account",
+    "apps.user",
     # Thirdparty apps
     "allauth",
     "allauth.account",
@@ -103,7 +104,7 @@ DATABASES = {
 }
 
 # Auth
-AUTH_USER_MODEL = "users.RoseNextUser"
+AUTH_USER_MODEL = "user.RoseNextUser"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -119,6 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
 ]
 
+LOGIN_URL = "/account/login"
 LOGIN_REDIRECT_URL = "/"
 
 # Internationalization
@@ -146,7 +148,6 @@ ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
-DISCORD_URL = "https://discord.gg/syW7RBP"
-
 # ROSE Next config
 CLIENT_DOWNLOAD_URL = "https://www.rosenext.com/game/latest.zip"
+DISCORD_URL = "https://discord.gg/syW7RBP"

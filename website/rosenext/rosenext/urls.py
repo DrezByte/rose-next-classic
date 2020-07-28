@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 import oauth2_provider.views as oauth2_views
 
-import users
+import apps.user
 
 oauth2_endpoint_views = [
     path("authorize/", oauth2_views.AuthorizationView.as_view(), name="authorize"),
@@ -17,5 +17,5 @@ urlpatterns = [
     path("account/", include("allauth.urls")),
     path("admin/", admin.site.urls),
     path("oauth/", include((oauth2_endpoint_views, "oauth"))),
-    path("user/", include("users.urls", namespace="user")),
+    path("user/", include("apps.user.urls", namespace="user")),
 ]

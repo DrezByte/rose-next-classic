@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import include, path
 
-from users.views import oauth_profile, ProfileView
+from apps.user.views import oauth_profile, ProfileView
 
 app_name = "users"
 
