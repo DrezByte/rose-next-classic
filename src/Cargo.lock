@@ -295,6 +295,13 @@ version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "launcher"
+version = "0.1.0"
+dependencies = [
+ "tempfile 3.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
