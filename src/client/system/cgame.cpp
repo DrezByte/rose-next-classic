@@ -329,7 +329,7 @@ CGame::Init() {
     CreateDirectory(CClanMarkUserDefined::ClanMarkFileDirectory.c_str(), NULL);
     CreateDirectory("Chat", NULL);
 
-    m_ClientFileVersion.GetVersionInfo("TRose.exe");
+    m_ClientFileVersion.GetVersionInfo("rosenext.exe");
 
     m_ClientFileVersion.m_strFileVersion = CStr::Printf("%d.%d.%d.%d",
         m_ClientFileVersion.m_iMajorVersion,

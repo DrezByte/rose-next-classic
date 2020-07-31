@@ -59,8 +59,8 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='release|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='release|Win32'" />
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">trose</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">trose</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">rosenext</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">rosenext</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <PostBuildEventUseInBuild />
