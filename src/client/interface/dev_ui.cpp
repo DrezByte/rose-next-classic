@@ -3,8 +3,8 @@
 #include "dev_ui.h"
 
 #include "imgui.h"
-#include "imgui/imgui_impl_dx9.h"
-#include "imgui/imgui_impl_win32.h"
+#include "imgui_impl_dx9.h"
+#include "imgui_impl_win32.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
