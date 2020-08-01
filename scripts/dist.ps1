@@ -29,9 +29,10 @@ Write-Host "Collecting files to $out"
 if ($client -eq $true) {
     Write-Host "Collecting client files"
     xcopy /Y (Join-Path $build_root triggervfs.dll) $client_out
-    xcopy /Y (Join-Path $build_root trose.exe) $client_out
+    xcopy /Y (Join-Path $build_root rosenext.exe) $client_out
     xcopy /Y (Join-Path $build_root znzin.dll) $client_out
-} else {
+}
+else {
     Write-Host "Skipping client files"
 }
 
@@ -41,7 +42,8 @@ if ($server -eq $true) {
     xcopy /Y (Join-Path $build_root sho_worldserver.exe) $server_out
     xcopy /Y (Join-Path $build_root sho_gameserver.exe) $server_out
     xcopy /Y (Join-Path $doc_root server.toml.example) $server_out
-} else {
+}
+else {
     Write-Host "Skipping server files"
 }
 
@@ -49,17 +51,19 @@ if ($tools -eq $true) {
     Write-Host "Collecting tools"
     xcopy /Y (Join-Path $build_root pipeline.exe) $tool_out
     xcopy /Y $texconv $tool_out
-} else {
+}
+else {
     Write-Host "Skipping tools"
 }
 
 if ($database -eq $true) {
     Write-Host "Squashing database migrations"
-    If(!(test-path $db_out)) {
+    If (!(test-path $db_out)) {
         New-Item -ItemType Directory -Force -Path $db_out
     }
 
     & $squash_script -out $db_out
-} else {
+}
+else {
     Write-Host "Skipping database"
 }

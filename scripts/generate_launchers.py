@@ -32,9 +32,9 @@ def generate_scripts():
         game_dir = game_dir
     
     server_targets  = [
-        ("1-login.cmd", "debug", "sho_loginserver.exe"),
-        ("2-world.cmd", "debug", "sho_worldserver.exe"),
-        ("3-game.cmd", "debug", "sho_gameserver.exe"),
+        ("debug-1-login.cmd", "debug", "sho_loginserver.exe"),
+        ("debug-2-world.cmd", "debug", "sho_worldserver.exe"),
+        ("debug-3-game.cmd", "debug", "sho_gameserver.exe"),
         ("release-1-login.cmd", "release", "sho_loginserver.exe"),
         ("release-2-world.cmd", "release", "sho_worldserver.exe"),
         ("release-3-game.cmd", "release", "sho_gameserver.exe")
@@ -43,16 +43,16 @@ def generate_scripts():
     for target in server_targets:
         out_file = Path(out_dir, target[0])
         exe = Path(src_dir, "bin", target[1], target[2])
-        conf = Path(src_dir, "server", "server.toml")
+        conf = Path(out_dir, "server", "server.toml")
 
         print(f"Generating {out_file}")
         with open(out_file, "w+") as f:
             f.write(f"{exe} --config {conf}")
 
-    client_targets = [("client.cmd", "debug"), ("release-client.cmd", "release")]
+    client_targets = [("debug-client.cmd", "debug"), ("release-client.cmd", "release")]
     for target in client_targets:
         out_file = Path(out_dir , target[0])
-        exe = Path(src_dir, "bin", target[1], "trose.exe")
+        exe = Path(src_dir, "bin", target[1], "rosenext.exe")
 
         print(f"Generating {out_file}")
         with open(out_file, "w+") as f:
