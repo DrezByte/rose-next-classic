@@ -46,7 +46,7 @@ The `client` project can be run from within Visual Studio to debug the executabl
 it looks in the `game/` directory for the runtime game assets
 
 ### Connecting to servers
-Run `trose.exe --server <IP>` to connect to a server at a specific IP Address
+Run `rosenext.exe --server <IP>` to connect to a server at a specific IP Address
 
 #### Auto-connect
 The client has an extra feature to automatically connect directly to the game
@@ -54,7 +54,7 @@ world. It requires that all the servers are running and that a character exists
 and is known by name. E.g. usage:
 
 ```
-trose.exe --server 127.0.0.1 --username user --password pass --auto-connect-server 1 --auto-connect-channel 1 --auto-connect-character MyChar
+rosenext.exe --server 127.0.0.1 --username user --password pass --auto-connect-server 1 --auto-connect-channel 1 --auto-connect-character MyChar
 ```
 
 ## Server
