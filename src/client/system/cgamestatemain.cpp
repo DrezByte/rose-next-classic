@@ -10,6 +10,8 @@
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../Interface/controls/EffectString.h"
 #include "../Interface/cursor/CCursor.h"
+#include "interface/dev_ui.h"
+
 #include "CGame.h"
 #include "CGameStateMain.h"
 
@@ -136,6 +138,7 @@ CGameStateMain::Update(bool bLostFocus) {
                 UpdateCheckFrame();
                 CTargetManager::GetSingleton().Proc();
                 CSkillCommandDelay::GetSingleton().Proc();   */
+        dev_ui_frame();
 
         if (::beginScene()) // 성공한 경우에만 렌더링
         {
@@ -145,6 +148,15 @@ CGameStateMain::Update(bool bLostFocus) {
             if (!g_GameDATA.m_bNoUI) { // 인터페이스를 그려야 한다면... - zho
                 Render_GameMENU();
             }
+
+            /*
+            LPDIRECT3DDEVICE9 device = reinterpret_cast<LPDIRECT3DDEVICE9>(::getDevice());
+            device->SetRenderState(D3DRS_ZENABLE, FALSE);
+            device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+            device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+            */
+
+            dev_ui_render();
 
             ::endScene();
             ::swapBuffers();

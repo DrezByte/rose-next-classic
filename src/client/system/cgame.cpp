@@ -46,6 +46,7 @@
 #include "../interface/dlgs/AvatarInfoDlg.h"
 #include "../interface/cursor/ccursor.h"
 #include "../interface/ExternalUI/ExternalUILobby.h"
+#include "interface/dev_ui.h"
 
 #include "../Common/IO_Quest.h"
 #include "../Common/IO_PAT.h"
@@ -204,6 +205,8 @@ CGame::GameLoop() {
 
     ChangeState(GS_TITLE);
 
+    dev_ui_init(g_pCApp->GetHWND());
+
     do {
         bool bLostFocus = g_pCApp->GetMessage();
 
@@ -220,6 +223,7 @@ CGame::GameLoop() {
 
     } while (!g_pCApp->IsExitGame());
 
+    dev_ui_destroy();
     Exit();
 }
 
@@ -803,6 +807,10 @@ CGame::Free_BasicDATA() {
 
 bool
 CGame::AddWndMsgQ(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
+    if (dev_ui_proc(g_pCApp->GetHWND(), uiMsg, wParam, lParam)) {
+        return false;
+    }
+
     if (uiMsg == WM_MOUSEMOVE) {
         m_ptPrevMouse = m_ptCurrMouse;
 

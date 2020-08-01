@@ -6,6 +6,7 @@
 #include "../CCamera.h"
 #include "../CClientStorage.h"
 #include "../CSkyDOME.h"
+
 #include "../interface/ExternalUI/ExternalUILobby.h"
 #include "../interface/CLoading.h"
 #include "../interface/CUIMediator.h"
@@ -13,6 +14,8 @@
 #include "../interface/Dlgs/CMinimapDlg.h"
 #include "../interface/Dlgs/CItemDlg.h"
 #include "../interface/Cursor/CCursor.h"
+#include "interface/dev_ui.h"
+
 #include "../GameData/CGameDataCreateAvatar.h"
 #include "../GameData/CClan.h"
 #include "../JCommandState.h"
@@ -62,6 +65,10 @@ CGameStatePrepareMain::Enter(int iPrevStateID) {
     g_pTerrain->FreeZONE();
 
     resetScreen();
+
+    // Reset screen creates a new device so we re-init the dev ui
+    dev_ui_init(g_pCApp->GetHWND());
+
     CCursor::GetInstance().ReloadCursor();
 #ifdef __THREADED_LOADING
     gsv_TELEPORT_REPLY Reply;

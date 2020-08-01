@@ -114,6 +114,12 @@
     <Filter Include="Common Files">
       <UniqueIdentifier>{1f9aea5a-7f58-4aa7-b757-8911578e1c35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Thirdparty">
+      <UniqueIdentifier>{86766a86-41ea-4495-8467-3fd37b84fa0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thirdparty\imgui">
+      <UniqueIdentifier>{4c0d6d1b-536f-4f86-8f9b-f9ea031f3e86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCamera.cpp">
@@ -1150,6 +1156,12 @@
     </ClCompile>
     <ClCompile Include="..\common\shared\ceconomy.cpp">
       <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\dev_ui.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\imgui_imp.cpp">
+      <Filter>Thirdparty\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2244,6 +2256,9 @@
     </ClInclude>
     <ClInclude Include="..\common\shared\ceconomy.h">
       <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="interface\dev_ui.h">
+      <Filter>Source Files\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
