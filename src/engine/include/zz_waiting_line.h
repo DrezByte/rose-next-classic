@@ -53,21 +53,11 @@ public:
 	bool to_front (T * node_to_front);
 	bool to_back (T * node_to_back);
 
-	typedef bool (zz_sort_compare_func) (const T * A, const T * B);
-
-	class zz_waiting_line_compare_func : public std::binary_function<T *, T *, bool> 
-	{
-	public:
-		bool operator() (const T * lhs, const T * rhs) const 
-		{
-			return lhs->get_load_priority() > rhs->get_load_priority();
-		}
-	};
-
 	void sort_line ()
 	{
-		zz_waiting_line_compare_func cf;
-		_line.sort(cf);
+        _line.sort([](const T* lhs, const T* rhs) -> bool {
+            return lhs->get_load_priority() > rhs->get_load_priority();
+        });
 	}
 
 	T * back ();
