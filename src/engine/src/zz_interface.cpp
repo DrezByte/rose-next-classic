@@ -2090,6 +2090,12 @@ void initZnzin (void)
 }
 
 ZZ_DLL
+HNODE getZnzin(void)
+{
+    return reinterpret_cast<HNODE>(znzin);
+}
+
+ZZ_DLL
 void destZnzin (void)
 {
 	//ZZ_LOG("interface: destZnzin()\n");

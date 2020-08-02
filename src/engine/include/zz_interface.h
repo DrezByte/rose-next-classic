@@ -986,6 +986,9 @@ ZZ_DLL
 void initZnzin ( void );
 
 ZZ_DLL
+HNODE getZnzin(void);
+
+ZZ_DLL
 void destZnzin ( void );
 
 ZZ_DLL
