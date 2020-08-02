@@ -98,6 +98,7 @@ CGameStatePrepareSelectAvatar::Draw() {
     // if ( !bLostFocus )
 
     if (g_pCApp->IsActive()) {
+        this->pre_begin_scene();
         if (!::beginScene()) {
             return;
         }
@@ -113,29 +114,8 @@ CGameStatePrepareSelectAvatar::Draw() {
 
         ::endSprite();
 
+        this->pre_end_scene();
         ::endScene();
         ::swapBuffers();
     }
-
-    /*
-
-        g_EUILobby.Update();
-
-        if( !bLostFocus )
-        {
-            if ( !::beginScene() )
-            {
-                return;
-            }
-            ::clearScreen();
-
-            ::beginSprite( D3DXSPRITE_ALPHABLEND );
-
-    //		g_Loading.DrawBackground();
-
-            ::endSprite();
-
-            ::endScene();
-            ::swapBuffers();
-        }		*/
 }

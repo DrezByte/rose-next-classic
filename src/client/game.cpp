@@ -100,6 +100,7 @@ DrawLoadingImage() {
 
         ::endSprite();
 
+
         ::endScene();
         ::swapBuffers();
         g_Loading.UnloadTexture();
@@ -114,9 +115,11 @@ DestroyWaitDlg() {
 //-------------------------------------------------------------------------------------------------
 
 CGAMEDATA::CGAMEDATA():
-    server_ip(TCP_LSV_IP), server_port(TCP_LSV_PORT), auto_connect_server_id(0),
+    server_ip(TCP_LSV_IP),
+    server_port(TCP_LSV_PORT),
+    auto_connect_server_id(0),
     auto_connect_channel_id(0) {
-    m_bWireMode = false;
+
     m_bDrawBoundingVolume = false;
     m_bNoUI = false;
     m_bTranslate = false;

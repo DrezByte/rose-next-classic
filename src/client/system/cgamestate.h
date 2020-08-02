@@ -11,6 +11,9 @@
  */
 class CGameState {
 public:
+    bool dev_ui_enabled;
+
+public:
     CGameState(void);
     virtual ~CGameState(void);
 
@@ -28,6 +31,10 @@ public:
 
     virtual int ProcMouseInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) = 0;
     virtual int ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) = 0;
+
+    // Rendering hooks
+    virtual void pre_begin_scene();
+    virtual void pre_end_scene();
 
     // Handlers
     virtual void on_loginserver_connected(){};

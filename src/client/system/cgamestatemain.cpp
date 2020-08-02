@@ -10,7 +10,6 @@
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../Interface/controls/EffectString.h"
 #include "../Interface/cursor/CCursor.h"
-#include "interface/dev_ui.h"
 
 #include "CGame.h"
 #include "CGameStateMain.h"
@@ -138,25 +137,17 @@ CGameStateMain::Update(bool bLostFocus) {
                 UpdateCheckFrame();
                 CTargetManager::GetSingleton().Proc();
                 CSkillCommandDelay::GetSingleton().Proc();   */
-        dev_ui_frame();
+        this->pre_begin_scene();
 
-        if (::beginScene()) // 성공한 경우에만 렌더링
-        {
+        if (::beginScene()) {
             ::clearScreen();
             ::renderScene();
 
-            if (!g_GameDATA.m_bNoUI) { // 인터페이스를 그려야 한다면... - zho
+            if (!g_GameDATA.m_bNoUI) {
                 Render_GameMENU();
             }
 
-            /*
-            LPDIRECT3DDEVICE9 device = reinterpret_cast<LPDIRECT3DDEVICE9>(::getDevice());
-            device->SetRenderState(D3DRS_ZENABLE, FALSE);
-            device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-            device->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-            */
-
-            dev_ui_render();
+            this->pre_end_scene();
 
             ::endScene();
             ::swapBuffers();
@@ -617,15 +608,6 @@ CGameStateMain::ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
 #endif
                     }
                     break;
-
-                /// 'w'
-                case 0x57: {
-                    if (CGame::GetInstance().GetRight() >= CHEAT_DEV) {
-                        g_GameDATA.m_bWireMode = !g_GameDATA.m_bWireMode;
-                        ::useWireMode(g_GameDATA.m_bWireMode);
-                    }
-                    return 1;
-                }
 
                 /// 'H'
                 // case 0x48:
@@ -1201,6 +1183,10 @@ CGameStateMain::UpdateCameraPositionByMouse() {
 
 int
 CGameStateMain::ProcWndMsgInstant(unsigned uiMsg, WPARAM wParam, LPARAM lParam) {
+    if (CGameState::ProcWndMsgInstant(uiMsg, wParam, lParam)) {
+        return 1;
+    }
+
     POINT ptMouse = {LOWORD(lParam), HIWORD(lParam)};
     switch (uiMsg) {
         case WM_MOUSEMOVE: {

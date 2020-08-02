@@ -63,12 +63,13 @@ CApplication::wm_COMMAND(WPARAM wParam) {
 //-------------------------------------------------------------------------------------------------
 LRESULT
 CApplication::MessageProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam) {
-    if (CTIme::GetInstance().Process(hWnd, uiMsg, wParam, lParam))
+    if (CTIme::GetInstance().Process(hWnd, uiMsg, wParam, lParam)) {
         return S_OK;
+    }
 
-    // 키보드 메세지 저장
-    if (CGame::GetInstance().AddWndMsgQ(uiMsg, wParam, lParam))
-        return 0;
+    if (CGame::GetInstance().AddWndMsgQ(uiMsg, wParam, lParam)) {
+        return ::DefWindowProc(hWnd, uiMsg, wParam, lParam);
+    }
 
     switch (uiMsg) {
         case WM_SYSCHAR: /// systemkey와 일반 키를 조합해서 누를때 "띵"소리 없애기

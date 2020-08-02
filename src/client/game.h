@@ -54,7 +54,6 @@ public:
     // Returns true if there is enough information to auto-connect the user
     bool auto_connect();
 
-    bool m_bWireMode;
     bool m_bDrawBoundingVolume;
 
     HNODE m_hShader_nolit_skin;

@@ -237,8 +237,6 @@ CGame::Init() {
 
     ::activateLog(true);
 
-    g_GameDATA.m_bWireMode = false;
-
     if (g_pNet == NULL) {
         g_pCApp->ErrorBOX("init socket failed", "error", MB_OK);
         return 1;
@@ -807,10 +805,6 @@ CGame::Free_BasicDATA() {
 
 bool
 CGame::AddWndMsgQ(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
-    if (dev_ui_proc(g_pCApp->GetHWND(), uiMsg, wParam, lParam)) {
-        return false;
-    }
-
     if (uiMsg == WM_MOUSEMOVE) {
         m_ptPrevMouse = m_ptCurrMouse;
 
@@ -821,7 +815,10 @@ CGame::AddWndMsgQ(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
         // ClientToScreen( g_pCApp->GetHWND(), &ptWindow );
         // setCursorPosition ( m_hDxCursor[m_iCurrentCursorType], ptWindow.x, ptWindow.y );
     }
-    this->active_state->ProcWndMsgInstant(uiMsg, wParam, lParam);
+    if (this->active_state->ProcWndMsgInstant(uiMsg, wParam, lParam)) {
+        return true;
+    }
+
     return m_WndMsgQ.AddMsgToQ(uiMsg, wParam, lParam);
 }
 
@@ -1141,17 +1138,6 @@ CGame::ProcInput() {
         }
     }
     while (CGame::GetInstance().m_WndMsgQ.GetKeyboardMsgFromQ(Msg)) {
-        switch (Msg.uiMsg) {
-            case WM_SYSKEYDOWN: {
-                unsigned int oemScan = int(Msg.lParam & (0xff << 16)) >> 16;
-                UINT vk = MapVirtualKey(oemScan, 1);
-                if (vk == VK_F4) {
-                    g_pCApp->SetExitGame();
-                    return;
-                }
-            } break;
-        }
-
         this->active_state->ProcKeyboardInput(Msg.uiMsg, Msg.wParam, Msg.lParam);
 
         switch (Msg.uiMsg) {
