@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 blake3 = "0.3"
+hex = "0.4"
 pico-args = "0.3"
 reqwest = { version = "0.10", features = ["blocking", "json"] }
 serde = { version = "1", features = ["derive"] }

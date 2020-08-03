@@ -3,6 +3,7 @@ pub enum LauncherError {
     Message(String),
     ManifestError(String),
     VersionFileError(String),
+    LauncherUpdateError(String),
 }
 
 impl std::fmt::Display for LauncherError {
@@ -11,6 +12,7 @@ impl std::fmt::Display for LauncherError {
             LauncherError::Message(s) => write!(f, "{}", s),
             LauncherError::ManifestError(s) => write!(f, "{}", s),
             LauncherError::VersionFileError(s) => write!(f, "{}", s),
+            LauncherError::LauncherUpdateError(s) => write!(f, "{}", s),
         }
     }
 }
