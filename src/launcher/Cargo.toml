@@ -14,6 +14,11 @@ reqwest = { version = "0.10", features = ["blocking", "json"] }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "0.2", features=["full"]}
 
+[target.'cfg(windows)'.dependencies]
+native-windows-gui = { version = "1", features=["all"] }
+native-windows-derive = "1"
+winapi = { version = "0.3", features = ["winuser"] }
+
 [dev-dependencies]
 actix-rt = "1"
 actix-web = "2.0"

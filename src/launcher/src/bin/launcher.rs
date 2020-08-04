@@ -1,9 +1,21 @@
+#![windows_subsystem = "windows"]
+
 use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 use std::process;
+
+extern crate native_windows_derive as nwd;
+extern crate native_windows_gui as nwg;
+
+use nwd::NwgUi;
+use nwg::stretch::geometry::Size;
+use nwg::stretch::style::{Dimension, FlexDirection};
+use nwg::NativeUi;
+use winapi::shared::windef::RECT;
+use winapi::um::winuser::{GetClientRect, GetDesktopWindow};
 
 use launcher::error::LauncherError;
 use launcher::manifest::Manifest;
@@ -13,6 +25,55 @@ const DEFAULT_URL: &str = "https://rosenext.com/public/latest";
 const DEFAULT_MANIFEST_NAME: &str = "manifest.json";
 const DEFAULT_VERSION_FILE_NAME: &str = "version";
 const DEFAULT_CLIENT_EXE_NAME: &str = "rosenext";
+
+#[derive(Default, NwgUi)]
+pub struct LauncherApp {
+    #[nwg_control(size: (400, 500), position: (0, 0), title: "ROSE Next Launcher", flags: "WINDOW|VISIBLE")]
+    #[nwg_events( OnWindowClose: [LauncherApp::say_goodbye] )]
+    window: nwg::Window,
+
+    #[nwg_layout(parent: window, flex_direction: FlexDirection::Column)]
+    main_layout: nwg::FlexboxLayout,
+
+    #[nwg_control]
+    #[nwg_layout_item(
+        layout: main_layout,
+        size: Size { width: Dimension::Points(380.0), height: Dimension::Points(100.0) },
+    )]
+    header: nwg::ImageFrame,
+
+    #[nwg_control(text: "Button 1")]
+    #[nwg_layout_item(
+        layout: main_layout,
+        size: Size { width: Dimension::Percent(0.25), height: Dimension::Percent(0.25) },
+    )]
+    button1: nwg::Button,
+
+    #[nwg_control(text: "Button 2")]
+    #[nwg_layout_item(
+        layout: main_layout,
+        size: Size { width: Dimension::Percent(1.0), height: Dimension::Percent(0.25) },
+        //flex_grow: 2.0,
+    )]
+    button2: nwg::Button,
+
+    #[nwg_control()]
+    #[nwg_layout_item(
+        layout: main_layout,
+        size: Size { width: Dimension::Auto, height: Dimension::Points(20.0)},
+        max_size: Size { width: Dimension::Undefined, height: Dimension::Points(20.0) },
+    )]
+    progress: nwg::ProgressBar,
+    //#[nwg_control(text: "Hello")]
+    //status_bar: nwg::StatusBar,
+}
+
+impl LauncherApp {
+    fn say_goodbye(&self) {
+        nwg::simple_message("Goodbye", "Goodbye");
+        nwg::stop_thread_dispatch();
+    }
+}
 
 struct LauncherArgs {
     // URL of remote archive
@@ -185,12 +246,38 @@ async fn main() {
         skip_launcher_update: args.contains("--skip-launcher-update"),
     };
 
-    if let Err(e) = update(&args).await {
-        eprintln!("{}", e);
-    }
+    if cfg!(windows) {
+        nwg::init().expect("Failed to init Native Windows GUI");
+        nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
+        let app = LauncherApp::build_ui(Default::default()).expect("Failed to build UI");
 
-    // TODO: Don't run this unless update passes?
-    process::Command::new(args.client).spawn().expect("FAILO");
+        // Center in scree
+        let mut rect = RECT::default();
+        let res = unsafe {
+            GetClientRect(GetDesktopWindow(), &mut rect);
+        };
+        let (width, height) = app.window.size();
+        let x = (rect.right - width as i32) / 2;
+        let y = (rect.bottom - height as i32) / 2;
+        app.window.set_position(x, y);
+
+        // Add header image
+        let header_raw = include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/res/header.bmp"));
+        let mut header_bitmap = nwg::Bitmap::default();
+        nwg::Bitmap::builder()
+            .source_bin(Some(header_raw))
+            .strict(true)
+            .build(&mut header_bitmap)
+            .expect("Failed to build header bitmap");
+        app.header.set_bitmap(Some(&header_bitmap));
+        nwg::dispatch_thread_events();
+    } else {
+        if let Err(e) = update(&args).await {
+            eprintln!("{}", e);
+        }
+        // TODO: Don't run this unless update passes?
+        process::Command::new(args.client).spawn().expect("FAILO");
+    }
 }
 
 #[cfg(test)]
