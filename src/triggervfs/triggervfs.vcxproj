@@ -102,13 +102,6 @@ xcopy $(OutDir)$(ProjectName).lib $(IROSE_ROOT)\lib\$(Platform)\$(Configuration)
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\LIB_Util\LIB_Util.vcxproj">
-      <Project>{b4dde42e-8878-441e-87ae-62b2f0e5a9cf}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\BlankInfo.cpp" />
     <ClCompile Include="src\classCRC.cpp" />
     <ClCompile Include="src\ErrorEtc.cpp" />
