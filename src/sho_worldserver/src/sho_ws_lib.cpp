@@ -200,25 +200,6 @@ SHO_WS::connect_database(DatabaseConfig& config) {
     if (NULL == this->GetInstance())
         return false;
 
-    char* ip = (char*)config.ip.c_str();
-    char* name = (char*)config.name.c_str();
-    char* username = (char*)config.username.c_str();
-    char* password = (char*)config.password.c_str();
-
-    std::string log_db = config.name;
-    if (log_db.back() == '\0') {
-        log_db.pop_back();
-    }
-    log_db += "_log";
-
-    m_DBServerIP.Set(ip);
-    m_DBName.Set(name);
-    m_DBUser.Set(username);
-    m_DBPassword.Set(password);
-
-    m_LogDBUser.Set(name);
-    m_LogDBPassword.Set(password);
-
     g_pThreadSQL = new CWS_ThreadSQL; // suspend 모드로 시작됨.
     if (!g_pThreadSQL->db.connect(config.connection_string)) {
         std::string error_message = g_pThreadSQL->db.last_error_message();

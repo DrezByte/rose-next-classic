@@ -33,7 +33,6 @@ public:
     bool StartClientSOCKET(int iClientListenPort, int iLimitUserCNT, BYTE btMD5[32]);
     void CloseClientSOCKET();
     bool StartServerSOCKET(HWND hMainWND,
-        char* szDBServerIP,
         int iServerListenPort,
         DWORD dwLoginRight,
         bool bShowOnlyWS);

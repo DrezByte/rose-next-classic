@@ -34,14 +34,6 @@ private:
     CStrVAR m_BaseDataDIR;
     int m_iLangTYPE;
 
-    CStrVAR m_DBServerIP;
-    CStrVAR m_DBName;
-    CStrVAR m_DBUser;
-    CStrVAR m_DBPassword;
-
-    CStrVAR m_LogDBUser;
-    CStrVAR m_LogDBPassword;
-
     CStrVAR m_ServerNAME;
     CStrVAR m_ServerIP;
     int m_iListenPortNO;

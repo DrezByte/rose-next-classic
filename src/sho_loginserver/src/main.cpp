@@ -71,7 +71,6 @@ main(int argc, char** argv) {
 
     LOG_INFO("Starting the server socket");
     g_instance->StartServerSOCKET(console_window,
-        (char*)config.database.ip.c_str(),
         config.loginserver.server_port,
         0,
         false);

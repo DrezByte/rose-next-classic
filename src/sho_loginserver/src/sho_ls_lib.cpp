@@ -131,7 +131,6 @@ SHO_LS::CloseClientSOCKET() {
 
 bool
 SHO_LS::StartServerSOCKET(HWND hMainWND,
-    char* szDBServerIP,
     int iServerListenPort,
     DWORD dwLoginRight,
     bool bShowOnlyWS) {
@@ -192,11 +191,6 @@ bool
 SHO_LS::connect_database(const DatabaseConfig& db_config) {
     if (!g_pThreadSQL) {
         g_pThreadSQL = CLS_SqlTHREAD::Instance();
-
-        char* ip = (char*)db_config.ip.c_str();
-        char* username = (char*)db_config.username.c_str();
-        char* password = (char*)db_config.password.c_str();
-        char* name = (char*)db_config.name.c_str();
 
         if (!g_pThreadSQL->db.connect(db_config.connection_string)) {
             std::string error_message = g_pThreadSQL->db.last_error_message();
