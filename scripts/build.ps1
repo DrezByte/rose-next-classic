@@ -1,6 +1,6 @@
 param (
-    [ValidateSet("release", "debug")]
-    [string]$buildConfig = "release"
+  [ValidateSet("release", "debug")]
+  [string]$buildConfig = "release"
 )
 
 # Setup vswhere.exe
@@ -27,12 +27,17 @@ Write-Host "Started Visual Studio shell"
 
 $rose_next_root = Join-Path $PSScriptRoot ..
 
+# Build thirdparty
 Write-Host "Building thirdparty"
 & MSBuild.exe "/p:Configuration=$buildConfig;Platform=x86" $rose_next_root\thirdparty.sln
+if (!$?) {
+  exit 1
+}
 
 Write-Host "Building Rust projects"
 Push-Location $rose_next_root/src
 
+# Build Rust projects
 $rust_toolchain = "stable-i686-pc-windows-msvc"
 & rustup toolchain install $rust_toolchain
 & rustup override set $rust_toolchain
@@ -40,10 +45,23 @@ Write-Host "Set Rust to use $rust_toolchain toolchain"
 
 if ($buildConfig -eq "debug") {
   & cargo build
-} else {
+  if (!$?) {
+    Pop-Location
+    exit 1
+  }
+}
+else {
   & cargo build --release
+  if (!$?) {
+    Pop-Location
+    exit 1
+  }
 }
 Pop-Location
 
+# Build C++ projects
 Write-Host "Building C++ projects"
 & MSBuild.exe "/p:Configuration=$buildConfig;Platform=x86" $rose_next_root\rose-next.sln
+if (!$?) {
+  exit 1
+}
