@@ -632,6 +632,13 @@ CLIB_GameSRV::connect_database() {
     g_pThreadSQL->Resume();
 
     g_pThreadGUILD = new CThreadGUILD(32, 16);
+    if (!g_pThreadGUILD->db.connect(this->config.database.connection_string)) {
+        std::string error_message = g_pThreadGUILD->db.last_error_message();
+        LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
+
+        g_pThreadGUILD = NULL;
+        return false;
+    }
     g_pThreadGUILD->Resume();
 
     return true;

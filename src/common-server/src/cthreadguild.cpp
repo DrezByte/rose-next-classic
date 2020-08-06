@@ -13,6 +13,12 @@
 //#include "classLOG.h"
 #include "IO_Skill.h"
 
+#include "rose/database/database.h"
+
+using namespace Rose;
+using namespace Rose::Common;
+using namespace Rose::Database;
+
 const int CClan::s_iUserLimit[MAX_CLAN_LEVEL + 1] = {15, 15, 20, 25, 30, 36, 43, 50};
 // const int CClan::s_iPosLimit [MAX_CLAN_LEVEL+1] = { 1, 7, 15, 20, 25, 32, 40, 50 };
 
@@ -840,94 +846,13 @@ CClan::Send_wsv_CLANMARK_REG_TIME(CWS_Client* pMember) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 CThreadGUILD::CThreadGUILD(UINT uiInitDataCNT, UINT uiIncDataCNT):
     CSqlTHREAD(true), m_Pools((char*)"CGuildPOOL", uiInitDataCNT, uiIncDataCNT) {
     m_pHashCLAN = new classHASH<CClan*>(1024 * 2);
 }
+
 CThreadGUILD::~CThreadGUILD() {
     SAFE_DELETE(m_pHashCLAN);
-}
-
-//-------------------------------------------------------------------------------------------------
-void
-CThreadGUILD::Test_add(char* pGuildName, char* pGuildDesc) {
-    /* TODO: RAM: Port to postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanCREATE(\'%s\',\'%s\',%d,%d)}",
-            pGuildName,
-            pGuildDesc,
-            1,
-            2)) {
-        DWORD dwClanID = 0;
-        while (this->db->GetNextRECORD()) {
-            // 기존 클랜 ID...
-            dwClanID = (DWORD)this->db->GetInteger(0);
-        }
-        while (this->db->GetMoreRESULT()) {
-            if (this->db->BindRESULT()) {
-                if (this->db->GetNextRECORD()) {
-                    // 생성된 클랜 ID...
-                    dwClanID = (DWORD)this->db->GetInteger(0);
-                }
-            }
-        }
-        switch (iResultSP) {
-            case 0: // 성공
-                g_LOG.CS_ODS(0xffff, "Create clan success : dwCladID::%d\n", dwClanID);
-                break;
-            case -1: // 중복된 이름
-                LogString(0xffff, (char*)"duplicated clan name : result: %d\n", iResultSP);
-                break;
-            case -2: // insert 오류( 디비 오류 )
-                g_LOG.CS_ODS(0xffff, "insert sclan failed : result: %d\n", iResultSP);
-                break;
-            default:
-                assert("invalid ws_CreateCLAN SP retrun value" && 0);
-        }
-    } else {
-        // 디비 오류...
-
-        int iii = 999;
-    }
-    */
-}
-void
-CThreadGUILD::Test_del(char* pGuildName) {
-    /* TODO: RAM: Port to postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanDELETE(\'{}\')}", pGuildName)) {
-        DWORD dwClanID = 0;
-        while (this->db->GetNextRECORD()) {
-            // 성공...
-            dwClanID = (DWORD)this->db->GetInteger(0);
-        }
-        while (this->db->GetMoreRESULT()) {
-            if (this->db->BindRESULT()) {
-                if (this->db->GetNextRECORD()) {
-                    // 성공... 생성된 ClanID = this->db->GetInteger(0)
-                    dwClanID = (DWORD)this->db->GetInteger(0);
-                }
-            }
-        }
-        switch (iResultSP) {
-            case 0: // 성공
-                LOG_INFO("Delete clan success : dwCladID::{}", dwClanID);
-                break;
-            default: // 실패
-                LOG_INFO("Delete clan failed : {}", iResultSP);
-        }
-    } else {
-        // 디비 SP 오류...
-    }
-    */
 }
 
 void
@@ -1516,67 +1441,56 @@ CThreadGUILD::Load_CLAN(DWORD dwClanID) {
 
 //-------------------------------------------------------------------------------------------------
 CClan*
-CThreadGUILD::Query_CreateCLAN(int iSocketIDX, t_PACKET* pPacket) {
-    /* TODO: RAM: Port to postgres
-    short nOffset = sizeof(cli_CLAN_CREATE);
-    char* pGuildName = Packet_GetStringPtr(pPacket, nOffset);
-    if (!pGuildName)
-        return NULL;
-    char* pGuildDesc = Packet_GetStringPtr(pPacket, nOffset);
-    if (!pGuildDesc)
-        return NULL;
-
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanINSERT(\'%s\',\'%s\',%d,%d)}",
-            pGuildName,
-            pGuildDesc,
-            pPacket->m_cli_CLAN_CREATE.m_wMarkIDX[0],
-            pPacket->m_cli_CLAN_CREATE.m_wMarkIDX[1])) {
-        DWORD dwClanID = 0;
-        while (this->db->GetMoreRESULT()) {
-            if (this->db->BindRESULT()) {
-                if (this->db->GetNextRECORD()) {
-                    // 성공... 생성된 ClanID = this->db->GetInteger(0)
-                    dwClanID = (DWORD)this->db->GetInteger(0);
-                }
-            }
-        }
-        switch (iResultSP) {
-            case 0: // 성공
-            {
-                g_LOG.CS_ODS(0xffff, "Create clan success : dwCladID::%d\n", dwClanID);
-
-                CClan* pClan = m_Pools.Pool_Alloc();
-                pClan->Init(pGuildName,
-                    pGuildDesc,
-                    dwClanID,
-                    pPacket->m_cli_CLAN_CREATE.m_wMarkIDX[0],
-                    pPacket->m_cli_CLAN_CREATE.m_wMarkIDX[1],
-                    NULL,
-                    0,
-                    0,
-                    NULL);
-                m_pHashCLAN->Insert(dwClanID, pClan);
-                return pClan;
-            }
-            case -1: // 중복된 이름
-                LogString(0xffff, (char*)"duplicated clan name : result: %d\n", iResultSP);
-                break;
-            case -2: // insert 오류( 디비 오류 )
-                g_LOG.CS_ODS(0xffff, "insert sclan failed : result: %d\n", iResultSP);
-                break;
-            default:
-                assert("invalid ws_CreateCLAN SP retrun value" && 0);
-        }
-    } else {
-        // 디비 SP 오류...
+CThreadGUILD::Query_CreateCLAN(int socket_id, t_PACKET* packet) {
+    if (!packet) {
+        return nullptr;
     }
-    */
-    return NULL;
+
+    short offset = sizeof(cli_CLAN_CREATE);
+    std::string clan_name = Packet_GetStringPtr(packet, offset);
+    std::string clan_description = Packet_GetStringPtr(packet, offset);
+    if (clan_name.empty()) {
+        return nullptr;
+    }
+
+    const char* count_stmt = "SELECT COUNT(*) FROM clan WHERE name=$1";
+    QueryResult count_res = this->db.query(count_stmt, {clan_name});
+    if (!count_res.is_ok()) {
+        LOG_ERROR("Failed to count clans with name {}: {}",
+            clan_name.c_str(),
+            count_res.error_message());
+        return nullptr;
+    }
+
+    if (count_res.get_int32(0, 0) != 0) {
+        LOG_WARN("Attempted to create duplicate clan with name: {}", clan_name.c_str());
+        return nullptr;
+    }
+
+    const char* insert_stmt = "INSERT INTO clan (name, description) VALUES ($1, $2) RETURNING id";
+    QueryResult insert_res = this->db.query(insert_stmt, {clan_name, clan_description});
+    if (!insert_res.is_ok()) {
+        LOG_ERROR("Failed to insert clan with name {}: {}",
+            clan_name.c_str(),
+            insert_res.error_message());
+        return nullptr;
+    }
+
+    int64_t clan_id = insert_res.get_int64(0, 0);
+    CClan* pClan = m_Pools.Pool_Alloc();
+    pClan->Init((char*)clan_name.c_str(),
+        (char*)clan_description.c_str(),
+        clan_id,
+        0,
+        0,
+        NULL,
+        0,
+        0,
+        NULL);
+    m_pHashCLAN->Insert(clan_id, pClan);
+    return pClan;
 }
+
 bool
 CThreadGUILD::Query_DeleteCLAN(char* szClanName) {
     /* TODO: RAM: Port to postgres

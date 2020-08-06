@@ -247,9 +247,6 @@ private:
     // inherit virtual function from CSqlTHREAD...
     bool Run_SqlPACKET(tagQueryDATA* pSqlPACKET) { return true; }
 
-    void Test_add(char* szName, char* szDesc);
-    void Test_del(char* pGuildName);
-
     void Execute();
 
     bool Run_GuildPACKET(tagCLAN_CMD* pGuildCMD);

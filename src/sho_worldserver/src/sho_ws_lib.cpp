@@ -217,6 +217,13 @@ SHO_WS::connect_database(DatabaseConfig& config) {
     g_pThreadMSGR->Resume();
 
     g_pThreadGUILD = new CThreadGUILD(8192, 512);
+    if (!g_pThreadGUILD->db.connect(config.connection_string)) {
+        std::string error_message = g_pThreadGUILD->db.last_error_message();
+        LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
+
+        g_pThreadGUILD = NULL;
+        return false;
+    }
     g_pThreadGUILD->Resume();
 
     g_pThreadSQL->Load_WORLDVAR(g_ZoneLIST.m_nWorldVAR, MAX_WORLD_VAR_CNT);
