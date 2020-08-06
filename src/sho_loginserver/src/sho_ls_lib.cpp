@@ -10,8 +10,6 @@
 #include "blockLIST.h"
 #include "csocketwnd.h"
 
-#include "rose/common/server_config.h"
-
 using namespace Rose::Common;
 
 SHO_LS* SHO_LS::m_pInstance = NULL;
@@ -65,27 +63,7 @@ GetServerStartTIME() {
     return g_dwStartTIME;
 }
 
-SHO_LS::SHO_LS(): m_iClientListenPortNO(0), m_iServerListenPortNO(0) {
-    m_pTIMER = NULL;
-}
-
-void
-SHO_LS::SystemINIT(HINSTANCE hInstance) {
-    ::Sleep(500);
-
-    CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
-
-    g_pListCLIENT = new CLS_ListCLIENT(DEF_CLIENT_POOL_SIZE, INC_CLIENT_POOL_SIZE);
-    g_pListSERVER = new CLS_ListSERVER(DEF_SERVER_POOL_SIZE, INC_SERVER_POOL_SIZE);
-
-    g_pListJOIN = new CLS_AccountLIST((char*)"JOIN", JOIN_HASH_TABLE_SIZE);
-    g_pListWAIT = new CLS_AccountLIST((char*)"WAIT", WAIT_HASH_TABLE_SIZE);
-
-    m_iClientListenPortNO = 0;
-    m_iServerListenPortNO = 0;
-
-    CSocketWND* pSockWND = CSocketWND::InitInstance(hInstance, 1);
-}
+SHO_LS::SHO_LS(): m_pTIMER(nullptr) {}
 
 SHO_LS::~SHO_LS() {
     SAFE_DELETE(m_pTIMER);
@@ -101,90 +79,70 @@ SHO_LS::~SHO_LS() {
     SAFE_DELETE(g_pListCLIENT);
     SAFE_DELETE(g_pListSERVER);
 
-    if (CSocketWND::GetInstance())
+    if (CSocketWND::GetInstance()) {
         CSocketWND::GetInstance()->Destroy();
-    ;
+    }
     CPoolSENDIO::Destroy();
 }
 
+void
+SHO_LS::init(HINSTANCE hinstance, HWND hwnd, const Rose::Common::ServerConfig& config) {
+    ::Sleep(500);
+
+    CPoolSENDIO::Instance(DEF_SEND_IO_POOL_SIZE, INC_SEND_IO_POOL_SIZE);
+
+    g_pListCLIENT = new CLS_ListCLIENT(DEF_CLIENT_POOL_SIZE, INC_CLIENT_POOL_SIZE);
+    g_pListSERVER = new CLS_ListSERVER(DEF_SERVER_POOL_SIZE, INC_SERVER_POOL_SIZE);
+
+    g_pListJOIN = new CLS_AccountLIST((char*)"JOIN", JOIN_HASH_TABLE_SIZE);
+    g_pListWAIT = new CLS_AccountLIST((char*)"WAIT", WAIT_HASH_TABLE_SIZE);
+
+    CSocketWND* pSockWND = CSocketWND::InitInstance(hinstance, 1);
+
+    this->hinstance = hinstance;
+    this->hwnd = hwnd;
+    this->config = config;
+}
+
 bool
-SHO_LS::StartClientSOCKET(int iClientListenPort, int iLimitUserCNT, BYTE btMD5[32]) {
-    if (m_iClientListenPortNO)
+SHO_LS::start() {
+    LOG_INFO("Starting the database connection.");
+    bool db_connected = this->connect_database(this->config.database);
+    if (!db_connected) {
         return false;
+    }
 
-    ::CopyMemory(m_btMD5, btMD5, 32);
+    LOG_INFO("Starting the server socket");
+    bool started = this->start_server_listener(this->hwnd, this->config.loginserver.server_port);
+    if (!started) {
+        return false;
+    }
 
-    m_iClientListenPortNO = iClientListenPort;
-    g_pListCLIENT->Active(m_iClientListenPortNO, 65535, 3 * 60);
-    this->SetLimitUserCNT(iLimitUserCNT);
+    LOG_INFO("Starting the client socket");
+    bool client_listener_started = this->start_client_listener(
+        this->config.loginserver.port,
+        this->config.loginserver.password,
+        this->config.loginserver.max_users);
+    if (!client_listener_started) {
+        return false;
+    }
 
     return true;
 }
 
 void
-SHO_LS::CloseClientSOCKET() {
-    if (m_iClientListenPortNO) {
-        g_pListCLIENT->Shutdown();
-        m_iClientListenPortNO = 0;
-    }
-}
-
-bool
-SHO_LS::StartServerSOCKET(HWND hMainWND,
-    int iServerListenPort,
-    DWORD dwLoginRight,
-    bool bShowOnlyWS) {
-
-    if (m_iServerListenPortNO) {
-        return false;
-    }
-
-    m_bShowOnlyWS = bShowOnlyWS;
-    g_dwStartTIME = classTIME::GetCurrentAbsSecond();
-
-    m_iServerListenPortNO = iServerListenPort;
-    g_pListSERVER->Active(m_iServerListenPortNO,
-        1024,
-        60); // µ¿½Ã Á¢¼Ó ¼ÒÄÏ °¹¼ö 1024. Á¢¼ÓÀ¯Áö Ã¼Å© 1ºÐ
-
-    m_pTIMER = new CTimer(hMainWND,
-        LS_TIMER_CHECK_WAIT_LIST,
-        LS_TICK_CHECK_WAIT_LIST,
-        (TIMERPROC)LS_TimerProc);
-    m_pTIMER->Start();
-
-    return true;
-}
-
-void
-SHO_LS::Shutdown() {
-    CloseClientSOCKET();
-    if (m_iServerListenPortNO) {
-        SAFE_DELETE(m_pTIMER);
-
-        g_pListSERVER->Shutdown();
-        m_iServerListenPortNO = 0;
-    }
+SHO_LS::stop() {
+    this->stop_client_listener();
+    this->stop_server_listener();
+    SAFE_DELETE(m_pTIMER);
 }
 
 //-------------------------------------------------------------------------------------------------
 void
 SHO_LS::Send_ANNOUNCE(void* pServer, char* szAnnounceMsg) {
-    if (g_pListSERVER)
+    if (g_pListSERVER) {
         g_pListSERVER->Send_lsv_ANNOUNCE_CHAT(pServer, szAnnounceMsg);
-}
-
-//-------------------------------------------------------------------------------------------------
-void
-SHO_LS::SetLoginRIGHT(DWORD dwLoginRight) {
-    if (g_pThreadSQL)
-        g_pThreadSQL->minimum_access_level = dwLoginRight;
-}
-
-void
-SHO_LS::SetLimitUserCNT(int iLimitUserCNT) {
-    if (g_pListCLIENT)
-        g_pListCLIENT->SetLimitUserCNT(iLimitUserCNT);
+    }
 }
 
 bool
@@ -203,5 +161,62 @@ SHO_LS::connect_database(const DatabaseConfig& db_config) {
 
         g_pThreadSQL->Resume();
     }
+    this->set_minimum_access_level(this->config.loginserver.minimum_access_level);
     return true;
+}
+
+bool
+SHO_LS::start_server_listener(HWND hMainWND, uint32_t server_port) {
+
+    g_dwStartTIME = classTIME::GetCurrentAbsSecond();
+
+    g_pListSERVER->Active(server_port, 1024, 60);
+
+    m_pTIMER = new CTimer(hMainWND,
+        LS_TIMER_CHECK_WAIT_LIST,
+        LS_TICK_CHECK_WAIT_LIST,
+        (TIMERPROC)LS_TimerProc);
+    m_pTIMER->Start();
+
+    return true;
+}
+
+void
+SHO_LS::stop_server_listener() {
+    if (g_pListSERVER) {
+        g_pListSERVER->Shutdown();
+    }
+}
+
+bool
+SHO_LS::start_client_listener(uint32_t port, const std::string& password, uint32_t max_users) {
+    // TODO: This is will crash if password is less than 32 bytes long.
+    // Requires fixing here and syncing with world server.
+    ::CopyMemory(m_btMD5, (byte*)password.c_str(), 32);
+
+    g_pListCLIENT->Active(port, 65535, 3 * 60);
+    this->set_max_users(max_users);
+
+    return true;
+}
+
+void
+SHO_LS::stop_client_listener() {
+    if (g_pListCLIENT) {
+        g_pListCLIENT->Shutdown();
+    }
+}
+
+void
+SHO_LS::set_max_users(int count) {
+    if (g_pListCLIENT) {
+        g_pListCLIENT->max_users = count;
+    }
+}
+
+void
+SHO_LS::set_minimum_access_level(int access_level) {
+    if (g_pThreadSQL) {
+        g_pThreadSQL->minimum_access_level = access_level;
+    }
 }

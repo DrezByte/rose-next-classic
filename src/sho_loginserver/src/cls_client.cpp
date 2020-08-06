@@ -32,9 +32,6 @@ CLS_Client::Send_lsv_LOGIN_REPLY(BYTE btResult, int iPayType) {
         case RESULT_LOGIN_REPLY_KOREA_OK:
         case RESULT_LOGIN_REPLY_TAIWAN_OK:
         case RESULT_LOGIN_REPLY_JAPAN_OK:
-            if (SHO_LS::IsShowOnlyWS()) {
-                packet.m_srv_LOGIN_REPLY.m_btResult |= 0x80;
-            }
             g_pListSERVER->Add_ServerList2Packet(&packet, this->m_dwRIGHT);
             break;
     }

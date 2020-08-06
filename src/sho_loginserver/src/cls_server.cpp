@@ -3,17 +3,7 @@
 #include "CLS_Account.h"
 #include "CLS_Server.h"
 #include "CLS_SqlTHREAD.h"
-/*
-#include "LS_Main.h"
 
-extern void WM_CloseSOCKET (TCustomWinSocket *pSocket, char *szMSG);
-extern void WM_ClientSendPacket ();
-extern void WM_ServerSendPacket ();
-*/
-
-#define LIST_COL_CHANNELS 2
-#define LIST_COL_CUR_USERS 3
-#define LIST_COL_MAX_USERS 4
 
 //-------------------------------------------------------------------------------------------------
 CLS_Server::CLS_Server(): m_csLIST(4000) {

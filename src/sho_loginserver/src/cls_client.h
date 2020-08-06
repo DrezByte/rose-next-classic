@@ -98,7 +98,7 @@ private:
 /// 접속된 전체 클라이언트 리스트
 class CLS_ListCLIENT: public IOCPSocketSERVER, public CDataPOOL<CLS_Client> {
 public:
-    int m_iLimitUserCNT;
+    int max_users;
     CCriticalSection m_CS;
     CDLList<CLS_Client*> m_ConnLIST;
 
@@ -108,7 +108,6 @@ public:
     ~CLS_ListCLIENT() { ; }
 
     bool Send_lsv_LOGIN_REPLY(int iSocketIDX, BYTE btResult, int iPayType = 0);
-    void SetLimitUserCNT(int iLimitUserCNT) { m_iLimitUserCNT = iLimitUserCNT; }
 
     void Delete_IdleSOCKET() {
         DWORD dwConnTIME = classTIME::GetCurrentAbsSecond();
@@ -178,8 +177,9 @@ public:
     }
 
     bool IsMaxiumUSER() {
-        if (m_iLimitUserCNT && this->GetUsedSocketCNT() > m_iLimitUserCNT)
+        if (this->max_users && this->GetUsedSocketCNT() > this->max_users) {
             return true;
+        }
 
         return false;
     }

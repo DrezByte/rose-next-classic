@@ -12,9 +12,8 @@ SHO_LS* g_instance;
 int
 shutdown(int exit_code = 0) {
     LOG_INFO("Shutting down...");
-    g_instance->CloseClientSOCKET();
-    g_instance->Shutdown();
-    g_instance->Destroy();
+    g_instance->stop();
+    g_instance->destroy_instance();
     return exit_code;
 }
 
@@ -61,24 +60,14 @@ main(int argc, char** argv) {
 
     // Start server
     LOG_INFO("Initializing the server");
-    g_instance = SHO_LS::InitInstance(console_handle);
+    g_instance = SHO_LS::init_instance(console_handle, console_window, config);
 
-    LOG_INFO("Starting the database connection.");
-    bool db_connected = g_instance->connect_database(config.database);
-    if (!db_connected) {
+    LOG_INFO("Starting the server");
+    bool server_started = g_instance->start();
+    if (!server_started) {
+        LOG_ERROR("Failed to start the server, shutting down");
         return shutdown(1);
     }
-
-    LOG_INFO("Starting the server socket");
-    g_instance->StartServerSOCKET(console_window,
-        config.loginserver.server_port,
-        0,
-        false);
-
-    LOG_INFO("Starting the client socket");
-    g_instance->StartClientSOCKET(config.loginserver.port,
-        0,
-        (byte*)config.loginserver.password.c_str());
 
     SetConsoleCtrlHandler(CtrlHandler, true);
 

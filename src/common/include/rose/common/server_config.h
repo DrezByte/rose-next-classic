@@ -24,13 +24,18 @@ struct LoginServerConfig {
     LogLevel log_level;
     std::string log_path;
 
+    int32_t minimum_access_level;
+    uint32_t max_users;
+
     LoginServerConfig():
         ip("127.0.0.1"),
         port(29000),
         server_port(19000),
         password("rose-next"),
         log_level(LogLevel::Info),
-        log_path(get_exe_dir().append("/log/loginserver.log")) {}
+        log_path(get_exe_dir().append("/log/loginserver.log")),
+        minimum_access_level(1),
+        max_users(0) {}
 };
 
 struct WorldServerConfig {
@@ -109,6 +114,10 @@ public:
         this->get_str("loginserver", "password", this->loginserver.password);
         this->get_loglevel("loginserver", "log_level", this->loginserver.log_level);
         this->get_str("loginserver", "log_path", this->loginserver.log_path);
+        this->get_int32("loginserver",
+            "minimum_access_level",
+            this->loginserver.minimum_access_level);
+        this->get_uint32("loginserver", "max_users", this->loginserver.max_users);
 
         this->get_str("worldserver", "ip", this->worldserver.ip);
         this->get_uint32("worldserver", "port", this->worldserver.port);
