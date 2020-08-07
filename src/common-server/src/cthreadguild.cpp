@@ -1525,46 +1525,30 @@ CThreadGUILD::Query_DeleteCLAN(char* szClanName) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
-CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClanPos) {
-    /* TODO: RAM: Port to postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanCharADD(\'%s\',%d,%d)}",
-            szCharName,
-            dwClanID,
-            iClanPos)) {
-        while (this->db->GetMoreRESULT()) {
-            ;
-        }
-        switch (iResultSP) {
-            case 0: // 성공
-                g_LOG.CS_ODS(0xffff, "Insert clan user : ClanID::%d / %s\n", dwClanID, szCharName);
-                return true;
-            case -1: // 중복된 이름
-                LogString(0xffff,
-                    (char*)"duplicated clan user name : ClanID:%d / %s \n",
-                    dwClanID,
-                    szCharName);
-                break;
-            case -2: // insert 오류( 디비 오류 )
-                g_LOG.CS_ODS(0xffff,
-                    "insert clan user failed : result: %d / %s\n",
-                    dwClanID,
-                    szCharName);
-                break;
-            default:
-                assert("invalid ws_CreateCLAN SP retrun value" && 0);
-        }
-    } else {
-        // 디비 SP 오류...
+CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD clan_id, int rank) {
+    std::string char_name(szCharName);
+    if (char_name.empty()) {
+        return false;
     }
-    */
-    return false;
+
+    const char* insert_stmt = "INSERT INTO clan_member (character_id, clan_id, rank)"
+                              "VALUES ((SELECT id FROM character WHERE name=$1), $2, $3)";
+
+    QueryResult insert_res =
+        this->db.query(insert_stmt, {char_name, std::to_string(clan_id), std::to_string(rank)});
+
+    if (!insert_res.is_ok()) {
+        LOG_ERROR("Failed to insert character '{}' into clan with id '{}': {}",
+            char_name.c_str(),
+            clan_id,
+            insert_res.error_message());
+        return false;
+    }
+
+    return true;
 }
+
 bool
 CThreadGUILD::Query_DeleteClanMember(char* szCharName) {
     /* TODO: RAM: Port to postgres
