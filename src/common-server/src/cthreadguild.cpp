@@ -1493,46 +1493,36 @@ CThreadGUILD::Query_CreateCLAN(int socket_id, t_PACKET* packet) {
 
 bool
 CThreadGUILD::Query_DeleteCLAN(char* szClanName) {
-    /* TODO: RAM: Port to postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanDELETE(\'%s\')}", szClanName)) {
-        DWORD dwClanID = 0;
-        // while( this->db->GetNextRECORD() ) {
-        //	// 성공...
-        //	dwClanID = (DWORD)this->db->GetInteger(0);
-        //}
-        while (this->db->GetMoreRESULT()) {
-            if (this->db->BindRESULT()) {
-                if (this->db->GetNextRECORD()) {
-                    dwClanID = (DWORD)this->db->GetInteger(0);
-                }
-            }
-        }
-        switch (iResultSP) {
-            case 0: // 성공
-            {
-                CClan* pClan = this->Find_CLAN(dwClanID);
-                if (pClan) {
-                    pClan->Disband();
-
-                    m_pHashCLAN->Delete(dwClanID, pClan);
-                    pClan->Free();
-                    m_Pools.Pool_Free(pClan);
-                }
-                g_LOG.CS_ODS(0xffff, "Delete clan success : dwCladID::%d\n", dwClanID);
-                return true;
-            }
-            default: // 실패
-                g_LOG.CS_ODS(0xffff, "Delete clan failed : %d\n", iResultSP);
-        }
-    } else {
-        // 디비 SP 오류...
+    std::string clan_name(szClanName);
+    if (clan_name.empty()) {
+        return false;
     }
-    */
-    return false;
+
+    const char* delete_stmt = "DELETE FROM clan WHERE name=$1 RETURNING id";
+    QueryResult delete_res = this->db.query(delete_stmt, {clan_name});
+    if (!delete_res.is_ok()) {
+        LOG_ERROR("Failed to delete clan with name {}: {}",
+            clan_name.c_str(),
+            delete_res.error_message());
+        return false;
+    }
+
+    const int clan_id = delete_res.get_int32(0, 0);
+    if (delete_res.row_count != 1 || clan_id == 0) {
+        LOG_WARN("Attempted to delete non-existant clan with name: {}", clan_name.c_str());
+        return false;
+    }
+
+    CClan* pClan = this->Find_CLAN(clan_id);
+    if (pClan) {
+        pClan->Disband();
+
+        m_pHashCLAN->Delete(clan_id, pClan);
+        pClan->Free();
+        m_Pools.Pool_Free(pClan);
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
