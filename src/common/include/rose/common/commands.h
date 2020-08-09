@@ -19,6 +19,7 @@ enum CommandId {
     HELP,
 
     DAYTIME,
+    KILL_ALL,
     LEVELUP,
     MAPS,
     RATES,
@@ -34,6 +35,9 @@ const char* HELP_USAGE = "Usage: help";
 
 const char* DAYTIME_HELP = "Set time of day.";
 const char* DAYTIME_USAGE = "Usage: daytime <morning|night>";
+
+const char* KILL_ALL_HELP = "Kill all mobs in the current map";
+const char* KILL_ALL_USAGE = "Usage: killall";
 
 const char* LEVELUP_HELP = "Level up by the given amount.";
 const char* LEVELUP_USAGE = "Usage: levelup <amount>";
@@ -58,6 +62,7 @@ static const std::vector<CommandInfo> commands = {
     {"help", 1, HELP_HELP, HELP_USAGE, CommandContext::Client},
 
     {"daytime", 100, DAYTIME_HELP, DAYTIME_USAGE, CommandContext::Server},
+    {"kill_all", 100, KILL_ALL_HELP, KILL_ALL_USAGE, CommandContext::Server },
     {"levelup", 100, LEVELUP_HELP, LEVELUP_USAGE, CommandContext::Server},
     {"maps", 100, MAPS_HELP, MAPS_USAGE, CommandContext::Server},
     {"rates", 100, RATES_HELP, RATES_USAGE, CommandContext::Server},

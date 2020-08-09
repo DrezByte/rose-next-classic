@@ -38,6 +38,16 @@ help(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
+kill_all(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+    if (!user || !user->GetZONE()) {
+        return false;
+    }
+
+    user->GetZONE()->Kill_AllMOB(user, true);
+    return true;
+}
+
+bool
 levelup(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     if (!user) {
         return false;
@@ -176,6 +186,7 @@ using CommandFunction = std::function<bool(classUSER*, CommandInfo, std::vector<
 static const std::unordered_map<std::string, std::tuple<CommandFunction, CommandInfo>>
     command_registry = {
         REGISTER_COMMAND(Command::HELP, help),
+        REGISTER_COMMAND(Command::KILL_ALL, kill_all),
         REGISTER_COMMAND(Command::LEVELUP, levelup),
         REGISTER_COMMAND(Command::MAPS, maps),
         REGISTER_COMMAND(Command::RATES, rates),
@@ -1406,10 +1417,6 @@ classUSER::Parse_CheatCODE(char* szCode) {
         }
         if (!strcmpi(pToken, "/TOGGLE")) {
             return Cheat_toggle(pStrVAR, pArg1);
-        }
-        if (!strcmpi(pToken, "/kill_all") && B_Cheater()) {
-            this->GetZONE()->Kill_AllMOB(this);
-            return CHEAT_NOLOG;
         }
         if (!strcmpi(pToken, "/RESET") && A_Cheater()) {
             if (!strcmpi(pArg1, "QUEST")) {

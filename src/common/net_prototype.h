@@ -1047,6 +1047,7 @@ union uniDAMAGE {
         WORD m_wACTION : 5;
     };
 };
+
 struct gsv_DAMAGE: public t_PACKETHEADER {
     WORD m_wAtkObjIDX;
     WORD m_wDefObjIDX;
@@ -1056,13 +1057,11 @@ struct gsv_DAMAGE: public t_PACKETHEADER {
 };
 #define MAX_DAMAGE 0x07ff
 
-// gsv_DAMAGE::m_wDamage와 연산되는 값.
-#define DMG_BIT_DUMMY 0x0800 // 추가 데미지 붙은 거다 :: 자신이 때린경우 추가 데미지 계산을 해.
-#define DMG_BIT_IMMEDIATE \
-    0x1000 // 패키 받고 즉각 처리 하면 된다:예)방패 뎀쥐 스킬에 의해 반사된 뎀쥐
-#define DMG_BIT_HITTED 0x2000 // 맞는 동작을 한다.
-#define DMG_BIT_CRITICAL 0x4000 // 크리티컬 데미지다
-#define DMG_BIT_DEAD 0x8000 // 죽었다.
+#define DMG_BIT_DUMMY 0x0800
+#define DMG_BIT_IMMEDIATE 0x1000
+#define DMG_BIT_HITTED 0x2000
+#define DMG_BIT_CRITICAL 0x4000
+#define DMG_BIT_DEAD 0x8000
 
 // gsv_DAMAGE::m_wACTION이 갖는 값...
 #define DMG_ACT_RESERVED 0x01

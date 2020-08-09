@@ -943,25 +943,29 @@ CZoneTHREAD::FindNextCHAR() {
 
 //-------------------------------------------------------------------------------------------------
 void
-CZoneTHREAD::Kill_AllMOB(classUSER* pUSER) {
-    classDLLNODE<CGameOBJ*>* pObjNODE;
+CZoneTHREAD::Kill_AllMOB(classUSER* pUSER, bool drop_items) {
+    if (!pUSER) {
+        return;
+    }
 
-    uniDAMAGE sDamage;
-    sDamage.m_wDamage = MAX_DAMAGE;
+    classDLLNODE<CGameOBJ*>* object_node = m_ObjLIST.GetHeadNode();
+    if (!object_node) {
+        return;
+    }
 
-    for (pObjNODE = m_ObjLIST.GetHeadNode(); pObjNODE;) {
-        if (pObjNODE->DATA->IsA(OBJ_MOB)) {
-            if (((CObjCHAR*)pObjNODE->DATA)->Get_HP() > 0)
-                pUSER->Give_DAMAGE(((CObjCHAR*)pObjNODE->DATA), sDamage, false);
-        } else if (!pObjNODE->DATA->IsUSER()) {
-            g_LOG.CS_ODS(0xffff,
-                "Execpt OBJ: %s (%f, %f) \n",
-                pObjNODE->DATA->Get_NAME(),
-                pObjNODE->DATA->m_PosCUR.x,
-                pObjNODE->DATA->m_PosCUR.y);
+    uniDAMAGE max_damage;
+    max_damage.m_wDamage = MAX_DAMAGE;
+
+    while (object_node) {
+        if (object_node->DATA->IsA(OBJ_MOB)) {
+            CObjCHAR* mob = reinterpret_cast<CObjCHAR*>(object_node->DATA);
+            if (mob) {
+                while (mob->Get_HP() > 0) {
+                    pUSER->Give_DAMAGE(mob, max_damage, drop_items);
+                }
+            }
         }
-
-        pObjNODE = m_ObjLIST.GetNextNode(pObjNODE);
+        object_node = m_ObjLIST.GetNextNode(object_node);
     }
 }
 

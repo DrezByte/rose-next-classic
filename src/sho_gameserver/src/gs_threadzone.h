@@ -169,7 +169,7 @@ public:
     CObjCHAR* FindFirstCHAR(CObjCHAR* pCenterCHAR, int iDistance, CGameOBJ* pObjFINDER);
     CObjCHAR* FindNextCHAR();
 
-    void Kill_AllMOB(classUSER* pUSER);
+    void Kill_AllMOB(classUSER* pUSER, bool drop_items);
     bool Toggle_REGEN() {
         m_bEnableREGEN = !m_bEnableREGEN;
         return m_bEnableREGEN;
