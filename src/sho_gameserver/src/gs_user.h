@@ -852,7 +852,6 @@ private:
     short Cheat_out(char* pArg1, char* pArg2, char* szCode);
     short Cheat_shut(char* pArg1, char* pArg2, char* pArg3, char* szCode);
     short Cheat_call(char* pArg1, char* pArg2, char* szCode);
-    short Cheat_item(char* pArg1, char* pArg2, char* pArg3, char* pArg4);
     short Cheat_mon(char* pArg1, char* pArg2);
     short Cheat_mon2(char* pArg1, char* pArg2, char* pArg3, char* pArg4);
     short Cheat_damage(char* pArg1, char* pArg2, char* pArg3);
