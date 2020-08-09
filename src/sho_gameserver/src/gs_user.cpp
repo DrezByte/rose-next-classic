@@ -3577,43 +3577,25 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
             sOutITEM.m_cDurability = iTEMP;
 
         // 소갯 갯수 결정
-        switch (ITEM_RARE_TYPE(sOutITEM.GetTYPE(), sOutITEM.GetItemNO())) {
-            case 1: // 무조건
-                sOutITEM.m_bHasSocket = 1;
-                sOutITEM.m_bIsAppraisal = 1;
-                break;
-            case 2: // 계산
-                iTEMP = (int)((this->GetCur_SENSE() + 400 - this->Get_LEVEL() * 0.7f)
-                        * (nPLUS * 1.8f
-                            + ITEM_QUALITY(sOutITEM.GetTYPE(), sOutITEM.GetItemNO()) * 0.4f + 8)
-                        * 0.2f / (RANDOM(100) + 50)
-                    - 100);
-
-                if (iTEMP >= 1) {
-                    sOutITEM.m_bHasSocket = 1;
-                    sOutITEM.m_bIsAppraisal = 1;
-                    break;
-                }
-            case 0: {
-                // 아이템 옵션
-                iTEMP = 1 + RANDOM(100);
-                int iITEM_OP = (int)(((this->GetCur_SENSE() + 220 - this->Get_LEVEL() / 2.f)
-                                             * (nPLUS + 20) * 0.4f
-                                         + nITEM_DIF * 35 - 1600 - iTEMP)
+        if (ITEM_TYPE_WEAPON == sOutITEM.GetTYPE()) {
+            sOutITEM.m_bHasSocket = 1;
+        } else {
+            iTEMP = 1 + RANDOM(100);
+            int iITEM_OP =
+                (int)(((this->GetCur_SENSE() + 220 - this->Get_LEVEL() / 2.f) * (nPLUS + 20) * 0.4f
+                          + nITEM_DIF * 35 - 1600 - iTEMP)
                         / (iTEMP + 17)
                     - 85);
-                if (iITEM_OP > 0) {
-                    sOutITEM.m_bIsAppraisal = 1; // 감정 받은걸루...
-                    int iMod =
-                        (int)((ITEM_QUALITY(sOutITEM.GetTYPE(), sOutITEM.GetItemNO()) + 12) * 3.2f);
-                    if (iMod < 300)
-                        sOutITEM.m_nGEM_OP = iITEM_OP % iMod;
-                    else
-                        sOutITEM.m_nGEM_OP = iITEM_OP % 300;
-                }
-            } break;
+            if (iITEM_OP > 0) {
+                sOutITEM.m_bIsAppraisal = 1; // 감정 받은걸루...
+                int iMod =
+                    (int)((ITEM_QUALITY(sOutITEM.GetTYPE(), sOutITEM.GetItemNO()) + 12) * 3.2f);
+                if (iMod < 300)
+                    sOutITEM.m_nGEM_OP = iITEM_OP % iMod;
+                else
+                    sOutITEM.m_nGEM_OP = iITEM_OP % 300;
+            }
         }
-
         this->Set_ItemSN(sOutITEM); // 아이템 제조시...
     } else {
         // 무조건 1개 제조된다...
