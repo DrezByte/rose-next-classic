@@ -80,6 +80,41 @@ dev_ui_frame() {
             ImGui::TreePop();
         }
     }
+
+    if (ImGui::CollapsingHeader("Class Information")) {
+        ImGui::Text("111 Soldier");
+        ImGui::Text("121 Knight");
+        ImGui::Text("122 Champion");
+        ImGui::Text("");
+        ImGui::Text("211 Muse");
+        ImGui::Text("221 Magician");
+        ImGui::Text("222 Cleric");
+        ImGui::Text("");
+        ImGui::Text("311 Hawker");
+        ImGui::Text("311 Scout");
+        ImGui::Text("321 Raider");
+        ImGui::Text("");
+        ImGui::Text("411 Dealer");
+        ImGui::Text("421 Artisan");
+        ImGui::Text("422 Bourgeois");
+    }
+
+    if (ImGui::CollapsingHeader("Item Information")) {
+        ImGui::Text("1 Mask");
+        ImGui::Text("2 Hat");
+        ImGui::Text("3 Armor");
+        ImGui::Text("4 Gloves");
+        ImGui::Text("5 Boots");
+        ImGui::Text("6 Back Items");
+        ImGui::Text("7 Accessories");
+        ImGui::Text("8 Weapons");
+        ImGui::Text("9 Sub-Weapons");
+        ImGui::Text("10 Consumables");
+        ImGui::Text("11 Gems");
+        ImGui::Text("12 Materials");
+        ImGui::Text("13 Quest Item");
+        ImGui::Text("14 Vehicles");
+    }
     ImGui::End();
 
     ImGui::EndFrame();
