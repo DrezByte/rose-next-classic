@@ -803,6 +803,76 @@ classUSER::Cheat_get(CStrVAR* pStrVAR, char* pArg1, char* pArg2, char* szCode) {
     return CHEAT_INVALID;
 }
 
+// A 등급
+short
+classUSER::Cheat_item(char* pArg1, char* pArg2, char* pArg3, char* pArg4) {
+    if (B_Cheater()) {
+        int item_type = atoi(pArg1);
+        int item_id = atoi(pArg2);
+
+        if (item_type < ITEM_TYPE_FACE_ITEM || item_type > ITEM_TYPE_RIDE_PART) {
+            this->Send_gsv_WHISPER("Server", "Invalid item type");
+            return CHEAT_INVALID;
+        }
+
+        if (item_id <= 0 || item_id >= g_pTblSTBs[item_type]->m_nDataCnt) {
+            this->Send_gsv_WHISPER("Server", "Invalid item id");
+            return CHEAT_INVALID;
+        }
+
+        int iDupCNT = atoi(pArg3);
+
+        tagITEM item;
+        item.init();
+        item.m_cType = item_type;
+
+        if (item.m_cType > 0 && item.m_cType < ITEM_TYPE_MONEY) {
+            item.m_nItemNo = item_id;
+
+            if (item.m_cType >= ITEM_TYPE_USE && item.m_cType != ITEM_TYPE_RIDE_PART) {
+                if (ITEM_ICON_NO(item_type, item_id) <= 0) {
+                    this->Send_gsv_WHISPER("Server", "Invalid item: Invalid icon id");
+                    return CHEAT_INVALID;
+                }
+
+                if (iDupCNT > 100) {
+                    iDupCNT = 100;
+                } else if (iDupCNT < 1) {
+                    iDupCNT = 1;
+                }
+
+                item.m_uiQuantity = iDupCNT;
+            } else {
+                if (ITEM_ICON_NO(item_type, item_id) <= 0) {
+                    this->Send_gsv_WHISPER("Server", "Invalid item: Invalid icon id");
+                    return CHEAT_INVALID;
+                }
+
+                item.m_nLife = MAX_ITEM_LIFE;
+                item.m_cDurability = ITEM_DURABITY(item.m_cType, item.m_nItemNo);
+                item.m_nGEM_OP = iDupCNT % 301;
+                item.m_bIsAppraisal = 1;
+                if (0 == item.m_nGEM_OP) {
+                    if (pArg4 && ITEM_RARE_TYPE(item.GetTYPE(), item.GetItemNO())) {
+                        if (atoi(pArg4)) {
+                            item.m_bHasSocket = 1;
+                        }
+                    }
+                }
+            }
+
+            short nInvIDX = this->Add_ITEM(item);
+            if (nInvIDX >= 0) {
+                std::string msg = fmt::format("Spawning item {}:{} ({})", item_type, item_id, iDupCNT);
+                this->Send_gsv_SET_INV_ONLY((BYTE)nInvIDX, &item);
+                this->Send_gsv_WHISPER("Server", const_cast<char*>(msg.c_str()));
+                return CHEAT_PROCED;
+            }
+        }
+    }
+    return CHEAT_INVALID;
+}
+
 // B등급..
 short
 classUSER::Cheat_mon(char* pArg1, char* pArg2) {
@@ -1270,6 +1340,19 @@ classUSER::Parse_CheatCODE(char* szCode) {
             pArg2 = pStrVAR->GetTokenNext(pDelimiters);
             pArg3 = pStrVAR->GetTokenNext(pDelimiters);
             nProcMODE = Cheat_del(pStrVAR, pArg1, pArg2, pArg3);
+        }
+        // 아이템 관련 치트코드...
+        if (!strcmpi(pToken, "/ITEM")) {
+            pArg2 = pStrVAR->GetTokenNext(pDelimiters);
+            pArg3 = pStrVAR->GetTokenNext(pDelimiters);
+            if (!pArg2 || !pArg3) {
+                this->Send_gsv_WHISPER("Server", "Usage: /item <type_id> <item_id> <quantity>");
+                this->Send_gsv_WHISPER("Server",
+                    "Usage: /item <type_id> <item_id> <stat_id> <socket>");
+                return CHEAT_INVALID;
+            }
+            char* pArg4 = pStrVAR->GetTokenNext(pDelimiters);
+            return Cheat_item(pArg1, pArg2, pArg3, pArg4);
         }
 
         if (!strcmpi(pToken, "/GET")) {
