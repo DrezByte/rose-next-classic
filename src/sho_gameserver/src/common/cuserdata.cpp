@@ -1952,10 +1952,7 @@ CUserDATA::Reward_ITEM(tagITEM& sITEM, BYTE btRewardToParty, BYTE btQuestSLOT) {
         return true;
     }
 
-    if (ITEM_TYPE_WEAPON == sITEM.GetTYPE()) {
-        sITEM.m_bHasSocket = 1;
-        sITEM.m_bIsAppraisal = 0;
-    } else if (!sITEM.IsEnableDupCNT() && 0 == sITEM.GetOption()) {
+    if (!sITEM.IsEnableDupCNT() && 0 == sITEM.GetOption()) {
         const short slot_setting = ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO());
 
         const DropRule drop_rule = drop_rule_from_int(slot_setting);
@@ -2050,9 +2047,6 @@ CUserDATA::Reward_CalITEM(BYTE btEquation,
         sITEM.m_bIsAppraisal = 1;
         sITEM.m_bHasSocket = 0;
         sITEM.m_nGEM_OP = nItemOP;
-    } else if (sITEM.GetTYPE() == ITEM_TYPE_WEAPON) {
-        sITEM.m_bHasSocket = 1;
-        sITEM.m_bIsAppraisal = 0;
     } else {
         const short slot_setting = ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO());
 

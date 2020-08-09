@@ -3576,8 +3576,10 @@ classUSER::Recv_cli_CREATE_ITEM_REQ(t_PACKET* pPacket) {
         else
             sOutITEM.m_cDurability = iTEMP;
 
-        // ¼Ò°¹ °¹¼ö °áÁ¤
-        if (ITEM_TYPE_WEAPON == sOutITEM.GetTYPE()) {
+        short nRareType = ITEM_RARE_TYPE(sOutITEM.GetTYPE(), sOutITEM.GetItemNO());
+
+        const DropRule drop_rule = drop_rule_from_int(nRareType);
+        if (drop_rule == DropRule::AlwaysSlotted) {
             sOutITEM.m_bHasSocket = 1;
         } else {
             iTEMP = 1 + RANDOM(100);

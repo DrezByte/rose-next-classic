@@ -207,13 +207,6 @@ CCal::Get_DropITEM(int level_difference,
                 item.m_nGEM_OP = 100 + RANDOM(41);
                 break;
             case DropRule::Default: {
-                iTEMP = 1 + RANDOM(100);
-                if (item.GetTYPE() == ITEM_TYPE_WEAPON) {
-                    if (iTEMP <= 25) {
-                        item.m_bHasSocket = 1;
-                    }
-                }
-
                 if (item.GetTYPE() <= ITEM_TYPE_KNAPSACK) {
                     // Àåºñ´Â °¢ stbÀÇ ±âº» Ç°Áú °ªÀ» ¼³Á¤.
                     int iITEM_OP = (int)(((pMobCHAR->Get_LEVEL() * 0.4f
