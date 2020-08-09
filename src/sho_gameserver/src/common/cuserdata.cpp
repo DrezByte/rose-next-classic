@@ -1941,39 +1941,32 @@ CUserDATA::Reward_InitSTATUS(void) {
 bool
 CUserDATA::Reward_ITEM(tagITEM& sITEM, BYTE btRewardToParty, BYTE btQuestSLOT) {
     if (btRewardToParty) {
-        ;
-        ;
-        ;
-    } else {
-        if (ITEM_TYPE_QUEST == sITEM.GetTYPE()) {
-            // Äù½ºÆ® ÀÎº¥Åä¸®¿¡ ³Ö±â...
-            if (btQuestSLOT >= QUEST_PER_PLAYER)
-                return false;
-
-            this->m_Quests.m_QUEST[btQuestSLOT].AddITEM(sITEM);
-        } else {
-            if (!sITEM.IsEnableDupCNT() && 0 == sITEM.GetOption()) {
-                // ÀåºñÀÌ°í ¿É¼ÇÀÌ ¾øÀ¸¸é : ¼ÒÄÏ °áÁ¤.
-                switch (ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO())) {
-                    case 1: // ¹«Á¶°Ç
-                        sITEM.m_bHasSocket = 1;
-                        break;
-                    case 2: // °è»ê
-                        if (ITEM_QUALITY(sITEM.GetTYPE(), sITEM.GetItemNO()) + 60 - RANDOM(400)
-                            > 0) {
-                            sITEM.m_bHasSocket = 1;
-                            break;
-                        }
-                }
-            }
-
-            this->Add_ItemNSend(sITEM);
-        }
-#ifndef __SERVER
-        g_itMGR.AppendChatMsg(sITEM.GettingQuestMESSAGE(), IT_MGR::CHAT_TYPE_QUESTREWARD);
-#endif
+        return true;
     }
 
+    if (ITEM_TYPE_QUEST == sITEM.GetTYPE()) {
+        if (btQuestSLOT >= QUEST_PER_PLAYER)
+            return false;
+
+        this->m_Quests.m_QUEST[btQuestSLOT].AddITEM(sITEM);
+        return true;
+    }
+
+    if (ITEM_TYPE_WEAPON == sITEM.GetTYPE()) {
+        sITEM.m_bHasSocket = 1;
+        sITEM.m_bIsAppraisal = 0;
+    } else if (!sITEM.IsEnableDupCNT() && 0 == sITEM.GetOption()) {
+        const short slot_setting = ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO());
+
+        const DropRule drop_rule = drop_rule_from_int(slot_setting);
+        switch (drop_rule) {
+            case DropRule::AlwaysSlotted:
+                sITEM.m_bHasSocket = 1;
+                break;
+        }
+    }
+
+    this->Add_ItemNSend(sITEM);
     return true;
 }
 
@@ -2034,43 +2027,43 @@ CUserDATA::Reward_CalITEM(BYTE btEquation,
 
     int iR;
     if (btRewardToParty) {
-    } else {
-        if (sITEM.IsEnableDupCNT()) {
-            iR = CCal::Get_RewardVALUE(btEquation, iBaseValue, this, 0);
-            if (iR > 0) {
-                sITEM.m_uiQuantity = iR; // ¼ö·®...
-                if (ITEM_TYPE_QUEST == sITEM.GetTYPE()) {
-                    if (btQuestSLOT >= QUEST_PER_PLAYER)
-                        return false;
+        return true;
+    }
 
-                    this->m_Quests.m_QUEST[btQuestSLOT].AddITEM(sITEM);
-                } else {
-                    this->Add_ItemNSend(sITEM);
-                }
-            }
-        } else {
-            // Àåºñ
-            if (nItemOP && nItemOP < 300) {
-                sITEM.m_bIsAppraisal = 1;
-                sITEM.m_bHasSocket = 0;
-                sITEM.m_nGEM_OP = nItemOP;
+    if (sITEM.IsEnableDupCNT()) {
+        iR = CCal::Get_RewardVALUE(btEquation, iBaseValue, this, 0);
+        if (iR > 0) {
+            sITEM.m_uiQuantity = iR; // ¼ö·®...
+            if (ITEM_TYPE_QUEST == sITEM.GetTYPE()) {
+                if (btQuestSLOT >= QUEST_PER_PLAYER)
+                    return false;
+
+                this->m_Quests.m_QUEST[btQuestSLOT].AddITEM(sITEM);
             } else {
-                // Àåºñ°í ¿É¼ÇÀÌ ¾ø´Â °æ¿ì´Ù...¼ÒÄÏ °áÁ¤.
-                switch (ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO())) {
-                    case 1: // ¹«Á¶°Ç
-                        sITEM.m_bHasSocket = 1;
-                        break;
-                    case 2: // °è»ê
-                        if (ITEM_QUALITY(sITEM.GetTYPE(), sITEM.GetItemNO()) + 60 - RANDOM(400)
-                            > 0) {
-                            sITEM.m_bHasSocket = 1;
-                            break;
-                        }
-                }
+                this->Add_ItemNSend(sITEM);
             }
-            this->Add_ItemNSend(sITEM);
+        }
+        return true;
+    }
+
+    if (nItemOP && nItemOP < 300) {
+        sITEM.m_bIsAppraisal = 1;
+        sITEM.m_bHasSocket = 0;
+        sITEM.m_nGEM_OP = nItemOP;
+    } else if (sITEM.GetTYPE() == ITEM_TYPE_WEAPON) {
+        sITEM.m_bHasSocket = 1;
+        sITEM.m_bIsAppraisal = 0;
+    } else {
+        const short slot_setting = ITEM_RARE_TYPE(sITEM.GetTYPE(), sITEM.GetItemNO());
+
+        const DropRule drop_rule = drop_rule_from_int(slot_setting);
+        switch (drop_rule) {
+            case DropRule::AlwaysSlotted:
+                sITEM.m_bHasSocket = 1;
+                break;
         }
     }
+    this->Add_ItemNSend(sITEM);
 
     return true;
 }
