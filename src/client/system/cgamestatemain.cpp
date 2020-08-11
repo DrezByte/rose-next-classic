@@ -861,34 +861,6 @@ CGameStateMain::On_WM_RBUTTONDOWN(WPARAM wParam, LPARAM lParam) {
 
     /// 입력은 서버의 결과와는 상관없다.
     g_UserInputSystem.RButtonDown(this->m_iPickedOBJ, this->m_PosPICK, wParam);
-    if (m_iPickedOBJ > 0) {
-        CGameOBJ* pObj = g_pObjMGR->m_pOBJECTS[this->m_iPickedOBJ];
-        if (pObj) {
-            if (pObj->Get_TYPE() == OBJ_AVATAR) {
-                if (RightClickedOnChar == false) {
-                    g_UserInputSystem.ClickObject(this->m_iPickedOBJ, this->m_PosPICK, wParam);
-                    g_itMGR.OpenDialog(DLG_TYPE_CHAR,
-                        true,
-                        this->m_PosRButtonClick.m_nX,
-                        this->m_PosRButtonClick.m_nY);
-                    RightClickedOnChar = true;
-                } else {
-                    g_itMGR.CloseDialog(DLG_TYPE_CHAR);
-                    RightClickedOnChar = false;
-                }
-            } else if (RightClickedOnChar) {
-                g_itMGR.CloseDialog(DLG_TYPE_CHAR);
-                RightClickedOnChar = false;
-            }
-        } else if (RightClickedOnChar) {
-            g_itMGR.CloseDialog(DLG_TYPE_CHAR);
-            RightClickedOnChar = false;
-        }
-    } else if (RightClickedOnChar) {
-        g_itMGR.CloseDialog(DLG_TYPE_CHAR);
-        RightClickedOnChar = false;
-    }
-
     CGame::GetInstance().ResetAutoRun();
     return true;
 }
