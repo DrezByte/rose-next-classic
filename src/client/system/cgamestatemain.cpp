@@ -776,12 +776,6 @@ CGameStateMain::On_WM_KEYDOWN(WPARAM wParam, LPARAM lParam) {
         }
             return true;
 
-        case 'Z':
-        case 'z': {
-            g_itMGR.reload_dialogs();
-        }
-            return true;
-
         default: {
 
         } break;
