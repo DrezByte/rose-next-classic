@@ -837,26 +837,15 @@ CObjCHAR::Apply_DAMAGE(CObjCHAR* pTarget,
                         }
 
                         if (bDropItem) {
-                            // 아이템 드롭, 지역 마법에 의에서는 아이템생성 안함..왜 ? 패킷 관리가
-                            // 귀찮아서...
                             tagITEM sITEM;
-#ifdef FRAROSE
-                            if (CCal::Get_DropITEM(pMobOWNER->Get_LEVEL() - pTarget->Get_LEVEL(),
-                                    (CObjMOB*)pTarget,
-                                    sITEM,
-                                    this->GetZONE()->Get_ZoneNO(),
-                                    pMobOWNER->GetCur_DropRATE()
-                                        * pMobOWNER->m_GrowAbility.GetDropBoost(
-                                            pMobOWNER->GetCurAbsSEC()),
-                                    pMobOWNER->Get_CHARM()))
-#else
+                            sITEM.init();
+
                             if (CCal::Get_DropITEM(pMobOWNER->Get_LEVEL() - pTarget->Get_LEVEL(),
                                     (CObjMOB*)pTarget,
                                     sITEM,
                                     this->GetZONE()->Get_ZoneNO(),
                                     pMobOWNER->GetCur_DropRATE(),
                                     pMobOWNER->Get_CHARM()))
-#endif
                             {
                                 // Create field item ...
                                 *ppOutITEM = new CObjITEM;

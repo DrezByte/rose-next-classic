@@ -75,6 +75,18 @@ struct tagBaseITEM {
     void init();
     void Init(int iItem, unsigned int uiQuantity = 1);
 
+    bool is_stackable() {
+        auto t = this->GetTYPE();
+        return (t == ITEM_TYPE_USE || t == ITEM_TYPE_ETC || t == ITEM_TYPE_ETC || t == ITEM_TYPE_GEM
+            || t == ITEM_TYPE_NATURAL || t == ITEM_TYPE_QUEST || t == ITEM_TYPE_MONEY);
+    }
+
+    bool is_consumable() { return this->GetTYPE() == ITEM_TYPE_USE; };
+    bool is_money() { return this->GetTYPE() == ITEM_TYPE_MONEY; }
+    bool is_vehicle_part() {
+        return (this->GetTYPE() == ITEM_TYPE_RIDE_PART);
+    }
+
     void Clear() { m_dwLSB = m_wMSB = 0; }
 
     unsigned short GetItemNO() { return m_nItemNo; }
@@ -106,9 +118,7 @@ struct tagBaseITEM {
         return tagBaseITEM::IsValidITEM(pItem->GetTYPE(), pItem->GetItemNO());
     }
 
-    bool IsValidITEM() {
-        return IsValidITEM(this->GetTYPE(), this->GetItemNO());
-    }
+    bool IsValidITEM() { return IsValidITEM(this->GetTYPE(), this->GetItemNO()); }
 
     static bool IsEnableDupCNT(unsigned short cType) {
         return (cType >= ITEM_TYPE_USE && cType < ITEM_TYPE_RIDE_PART);

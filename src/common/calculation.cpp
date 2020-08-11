@@ -180,21 +180,20 @@ CCal::Get_DropITEM(int level_difference,
         }
     }
 
-    ::ZeroMemory(&item, sizeof(item));
-    item.m_cType = (BYTE)(iDropITEM / 1000);
+    item.init();
+    item.m_cType = static_cast<BYTE>(iDropITEM / 1000);
     item.m_nItemNo = iDropITEM % 1000;
 
-    int iTEMP;
-    if (item.GetTYPE() >= ITEM_TYPE_ETC
-        && item.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PARTÀº Á¦¿ÜÇØ¾ß ÇÔ
+    int iTEMP = 0;
+    if (item.is_stackable() && !item.is_consumable()) {
         item.m_uiQuantity =
             1 + ((pMobCHAR->Get_LEVEL() + 10) / 9 + (1 + RANDOM(20)) + iDropRate) / (iDrop_VAR + 4);
 
-        if (item.m_uiQuantity > 10)
-            item.m_uiQuantity = 10;
-    } else if (item.GetTYPE() >= ITEM_TYPE_USE
-        && item.GetTYPE() != ITEM_TYPE_RIDE_PART) { // ITEM_TYPE_RIDE_PARTÀº Á¦¿ÜÇØ¾ß ÇÔ
-        item.m_uiQuantity = 1;
+        if (item.m_uiQuantity > GameStaticConfig::MAX_DROP_MULTIPLIER) {
+            item.m_uiQuantity = GameStaticConfig::MAX_DROP_MULTIPLIER;
+        }
+    } else if (item.is_consumable()) {
+        item.m_uiQuantity = GameStaticConfig::MAX_CONSUMABLE_DROP_MULTIPLIER;
     } else {
         short nRareType = ITEM_RARE_TYPE(item.GetTYPE(), item.GetItemNO());
 
@@ -207,12 +206,12 @@ CCal::Get_DropITEM(int level_difference,
                 item.m_nGEM_OP = 100 + RANDOM(41);
                 break;
             case DropRule::Default: {
+                int r = 1 + RANDOM(100);
                 if (item.GetTYPE() <= ITEM_TYPE_KNAPSACK) {
-                    // Àåºñ´Â °¢ stbÀÇ ±âº» Ç°Áú °ªÀ» ¼³Á¤.
-                    int iITEM_OP = (int)(((pMobCHAR->Get_LEVEL() * 0.4f
-                                              + (NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - 35) * 4
-                                              + 80 - iTEMP + iCharm)
-                                             * 24 / (iTEMP + 13))
+                    int iITEM_OP = static_cast<int>(
+                        ((pMobCHAR->Get_LEVEL() * 0.4f
+                             + (NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) - 35) * 4 + 80 - r + iCharm)
+                            * 24 / (r + 13))
                         - 100);
                     if (iITEM_OP > 0) {
                         if (pMobCHAR->Get_LEVEL() < 230)
@@ -227,18 +226,18 @@ CCal::Get_DropITEM(int level_difference,
             }
         }
 
-        // ³»±¸µµ °áÁ¤
-        iTEMP = (int)(ITEM_DURABITY(item.GetTYPE(), item.GetItemNO())
+        int iTEMP = (int)(ITEM_DURABITY(item.GetTYPE(), item.GetItemNO())
             * (pMobCHAR->Get_LEVEL() * 0.3f + NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) * 2 + 320)
             * 0.5f / (RANDOM(100) + 201));
-        if (iTEMP > 100)
+        if (iTEMP > 100) {
             iTEMP = 100;
+        }
         item.m_cDurability = iTEMP;
 
-        // ¼ö¸í °áÁ¤
         iTEMP = (int)((NPC_DROP_ITEM(pMobCHAR->Get_CharNO()) + 200) * 80 / (31 + RANDOM(100)));
-        if (iTEMP > MAX_ITEM_LIFE)
+        if (iTEMP > MAX_ITEM_LIFE) {
             iTEMP = MAX_ITEM_LIFE;
+        }
 
         item.m_nLife = iTEMP;
         item.m_cGrade = 0;
@@ -281,8 +280,9 @@ CCal::Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF) // , int &iCriticalSUC )
         if (pDEF->IsUSER()) {
             // PVPÀÏ°æ¿ì ¼º°ø È®·ü...
             iRAND1 = 1 + RANDOM(100);
-            iSuccess = (int)(40 - ((pATK->total_hit_rate() + pDEF->Get_AVOID()) / pATK->Get_AVOID()) * 60.f
-                + iRAND1);
+            iSuccess =
+                (int)(40 - ((pATK->total_hit_rate() + pDEF->Get_AVOID()) / pATK->Get_AVOID()) * 60.f
+                    + iRAND1);
 
         } else {
             iRAND1 = 1 + RANDOM(50); // 1+RANDOM(100) * 0.6f;
@@ -293,8 +293,8 @@ CCal::Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF) // , int &iCriticalSUC )
                 return 0;
 
             return (int)(iSuccess
-                * (pATK->total_hit_rate() * 1.1f - pDEF->Get_AVOID() * 0.93f + iRAND2 /* *0.7f */ + 5
-                    + pATK->Get_LEVEL() * 0.2f)
+                * (pATK->total_hit_rate() * 1.1f - pDEF->Get_AVOID() * 0.93f
+                    + iRAND2 /* *0.7f */ + 5 + pATK->Get_LEVEL() * 0.2f)
                 / 80.f);
         }
     } else {
@@ -561,7 +561,8 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             int iRAND1 = 1 + RANDOM(60);
             int iRAND2 = 1 + RANDOM(70);
             iSuccess = (int)(((pATK->Get_LEVEL() + 20) - pDEF->Get_LEVEL() + (iRAND1 /* *0.6f */))
-                * (pATK->total_hit_rate() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.7f */ + 10) / 110.f);
+                * (pATK->total_hit_rate() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.7f */ + 10)
+                / 110.f);
 
             if (iSuccess < 20) {
                 if (iSuccess < 10)
@@ -609,10 +610,10 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
                     return 0;
                 iDamage = (int)((SKILL_POWER(nSkillIDX)
                                     * (pATK->total_attack_power() * 0.8f + pATK->Get_INT() + 80)
-                              * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 1.3f + 280) * 0.2f)
-                            / (pDEF->Get_DEF() * 0.3f + pDEF->Get_RES() + 30)
-                            / (250 + pDEF->Get_LEVEL() - pATK->Get_LEVEL())
-                        + 20);
+                                    * ((1 + RANDOM(30)) + pATK->Get_SENSE() * 1.3f + 280) * 0.2f)
+                        / (pDEF->Get_DEF() * 0.3f + pDEF->Get_RES() + 30)
+                        / (250 + pDEF->Get_LEVEL() - pATK->Get_LEVEL())
+                    + 20);
             } else {
                 if (pATK->IsUSER() && pDEF->IsUSER()) {
                     iDamage =
@@ -686,7 +687,8 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
             int iRAND1 = 1 + RANDOM(80);
             int iRAND2 = 1 + RANDOM(50);
             iSuccess = (int)(((pATK->Get_LEVEL() + 8) - pDEF->Get_LEVEL() + (iRAND1 /* *0.8 */))
-                * (pATK->total_hit_rate() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.5 */ + 50) / 90);
+                * (pATK->total_hit_rate() - pDEF->Get_AVOID() * 0.6f + iRAND2 /* *0.5 */ + 50)
+                / 90);
             if (iSuccess < 20) {
                 if (iSuccess < 10)
                     return 0;

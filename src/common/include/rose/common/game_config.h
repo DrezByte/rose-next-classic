@@ -18,6 +18,9 @@ const int DELETE_TIME_SEC = 3600; // 1-hour
 
 const int DEFAULT_WALK_SPEED = 200;
 
+const int MAX_DROP_MULTIPLIER = 10;
+const int MAX_CONSUMABLE_DROP_MULTIPLIER = 1;
+
 }; // namespace GameStaticConfig
 
 namespace Common {
