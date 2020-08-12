@@ -5,5 +5,6 @@ DROP TABLE friends;
 DROP TABLE mail;
 DROP TABLE inventory;
 DROP TABLE item;
+DROP TABLE clan_member;
 DROP TABLE clan;
 DROP TABLE character;
