@@ -52,6 +52,22 @@ dev_ui_frame() {
     bool wireframe = ::getUseWireMode();
     bool observer_camera = ::GetObserverCameraOnOff();
 
+    // Fog
+    bool use_fog = ::getUseFog();
+    float fog_color[3] = {
+        zz->get_rs()->fog_color[0],
+        zz->get_rs()->fog_color[1],
+        zz->get_rs()->fog_color[2]
+    };
+    float fog[2] = {
+        zz->get_rs()->fog_start,
+        zz->get_rs()->fog_end
+    };
+    float alpha_fog[2] = {
+        zz->get_rs()->alpha_fog_start,
+        zz->get_rs()->alpha_fog_end
+    };
+
     if (ImGui::CollapsingHeader("Client Settings")) {
         ImGui::Checkbox("Disable UI", &g_GameDATA.m_bNoUI);
         ImGui::SameLine();
@@ -62,6 +78,10 @@ dev_ui_frame() {
 
     if (ImGui::CollapsingHeader("Engine settings")) {
         ImGui::Checkbox("Wireframe", &wireframe);
+        ImGui::Checkbox("Use Fog", &use_fog);
+        ImGui::ColorEdit3("Fog color", fog_color);
+        ImGui::SliderFloat2("Fog range", fog, 0.0f, 1000.0f);
+        ImGui::SliderFloat2("Alpha fog range", alpha_fog, 0.0f, 1000.0f);
     }
 
     if (ImGui::CollapsingHeader("Scene Tree")) {
@@ -121,6 +141,10 @@ dev_ui_frame() {
 
     ::useWireMode(wireframe);
     ::UserObserverCamera(observer_camera);
+    ::useFog(use_fog);
+    ::setFogColor(fog_color[0], fog_color[1], fog_color[2]);
+    ::setFogRange(fog[0] * ZZ_SCALE_OUT, fog[1] * ZZ_SCALE_OUT);
+    ::setAlphaFogRange(alpha_fog[0] * ZZ_SCALE_OUT, alpha_fog[1] * ZZ_SCALE_OUT);
 }
 
 void
