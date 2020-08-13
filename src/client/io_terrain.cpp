@@ -2471,7 +2471,7 @@ CTERRAIN::LoadZONE(short nZoneNO, bool bPlayBGM) {
 void
 CTERRAIN::FreeZONE() {
 
-    this->Clear_VisiblePatch();
+    this->m_PatchManager.Clear_VisiblePatch();
     this->SubMAP(MOVE_UPDATE_ALL);
     m_WideTerrain.SubRoughMap(MOVE_UPDATE_ALL);
 
@@ -3134,31 +3134,6 @@ CTERRAIN::AddMAP(short nCenterMapXIDX,
     return true;
 }
 
-//----------------------------------------------------------------------------------------------------
-/// @param
-/// @brief
-//----------------------------------------------------------------------------------------------------
-
-void
-CTERRAIN::Insert_VisiblePatch(CMAP_PATCH* pPATCH) {
-    m_PatchManager.Insert_VisiblePatch(pPATCH);
-}
-
-//----------------------------------------------------------------------------------------------------
-/// @param
-/// @brief
-//----------------------------------------------------------------------------------------------------
-
-void
-CTERRAIN::Delete_UnvisiblePatch(void) {
-    m_PatchManager.Delete_UnvisiblePatch();
-}
-
-void
-CTERRAIN::Clear_VisiblePatch(void) {
-    m_PatchManager.Clear_VisiblePatch();
-}
-
 //-------------------------------------------------------------------------------------------------
 /// CTERRAIN::
 /// @param fWorldX
@@ -3270,22 +3245,6 @@ CTERRAIN::SetCenterPosition(float fWorldX, float fWorldY) {
         bPatchOrganizing = true;
     }
 
-    ///*	----------------------------------------------------------------------------------------------------------
-
-    /// 패치 재구성
-    // if( bPatchOrganizing )
-    //{
-    //	/// 현재 위치를 기반으로 재구성된 맵들에 기반해서 패치풀을 재구성한다.
-    //	ReOrginazationPatch( nZoneMapX, nZoneMapY );
-    //}
-    //
-    //
-    // Update_VisiblePatch( nMappingX, nMappingY );
-
-    // 일단 제외
-    //*/
-    //-----------------------------------------------------------------------------------------------------------
-
     if (true) {
         m_PatchManager.ClearAllQuadPatchManager();
 
@@ -3293,44 +3252,7 @@ CTERRAIN::SetCenterPosition(float fWorldX, float fWorldY) {
         InsertCameraPatch(fWorldX, fWorldY);
 
         m_PatchManager.Update_VisiblePatchManager();
-        /*	  D3DXVECTOR3 vec(0.0f,0.0f,0.0f);
-              Pick_POSITION_Test(vec);  */               //test 12_15
     }
-    /// 엔진에 등록될 패치 업데이트
-
-    //	m_PatchManager.DrawCollisionCylinder();
-
-    /*-----------------------------------------------------------------------------------------------------*/ // test 1-5
-    /*
-        short buffer_index[2];
-        CMAP *pMap;
-        float vMin[3],vMax[3];
-        aabbBox *aabb;
-
-        for(int aa=0; aa<3 ; aa+=1)
-        {
-            for(int bb=0; bb<3; bb+=1)
-            {
-                buffer_index[0] = nZoneMapX-1+aa;
-                buffer_index[1] = nZoneMapY-1+bb;
-
-
-                if(m_pMAPS[ buffer_index[1] ][ buffer_index[0] ]!=NULL)
-                {
-                    if(m_pMAPS[ buffer_index[1] ][ buffer_index[0] ]->IsUsing())
-                    {
-                        pMap = m_pMAPS[ buffer_index[1] ][ buffer_index[0] ];
-                        aabb = &pMap->m_QuadManager.m_quadPATCH[0].aabb;
-                        vMin[0] = aabb->x[0]; vMin[1] = aabb->y[0]; vMin[2] = aabb->z[0];
-                        vMax[0] = aabb->x[1]; vMax[1] = aabb->y[1];	vMax[2] = aabb->z[1];
-
-                        ::InputSceneAABB(vMin,vMax,0);
-                    }
-                }
-            }
-        }
-
-    /*----------------------------------------------------------------------------------------------------*/ //test 1-5
 
     m_PatchManager.IncreaseViewFrame();
 }
@@ -3375,18 +3297,6 @@ CTERRAIN::ReOrginazationPatch(short nZoneMapX, short nZoneMapY) {
             this->Unlock();
         }
     }
-}
-
-//----------------------------------------------------------------------------------------------------
-/// @param
-/// @brief 현재 위치에 기반해서 엔진에 등록된 패치들을 갱신한다.
-//----------------------------------------------------------------------------------------------------
-
-void
-CTERRAIN::Update_VisiblePatch(short nMappingX, short nMappingY) {
-    this->Lock();
-    m_PatchManager.Update_VisiblePatch(nMappingX, nMappingY);
-    this->Unlock();
 }
 
 ///

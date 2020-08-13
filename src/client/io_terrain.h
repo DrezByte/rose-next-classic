@@ -450,10 +450,6 @@ private:
     void SetMapPTR(short nZoneMapX, short nZoneMapY, CMAP* pMAP);
 
     void ReOrginazationPatch(short nZoneMapX, short nZoneMapY);
-    void Update_VisiblePatch(short nMappingX, short nMappingY);
-    void Insert_VisiblePatch(CMAP_PATCH* pPATCH);
-    void Clear_VisiblePatch(void);
-    void Delete_UnvisiblePatch(void);
 
     static CTERRAIN* m_pInstance;
 
