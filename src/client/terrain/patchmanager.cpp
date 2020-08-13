@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
-#include ".\patchmanager.h"
-#include "../Game.h"
-#include "CCamera.h"
-#include "CClientStorage.h"
-//#include "../../../engine/include/zz_interface.h"
+#include "terrain/patchmanager.h"
+
+#include "game.h"
+#include "ccamera.h"
+#include "cclientstorage.h"
 
 CPatchManager::CPatchManager(void) {
 
@@ -20,7 +20,7 @@ CPatchManager::CPatchManager(void) {
 
         for (i = 0; i < 31; i += 1) {
             for (j = 0; j < 31; j += 1)
-                pFileSystem->ReadInt32(&patch_map[i][j]);
+                pFileSystem->ReadInt32(&patch_lod[i][j]);
         }
 
         pFileSystem->CloseFile();
@@ -63,96 +63,66 @@ CPatchManager::Update_VisiblePatch(short nMappingX, short nMappingY) {
     //	Delete_UnvisiblePatch ();
 }
 
-//----------------------------------------------------------------------------------------------------
-/// @param
-/// @brief Visible patch 엔진에 등록
-//----------------------------------------------------------------------------------------------------
 void
-CPatchManager::Insert_VisiblePatch(CMAP_PATCH* pPATCH) {
-    if (pPATCH->m_wLastViewFRAME == 0) {
-        pPATCH->InsertToScene();
-        m_PatchLIST.AllocNAppend(pPATCH);
+CPatchManager::Insert_VisiblePatch(CMAP_PATCH* patch) {
+    if (!patch) {
+        return;
     }
-    pPATCH->m_wLastViewFRAME = this->m_wViewFRAME;
+    if (patch->m_wLastViewFRAME == 0) {
+        patch->InsertToScene();
+        this->patches.push_back(patch);
+    }
+    patch->m_wLastViewFRAME = this->m_wViewFRAME;
 }
-
-//----------------------------------------------------------------------------------------------------
-/// @param
-/// @brief 모든 Visible 제거
-//----------------------------------------------------------------------------------------------------
 
 void
 CPatchManager::Clear_VisiblePatch(void) {
-    classDLLNODE<CMAP_PATCH*>* pCurNode;
-
-    pCurNode = m_PatchLIST.GetHeadNode();
-    while (pCurNode) {
-
-        pCurNode->DATA->m_PreDrawingType = -1;
-        pCurNode->DATA->RemoveFromScene();
-        m_PatchLIST.DeleteNFree(pCurNode);
-
-        pCurNode = m_PatchLIST.GetHeadNode();
+    for (CMAP_PATCH* patch: this->patches) {
+        if (!patch) {
+            continue;
+        }
+        patch->m_PreDrawingType = -1;
+        patch->RemoveFromScene();
     }
-}
 
-//----------------------------------------------------------------------------------------------------
-/// @param
-/// @brief 유효하지 않은 patch 제거( time expire )
-//----------------------------------------------------------------------------------------------------
+    this->patches.clear();
+}
 
 void
 CPatchManager::Delete_UnvisiblePatch(void) {
-    classDLLNODE<CMAP_PATCH*>*pCurNode, *pDelNode;
+    uint16_t view_frame = this->m_wViewFRAME;
 
-    pCurNode = m_PatchLIST.GetHeadNode();
-    while (pCurNode) {
-        if (pCurNode->DATA->m_wLastViewFRAME != this->m_wViewFRAME) {
-            pCurNode->DATA->m_PreDrawingType = -1;
-            pCurNode->DATA->RemoveFromScene();
-            pCurNode->DATA->m_wLastViewFRAME = 0;
+    auto remove =
+        std::remove_if(this->patches.begin(), this->patches.end(), [view_frame](CMAP_PATCH* patch) {
+            if (!patch) {
+                return true;
+            }
+            if (patch->m_wLastViewFRAME == view_frame) {
+                return false;
+            }
+            patch->m_PreDrawingType = -1;
+            patch->RemoveFromScene();
+            patch->m_wLastViewFRAME = 0;
+            return true;
+        });
 
-            // pCurNode->DATA->InitMember();
-
-            pDelNode = pCurNode;
-            pCurNode = m_PatchLIST.GetNextNode(pCurNode);
-            m_PatchLIST.DeleteNFree(pDelNode);
-            continue;
-        }
-
-        pCurNode = m_PatchLIST.GetNextNode(pCurNode);
-    }
-
-    m_nDrawingPatch = m_PatchLIST.GetNodeCount();
+    this->patches.erase(remove, this->patches.end());
+    this->m_nDrawingPatch = this->patches.size();
 }
-
-//----------------------------------------------------------------------------------------------------
-/// @param
-/// @brief 현재 피킹된 패치, 위치를 구한다.
-//----------------------------------------------------------------------------------------------------
 
 float
 CPatchManager::Pick_POSITION(D3DXVECTOR3& PosPICK) {
-    // 속도 상향을 위해서 패치를 선별적으로 선택해서 조사해야...
-    classDLLNODE<CMAP_PATCH*>* pCurNode;
+    float fMinDis = -1;
+    float fCurDis = g_fMaxDistance;
 
-    float fMinDis = -1, fCurDis = g_fMaxDistance;
-    pCurNode = m_PatchLIST.GetHeadNode();
-    while (pCurNode) {
-        if (pCurNode->DATA->IsIntersect(fCurDis, PosPICK)) {
+    for (CMAP_PATCH* patch: this->patches) {
+        if (patch->IsIntersect(fCurDis, PosPICK)) {
             fMinDis = fCurDis;
         }
-
-        pCurNode = m_PatchLIST.GetNextNode(pCurNode);
     }
 
     return fMinDis;
 }
-
-//----------------------------------------------------------------------------------------------------
-/// @param
-/// @brief  PatchManager에 참조된 *m_ppQuadPatchManager[3][3]을 모두 Clear함
-//----------------------------------------------------------------------------------------------------
 
 void
 CPatchManager::ClearAllQuadPatchManager() {
@@ -218,41 +188,6 @@ CPatchManager::CalculateViewFrustumCulling() {
             }
         }
     }
-
-    //          test  12_10
-    /*
-        classDLLNODE< CMAP_PATCH* > *pCurNode;
-        float min[3],float max[3];
-        CMAP_PATCH *pt;
-
-        pCurNode = m_PatchLIST.GetHeadNode ();
-        ::ResetSceneAABB();
-        while( pCurNode )
-        {
-            pt = pCurNode->DATA;
-            min[0] = pt->m_aabb.x[0]; min[1] = pt->m_aabb.y[0]; min[2] = pt->m_aabb.z[0];
-            max[0] = pt->m_aabb.x[1]; max[1] = pt->m_aabb.y[1]; max[2] = pt->m_aabb.z[1];
-            ::InputSceneAABB(min, max, 0);
-
-            pCurNode = m_PatchLIST.GetNextNode( pCurNode );
-
-        }
-
-
-        pCurNode = m_PatchLIST.GetHeadNode ();
-        ::ResetSceneAABB();
-        while( pCurNode )
-        {
-            pt = pCurNode->DATA;
-            min[0] = pt->m_aabb.x[0]; min[1] = pt->m_aabb.y[0]; min[2] = pt->m_aabb.z[0];
-            max[0] = pt->m_aabb.x[1]; max[1] = pt->m_aabb.y[1]; max[2] = pt->m_aabb.z[1];
-            ::InputSceneAABB(min, max, 0);
-
-            pCurNode = m_PatchLIST.GetNextNode( pCurNode );
-
-        }
-
-    */
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -337,7 +272,7 @@ CPatchManager::SetPatchType() {
 
         if (lod_onoff) {
             if (0 <= buffer_x && buffer_x < 31 && 0 <= buffer_y && buffer_y < 31)
-                m_ppSubPATCH[i]->m_DrawingType = patch_map[buffer_y][buffer_x];
+                m_ppSubPATCH[i]->m_DrawingType = patch_lod[buffer_y][buffer_x];
             else
                 m_ppSubPATCH[i]->m_DrawingType = 10;
         } else {
@@ -502,38 +437,28 @@ CPatchManager::CalculatePickingPATCH() {
 /// for mob collision test
 void
 CPatchManager::DrawCollisionCylinder() {
-    classDLLNODE<CMAP_PATCH*>* pCurNode;
+    for (CMAP_PATCH* patch: this->patches) {
+        classDLLNODE<tagCYLINDERINFO>* pCurPatchNode = patch->m_CylinderLIST.GetHeadNode();
+        while (pCurPatchNode) {
+            InputSceneCylinder(pCurPatchNode->DATA.m_Position.x,
+                pCurPatchNode->DATA.m_Position.y,
+                pCurPatchNode->DATA.m_Position.z,
+                1000.0,
+                pCurPatchNode->DATA.m_fRadius);
 
-    pCurNode = m_PatchLIST.GetHeadNode();
-    while (pCurNode) {
-        {
-            classDLLNODE<tagCYLINDERINFO>* pCurPatchNode =
-                pCurNode->DATA->m_CylinderLIST.GetHeadNode();
-            while (pCurPatchNode) {
-                InputSceneCylinder(pCurPatchNode->DATA.m_Position.x,
-                    pCurPatchNode->DATA.m_Position.y,
-                    pCurPatchNode->DATA.m_Position.z,
-                    1000.0,
-                    pCurPatchNode->DATA.m_fRadius);
+            pCurPatchNode = patch->m_CylinderLIST.GetNextNode(pCurPatchNode);
 
-                pCurPatchNode = pCurNode->DATA->m_CylinderLIST.GetNextNode(pCurPatchNode);
+            float vMin[3] = {0.0f, 0.0f, 0.0f};
+            float vMax[3] = {0.0f, 0.0f, 0.0f};
 
-                float vMin[3], vMax[3];
-                CMAP_PATCH* pPatch;
+            vMin[0] = patch->m_aabb.x[0];
+            vMin[1] = patch->m_aabb.y[0];
+            vMin[2] = patch->m_aabb.z[0];
+            vMax[0] = patch->m_aabb.x[1];
+            vMax[1] = patch->m_aabb.y[1];
+            vMax[2] = patch->m_aabb.z[1];
 
-                pPatch = pCurNode->DATA;
-
-                vMin[0] = pPatch->m_aabb.x[0];
-                vMin[1] = pPatch->m_aabb.y[0];
-                vMin[2] = pPatch->m_aabb.z[0];
-                vMax[0] = pPatch->m_aabb.x[1];
-                vMax[1] = pPatch->m_aabb.y[1];
-                vMax[2] = pPatch->m_aabb.z[1];
-
-                ::InputSceneAABB(vMin, vMax, 0);
-            }
+            ::InputSceneAABB(vMin, vMax, 0);
         }
-
-        pCurNode = m_PatchLIST.GetNextNode(pCurNode);
     }
 }

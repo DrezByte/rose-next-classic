@@ -503,8 +503,6 @@ public:
     tPOINTF Get_StartPOS();
     tPOINTF Get_RevivePOS();
 
-    int GetVisiblePatchCount() { return m_PatchManager.GetVisiblePatchCount(); }
-
     //	short	GetTileTBL(short nX, short nY)		{	return m_TileTBL.m_ppDATA[ nY ][ nX ];	}
     short GetTileTBL(short nX, short nY) { return m_ppTileTYPE[nY][nX]; }
     HNODE GetMATERIAL(short nIndex) { return m_pTILE->IDX_HNODE(nIndex); }
