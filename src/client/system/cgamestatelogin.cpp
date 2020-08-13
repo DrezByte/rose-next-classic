@@ -16,6 +16,7 @@
 
 #include "../Common/IO_Quest.h"
 
+#include "cclientstorage.h"
 #include "../CCamera.h"
 #include "../CSkyDOME.H"
 #include "../Misc/GameUtil.h"
@@ -42,7 +43,7 @@ CGameStateLogin::Update(bool bLostFocus) {
     ::updateScene();
 
     // processing  ...
-    if (!bLostFocus) {
+    if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
         this->pre_begin_scene();
         if (!::beginScene()) //  디바이스가 손실된 상태라면 0을 리턴하므로, 모든 렌더링 스킵
         {

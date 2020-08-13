@@ -9,6 +9,9 @@
 #include "../interface/CUIMediator.h"
 #include "SystemProcScript.h"
 #include "CGame.h"
+
+#include "cclientstorage.h"
+
 CGameStateLoginVirtual::CGameStateLoginVirtual(int iID) {
     m_iStateID = iID;
 }
@@ -29,7 +32,7 @@ CGameStateLoginVirtual::Update(bool bLostFocus) {
     ::updateScene();
 
     // processing  ...
-    if (!bLostFocus) {
+    if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
         this->pre_begin_scene();
         if (::beginScene()) //  디바이스가 손실된 상태라면 0을 리턴하므로, 모든 렌더링 스킵
         {

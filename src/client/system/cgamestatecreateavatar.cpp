@@ -4,6 +4,7 @@
 #include "CGame.h"
 #include "SystemProcScript.h"
 
+#include "cclientstorage.h"
 #include "../Interface/ExternalUI/ExternalUILobby.h"
 #include "../interface/CUIMediator.h"
 #include "../CCamera.h"
@@ -12,6 +13,7 @@
 #include "../GameData/CGameDataCreateAvatar.h"
 
 #include "tgamectrl/time2.h"
+
 CGameStateCreateAvatar::CGameStateCreateAvatar(int iID) {
     m_iStateID = iID;
 }
@@ -30,9 +32,9 @@ CGameStateCreateAvatar::Update(bool bLostFocus) {
     ::updateScene();
 
     // processing  ...
-    if (!bLostFocus) {
+    if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
         this->pre_begin_scene();
-        if (!::beginScene()) //  디바이스가 손실된 상태라면 0을 리턴하므로, 모든 렌더링 스킵
+        if (!::beginScene())
         {
             return 0;
         }

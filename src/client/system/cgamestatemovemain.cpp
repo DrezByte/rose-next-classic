@@ -5,6 +5,9 @@
 #include "SystemProcScript.h"
 #include "../CCamera.h"
 #include "../interface/CUIMediator.h"
+
+#include "cclientstorage.h"
+
 CGameStateMoveMain::CGameStateMoveMain(int iID) {
     m_iStateID = iID;
 }
@@ -41,7 +44,7 @@ CGameStateMoveMain::Update(bool bLostFocus) {
     ::updateScene();
 
     // processing  ...
-    if (!bLostFocus) {
+    if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
         this->pre_begin_scene();
         if (::beginScene()) // 성공한 경우에만 렌더링
         {

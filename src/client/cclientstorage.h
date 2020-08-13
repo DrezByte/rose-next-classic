@@ -22,6 +22,8 @@ struct t_OptionVideo {
     UINT iFullScreen;
     UINT iUseRoughMap;
     UINT iAntiAlising;
+    // Render the game even if window is not focused
+    bool background_render;
 };
 
 struct t_OptionSound {

@@ -108,7 +108,7 @@ CGameStateMain::Update(bool bLostFocus) {
     /// Tutorial event check..
     CTutorialEventManager::GetSingleton().Proc();
 
-    if (!bLostFocus) {
+    if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
         UpdateCameraPositionByMouse();
         UpdateCheckFrame();
         CTargetManager::GetSingleton().Proc();
@@ -132,7 +132,7 @@ CGameStateMain::Update(bool bLostFocus) {
     //박 지호 : 여신소환 업데이트
     goddessMgr.Update();
 
-    if (!bLostFocus) {
+    if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
         /*		UpdateCameraPositionByMouse();
                 UpdateCheckFrame();
                 CTargetManager::GetSingleton().Proc();

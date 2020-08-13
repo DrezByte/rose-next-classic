@@ -7,8 +7,8 @@
 #include "SystemProcScript.h"
 #include "System_FUNC.h"
 #include "../GameProc/LiveCheck.h"
-#include "../CClientStorage.h"
 
+#include "cclientstorage.h"
 #include "SFX/SFXManager.h"
 
 const int CUTSCENE_ZONE_NO = 19;
@@ -46,7 +46,7 @@ CGameStateMovePlanet::Update(bool bLostFocus) {
     ::updateScene();
 
     // processing  ...
-    if (!bLostFocus) {
+    if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
         pre_begin_scene();
         this->pre_begin_scene();
         if (::beginScene()) //  디바이스가 손실된 상태라면 0을 리턴하므로, 모든 렌더링 스킵
