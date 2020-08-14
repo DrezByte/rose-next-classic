@@ -1,11 +1,4 @@
-/*
-    $Header: /Client/CCamera.h 17    04-03-31 9:49p Jeddli $
-*/
-#ifndef __CCAMERA_H
-#define __CCAMERA_H
-//-------------------------------------------------------------------------------------------------
-
-// #define	__USE_CAMERA
+#pragma once
 
 class CCamera {
 private:
@@ -26,11 +19,18 @@ public:
     static CCamera* Instance();
     void Destroy();
 
-    float m_fDistance; // distace eye~at
-    float m_fYAW;
-    float m_fPITCH;
-    bool m_bFollowMode;
+    void set_follow_mode(bool b);
 
+    float distance();
+    void set_distance(float fDistance);
+
+    float yaw();
+    void set_yaw(float yaw);
+
+    float pitch();
+    void set_pitch(float pitch);
+
+    bool m_bFollowMode;
     HNODE m_hMotion;
 
 #ifdef _DEBUG
@@ -53,7 +53,6 @@ public:
     void Init(HNODE hNODE);
     HNODE GetZHANDLE() const { return m_hNODE; }
 
-    void Set_Distance(float fDistance) { m_fDistance = fDistance; }
     void Add_Distance(float fDistance);
     //#ifdef	_DEBUG
     D3DVECTOR Get_Position(void);
@@ -96,6 +95,3 @@ public:
 };
 
 extern CCamera* g_pCamera;
-
-//-------------------------------------------------------------------------------------------------
-#endif

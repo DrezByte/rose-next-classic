@@ -5,24 +5,24 @@ namespace Rose {
 namespace GameStaticConfig {
 const char* const NAME = "ROSE Next";
 
-const uint8_t MAX_LEVEL = 88;
-const uint16_t MAX_STAT = 300;
-const uint16_t MAX_STAMINA = 5000;
+constexpr uint8_t MAX_LEVEL = 88;
+constexpr uint16_t MAX_STAT = 300;
+constexpr uint16_t MAX_STAMINA = 5000;
 
-const int MAX_CHARACTER_NAME = 20;
-const int MAX_CHARACTERS = 5;
+constexpr int MAX_CHARACTER_NAME = 20;
+constexpr int MAX_CHARACTERS = 5;
 
-const int MAX_MAIL_MESSAGES = 50;
+constexpr int MAX_MAIL_MESSAGES = 50;
 
-const int DELETE_TIME_SEC = 3600; // 1-hour
+constexpr int DELETE_TIME_SEC = 3600; // 1-hour
 
-const int DEFAULT_WALK_SPEED = 200;
+constexpr int DEFAULT_WALK_SPEED = 200;
 
-const int MAX_DROP_MULTIPLIER = 10;
-const int MAX_CONSUMABLE_DROP_MULTIPLIER = 1;
+constexpr int MAX_DROP_MULTIPLIER = 10;
+constexpr int MAX_CONSUMABLE_DROP_MULTIPLIER = 1;
 
-const float CAMERA_MIN_ZOOM = 300.0f;
-const float CAMERA_MAX_ZOOM = 2700.0f;
+constexpr float CAMERA_MIN_ZOOM = 300.0f;
+constexpr float CAMERA_MAX_ZOOM = 2700.0f;
 
 }; // namespace GameStaticConfig
 

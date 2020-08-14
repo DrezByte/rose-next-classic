@@ -5,18 +5,23 @@
 
 CCamera* CCamera::m_pInstance = NULL;
 
-CCamera::CCamera() {
-    m_hNODE = NULL;
-    m_hMotion = NULL;
+constexpr float CAMERA_MIN_ZOOM = Rose::GameStaticConfig::CAMERA_MIN_ZOOM;
+#ifndef _DEBUG
+constexpr float CAMERA_MAX_ZOOM = Rose::GameStaticConfig::CAMERA_MAX_ZOOM;
+#else
+constexpr float CAMERA_MAX_ZOOM = Rose::GameStaticConfig::CAMERA_MAX_ZOOM * 100.0f;
+#endif
+
+CCamera::CCamera(): m_hNODE(NULL), m_hMotion(NULL) {
 }
-CCamera::~CCamera() {
-    ;
-}
+
+CCamera::~CCamera() {}
 
 CCamera*
 CCamera::Instance() {
-    if (!m_pInstance)
+    if (!m_pInstance) {
         m_pInstance = new CCamera;
+    }
 
     return m_pInstance;
 }
@@ -46,11 +51,6 @@ CCamera::Init(HNODE hNODE) {
     m_Angle.y = 180.f;
     m_Angle.z = 0.f;
 
-    m_fDistance = 1000.f;
-
-    // -- 카메라 초기값 지정
-    m_fYAW = 0; // [-180, 180]
-    m_fPITCH = 0.5; // [0, 1]
     m_bFollowMode = false; // 1 : 뒤에서 따라가는 모드, 0 : 3인칭 모드
 
     if (m_hMotion != NULL) {
@@ -130,60 +130,50 @@ CCamera::Toggle_FloowMODE() {
 
 void
 CCamera::Add_PITCH(short nMovement) {
-    m_fPITCH += ((float)nMovement / g_pCApp->GetHEIGHT());
+    float p = pitch() + ((float)nMovement / g_pCApp->GetHEIGHT());
 
-    if (m_fPITCH < 0.2)
-        m_fPITCH = 0.2f;
-    else if (m_fPITCH > 1.0)
-        m_fPITCH = 1.0f;
+    if (p < 0.2) {
+        p = 0.2f;
+    } else if (p > 1.0) {
+        p = 1.0f;
+    }
 
-    setCameraFollowPitch(m_hNODE, m_fPITCH);
+    setCameraFollowPitch(m_hNODE, p);
 }
 
 void
 CCamera::Add_YAW(short nMovement) {
     const float fMaxAngle = 180.f;
 
-    // -- 현재 적용된 각 얻어오기(setCameraFollowYaw()에 의해 이전에 적용된 값과 다를 수 있음)
-    m_fYAW = getCameraFollowYaw(m_hNODE);
+    float yaw = getCameraFollowYaw(m_hNODE);
+    yaw = yaw - 480.f * nMovement / g_pCApp->GetWIDTH();
 
-    // -- 마우스의 x축 값으로 회전각 정의(이전각에 누적시킴)
-    m_fYAW = m_fYAW - 480.f * nMovement / g_pCApp->GetWIDTH();
-
-    // -- 최대각과 최소각으로 제한
-    /*
-        if ( m_fYAW < -fMaxAngle ) m_fYAW = -fMaxAngle;
-        else
-        if ( m_fYAW >  fMaxAngle ) m_fYAW = fMaxAngle;
-    */
-    // -- 카메라 회전각 설정 (값의 범위는 -180 도에서 180 도까지)
-    setCameraFollowYaw(m_hNODE, m_fYAW);
+    setCameraFollowYaw(m_hNODE, yaw);
 }
 
 void
 CCamera::Add_Distance(float fDistance) {
-    m_fDistance += fDistance;
-    if (m_fDistance < Rose::GameStaticConfig::CAMERA_MIN_ZOOM) {
-        m_fDistance = Rose::GameStaticConfig::CAMERA_MIN_ZOOM;
-    } else if (m_fDistance > Rose::GameStaticConfig::CAMERA_MAX_ZOOM) {
-        m_fDistance = Rose::GameStaticConfig::CAMERA_MAX_ZOOM;
+    float d = distance() + fDistance;
+    if (d < CAMERA_MIN_ZOOM) {
+        d = CAMERA_MIN_ZOOM;
+    }
+    if (d > CAMERA_MAX_ZOOM) {
+        d = CAMERA_MAX_ZOOM;
     }
 
-    ::setCameraFollowDistance(m_hNODE, m_fDistance);
+    ::setCameraFollowDistance(m_hNODE, d);
 }
 
 void
 CCamera::Attach(HNODE hModel) {
     ::cameraAttachTarget(m_hNODE, hModel);
     ::setCameraTargetHeight(m_hNODE, 170);
-    ::setCameraFollowDistance(m_hNODE, m_fDistance);
-    ::setCameraFollowYaw(m_hNODE, m_fYAW);
-    ::setCameraFollowPitch(m_hNODE, m_fPITCH);
+    ::setCameraFollowDistance(m_hNODE, 1000.0f);
+    ::setCameraFollowYaw(m_hNODE, 0.0f);
+    ::setCameraFollowPitch(m_hNODE, 0.5f);
     ::setCameraFollowMode(m_hNODE, m_bFollowMode);
 
-    ::setCameraFollowDistanceRange(m_hNODE,
-        Rose::GameStaticConfig::CAMERA_MIN_ZOOM,
-        Rose::GameStaticConfig::CAMERA_MAX_ZOOM * 2.0f);
+    ::setCameraFollowDistanceRange(m_hNODE, CAMERA_MIN_ZOOM, CAMERA_MAX_ZOOM * 2.0f);
 }
 
 //#ifdef	_DEBUG
@@ -202,7 +192,6 @@ CCamera::Set_Position(float fX, float fY, float fZ) {
     m_PosAT.z = fZ;
 
     ::setPosition(m_hNODE, fX, fY, fZ);
-    //::setPosition( m_hNODE, 0.0f, 0.0f, 0.0f );
 }
 
 void
@@ -216,4 +205,49 @@ CCamera::LookAt(float eyeX,
     float upY,
     float upZ) {
     ::lookAt(m_hNODE, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+}
+
+void
+CCamera::set_follow_mode(bool b) {
+    this->m_bFollowMode = b;
+    ::setCameraFollowMode(this->m_hNODE, this->m_bFollowMode);
+}
+
+float
+CCamera::distance() {
+    return ::getCameraFollowDistance(this->m_hNODE);
+}
+
+void
+CCamera::set_distance(float d) {
+    if (d < CAMERA_MIN_ZOOM) {
+        d = CAMERA_MIN_ZOOM;
+    }
+    if (d > CAMERA_MAX_ZOOM) {
+        d = CAMERA_MAX_ZOOM;
+    }
+
+    ::setCameraFollowDistance(this->m_hNODE, d);
+}
+
+float
+CCamera::yaw() {
+    return ::getCameraFollowYaw(this->m_hNODE);
+}
+
+void
+CCamera::set_yaw(float yaw) {
+    // Engine will automatically wrap values to (-180, 180) range
+    ::setCameraFollowYaw(this->m_hNODE, yaw);
+}
+
+float
+CCamera::pitch() {
+    return ::getCameraFollowPitch(this->m_hNODE);
+}
+
+void
+CCamera::set_pitch(float pitch) {
+    pitch = std::clamp(pitch, 0.0f, 1.0f);
+    ::setCameraFollowPitch(this->m_hNODE, pitch);
 }

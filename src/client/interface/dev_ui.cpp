@@ -2,6 +2,8 @@
 
 #include "dev_ui.h"
 
+#include "ccamera.h"
+
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
 #include "imgui_impl_win32.h"
@@ -18,6 +20,28 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
     WPARAM wParam,
     LPARAM lParam);
 
+
+void
+draw_camera_info() {
+    CCamera* cam = CCamera::Instance();
+    if (!cam) {
+        return;
+    }
+
+    float distance = cam->distance();
+    float pitch = cam->pitch();
+    float yaw = cam->yaw();
+
+    ImGui::Checkbox("Follow mode", &cam->m_bFollowMode);
+    ImGui::SliderFloat("Distance", &distance, 0.0f, Rose::GameStaticConfig::CAMERA_MAX_ZOOM * 10);
+    ImGui::SliderFloat("Pitch", &pitch, 0.0f, 1.0f);
+    ImGui::SliderFloat("Yaw", &yaw, -180.0f, 180.0f);
+
+    cam->set_follow_mode(cam->m_bFollowMode);
+    cam->set_distance(distance);
+    cam->set_pitch(pitch);
+    cam->set_yaw(yaw);
+}
 
 void
 dev_ui_init(HWND handle) {
@@ -68,12 +92,18 @@ dev_ui_frame() {
         zz->get_rs()->alpha_fog_end
     };
 
-    if (ImGui::CollapsingHeader("Client Settings")) {
+    if (ImGui::CollapsingHeader("General")) {
         ImGui::Checkbox("Disable UI", &g_GameDATA.m_bNoUI);
         ImGui::SameLine();
         ImGui::Checkbox("Filming mode", &g_GameDATA.m_bFilmingMode);
         ImGui::SameLine();
         ImGui::Checkbox("Observer mode", &g_GameDATA.m_bObserverCameraMode);
+
+
+    }
+
+    if (ImGui::CollapsingHeader("Camera")) {
+        draw_camera_info();
     }
 
     if (ImGui::CollapsingHeader("Engine settings")) {
