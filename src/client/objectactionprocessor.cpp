@@ -116,7 +116,6 @@ CWarpObjectActionProcessor::ProcessChain(HNODE hNode) {
 
             if (iSpecialData >= WARP_OBJECT_INDEX_OFFSET) {
                 g_pNet->Send_cli_TELEPORT_REQ(g_pAVATAR, iSpecialData - WARP_OBJECT_INDEX_OFFSET);
-                assert(0 && " This is warp object");
                 setUserData(hNode, (HNODE)0);
             }
         }
