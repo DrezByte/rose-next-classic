@@ -501,8 +501,8 @@ CDSOUND::PlaySound(t_sounddata* pData, long lVolume, long lPan, DWORD dwFlags) {
     }
 
     pSound->m_pDSB->SetVolume(lVolume);
-
     pSound->m_pDSB->SetPan(lPan);
+
     m_hR = pSound->m_pDSB->Play(0, 0, dwFlags);
 }
 

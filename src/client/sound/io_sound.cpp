@@ -72,14 +72,11 @@ CSoundLIST::KEY_PlaySound(t_HASHKEY HashKEY) {
     tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
 
     if (NULL == pSoundData) {
-        // 사운드파일리스트 에 등록 되지 않는 사운드 파일이다.
         return false;
     }
 
-#ifdef USE_DEFAULT_3D_SOUND
     if (!m_SOUND.Set3D(pSoundData->m_pSoundData, true))
-        return false; // 안-3D 모드로 설정
-#endif
+        return false;
 
     m_SOUND.PlaySound(pSoundData->m_pSoundData, m_iSoundVol, m_iSoundPan, 0);
     return true;
@@ -95,15 +92,11 @@ CSoundLIST::KEY_PlaySound3D(t_HASHKEY HashKEY,
     tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
 
     if (NULL == pSoundData) {
-        // 사운드파일리스트 에 등록 되지 않는 사운드 파일이다.
         return false;
     }
 
-#ifdef USE_DEFAULT_3D_SOUND
-    // if (!m_SOUND.Set3D (pSoundData->m_pSoundData, false)) return false; // 3D 모드로 설정
     if (!m_SOUND.SetPosition(pSoundData->m_pSoundData, posWorld))
         return false;
-#endif
 
     if (velWorld)
         m_SOUND.SetVelocity(pSoundData->m_pSoundData, *velWorld);
@@ -120,16 +113,12 @@ CSoundLIST::KEY_PlaySound3D(t_HASHKEY HashKEY,
 bool
 CSoundLIST::KEY_PlaySound(t_HASHKEY HashKEY, int iVolume, int iPan) {
     tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
-
     if (NULL == pSoundData) {
-        // 사운드파일리스트 에 등록 되지 않는 사운드 파일이다.
         return false;
     }
 
-#ifdef USE_DEFAULT_3D_SOUND
     if (!m_SOUND.Set3D(pSoundData->m_pSoundData, true))
-        return false; // 안-3D 모드로 설정
-#endif
+        return false;
 
     m_SOUND.PlaySound(pSoundData->m_pSoundData, iVolume, iPan, 0);
     return true;
@@ -146,15 +135,11 @@ CSoundLIST::KEY_PlaySound3D(t_HASHKEY HashKEY,
     tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
 
     if (NULL == pSoundData) {
-        // 사운드파일리스트 에 등록 되지 않는 사운드 파일이다.
         return false;
     }
 
-#ifdef USE_DEFAULT_3D_SOUND
-    // if (!m_SOUND.Set3D (pSoundData->m_pSoundData, false)) return false; // 3D 모드로 설정
     if (!m_SOUND.SetPosition(pSoundData->m_pSoundData, posWorld))
         return false;
-#endif
 
     if (velWorld)
         m_SOUND.SetVelocity(pSoundData->m_pSoundData, *velWorld);
@@ -176,15 +161,12 @@ CSoundLIST::KEY_PlaySound3DLoop(t_HASHKEY HashKEY, const D3DXVECTOR3& posWorld, 
     tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
 
     if (NULL == pSoundData) {
-        // 사운드파일리스트 에 등록 되지 않는 사운드 파일이다.
         return false;
     }
 
-#ifdef USE_DEFAULT_3D_SOUND
-    // if (!m_SOUND.Set3D (pSoundData->m_pSoundData, false)) return false; // 3D 모드로 설정
-    if (!m_SOUND.SetPosition(pSoundData->m_pSoundData, posWorld))
+    if (!m_SOUND.SetPosition(pSoundData->m_pSoundData, posWorld)) {
         return false;
-#endif
+    }
 
     m_fMinDistance = SOUND_DEFAULT_MIN_DISTANCE;
     m_SOUND.SetMinDistance(pSoundData->m_pSoundData, m_fMinDistance);
@@ -217,15 +199,11 @@ CSoundLIST::IDX_PlaySound3DLoop(short nIndex,
     tagSndFILE* pSoundData = Get_DATAUseIDX(nIndex);
 
     if (NULL == pSoundData) {
-        // 사운드파일리스트 에 등록 되지 않는 사운드 파일이다.
         return false;
     }
 
-#ifdef USE_DEFAULT_3D_SOUND
-    // if (!m_SOUND.Set3D (pSoundData->m_pSoundData, false)) return false; // 3D 모드로 설정
     if (!m_SOUND.SetPosition(pSoundData->m_pSoundData, posWorld))
         return false;
-#endif
 
     if (velWorld)
         m_SOUND.SetVelocity(pSoundData->m_pSoundData, *velWorld);
@@ -259,14 +237,12 @@ CSoundLIST::IDX_PlaySound(short nIndex) {
     tagSndFILE* pSoundData = Get_DATAUseIDX(nIndex);
 
     if (NULL == pSoundData) {
-        // 사운드파일리스트 에 등록 되지 않는 사운드 파일이다.
         return false;
     }
 
-#ifdef USE_DEFAULT_3D_SOUND
     if (!m_SOUND.Set3D(pSoundData->m_pSoundData, true))
-        return false; // 안-3D 모드로 설정
-#endif
+        return false;
+
     m_SOUND.PlaySound(pSoundData->m_pSoundData, m_iSoundVol, m_iSoundPan, 0);
     return true;
 }
@@ -280,15 +256,11 @@ CSoundLIST::IDX_PlaySound3D(short nIndex,
     tagSndFILE* pSoundData = Get_DATAUseIDX(nIndex);
 
     if (NULL == pSoundData) {
-        // 사운드파일리스트 에 등록 되지 않는 사운드 파일이다.
         return false;
     }
 
-#ifdef USE_DEFAULT_3D_SOUND
-    // if (!m_SOUND.Set3D (pSoundData->m_pSoundData, false)) return false; // 3D 모드로 설정
     if (!m_SOUND.SetPosition(pSoundData->m_pSoundData, posWorld))
         return false;
-#endif
 
     if (velWorld)
         m_SOUND.SetVelocity(pSoundData->m_pSoundData, *velWorld);

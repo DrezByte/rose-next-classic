@@ -1,10 +1,6 @@
-/*
-    $Header: /Client/sound/IO_Sound.h 19    04-12-14 11:52a Navy $
-*/
-#ifndef __IO_SOUND_H
-#define __IO_SOUND_H
+#pragma once
+
 #include "..\util\CDSound.h"
-//-------------------------------------------------------------------------------------------------
 
 #define SOUND_VOLUME_MAX DSBVOLUME_MAX // 0
 #define SOUND_VOLUME_90 (DSBVOLUME_MIN * 1 / 10)
@@ -17,21 +13,6 @@
 #define SOUND_PAN_CENTER DSBPAN_CENTER // 0
 #define SOUND_PAN_RIGHT DSBPAN_RIGHT // 10000
 
-/*
-enum {
-    SNDTYPE_MESSAGE = 0,
-    SNDTYPE_CNST_SEL,
-    SNDTYPE_CHAR_SEL,
-    SNDTYPE_CHAR_CMD,
-    SNDTYPE_CHAR_YAP,
-    SNDTYPE_CHAR_DIE,
-    SNDTYPE_ETC,
-    SNDTYPE_BULLET,
-
-    MAX_SOUND_TYPE
-} ;
-*/
-
 struct tagSndFILE {
     t_sounddata* m_pSoundData;
     short m_nMixCNT;
@@ -39,20 +20,16 @@ struct tagSndFILE {
     tagSndFILE() { m_pSoundData = NULL, m_nMixCNT = 1, m_nRefCNT = 0; }
 };
 
-#define USE_DEFAULT_3D_SOUND // 3d 사운드를 디폴트로 설정하려면
-
 #define SOUND_DEFAULT_MAX_DISTANCE (5000.0f)
 #define SOUND_DEFAULT_MIN_DISTANCE (1000.0f)
 
 enum { SID_GETTING_ITEM = 531, SID_DROP_ARMOR = 576, SID_REGIST_QUICKSLOT = 584 };
+
 /// sound list
 class CSoundLIST: public CFileLIST<tagSndFILE*> {
 public:
-#ifdef USE_DEFAULT_3D_SOUND
     CD3DSOUND m_SOUND;
-#else
-    CDSOUND m_SOUND;
-#endif
+
     int m_iSoundPan;
     int m_iSoundVol;
     float m_fMinDistance;
@@ -121,6 +98,3 @@ public:
     IDX_PlaySound3DLoop(short nIndex, const D3DXVECTOR3& posWorld, const D3DXVECTOR3* velWorld);
     bool IDX_StopSound3DLoop(short nIndex);
 };
-
-//-------------------------------------------------------------------------------------------------
-#endif
