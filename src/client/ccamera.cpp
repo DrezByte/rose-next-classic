@@ -1,17 +1,7 @@
-/*
-    $Header: /Client/CCamera.cpp 37    04-10-11 8:21p Navy $
-*/
-#include "stdAFX.h"
+#include "stdafx.h"
 
-#include "CCamera.h"
-#include "Game.h"
-
-#define MIN_DISTANCE 300.f
-#ifndef _DEBUG
-    #define MAX_DISTANCE (1800.f * ((g_GameDATA.m_bFilmingMode) ? 2.0f : 1.0f))
-#else
-    #define MAX_DISTANCE (230000)
-#endif
+#include "ccamera.h"
+#include "game.h"
 
 CCamera* CCamera::m_pInstance = NULL;
 
@@ -31,11 +21,6 @@ CCamera::Instance() {
     return m_pInstance;
 }
 
-///*------------------------------------------------------------
-/// 2004 / 3/ 31 :수정 nAvy
-/// 1. unloadCamera시에 Error발생
-/// =>Instance를 지우면 멤버 변수에는 쓰레기 값이 들어가게 된다.
-/// =>Instance삭제를 맨 밑으로 이동하거나 Destructor에서 멤버변수를 지우자.
 void
 CCamera::Destroy() {
     if (m_hNODE != NULL) {
@@ -51,7 +36,6 @@ CCamera::Destroy() {
     SAFE_DELETE(m_pInstance);
 }
 
-//-------------------------------------------------------------------------------------------------
 void
 CCamera::Init(HNODE hNODE) {
     m_hNODE = hNODE;
@@ -179,10 +163,11 @@ CCamera::Add_YAW(short nMovement) {
 void
 CCamera::Add_Distance(float fDistance) {
     m_fDistance += fDistance;
-    if (m_fDistance < MIN_DISTANCE)
-        m_fDistance = MIN_DISTANCE;
-    else if (m_fDistance > MAX_DISTANCE)
-        m_fDistance = MAX_DISTANCE;
+    if (m_fDistance < Rose::GameStaticConfig::CAMERA_MIN_ZOOM) {
+        m_fDistance = Rose::GameStaticConfig::CAMERA_MIN_ZOOM;
+    } else if (m_fDistance > Rose::GameStaticConfig::CAMERA_MAX_ZOOM) {
+        m_fDistance = Rose::GameStaticConfig::CAMERA_MAX_ZOOM;
+    }
 
     ::setCameraFollowDistance(m_hNODE, m_fDistance);
 }
@@ -196,7 +181,9 @@ CCamera::Attach(HNODE hModel) {
     ::setCameraFollowPitch(m_hNODE, m_fPITCH);
     ::setCameraFollowMode(m_hNODE, m_bFollowMode);
 
-    ::setCameraFollowDistanceRange(m_hNODE, MIN_DISTANCE, MAX_DISTANCE * 2.0f);
+    ::setCameraFollowDistanceRange(m_hNODE,
+        Rose::GameStaticConfig::CAMERA_MIN_ZOOM,
+        Rose::GameStaticConfig::CAMERA_MAX_ZOOM * 2.0f);
 }
 
 //#ifdef	_DEBUG

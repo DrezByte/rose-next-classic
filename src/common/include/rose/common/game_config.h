@@ -21,6 +21,9 @@ const int DEFAULT_WALK_SPEED = 200;
 const int MAX_DROP_MULTIPLIER = 10;
 const int MAX_CONSUMABLE_DROP_MULTIPLIER = 1;
 
+const float CAMERA_MIN_ZOOM = 300.0f;
+const float CAMERA_MAX_ZOOM = 2700.0f;
+
 }; // namespace GameStaticConfig
 
 namespace Common {

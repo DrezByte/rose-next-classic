@@ -1,52 +1,52 @@
 #include "stdafx.h"
 
-#include "../GameCommon/item.h"
-#include "../GameProc/CDayNNightProc.h"
-#include "../Interface/CHelpMgr.h"
-#include "../Interface/CTFontImpl.h"
-#include "../Interface/CUIMediator.h"
-#include "../Interface/ClanMarkManager.h"
-#include "../Interface/Dlgs/ChattingDlg.h"
-#include "../Interface/ExternalUI/ExternalUILobby.h"
-#include "../Interface/controls/EffectString.h"
-#include "../Interface/cursor/CCursor.h"
+#include "system/cgame.h"
+#include "system/cgamestatemain.h"
 
-#include "CGame.h"
-#include "CGameStateMain.h"
+#include "util/clipboardutil.h"
 
-#include "../System/CGame.h"
-#include "../util/clipboardutil.h"
+#include "bullet.h"
+#include "ccamera.h"
+#include "cclientstorage.h"
+#include "cskydome.h"
+#include "cviewmsg.h"
+#include "jcommandstate.h"
+#include "object.h"
+#include "systemprocscript.h"
+#include "network/cnetwork.h"
 
-#include "../Bullet.h"
-#include "../CCamera.h"
-#include "../CClientStorage.h"
-#include "../CSkyDOME.H"
-#include "../CViewMsg.h"
-#include "../Game.h"
-#include "../GameData/CClan.h"
-#include "../GameData/CParty.h"
-#include "../GameProc/DelayedExp.h"
-#include "../GameProc/LiveCheck.h"
-#include "../GameProc/TargetManager.h"
-#include "../GameProc/UseItemDelay.h"
-#include "../JCommandState.h"
-#include "../Network/CNetwork.h"
-#include "../Object.h"
-#include "SystemProcScript.h"
-#include "tgamectrl/time2.h"
-#include <crtdbg.h>
+#include "game.h"
+#include "gamecommon/skill.h"
+#include "gamecommon/item.h"
+#include "gamedata/cclan.h"
+#include "gamedata/cparty.h"
+#include "gameproc/cdaynnightproc.h"
+#include "gameproc/delayedexp.h"
+#include "gameproc/livecheck.h"
+#include "gameproc/preventduplicatedcommand.h"
+#include "gameproc/skillcommanddelay.h"
+#include "gameproc/targetmanager.h"
+#include "gameproc/useitemdelay.h"
 
-#include "../GameCommon/Skill.h"
-#include "../GameProc/PreventDuplicatedCommand.h"
-#include "../GameProc/SkillCommandDelay.h"
+#include "interface/CHelpMgr.h"
+#include "interface/CTFontImpl.h"
+#include "interface/CUIMediator.h"
+#include "interface/ClanMarkManager.h"
+#include "interface/Dlgs/ChattingDlg.h"
+#include "interface/ExternalUI/ExternalUILobby.h"
+#include "interface/controls/EffectString.h"
+#include "interface/cursor/CCursor.h"
 
-#include "SFX/ISFX.h"
-#include "SFX/SFXFont.h"
-#include "SFX/SFXManager.h"
+#include "sfx/isfx.h"
+#include "sfx/sfxFont.h"
+#include "sfx/sfxManager.h"
 #include "tgamectrl/tcontrolmgr.h"
 #include "tgamectrl/teditbox.h"
+#include "tgamectrl/time2.h"
 
-#include "../Tutorial/TutorialEventManager.h"
+#include "tutorial/tutorialeventmanager.h"
+
+#include <crtdbg.h>
 
 #define CAMERA_MOVE_SPEED 10
 
@@ -896,12 +896,12 @@ CGameStateMain::On_WM_MOUSEWHEEL(WPARAM wParam, LPARAM lParam) {
 
 #ifdef _DEBUG
     if (g_GameDATA.m_bObserverCameraMode) {
-        ObserverCameraZoomInOut((float)-(zDelta));
-    } else
-#endif
-    {
-        g_pCamera->Add_Distance((float)-(zDelta));
+        ObserverCameraZoomInOut(static_cast<float>(-zDelta));
+        return true;
     }
+#endif
+
+    g_pCamera->Add_Distance(static_cast<float>(-zDelta));
     return true;
 }
 //-------------------------------------------------------------------------------------------
@@ -919,49 +919,19 @@ CGameStateMain::Pick_POSITION(/*LPARAM	lParam*/) {
         &RayDir.x,
         &RayDir.y,
         &RayDir.z);
-    //	::getRay (CGame::GetInstance().Get_XPos(),CGame::GetInstance().Get_YPos(), &RayOrig.x,
-    //&RayOrig.y,	&RayOrig.z, &RayDir.x, &RayDir.y,	&RayDir.z );
 
     CGame::GetInstance().SetRayDir(RayDir);
     CGame::GetInstance().SetRayOrig(RayOrig);
 
     D3DXVECTOR3 PosPICKTerrain;
 
-#pragma message(" TODO : 이동시의 지형과 오브젝트 충돌 이상하다")
-
     float fDistanceTerrain = g_fMaxDistance;
     float fDistanceObject = g_fMaxDistance;
 
-    //----------------------------------------------------------------------------------------------------
-    /// @brief 먼저 나와 충돌한 오브젝트들( 밟고 있는 오브젝트 )부터 찝어낸다.
-    //----------------------------------------------------------------------------------------------------
-    /// m_iPickedOBJ = g_pTerrain->Pick_NearObject( m_PosPICK, fDistanceObject );
-
-    //----------------------------------------------------------------------------------------------------
-    /// 지형과의 충돌 체크
-    //----------------------------------------------------------------------------------------------------
     fDistanceTerrain = g_pTerrain->Pick_POSITION(PosPICKTerrain);
 
-    //----------------------------------------------------------------------------------------------------
-    /// 나와 충돌된 놈이 찝혔다면 지형과 충돌을 검사후에 가까운놈 쪽으로 피킹판정
-    //----------------------------------------------------------------------------------------------------
-    /*if( m_iPickedOBJ )
     {
-        m_bPickedPOS = true;
-        if( ( fDistanceTerrain > 0 ) && fDistanceObject > fDistanceTerrain )
-        {
-            m_PosPICK = PosPICKTerrain;
-            m_iPickedOBJ = 0;
-        }
-    }else*/
-    {
-        //----------------------------------------------------------------------------------------------------
-        /// 먼저 오브젝트 충돌 검사
-        //----------------------------------------------------------------------------------------------------
         m_iPickedOBJ = g_pTerrain->Pick_OBJECT(m_PosPICK, fDistanceObject);
-        //----------------------------------------------------------------------------------------------------
-        /// 오브젝트가 찝혔다면 지형과 충돌을 검사후에 가까운놈 쪽으로 피킹판정
-        //----------------------------------------------------------------------------------------------------
         if (m_iPickedOBJ) {
             m_bPickedPOS = true;
             /// 지형이 충돌했고, 지형과의 충돌거리가 오브젝트와의 충돌거리보다 더 가깝다면..
