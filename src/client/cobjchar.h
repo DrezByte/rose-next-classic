@@ -1198,7 +1198,7 @@ public:
         return m_iMaxMP + m_EndurancePack.GetStateValue(ING_INC_MAX_MP);
     }
 
-    /*override*/ bool ToggleRunMODE(float fAdjRate);
+    bool ToggleRunMODE() override;
     /*override*/ bool ToggleSitMODE();
 
     ///

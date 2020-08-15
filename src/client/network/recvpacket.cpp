@@ -860,20 +860,20 @@ CRecvPACKET::Recv_gsv_SET_MOTION() {
     }
 }
 
-//-------------------------------------------------------------------------------------------------
 void
 CRecvPACKET::Recv_gsv_TOGGLE() {
-    CObjCHAR* pCHAR = g_pObjMGR->Get_ClientCharOBJ(m_pRecvPacket->m_gsv_TOGGLE.m_wObjectIDX, false);
-    if (pCHAR) {
-        pCHAR->SetCMD_TOGGLE(m_pRecvPacket->m_gsv_TOGGLE.m_btTYPE);
+    CObjCHAR* character =
+        g_pObjMGR->Get_ClientCharOBJ(m_pRecvPacket->m_gsv_TOGGLE.m_wObjectIDX, false);
 
-        /// 속도가 변했다면 속도 세팅
-        if (m_pRecvPacket->m_HEADER.m_nSize == (sizeof(gsv_TOGGLE) + sizeof(short))) {
-            if (pCHAR->IsUSER()) {
-                ((CObjAVT*)pCHAR)->stats.move_speed = m_pRecvPacket->m_gsv_TOGGLE.m_nRunSPEED[0];
-            }
-        }
+    if (!character) {
+        return;
     }
+
+    if (m_pRecvPacket->m_HEADER.m_nSize == (sizeof(gsv_TOGGLE) + sizeof(short))) {
+        character->stats.move_speed = m_pRecvPacket->m_gsv_TOGGLE.m_nRunSPEED[0];
+    }
+
+    character->SetCMD_TOGGLE(m_pRecvPacket->m_gsv_TOGGLE.m_btTYPE);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2177,7 +2177,8 @@ CRecvPACKET::Recv_gsv_EQUIP_ITEM() {
         /// 속도가 변했다면 속도 세팅
         if (m_pRecvPacket->m_HEADER.m_nSize == (sizeof(gsv_EQUIP_ITEM) + sizeof(short))) {
             if (pCHAR->IsUSER()) {
-                ((CObjAVT*)pCHAR)->stats.move_speed = m_pRecvPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0];
+                ((CObjAVT*)pCHAR)->stats.move_speed =
+                    m_pRecvPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0];
             }
         }
 

@@ -179,7 +179,7 @@ protected:
     virtual void Casting_END() = 0 { *(int*)0 = 10; };
     virtual void MoveStart() { *(int*)0 = 10; };
 
-    virtual bool ToggleRunMODE(float fAdjRate) { return true; }
+    virtual bool ToggleRunMODE() { return true; }
     virtual bool ToggleSitMODE() { return true; }
 
 #ifndef __SERVER

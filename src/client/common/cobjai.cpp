@@ -843,33 +843,23 @@ CObjAI::SetCMD_TOGGLE(BYTE btTYPE) {
 
         switch (btTYPE) {
             case MOVE_MODE_WALK: {
-                if (this->GetPetMode() >= 0)
+                if (this->GetPetMode() >= 0) {
                     this->RideCartToggle(false);
-
-                float fAdjRate = this->adjusted_move_speed / this->stats.move_speed;
-                float fMove = this->adjusted_move_speed;
-                float fDefault = this->stats.move_speed;
-
-                LogString(LOG_NORMAL, "WALK : %.3f, %.3f \n", fMove, fDefault);
+                }
 
                 if (!(Get_STATE() == CS_SIT || Get_STATE() == CS_SITTING)) {
                     this->m_bRunMODE = false;
-                    this->ToggleRunMODE(fAdjRate); /// m_bRunMode 세팅후에 호출해야된다.
+                    this->ToggleRunMODE();
                 }
             } break;
             case MOVE_MODE_RUN: {
-                if (this->GetPetMode() >= 0)
+                if (this->GetPetMode() >= 0) {
                     this->RideCartToggle(false);
-
-                float fAdjRate = this->adjusted_move_speed / this->stats.move_speed;
-                float fMove = this->adjusted_move_speed;
-                float fDefault = this->stats.move_speed;
-
-                LogString(LOG_NORMAL, "RUN : %.3f, %.3f \n", fMove, fDefault);
+                }
 
                 if (!(Get_STATE() == CS_SIT || Get_STATE() == CS_SITTING)) {
                     this->m_bRunMODE = true;
-                    this->ToggleRunMODE(fAdjRate);
+                    this->ToggleRunMODE();
                 }
             } break;
             case MOVE_MODE_DRIVE: {

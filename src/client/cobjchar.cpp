@@ -4832,17 +4832,11 @@ CObjAVT::ToggleSitMODE() {
 //--------------------------------------------------------------------------------
 
 bool
-CObjAVT::ToggleRunMODE(float fAdjRate) {
+CObjAVT::ToggleRunMODE() {
     if (Get_STATE() == CS_MOVE) {
-        this->adjusted_move_speed = this->stats.move_speed * fAdjRate;
+        this->adjusted_move_speed = this->stats.move_speed;
 
         this->Set_CurMOTION(this->Get_MOTION(this->GetANI_Move()));
-#ifdef _DEBUG
-        float fMoveSpeed = this->adjusted_move_speed;
-        _ASSERT(fMoveSpeed >= 0.f && fMoveSpeed < 2000.f);
-#endif
-
-        // 이동 속도 모션 스피드 설정...
         this->Set_ModelSPEED(this->adjusted_move_speed);
 
         ::attachMotion(this->m_hNodeMODEL, this->Get_ZMOTION());
