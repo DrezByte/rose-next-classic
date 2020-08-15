@@ -2329,6 +2329,7 @@ CTERRAIN::read_brushes(CFileSystem* file_system, long offset) {
     int brush_count = 0;
     file_system->ReadInt32(&brush_count);
 
+    this->brushes.clear();
     for (int i = 0; i < brush_count; ++i) {
         Brush brush;
         file_system->ReadInt32(&brush.texture1_id);

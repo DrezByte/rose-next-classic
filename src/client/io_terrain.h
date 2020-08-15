@@ -342,8 +342,8 @@ public:
 
 #define TILETBL_LAYER1(I) g_pTerrain->brushes[I].texture1_id
 #define TILETBL_LAYER2(I) g_pTerrain->brushes[I].texture2_id
-#define TILETBL_UPOFF(I) g_pTerrain->brushes[I].texture1_offset
-#define TILETBL_DNOFF(I) g_pTerrain->brushes[I].texture2_offset
+#define TILETBL_DNOFF(I) g_pTerrain->brushes[I].texture1_offset
+#define TILETBL_UPOFF(I) g_pTerrain->brushes[I].texture2_offset
 #define TILETBL_ISBLENDING(I) g_pTerrain->brushes[I].is_blending
 #define TILETBL_PUTTYPE(I) g_pTerrain->brushes[I].orientation
 
