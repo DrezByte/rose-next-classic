@@ -99,6 +99,9 @@ dev_ui_frame() {
         ImGui::SameLine();
         ImGui::Checkbox("Observer mode", &g_GameDATA.m_bObserverCameraMode);
 
+        if (ImGui::Button("Reload UI")) {
+            g_itMGR.reload_dialogs();
+        }
 
     }
 
