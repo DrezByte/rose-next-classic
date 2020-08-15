@@ -2113,7 +2113,6 @@ CTERRAIN::CTERRAIN() {
     ::ZeroMemory(m_pMapBUFFER, sizeof(CMAP*) * MAX_MAP_BUFFER);
     ::ZeroMemory(m_pMAPS, sizeof(CMAP*) * MAP_COUNT_PER_ZONE_AXIS * MAP_COUNT_PER_ZONE_AXIS);
     m_pTILE = NULL;
-    m_ppTileTYPE = NULL;
 
     m_pEventPOS = NULL;
     m_iEventPosCNT = 0;
@@ -2324,20 +2323,22 @@ CTERRAIN::ReadTileINFO(CFileSystem* pFileSystem, long lOffset) {
 }
 
 void
-CTERRAIN::ReadTileTYPE(CFileSystem* pFileSystem, long lOffset) {
-    pFileSystem->Seek(lOffset, FILE_POS_SET);
+CTERRAIN::read_brushes(CFileSystem* file_system, long offset) {
+    file_system->Seek(offset, FILE_POS_SET);
 
-    int iValue;
-    pFileSystem->ReadInt32(&m_iTileTypeCNT);
+    int brush_count = 0;
+    file_system->ReadInt32(&brush_count);
 
-    m_ppTileTYPE = new short*[m_iTileTypeCNT];
-    for (int iC = 0; iC < m_iTileTypeCNT; iC++) {
-        m_ppTileTYPE[iC] = new short[7];
-
-        for (int iX = 0; iX < 7; iX++) {
-            pFileSystem->ReadInt32(&iValue);
-            m_ppTileTYPE[iC][iX] = iValue;
-        }
+    for (int i = 0; i < brush_count; ++i) {
+        Brush brush;
+        file_system->ReadInt32(&brush.texture1_id);
+        file_system->ReadInt32(&brush.texture2_id);
+        file_system->ReadInt32(&brush.texture1_offset);
+        file_system->ReadInt32(&brush.texture2_offset);
+        file_system->ReadInt32(&brush.is_blending);
+        file_system->ReadInt32(&brush.orientation);
+        file_system->ReadInt32(&brush.type);
+        this->brushes.push_back(brush);
     }
 }
 
@@ -2436,8 +2437,8 @@ CTERRAIN::LoadZONE(short nZoneNO, bool bPlayBGM) {
             case LUMP_ZONE_TILE:
                 ReadTileINFO(pFileSystem, iOffset);
                 break;
-            case LUMP_TILE_TYPE:
-                ReadTileTYPE(pFileSystem, iOffset);
+            case LUMP_BRUSHES:
+                read_brushes(pFileSystem, iOffset);
                 break;
             case LUMP_ECONOMY:
                 ReadECONOMY(pFileSystem, iOffset);
@@ -2476,14 +2477,6 @@ CTERRAIN::FreeZONE() {
     m_WideTerrain.SubRoughMap(MOVE_UPDATE_ALL);
 
     SAFE_DELETE_ARRAY(m_pEventPOS);
-
-    if (m_ppTileTYPE) {
-        for (int iC = 0; iC < m_iTileTypeCNT; iC++) {
-            SAFE_DELETE_ARRAY(m_ppTileTYPE[iC]);
-        }
-        SAFE_DELETE_ARRAY(m_ppTileTYPE);
-        m_iTileTypeCNT = 0;
-    }
 
     if (m_pTILE) {
         m_pTILE->Free();

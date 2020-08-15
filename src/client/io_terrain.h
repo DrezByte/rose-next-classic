@@ -340,18 +340,18 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-#define TILETBL_LAYER1(I) g_pTerrain->GetTileTBL(0, I)
-#define TILETBL_LAYER2(I) g_pTerrain->GetTileTBL(1, I)
-#define TILETBL_DNOFF(I) g_pTerrain->GetTileTBL(2, I)
-#define TILETBL_UPOFF(I) g_pTerrain->GetTileTBL(3, I)
-#define TILETBL_ISBLENDING(I) g_pTerrain->GetTileTBL(4, I)
-#define TILETBL_PUTTYPE(I) g_pTerrain->GetTileTBL(5, I)
+#define TILETBL_LAYER1(I) g_pTerrain->brushes[I].texture1_id
+#define TILETBL_LAYER2(I) g_pTerrain->brushes[I].texture2_id
+#define TILETBL_UPOFF(I) g_pTerrain->brushes[I].texture1_offset
+#define TILETBL_DNOFF(I) g_pTerrain->brushes[I].texture2_offset
+#define TILETBL_ISBLENDING(I) g_pTerrain->brushes[I].is_blending
+#define TILETBL_PUTTYPE(I) g_pTerrain->brushes[I].orientation
 
 enum ZONE_LUMP_TYPE {
     LUMP_ZONE_INFO = 0,
     LUMP_EVENT_OBJECT,
     LUMP_ZONE_TILE,
-    LUMP_TILE_TYPE,
+    LUMP_BRUSHES,
     LUMP_ECONOMY,
     LUMP_ZONE_MAX
 };
@@ -369,15 +369,20 @@ struct tagLOAD_ONE_MAP_DATA {
     bool m_bImmediateLoad;
 };
 
-//----------------------------------------------------------------------------------------------------
-///
-/// class CTERRAIN
-/// 전체 지형을 관리합니다. 9장의 실제 맵을 읽어 들이고 패치들을 엔진에 등록하거나 갱신합니다.
-///
-//----------------------------------------------------------------------------------------------------
+struct Brush {
+    int texture1_id;
+    int texture2_id;
+    int texture1_offset;
+    int texture2_offset;
+    int is_blending;
+    int orientation;
+    int type;
+};
 
 #define MAX_MAP_BUFFER (3 * 3 + 6)
 class CTERRAIN {
+public:
+    std::vector<Brush> brushes;
 
 private:
     CRITICAL_SECTION m_csZONE;
@@ -397,8 +402,6 @@ private:
 
     //	STBDATA		m_TileTBL;
     CMatLIST* m_pTILE;
-    int m_iTileTypeCNT;
-    short** m_ppTileTYPE;
 
     short m_nGridPerPATCH;
     int m_iMapSIZE;
@@ -425,7 +428,7 @@ private:
     void ReadZoneINFO(CFileSystem* pFileSystem, long lOffset);
     void ReadEventObjINFO(CFileSystem* pFileSystem, long lOffset);
     void ReadTileINFO(CFileSystem* pFileSystem, long lOffset);
-    void ReadTileTYPE(CFileSystem* pFileSystem, long lOffset);
+    void read_brushes(CFileSystem* file_system, long offset);
     bool ReadECONOMY(CFileSystem* pFileSystem, long lOffset);
 
     char* GetMapFILE(short nMapX, short nMapY);
@@ -499,8 +502,6 @@ public:
     tPOINTF Get_StartPOS();
     tPOINTF Get_RevivePOS();
 
-    //	short	GetTileTBL(short nX, short nY)		{	return m_TileTBL.m_ppDATA[ nY ][ nX ];	}
-    short GetTileTBL(short nX, short nY) { return m_ppTileTYPE[nY][nX]; }
     HNODE GetMATERIAL(short nIndex) { return m_pTILE->IDX_HNODE(nIndex); }
     HNODE GetLIGHTMAP(char* szFullPathName);
 
