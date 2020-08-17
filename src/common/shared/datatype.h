@@ -264,7 +264,40 @@ enum t_ObjTAG {
     OBJ_MAX_TYPE
 };
 
-//*************************************************************************************************
+constexpr const char*
+obj_type_string(t_ObjTAG t) {
+    switch (t) {
+        case OBJ_NULL:
+            return "null";
+        case OBJ_MORPH:
+            return "morph";
+        case OBJ_ITEM:
+            return "item";
+        case OBJ_COLLISION:
+            return "collision";
+        case OBJ_GROUND:
+            return "ground";
+        case OBJ_CNST:
+            return "cnst";
+        case OBJ_NPC:
+            return "npc";
+        case OBJ_MOB:
+            return "mob";
+        case OBJ_AVATAR:
+            return "avatar";
+        case OBJ_USER:
+            return "user";
+        case OBJ_CART:
+            return "cart";
+        case OBJ_CGEAR:
+            return "castle gear";
+        case OBJ_EVENTOBJECT:
+            return "event object";
+        default:
+            return "invalid";
+    }
+}
+    //*************************************************************************************************
 /// 착용하고 있는 아이템...
 enum t_EquipINDEX {
     EQUIP_IDX_NULL = 0,
