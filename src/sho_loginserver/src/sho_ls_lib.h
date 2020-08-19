@@ -37,8 +37,8 @@ public:
 
 public:
     union {
-        BYTE m_btMD5[33];
-        DWORD m_dwMD5[8];
+        BYTE password[65];
+        DWORD password_buffer[16];
     };
 
     void Send_ANNOUNCE(void* pServer, char* szAnnounceMsg);

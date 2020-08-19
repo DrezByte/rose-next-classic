@@ -24,9 +24,11 @@
     <ClInclude Include="include\rose\common\status_effect\status_effect_flag.h" />
     <ClInclude Include="include\rose\common\util.h" />
     <ClInclude Include="include\rose\network\packet.h" />
+    <ClInclude Include="include\rose\util\sha256.h" />
     <ClInclude Include="include\rose\util\uuid.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\rose\util\sha256.cpp" />
     <ClCompile Include="src\goddess_effect.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\util.cpp" />

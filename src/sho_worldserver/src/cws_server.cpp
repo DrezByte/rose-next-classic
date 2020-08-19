@@ -242,9 +242,9 @@ CWS_Server::Recv_zws_CONFIRM_ACCOUNT_REQ(t_PACKET* pPacket) {
             0);
     }
 
-    for (short nI = 0; nI < 8; nI++)
-        if (pCLIENT->m_dwMD5Password[nI]
-            != pPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwMD5Password[nI]) {
+    for (short nI = 0; nI < 16; nI++)
+        if (pCLIENT->password_buffer[nI]
+            != pPacket->m_zws_CONFIRM_ACCOUNT_REQ.password[nI]) {
             // 비밀번호 오류 !!! 이런 경우가 ... 해킹 ???
             pCLIENT->CloseSocket();
             g_LOG.CS_ODS(0xffff,

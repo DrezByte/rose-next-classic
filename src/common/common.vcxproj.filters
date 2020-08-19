@@ -48,6 +48,9 @@
     <ClInclude Include="include\rose\util\uuid.h">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="include\rose\util\sha256.h">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
@@ -56,6 +59,9 @@
     </ClCompile>
     <ClCompile Include="src\util.cpp" />
     <ClCompile Include="src\uuid.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="include\rose\util\sha256.cpp">
       <Filter>util</Filter>
     </ClCompile>
   </ItemGroup>

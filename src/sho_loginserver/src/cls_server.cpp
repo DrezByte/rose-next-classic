@@ -314,24 +314,24 @@ CLS_Server::Recv_zws_CONFIRM_ACCOUNT_REQ(t_PACKET* pPacket) {
             0);
     }
 
-    for (short nI = 0; nI < 8; nI++)
-        if (pCAccount->m_dwMD5Password[nI]
-            != pPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwMD5Password[nI]) {
+    for (short nI = 0; nI < 16; nI++)
+        if (pCAccount->password[nI]
+            != pPacket->m_zws_CONFIRM_ACCOUNT_REQ.password[nI]) {
             short nOffset = sizeof(zws_CONFIRM_ACCOUNT_REQ);
-            char szOriPass[33], szRecvPass[33];
+            char password[65], given_password[65];
 
-            ::CopyMemory(szOriPass, pCAccount->m_dwMD5Password, 32);
-            ::CopyMemory(szRecvPass, pPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwMD5Password, 32);
-            szOriPass[32] = 0;
-            szRecvPass[32] = 0;
+            ::CopyMemory(password, pCAccount->password, 64);
+            ::CopyMemory(given_password, pPacket->m_zws_CONFIRM_ACCOUNT_REQ.password, 64);
+            password[64] = 0;
+            given_password[64] = 0;
 
             // 비밀번호 오류 !!! 이런 경우가 ... 해킹 ???
             g_LOG.CS_ODS(0xffff,
                 "??? Mismatch LS<->WS password, account: %sLSID:%d, %s, %s\n",
                 pCAccount->m_Account.Get(),
                 pPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwServerID,
-                szOriPass,
-                szRecvPass);
+                password,
+                given_password);
 
             g_pListWAIT->Mem_DEL(pCAccount);
 

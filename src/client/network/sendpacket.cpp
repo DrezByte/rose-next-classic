@@ -4,7 +4,6 @@
 #include "stdAFX.h"
 
 #include "CNetwork.h"
-#include "..\util\classMD5.h"
 #include "Game.h"
 #include "calculation.h"
 #include "..\common\IO_AI.h"
@@ -130,7 +129,7 @@ CSendPACKET::Send_cli_JOIN_SERVER_REQ(DWORD dwLSVID, bool bWorldServer) {
     m_pSendPacket->m_HEADER.m_wType = CLI_JOIN_SERVER_REQ;
     m_pSendPacket->m_HEADER.m_nSize = sizeof(cli_JOIN_SERVER_REQ);
     m_pSendPacket->m_cli_JOIN_SERVER_REQ.m_dwID = dwLSVID;
-    ::CopyMemory(m_pSendPacket->m_cli_JOIN_SERVER_REQ.m_MD5Password, m_pMD5Buff, sizeof(BYTE) * 32);
+    ::CopyMemory(m_pSendPacket->m_cli_JOIN_SERVER_REQ.password, this->password, sizeof(BYTE) * 64);
 #endif
 
     this->Send_PACKET(m_pSendPacket, bWorldServer);

@@ -7,8 +7,11 @@
 #include "CLS_SqlTHREAD.h"
 #include "blockLIST.h"
 
+#include "rose/util/sha256.h"
+
 using namespace Rose::Database;
 using namespace Rose::Network;
+using namespace Rose::Util;
 
 IMPLEMENT_INSTANCE(CLS_SqlTHREAD)
 
@@ -121,7 +124,7 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
         return false;
     }
 
-    const char* stmt = "SELECT password, access_level FROM account WHERE username=$1";
+    const char* stmt = "SELECT password, salt, access_level FROM account WHERE username=$1";
 
     QueryResult res = this->db.query(stmt, {req->username()->c_str()});
     if (!res.is_ok()) {
@@ -137,14 +140,17 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
     }
 
     std::string password = res.get_string(0, 0);
-    int access_level = res.get_int32(0, 1);
+    std::string salt = res.get_string(0, 1);
+    int access_level = res.get_int32(0, 2);
 
     if (access_level < this->minimum_access_level) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_NO_RIGHT_TO_CONNECT);
         return false;
     }
 
-    if (password != req->password()->str()) {
+    const std::string password_hash = sha256(req->password()->str() + salt);
+
+    if (password != password_hash) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_INVALID_PASSWORD);
         return false;
     }

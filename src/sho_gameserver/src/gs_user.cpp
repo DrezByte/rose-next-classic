@@ -1920,10 +1920,10 @@ classUSER::Recv_cli_RELAY_REPLY(t_PACKET* pPacket) {
 bool
 classUSER::Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket) {
     // GUMS에 전송하기 위해서 비번 저장...
-    ::CopyMemory(this->m_dwMD5PassWD,
-        pPacket->m_cli_JOIN_SERVER_REQ.m_MD5Password,
-        sizeof(DWORD) * 8);
-    this->m_szMD5PassWD[32] = 0;
+    ::CopyMemory(this->password_buffer,
+        pPacket->m_cli_JOIN_SERVER_REQ.password,
+        sizeof(DWORD) * 16);
+    this->password[64] = 0;
 
     // 로그인 서버 또는 월드 서버에 인증 요청..
     g_pSockLSV->Send_zws_CONFIRM_ACCOUNT_REQ(this->m_iSocketIDX, pPacket);

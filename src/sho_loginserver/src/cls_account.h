@@ -16,7 +16,7 @@ public:
 
     DWORD m_dwPayFLAG;
 
-    DWORD m_dwMD5Password[8];
+    DWORD password[16];
     BYTE m_btChannelNO;
 
     CLS_Server* m_pWorldServer;

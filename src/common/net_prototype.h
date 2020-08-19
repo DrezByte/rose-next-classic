@@ -412,8 +412,8 @@ struct cli_ACCEPT_REQ: public t_PACKETHEADER {};
 struct cli_LOGIN_REQ: public t_PACKETHEADER {
     //	DWORD		m_dwBuildNo;							// 클라이언트 빌드 번호.
     union {
-        BYTE m_MD5Password[32];
-        DWORD m_dwMD5[8];
+        BYTE password[64];
+        DWORD password_buffer[16];
     };
     // szAccount[];
 };
@@ -578,7 +578,7 @@ RESULT_JOIN_WORLD_ALREADY_LOGGEDIN		0x04    // 이미 로그인 중이다
 // 월드/존 서버에 접속 요청
 struct cli_JOIN_SERVER_REQ: public t_PACKETHEADER {
     DWORD m_dwID;
-    BYTE m_MD5Password[32];
+    BYTE password[64];
 };
 struct srv_JOIN_SERVER_REPLY: public t_PACKETHEADER {
     BYTE m_btResult;

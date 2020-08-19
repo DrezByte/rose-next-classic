@@ -37,7 +37,7 @@ public:
     DWORD m_dwPayFLAG;
     DWORD m_dwRIGHT;
     DWORD m_dwDBID;
-    DWORD m_dwMD5Password[8];
+    DWORD password_buffer[16];
 
     DWORD m_dwGuildID;
 

@@ -111,8 +111,6 @@ public:
     int m_iWorldStaminaVal;
     int AdjustAvatarStamina(int iGetExp);
 
-    unsigned char m_PasswordMD5[32];
-
     void Init() { ::InitializeCriticalSection(&m_csNZIN); }
     void Free() { ::DeleteCriticalSection(&m_csNZIN); }
     void Lock() { ::EnterCriticalSection(&m_csNZIN); }

@@ -33,7 +33,7 @@ public:
 
 public:
     CStrVAR m_Account; /// 계정
-    DWORD m_dwMD5Pass[8]; /// 비번
+    DWORD password_buffer[16]; /// 비번
     DWORD m_dwLastLoginTIME; /// 마지막 접속시간
 
     DWORD m_dwRIGHT; /// 개발자/GM등... 게임내에서 치트또는 접속 권한
@@ -80,9 +80,9 @@ public:
         this->Clear_LIST();
     }
 
-    void Set_ACCOUNT(char* szAccount, DWORD* pMD5Pass) {
-        m_Account.Set(szAccount);
-        ::CopyMemory(m_dwMD5Pass, pMD5Pass, sizeof(DWORD) * 8);
+    void Set_ACCOUNT(char* username, DWORD* password) {
+        m_Account.Set(username);
+        ::CopyMemory(this->password_buffer, password, sizeof(DWORD) * 16);
     }
 
     bool Send_lsv_LOGIN_REPLY(BYTE btResult, int iPayType);

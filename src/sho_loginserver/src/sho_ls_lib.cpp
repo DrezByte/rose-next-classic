@@ -192,7 +192,7 @@ bool
 SHO_LS::start_client_listener(uint32_t port, const std::string& password, uint32_t max_users) {
     // TODO: This is will crash if password is less than 32 bytes long.
     // Requires fixing here and syncing with world server.
-    ::CopyMemory(m_btMD5, (byte*)password.c_str(), 32);
+    ::CopyMemory(this->password, (byte*)password.c_str(), 64);
 
     g_pListCLIENT->Active(port, 65535, 3 * 60);
     this->set_max_users(max_users);

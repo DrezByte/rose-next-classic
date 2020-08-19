@@ -176,8 +176,8 @@ private:
 
     CStrVAR m_Account;
     union {
-        char m_szMD5PassWD[33];
-        DWORD m_dwMD5PassWD[8];
+        char password[65];
+        DWORD password_buffer[16];
     };
 
     short GuildCMD(char* szCMD);
@@ -633,7 +633,7 @@ public:
     char* Get_ACCOUNT() { return m_Account.Get(); }
     WORD Get_AccountLEN() { return m_Account.BuffLength(); }
     void Set_ACCOUNT(char* szAccount) { m_Account.Set(szAccount); }
-    char* Get_MD5PW() { return m_szMD5PassWD; }
+    char* get_password() { return password; }
 
     bool Check_PartyJoinLEVEL(int iUserLEV, int iAverageLEV, int iPartyLEV) {
         if (iUserLEV < (int)(iAverageLEV * 0.92f) - 6
