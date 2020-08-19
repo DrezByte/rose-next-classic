@@ -169,16 +169,16 @@ struct tag_ZONE_INFO {
 struct bkd_MAKE_ACCOUNT: public t_PACKETHEADER {
     WORD m_wRight;
     union {
-        BYTE m_MD5Password[32];
-        DWORD m_dwMD5[8];
+        BYTE password[64];
+        DWORD password_buffer[16];
     };
 };
 
 struct bkd_MOD_ACCOUNT: public t_PACKETHEADER {
     WORD m_wRight;
     union {
-        BYTE m_MD5Password[32];
-        DWORD m_dwMD5[8];
+        BYTE password[64];
+        DWORD password_buffer[16];
     };
 };
 
@@ -320,7 +320,7 @@ struct zas_CHECK_ACCOUNT: public t_PACKETHEADER {
 struct zws_CONFIRM_ACCOUNT_REQ: public t_PACKETHEADER {
     DWORD m_dwServerID;
     DWORD m_dwClientID;
-    DWORD m_dwMD5Password[8]; // 32 bytes
+    DWORD password[16];
 };
 
 struct tagWSPartyINFO {

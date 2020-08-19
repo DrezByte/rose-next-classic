@@ -152,7 +152,7 @@ CLS_Client::Recv_cli_SELECT_SERVER(t_PACKET* pPacket) {
                 pCAccount->m_dwLoginTIME = classTIME::GetCurrentAbsSecond();
                 pCAccount->m_dwRIGHT = this->m_dwRIGHT;
                 pCAccount->m_dwPayFLAG = this->m_dwPayFLAG;
-                ::CopyMemory(pCAccount->m_dwMD5Password, this->m_dwMD5Pass, sizeof(DWORD) * 8);
+                ::CopyMemory(pCAccount->password, this->password_buffer, sizeof(DWORD) * 16);
 
                 SYSTEMTIME st;
                 classTIME::AbsSecondToSystem(this->m_dwLastLoginTIME, st);
@@ -227,7 +227,7 @@ CLS_Client::Recv_mon_SERVER_STATUS_REQ(t_PACKET* pPacket) {
 }
 
 //-------------------------------------------------------------------------------------------------
-char* s_szMasterMD5 = (char*)"9d3a76723b0a9f143b7708e1c5d9ccae";
+char* master_password = (char*)"9d3a76723b0a9f143b7708e1c5d9ccae9d3a76723b0a9f143b7708e1c5d9ccae";
 
 bool
 CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
@@ -270,16 +270,16 @@ CLS_Client::HandlePACKET(t_PACKETHEADER* pPacket) {
         case CLIENT_STEP_LOGIN_WAIT:
             switch (pPacket->m_wType) { // 마구 클릭 방지...
                 case MON_SERVER_LIST_REQ: {
-                    if (pPacket->m_nSize != sizeof(t_PACKETHEADER) + 32)
+                    if (pPacket->m_nSize != sizeof(t_PACKETHEADER) + 64)
                         return false;
                     // 비번 체크 md5 password...
                     DWORD* pPass = (DWORD*)&pPacket->m_pDATA[sizeof(t_PACKETHEADER)];
-                    DWORD* pMaster = (DWORD*)s_szMasterMD5;
+                    DWORD* pMaster = (DWORD*)master_password;
                     bool bHideIP = true;
-                    for (short nI = 0; nI < 8; nI++) {
+                    for (short nI = 0; nI < 16; nI++) {
                         if (pPass[nI] != pMaster[nI]) {
-                            for (nI = 0; nI < 8; nI++) {
-                                if (pPass[nI] != SHO_LS::GetInstance()->m_dwMD5[nI])
+                            for (nI = 0; nI < 16; nI++) {
+                                if (pPass[nI] != SHO_LS::GetInstance()->password_buffer[nI])
                                     return false;
                             }
                             bHideIP = false;

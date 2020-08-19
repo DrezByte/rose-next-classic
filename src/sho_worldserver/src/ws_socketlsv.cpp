@@ -141,9 +141,9 @@ WS_lsvSOCKET::Send_zws_CONFIRM_ACCOUNT_REQ(DWORD dwSocketID, t_PACKET* pPacket) 
         pCPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwServerID = pPacket->m_cli_JOIN_SERVER_REQ.m_dwID;
         pCPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwClientID = dwSocketID;
 
-        ::CopyMemory(pCPacket->m_zws_CONFIRM_ACCOUNT_REQ.m_dwMD5Password,
-            pPacket->m_cli_JOIN_SERVER_REQ.m_MD5Password,
-            sizeof(DWORD) * 8);
+        ::CopyMemory(pCPacket->m_zws_CONFIRM_ACCOUNT_REQ.password,
+            pPacket->m_cli_JOIN_SERVER_REQ.password,
+            sizeof(DWORD) * 16);
         // pCPacket->AppendString ( szAccount ) szAccont 구할수 없다.
 
         m_SockLSV.Packet_Register2SendQ(pCPacket);

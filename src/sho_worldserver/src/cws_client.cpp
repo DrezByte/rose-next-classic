@@ -167,9 +167,9 @@ CWS_Client::Send_wsv_CHAR_CHANGE() {
 //-------------------------------------------------------------------------------------------------
 bool
 CWS_Client::Recv_cli_JOIN_SERVER_REQ(t_PACKET* pPacket) {
-    ::CopyMemory(this->m_dwMD5Password,
-        pPacket->m_cli_JOIN_SERVER_REQ.m_MD5Password,
-        sizeof(DWORD) * 8);
+    ::CopyMemory(this->password_buffer,
+        pPacket->m_cli_JOIN_SERVER_REQ.password,
+        sizeof(DWORD) * 16);
     g_pSockLSV->Send_zws_CONFIRM_ACCOUNT_REQ(this->Get_WSID(), pPacket);
     return true;
 }
@@ -817,13 +817,13 @@ CWS_ListCLIENT::Add_ACCOUNT(int iSocketIDX, t_PACKET* pRecvPket, char* szAccount
         m_csHashACCOUNT.Unlock();
 
     } else {
-        char szPass[33];
-        ::CopyMemory(szPass, pUSER->m_dwMD5Password, 32);
-        szPass[32] = 0;
+        char password[65];
+        ::CopyMemory(password, pUSER->password_buffer, 64);
+        password[64] = 0;
         g_LOG.CS_ODS(0xffff,
             "LS Return RESULT_CONFIRM_ACCOUNT_INVALID_PASSWORD: LSID:%d, %s\n",
             pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_dwLSID,
-            szPass);
+            password);
     }
 
     return pUSER->Send_srv_JOIN_SERVER_REPLY(pRecvPket->m_wls_CONFIRM_ACCOUNT_REPLY.m_btResult,

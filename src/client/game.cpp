@@ -18,7 +18,6 @@
 #include "Network/CNetwork.h"
 #include "OBJECT.h"
 #include "tgamectrl/TGameCtrl.h"
-#include "util\classMD5.h"
 
 #include "CViewMSG.h"
 #include "Common/IO_Quest.h"

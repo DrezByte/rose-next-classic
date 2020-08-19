@@ -14,7 +14,6 @@
 #include "interface/cursor/ccursor.h"
 #include "Sound/MusicMgr.h"
 #include "Sound/DirectMusicPlayer.h"
-#include "util/classMD5.h"
 
 #include "tgamectrl/time2.h"
 CApplication* CApplication::m_pInstance = NULL;

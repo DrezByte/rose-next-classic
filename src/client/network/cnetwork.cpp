@@ -11,7 +11,6 @@
 #include "../gameproc/LiveCheck.h"
 
 #include "system/cgamestate.h"
-#include "util/classmd5.h"
 
 #include "rose/common/game_types.h"
 #include "rose/network/packet.h"
@@ -19,6 +18,8 @@
 
 #include "rose/network/packets/char_create_req_generated.h"
 #include "rose/network/packets/login_req_generated.h"
+
+#include "rose/util/sha256.h"
 
 CNetwork* g_pNet;
 
@@ -29,6 +30,7 @@ CNetwork* CNetwork::m_pInstance = NULL;
 
 using namespace Rose::Common;
 using namespace Rose::Network;
+using namespace Rose::Util;
 
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
@@ -855,13 +857,12 @@ CNetwork::send_login_req(const std::string& username, const std::string& passwor
         }
     }
 
-    GetMD5(this->m_pMD5Buff,
-        reinterpret_cast<unsigned char*>(const_cast<char*>(password.c_str())),
-        password.size());
+    const std::string password_hash = sha256(password);
+    CopyMemory(this->password, password_hash.c_str(), password_hash.size());
 
     flatbuffers::FlatBufferBuilder builder;
     const auto username_string = builder.CreateString(username);
-    const auto password_string = builder.CreateString(reinterpret_cast<char*>(m_pMD5Buff), 32);
+    const auto password_string = builder.CreateString(password_hash.c_str(), 64);
 
     Packets::LoginRequestBuilder req(builder);
     req.add_username(username_string);

@@ -385,7 +385,7 @@ CUserLIST::Send_zws_ACCOUNT_LIST(CClientSOCKET* pSrvSocket, bool bSendToGUMS) {
             pCPacket->AppendData(&sInfo, sizeof(tag_ZWS_ACCOUNT)); // 12
             pCPacket->AppendString(pAccNODE->m_DATA->Get_ACCOUNT()); // 31
             if (bSendToGUMS) {
-                pCPacket->AppendString(pAccNODE->m_DATA->Get_MD5PW()); // 33
+                pCPacket->AppendString(pAccNODE->m_DATA->get_password()); // 65
                 pCPacket->AppendString(pAccNODE->m_DATA->Get_IP()); // 16
             } else
                 pCPacket->AppendString(pAccNODE->m_DATA->Get_NAME());
