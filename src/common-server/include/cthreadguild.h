@@ -273,7 +273,7 @@ public:
     void Login_GuildUSER(char* szCharName, DWORD dwGuildID, int iSocketIDX);
 
     CClan* Find_CLAN(DWORD dwClanID);
-    CClan* Load_CLAN(DWORD dwClanID);
+    CClan* load_clan(int clan_id);
 
     bool Create(CWS_Client* pUSER, char* szGuildName);
 };
