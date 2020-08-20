@@ -1346,97 +1346,112 @@ CThreadGUILD::Find_CLAN(DWORD dwClanID) {
 
 //-------------------------------------------------------------------------------------------------
 CClan*
-CThreadGUILD::Load_CLAN(DWORD dwClanID) {
-    /* TODO: RAM: Port to postgres
-    if (this->db->QuerySQL((char*)"{call ws_ClanSELECT(%d)}", dwClanID)) {
-        if (this->db->GetNextRECORD()) {
-            // this->db->GetInteger(0); cladID
-            char* pClanName = this->db->GetStrPTR(1, false);
-            char* pClanDesc = this->db->GetStrPTR(2, false);
-            WORD wMarkIdx1 = this->db->GetInteger(3);
-            WORD wMarkIdx2 = this->db->GetInteger(4);
-            short nClanLEV = this->db->GetInteger(5);
-            int iClanSCORE = this->db->GetInteger(6);
-            DWORD dwAlliedGRP = (DWORD)this->db->GetInteger(7);
-            short nRate = this->db->GetInteger(8);
-            __int64 biZuly = this->db->GetInt64(9);
-            BYTE* pClanBIN = this->db->GetDataPTR(10);
-            char* pClanMOTD = this->db->GetStrPTR(11, false);
-            WORD wMarkCRC = this->db->GetInteger(12);
-            short nMarkLen = this->db->GetInteger(13);
-            BYTE* pClanMARK = this->db->GetDataPTR(14);
-            sqlTIMESTAMP sTimeStamp;
-            this->db->GetTimestamp(15, &sTimeStamp);
-
-            CClan* pClan = m_Pools.Pool_Alloc();
-            pClan->Init(pClanName,
-                pClanDesc,
-                dwClanID,
-                wMarkIdx1,
-                wMarkIdx2,
-                pClanBIN,
-                wMarkCRC,
-                nMarkLen,
-                pClanMARK);
-
-            pClan->m_nClanLEVEL = nClanLEV;
-            pClan->m_iClanSCORE = iClanSCORE;
-            pClan->m_dwAlliedGroupID = dwAlliedGRP;
-            pClan->m_iClanRATE = nRate;
-            pClan->m_biClanMONEY = biZuly;
-
-            pClan->m_RegTIME.m_wYear = sTimeStamp.m_wYear;
-            pClan->m_RegTIME.m_btMon = sTimeStamp.m_btMon;
-            pClan->m_RegTIME.m_btDay = sTimeStamp.m_btDay;
-            pClan->m_RegTIME.m_btHour = sTimeStamp.m_btHour;
-            pClan->m_RegTIME.m_btMin = sTimeStamp.m_btMin;
-            pClan->m_RegTIME.m_btSec = sTimeStamp.m_btSec;
-
-            // 모든 클랜멤버 얻기...
-            if (this->db->QuerySQL((char*)"{call ws_ClanCharALL(%d)}", dwClanID)) {
-                int iClanPos;
-                CDLList<CClanUSER>::tagNODE* pNode;
-                char* pCharName;
-                while (this->db->GetNextRECORD()) {
-                    pCharName = this->db->GetStrPTR(0);
-                    iClanSCORE = this->db->GetInteger(1);
-                    iClanPos = this->db->GetInteger(2);
-
-                    pNode = pClan->m_ListUSER.AllocNAppend();
-                    if (!pNode) {
-                        // out of mem...
-                        break;
-                    }
-
-                    if (iClanPos > GPOS_MASTER)
-                        iClanPos = GPOS_MASTER;
-
-                    pClan->m_nPosCNT[iClanPos]++; // 클랜 로딩...
-
-                    pNode->m_VALUE.m_Name.Set(pCharName);
-                    pNode->m_VALUE.m_HashName = ::StrToHashKey(pCharName);
-                    pNode->m_VALUE.m_iPosition = iClanPos;
-                    pNode->m_VALUE.m_iContribute = iClanSCORE;
-                    pNode->m_VALUE.m_btChannelNo = 0xff;
-                    pNode->m_VALUE.m_nJob = 0;
-                    pNode->m_VALUE.m_nLevel = 0;
-                }
-                if (pClan->m_ListUSER.GetNodeCount()) {
-                    m_pHashCLAN->Insert(dwClanID, pClan);
-                    return pClan;
-                }
-                g_LOG.CS_ODS(0xffff, "Clan[%d] member counter == 0 !!!!\n", dwClanID);
-            } else {
-                g_LOG.CS_ODS(0xffff, "Clan[%d] db error !!!!\n", dwClanID);
-            }
-
-            pClan->Free();
-            m_Pools.Pool_Free(pClan);
-            return NULL;
-        }
+CThreadGUILD::load_clan(int clan_id) {
+    const char* clan_stmt = "SELECT name, description, motd, level, points, marker_front, marker_back, created FROM clan WHERE id=$1";
+    QueryResult clan_res = this->db.query(clan_stmt, {std::to_string(clan_id)});
+    if (!clan_res.is_ok()) {
+        LOG_ERROR("Failed to load clan with id {}", clan_id);
+        LOG_ERROR(this->db.last_error_message());
+        return NULL;
     }
-    */
-    return NULL;
+
+    const std::string clan_name = clan_res.get_string(0, 0);
+    const std::string clan_description = clan_res.get_string(0, 1);
+    const std::string clan_motd = clan_res.get_string(0, 2);
+    const int clan_level = clan_res.get_int32(0, 3);
+    const int clan_points = clan_res.get_int32(0, 4);
+    const int clan_marker_front = clan_res.get_int32(0, 5);
+    const int clan_marker_back = clan_res.get_int32(0, 6);
+    const std::string clan_created = clan_res.get_string(0, 7);
+    
+    // TODO: add missing fields
+    const int clan_allies_id = 0;
+    const int clan_money = 0;
+    const int clan_rate = 100;
+    const int clan_marker_crc = 0;
+    const int clan_marker_length = 0;
+    BYTE* clan_marker = NULL;
+    BYTE* clan_skills = NULL;
+
+    CClan* clan = m_Pools.Pool_Alloc();
+    if (clan == NULL) {
+        LOG_ERROR("Unable to assign clan to data pool");
+        return NULL;
+    }
+
+    clan->Init(const_cast<char*>(clan_name.c_str()),
+        const_cast<char*>(clan_description.c_str()),
+        clan_id,
+        clan_marker_back,
+        clan_marker_front,
+        clan_skills,
+        clan_marker_crc,
+        clan_marker_length,
+        clan_marker);
+
+    clan->m_nClanLEVEL = clan_level;
+    clan->m_iClanSCORE = clan_points;
+    clan->m_dwAlliedGroupID = clan_allies_id;
+    clan->m_iClanRATE = clan_rate;
+    clan->m_biClanMONEY = clan_money;
+
+    // TODO: format/convert clan_created date
+    clan->m_RegTIME.m_wYear = 0;
+    clan->m_RegTIME.m_btMon = 0;
+    clan->m_RegTIME.m_btDay = 0;
+    clan->m_RegTIME.m_btHour = 0;
+    clan->m_RegTIME.m_btMin = 0;
+    clan->m_RegTIME.m_btSec = 0;
+
+    const char* clan_member_stmt = "SELECT character.name, clan_member.rank, clan_member.points FROM clan_member INNER JOIN character ON character.id = clan_member.character_id WHERE clan_id=$1";
+    QueryResult clan_member_res = this->db.query(clan_member_stmt, {std::to_string(clan_id)});
+    if (!clan_member_res.is_ok()) {
+        clan->Free();
+        m_Pools.Pool_Free(clan);
+        LOG_ERROR("Failed to load clan members from clan with name {}", clan_name);
+        LOG_ERROR(this->db.last_error_message());
+        return NULL;
+    }
+
+    CDLList<CClanUSER>::tagNODE* clan_member;
+    std::string char_name;
+    int char_rank = 0;
+    int char_contribution = 0;
+
+    for (size_t row_idx = 0; row_idx < clan_member_res.row_count; ++row_idx) {
+        char_name = clan_member_res.get_string(row_idx, 0);
+        char_rank = clan_member_res.get_int32(row_idx, 1);
+        char_contribution = clan_member_res.get_int32(row_idx, 1);
+
+        clan_member = clan->m_ListUSER.AllocNAppend();
+        if (!clan_member) {
+            break;
+        }
+
+        if (char_rank > GPOS_MASTER) {
+            char_rank = GPOS_MASTER;
+        }
+
+        clan->m_nPosCNT[char_rank]++;
+
+        clan_member->m_VALUE.m_Name.Set(const_cast<char*>(char_name.c_str()));
+        clan_member->m_VALUE.m_HashName = ::StrToHashKey(char_name.c_str());
+        clan_member->m_VALUE.m_iPosition = char_rank;
+        clan_member->m_VALUE.m_iContribute = char_contribution;
+        clan_member->m_VALUE.m_btChannelNo = 0xff;
+        clan_member->m_VALUE.m_nJob = 0;
+        clan_member->m_VALUE.m_nLevel = 0;
+    }
+
+    if (!clan->m_ListUSER.GetNodeCount()) {
+        clan->Free();
+        m_Pools.Pool_Free(clan);
+        return NULL;
+    }
+
+    m_pHashCLAN->Insert(clan_id, clan);
+
+    return clan;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1449,6 +1464,9 @@ CThreadGUILD::Query_CreateCLAN(int socket_id, t_PACKET* packet) {
     short offset = sizeof(cli_CLAN_CREATE);
     std::string clan_name = Packet_GetStringPtr(packet, offset);
     std::string clan_description = Packet_GetStringPtr(packet, offset);
+    const int clan_marker_back = packet->m_cli_CLAN_CREATE.m_wMarkIDX[0];
+    const int clan_marker_front = packet->m_cli_CLAN_CREATE.m_wMarkIDX[1];
+
     if (clan_name.empty()) {
         return nullptr;
     }
@@ -1467,8 +1485,8 @@ CThreadGUILD::Query_CreateCLAN(int socket_id, t_PACKET* packet) {
         return nullptr;
     }
 
-    const char* insert_stmt = "INSERT INTO clan (name, description) VALUES ($1, $2) RETURNING id";
-    QueryResult insert_res = this->db.query(insert_stmt, {clan_name, clan_description});
+    const char* insert_stmt = "INSERT INTO clan (name, description, marker_front, marker_back) VALUES ($1, $2, $3, $4) RETURNING id";
+    QueryResult insert_res = this->db.query(insert_stmt, {clan_name, clan_description, std::to_string(clan_marker_front), std::to_string(clan_marker_back)});
     if (!insert_res.is_ok()) {
         LOG_ERROR("Failed to insert clan with name {}: {}",
             clan_name.c_str(),
@@ -1481,8 +1499,8 @@ CThreadGUILD::Query_CreateCLAN(int socket_id, t_PACKET* packet) {
     pClan->Init((char*)clan_name.c_str(),
         (char*)clan_description.c_str(),
         clan_id,
-        0,
-        0,
+        (WORD)clan_marker_back,
+        (WORD)clan_marker_front,
         NULL,
         0,
         0,
@@ -1684,26 +1702,32 @@ CThreadGUILD::Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage) {
 }
 
 bool
-CThreadGUILD::Query_LoginClanMember(char* szCharName, int iSenderSockIDX) {
-    /* TODO: RAM: Port to postgres
-    if (this->db->QuerySQL((char*)"{call ws_ClanCharGET(\'%s\')}", szCharName)) {
-        if (this->db->GetNextRECORD()) {
-            // 클랜 있다.
-            DWORD dwClanID = (DWORD)this->db->GetInteger(0);
-            int iContribute = this->db->GetInteger(1);
-            CClan* pClan = this->Find_CLAN(dwClanID);
-            if (NULL == pClan) {
-                // 클렌 로딩...
-                pClan = this->Load_CLAN(dwClanID);
-                if (NULL == pClan)
-                    return false;
-            }
+CThreadGUILD::Query_LoginClanMember(char* char_name, int socket_id) {
+    const CWS_Client* user = g_pUserLIST->Find_CHAR(char_name);
+    if (!user) {
+        return false;
+    }
 
-            return pClan->LogIn_ClanUSER(szCharName, iSenderSockIDX, iContribute);
+    const char* stmt = "SELECT clan_id, points FROM clan_member WHERE character_id=$1";
+    QueryResult res = this->db.query(stmt, {std::to_string(user->m_dwDBID)});
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to select clan for character with name {}", char_name);
+        LOG_ERROR(this->db.last_error_message());
+        return false;
+    }
+
+    const int clan_id = res.get_int32(0, 0);
+    const int char_contribution = res.get_int32(0, 1);
+
+    CClan* clan = this->Find_CLAN(clan_id);
+    if (clan == NULL) {
+        clan = this->load_clan(clan_id);
+        if (clan == NULL) {
+            return false;
         }
     }
-    */
-    return false;
+
+    return clan->LogIn_ClanUSER(char_name, socket_id, char_contribution);
 }
 
 bool
