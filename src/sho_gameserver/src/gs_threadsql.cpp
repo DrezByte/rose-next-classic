@@ -484,7 +484,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    std::string account_username = user->Get_ACCOUNT();
+    std::string account_email = user->Get_ACCOUNT();
 
     std::string query =
         "SELECT character.id, gender_id, job_id, face_id, hair_id, level, exp, hp, mp, stamina, "
@@ -496,7 +496,7 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         "coalesce(union9, 0), coalesce(union10, 0) "
         "FROM character "
         "LEFT JOIN union_points ON union_points.character_id = character.id "
-        "WHERE account_username=$1 AND name=$2;";
+        "WHERE account_email=$1 AND name=$2;";
 
     enum CharCol {
         COL_ID = 0,
@@ -545,18 +545,18 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         COL_UNION10,
     };
 
-    QueryResult char_res = this->db.query(query, {account_username, char_name});
+    QueryResult char_res = this->db.query(query, {account_email, char_name});
     if (!char_res.is_ok()) {
         LOG_ERROR("Failed to get character '{}' for account '{}': {}",
-            account_username.c_str(),
+            account_email.c_str(),
             char_name.c_str(),
             char_res.error_message());
         return false;
     }
 
     if (char_res.row_count != 1) {
-        LOG_ERROR("No characters returned for account name '{} and character name '{}",
-            account_username,
+        LOG_ERROR("No characters returned for account '{} and character name '{}",
+            account_email,
             char_name);
         return false;
     }

@@ -361,11 +361,11 @@ CLogin::ConnectLoginServer() {
         if (pCtrl && pCtrl->GetControlType() == CTRL_EDITBOX) {
             pEditBox = (CTEditBox*)pCtrl;
             szTxt = pEditBox->get_text();
-            if (szTxt && strlen(szTxt) >= 1) {
+            if (szTxt && strlen(szTxt) >= MIN_ID_LENGTH && strlen(szTxt) <= MAX_ID_LENGTH) {
                 SetID(szTxt);
             } else {
                 pEditBox->SetFocus(true);
-                LogString(LOG_DEBUG_, "Empty ID EditBox in CLogin::SendLoginReq()\n");
+                LogString(LOG_DEBUG_, "Empty or too long ID EditBox in CLogin::SendLoginReq()\n");
                 return false;
             }
         } else {
@@ -377,12 +377,12 @@ CLogin::ConnectLoginServer() {
         if (pCtrl && pCtrl->GetControlType() == CTRL_EDITBOX) {
             pEditBox = (CTEditBox*)pCtrl;
             szTxt = pEditBox->get_text();
-            if (szTxt && strlen(szTxt) >= 4) {
+            if (szTxt && strlen(szTxt) >= MIN_PASSWORD_LENGTH && strlen(szTxt) <= MAX_PASSWORD_LENGTH) {
                 SetPassword(szTxt);
                 pEditBox->clear_text();
             } else {
                 pEditBox->SetFocus(true);
-                LogString(LOG_DEBUG_, "Empty Password EditBox in CLogin::SendLoginReq()\n");
+                LogString(LOG_DEBUG_, "Empty or too long Password EditBox in CLogin::SendLoginReq()\n");
                 return false;
             }
         } else {

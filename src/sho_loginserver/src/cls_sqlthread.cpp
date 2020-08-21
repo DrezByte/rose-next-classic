@@ -15,7 +15,7 @@ using namespace Rose::Util;
 
 IMPLEMENT_INSTANCE(CLS_SqlTHREAD)
 
-const uint32_t USERNAME_MAX = 20;
+const uint32_t USERNAME_MAX = 30;
 
 CLS_SqlTHREAD::CLS_SqlTHREAD(): CSqlTHREAD(true), minimum_access_level(1) {}
 
@@ -124,7 +124,7 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
         return false;
     }
 
-    const char* stmt = "SELECT password, salt, access_level FROM account WHERE username=$1";
+    const char* stmt = "SELECT password, salt, access_level FROM account WHERE email=$1";
 
     QueryResult res = this->db.query(stmt, {req->username()->c_str()});
     if (!res.is_ok()) {

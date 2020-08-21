@@ -211,7 +211,7 @@ CWS_ThreadSQL::Proc_cli_CHAR_LIST(tagQueryDATA* pSqlPACKET) {
 
     const char* stmt = "SELECT id, name, level, job_id, gender_id, face_id, hair_id, delete_by "
                        "FROM character WHERE "
-                       "account_username=$1";
+                       "account_email=$1";
 
     std::string username = pSqlPACKET->m_Name.Get();
     QueryResult res = this->db.query(stmt, {username});
@@ -336,7 +336,7 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         return false;
     }
 
-    const char* stmt = "SELECT id, account_username, map_id FROM character WHERE name=$1";
+    const char* stmt = "SELECT id, account_email, map_id FROM character WHERE name=$1";
     QueryResult res = this->db.query(stmt, {char_name});
     if (!res.is_ok()) {
         LOG_ERROR("Failed to select character with name {}: {}", char_name, res.error_message());
@@ -353,10 +353,10 @@ CWS_ThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
     }
 
     std::string char_id = res.get_string(0, 0);
-    std::string account_username = res.get_string(0, 1);
+    std::string account_email = res.get_string(0, 1);
     int map_id = res.get_int32(0, 2);
 
-    if (_strcmpi(user->Get_ACCOUNT(), account_username.c_str()) != 0) {
+    if (_strcmpi(user->Get_ACCOUNT(), account_email.c_str()) != 0) {
         return false;
     }
 
@@ -408,7 +408,7 @@ CWS_ThreadSQL::Proc_cli_DELETE_CHAR(tagQueryDATA* pSqlPACKET) {
         delete_remaining_sec = GameStaticConfig::DELETE_TIME_SEC;
     }
 
-    const char* stmt = "UPDATE character SET delete_by=$1 WHERE account_username=$2 AND name=$3";
+    const char* stmt = "UPDATE character SET delete_by=$1 WHERE account_email=$2 AND name=$3";
     QueryResult res =
         this->db.queryb(stmt, {delete_by_param, pSqlPACKET->m_Name.Get(), char_name});
 
@@ -749,14 +749,14 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
         return false;
     }
 
-    std::string account_name = client->Get_ACCOUNT();
+    std::string account_email = client->Get_ACCOUNT();
 
     // Check the user has enough slots for a new character
-    const char* count_stmt = "SELECT COUNT (*) from character WHERE account_username=$1";
-    QueryResult count_res = this->db.query(stmt, {account_name});
+    const char* count_stmt = "SELECT COUNT (*) from character WHERE account_email=$1";
+    QueryResult count_res = this->db.query(stmt, {account_email});
     if (!count_res.is_ok() || count_res.row_count != 1) {
-        LOG_ERROR("Failed to count characters for username '{}': {}",
-            account_name.c_str(),
+        LOG_ERROR("Failed to count characters for account '{}': {}",
+            account_email.c_str(),
             res.error_message());
         g_pUserLIST->Send_wsv_CREATE_CHAR(p.socket_id, RESULT_CREATE_CHAR_FAILED);
         return false;
@@ -774,7 +774,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     tPOINTF start_pos = g_ZoneLIST.Get_StartPOS(start_map_id);
 
     std::vector<std::string> params{
-        account_name,
+        account_email,
         char_name,
         std::to_string(gender_id),
         std::to_string(job_id),
@@ -810,7 +810,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     }
 
     std::string char_stmt = fmt::format(
-        "INSERT INTO character (account_username, name, "
+        "INSERT INTO character (account_email, name, "
         "gender_id, job_id, face_id, hair_id, money, "
         "str, dex, intt, con, cha, sen, "
         "map_id, respawn_x, respawn_y, town_respawn_id, town_respawn_x, town_respawn_y) "
@@ -822,7 +822,7 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
     if (!char_res.is_ok()) {
         LOG_ERROR("Failed to create character '{}' for username '{}': {}",
             char_name,
-            account_name.c_str(),
+            account_email.c_str(),
             char_res.error_message());
 
         trans_res = this->db.query("ROLLBACK", {});

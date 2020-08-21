@@ -4,8 +4,10 @@
 #include "CExternalUI.h"
 #include "tgamectrl/tdialog.h"
 
-const int MAX_ID_LENGTH = 20;
-const int MAX_PASSWORD_LENGTH = 17;
+const int MIN_ID_LENGTH = 6;
+const int MAX_ID_LENGTH = 30;
+const int MIN_PASSWORD_LENGTH = 8;
+const int MAX_PASSWORD_LENGTH = 30;
 
 #define TCP_LSV_PORT 29000
 #define TCP_LSV_IP "127.0.0.1"
