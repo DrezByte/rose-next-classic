@@ -58,6 +58,7 @@ CREATE TABLE clan
     motd varchar(1024) NULL,
     level smallint NOT NULL DEFAULT 1,
     points bigint NOT NULL DEFAULT 0,
+    money bigint NOT NULL DEFAULT 0,
     marker_front smallint NOT NULL DEFAULT 0,
     marker_back smallint NOT NULL DEFAULT 0,
     created TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP

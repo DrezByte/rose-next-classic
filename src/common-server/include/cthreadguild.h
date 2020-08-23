@@ -266,7 +266,7 @@ public:
     bool Query_AdjustClanMember(char* szCharName, int iAdjPoint, int iAdjPos);
     bool Query_UpdateClanMOTD(DWORD dwClanID, char* szMessage);
     bool Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage);
-    bool Query_UpdateClanDATA(char* szField, t_PACKET* pPacket); // BYTE btAdjType, int iAdjValue);
+    bool update_clan_data(const std::string& column_name, t_PACKET* packet);
     bool Query_UpdateClanBINARY(DWORD dwClanID, BYTE* pDATA, unsigned int uiSize);
     WORD Query_UpdateClanMARK(CClan* pClan, WORD wMarkCRC, BYTE* pDATA, unsigned int uiSize);
 

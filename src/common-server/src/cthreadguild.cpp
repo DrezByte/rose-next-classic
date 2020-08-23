@@ -1023,12 +1023,12 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
 #else
             switch (pGuildCMD->m_pPacket->m_gsv_ADJ_CLAN_VAR.m_btVarType) {
                 case CLVAR_INC_LEV:
-                    if (!this->Query_UpdateClanDATA("intLEVEL",
+                    if (!this->update_clan_data("level",
                             pGuildCMD->m_pPacket)) // CLVAR_INC_LEV, 1 ) )
                         return true;
                     break;
                 case CLVAR_ADD_SCORE:
-                    if (!this->Query_UpdateClanDATA("intPOINT",
+                    if (!this->update_clan_data("points",
                             pGuildCMD
                                 ->m_pPacket)) // CLVAR_ADD_SCORE,
                                               // pGuildCMD->m_pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue
@@ -1036,7 +1036,7 @@ CThreadGUILD::Run_GuildPACKET(tagCLAN_CMD* pGuildCMD) {
                         return true;
                     break;
                 case CLVAR_ADD_ZULY:
-                    if (!this->Query_UpdateClanDATA("intMONEY",
+                    if (!this->update_clan_data("money",
                             pGuildCMD
                                 ->m_pPacket)) // CLVAR_ADD_ZULY,
                                               // pGuildCMD->m_pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue
@@ -1731,76 +1731,40 @@ CThreadGUILD::Query_LoginClanMember(char* char_name, int socket_id) {
 }
 
 bool
-CThreadGUILD::Query_UpdateClanDATA(char* szField,
-    t_PACKET* pPacket) // BYTE btAdjType, int iAdjValue)
-{
-    /* TODO: RAM: Port to postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
+CThreadGUILD::update_clan_data(const std::string& column_name, t_PACKET* packet) {
+    const int clan_id = packet->m_gsv_ADJ_CLAN_VAR.m_dwClanID;
+    const int value = packet->m_gsv_ADJ_CLAN_VAR.m_iAdjValue;
 
-    int iAdjValue = pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanUPDATE(%d,\'%s\',%d)}",
-            pPacket->m_gsv_ADJ_CLAN_VAR.m_dwClanID,
-            szField,
-            pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue)) {
-        int iResult;
-        __int64 biResult;
-        while (this->db->GetMoreRESULT()) {
-            if (this->db->BindRESULT()) {
-                if (this->db->GetNextRECORD()) {
-                    // ¼º°ø...
-                    // dwClanID = (DWORD)this->db->GetInteger(0);
-                    iResult = this->db->GetInteger(0);
-                    biResult = this->db->GetInt64(0);
-                }
-            }
+    if (packet->m_gsv_ADJ_CLAN_VAR.m_btVarType == CLVAR_INC_LEV) {
+        CClan* clan = this->Find_CLAN(packet->m_gsv_ADJ_CLAN_VAR.m_dwClanID);
+        if (!clan || (clan->m_nClanLEVEL + value) > MAX_CLAN_LEVEL) {
+            return false;
         }
-
-        if (iResultSP) {
-            // success
-            switch (pPacket->m_gsv_ADJ_CLAN_VAR.m_btVarType) {
-                case CLVAR_INC_LEV:
-                    // pClan->m_nClanLEVEL = iResult;//this->db->GetInteger(0);
-                    if (iResult > MAX_CLAN_LEVEL)
-                        iResult = MAX_CLAN_LEVEL;
-                    pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue = iResult;
-                    break;
-                case CLVAR_ADD_SCORE:
-                    // pClan->m_iClanSCORE = iResult;//this->db->GetInteger(0);
-                    pPacket->m_gsv_ADJ_CLAN_VAR.m_iAdjValue = iResult;
-                    break;
-                case CLVAR_ADD_ZULY:
-                    // bigint
-                    // pClan->m_biClanMONEY = biResult;//this->db->GetInt64(0);
-                    pPacket->m_gsv_ADJ_CLAN_VAR.m_biResult = biResult;
-                    break;
-            }
-            g_LOG.CS_ODS(0xffff,
-                "update clan data : %d / %s, %d\n",
-                pPacket->m_gsv_ADJ_CLAN_VAR.m_dwClanID,
-                szField,
-                iAdjValue);
-            return true;
-        } else {
-            // failed
-            g_LOG.CS_ODS(0xffff,
-                "failed2 update clan data : %d / %s, %d\n",
-                pPacket->m_gsv_ADJ_CLAN_VAR.m_dwClanID,
-                szField,
-                iAdjValue);
-        }
-    } else {
-        // failed
-        g_LOG.CS_ODS(0xffff,
-            "SP error update clan data : %d / %s, %d\n",
-            pPacket->m_gsv_ADJ_CLAN_VAR.m_dwClanID,
-            szField,
-            iAdjValue);
     }
-    */
-    return false;
+
+    std::string stmt =
+        fmt::format("UPDATE clan SET {0}={0}+$1 WHERE id=$2 RETURNING {0}", column_name);
+
+    QueryResult res = this->db.query(stmt, {std::to_string(value), std::to_string(clan_id)});
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to update data for clan with id {} {} {}", clan_id, column_name, value);
+        LOG_ERROR(this->db.last_error_message());
+        return false;
+    }
+
+    switch (packet->m_gsv_ADJ_CLAN_VAR.m_btVarType) {
+        case CLVAR_INC_LEV:
+        case CLVAR_ADD_SCORE:
+            packet->m_gsv_ADJ_CLAN_VAR.m_iAdjValue = res.get_int32(0, 0);
+            break;
+        case CLVAR_ADD_ZULY:
+            packet->m_gsv_ADJ_CLAN_VAR.m_biResult = res.get_int64(0, 0);
+            break;
+        default:
+            return false;
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
