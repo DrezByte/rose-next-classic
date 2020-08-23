@@ -262,7 +262,7 @@ public:
 
     bool Query_LoginClanMember(char* szCharName, int iSenderSockIDX);
     bool Query_InsertClanMember(char* szCharName, DWORD dwClanID, int iClanPos);
-    bool Query_DeleteClanMember(char* szClanName);
+    bool Query_DeleteClanMember(char* szCharName);
     bool Query_AdjustClanMember(char* szCharName, int iAdjPoint, int iAdjPos);
     bool Query_UpdateClanMOTD(DWORD dwClanID, char* szMessage);
     bool Query_UpdateClanSLOGAN(DWORD dwClanID, char* szMessage);

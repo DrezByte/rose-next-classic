@@ -472,8 +472,8 @@ CClan::Delete_MEMBER(t_HASHKEY HashCommander, char* szCharName, BYTE btCMD, char
 #endif
                 }
 
-                if (g_pThreadGUILD->Query_DeleteClanMember(szCharName) > -2) {
-                    this->m_nPosCNT[pNode->m_VALUE.m_iPosition]--; // 멤버 삭제
+                if (g_pThreadGUILD->Query_DeleteClanMember(szCharName)) {
+                    this->m_nPosCNT[pNode->m_VALUE.m_iPosition]--;
 
                     m_ListUSER.DeleteNFree(pNode);
                 }
@@ -1569,38 +1569,21 @@ CThreadGUILD::Query_InsertClanMember(char* szCharName, DWORD clan_id, int rank) 
 
 bool
 CThreadGUILD::Query_DeleteClanMember(char* szCharName) {
-    /* TODO: RAM: Port to postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanCharDEL(\'%s\')}", szCharName)) {
-        DWORD dwClanID = 0;
-        while (this->db->GetNextRECORD()) {
-            dwClanID = (DWORD)this->db->GetInteger(0);
-        }
-        while (this->db->GetMoreRESULT()) {
-            if (this->db->BindRESULT()) {
-                if (this->db->GetNextRECORD()) {
-                    assert(0);
-                }
-            }
-        }
-        switch (iResultSP) {
-            case 0: // 성공
-                LogString(0xffff,
-                    (char*)"Delete clan user success : dwCladID::%d / %s\n",
-                    dwClanID,
-                    szCharName);
-                return true;
-            default: // 실패
-                g_LOG.CS_ODS(0xffff, "Delete clan user failed : %d / %s\n", dwClanID, szCharName);
-        }
-    } else {
-        // 디비 SP 오류...
+    std::string char_name(szCharName);
+    if (char_name.empty()) {
+        return false;
     }
-    */
-    return false;
+
+    const char* delete_stmt = "DELETE FROM clan_member WHERE character_id=(SELECT id FROM character WHERE name=$1)";
+    QueryResult delete_res = this->db.query(delete_stmt, {char_name});
+    if (!delete_res.is_ok()) {
+        LOG_ERROR("Failed to delete clan member with name {}: {}",
+            char_name.c_str(),
+            delete_res.error_message());
+        return false;
+    }
+
+    return true;
 }
 
 bool
