@@ -1075,32 +1075,32 @@ IT_MGR::AppendChatMsg(const char* pszMsg, int iType, DWORD forceapply_color) {
             else
                 dwColor = c_dwChatColorNotice;
 
-            iFilterType = CChatDLG::FILTER_SYSTEM;
-            break;
+            pChatDlg->AppendMsg2System(pszMsg, dwColor);
+            return;
         case CHAT_TYPE_SYSTEM:
             if (forceapply_color)
                 dwColor = forceapply_color;
             else
                 dwColor = c_dwChatColorSystem;
 
-            iFilterType = CChatDLG::FILTER_SYSTEM;
-            break;
+            pChatDlg->AppendMsg2System(pszMsg, dwColor);
+            return;
         case CHAT_TYPE_QUEST:
             if (forceapply_color)
                 dwColor = forceapply_color;
             else
                 dwColor = c_dwChatColorQuest;
 
-            iFilterType = CChatDLG::FILTER_SYSTEM;
-            break;
+            pChatDlg->AppendMsg2System(pszMsg, dwColor);
+            return;
         case CHAT_TYPE_QUESTREWARD:
             if (forceapply_color)
                 dwColor = forceapply_color;
             else
                 dwColor = c_dwChatColorQuestReward;
 
-            iFilterType = CChatDLG::FILTER_SYSTEM;
-            break;
+            pChatDlg->AppendMsg2System(pszMsg, dwColor);
+            return;
         case CHAT_TYPE_TRADE:
             if (forceapply_color)
                 dwColor = forceapply_color;
