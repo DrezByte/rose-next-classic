@@ -1588,36 +1588,24 @@ CThreadGUILD::Query_DeleteClanMember(char* szCharName) {
 
 bool
 CThreadGUILD::Query_AdjustClanMember(char* szCharName, int iAdjContr, int iAdjPos) {
-    /* TODO: RAM: Port to postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanCharADJ(\'%s\',%d,%d)}",
-            szCharName,
-            iAdjContr,
-            iAdjPos)) {
-        while (this->db->GetMoreRESULT()) {
-            ;
-        }
-        switch (iResultSP) {
-            case 0: // 성공
-                g_LOG.CS_ODS(0xffff, "update clan user :  %s\n", szCharName);
-                return true;
-            case -1: // 멤버 없다.
-                LogString(0xffff, (char*)"not clan user name :  %s \n", szCharName);
-                break;
-            case -2: // 디비 오류
-                LogString(0xffff, (char*)"update clan user failed : result: %s\n", szCharName);
-                break;
-            default:
-                assert("invalid ws_ClanAdjCHAR SP retrun value" && 0);
-        }
-    } else {
-        // 디비 SP 오류...
+    std::string char_name(szCharName);
+    if (char_name.empty()) {
+        return false;
     }
-    */
-    return false;
+
+    QueryResult res =
+        this->db.query("UPDATE clan_member SET points=points+$1, rank=rank+$2 WHERE id=(SELECT id FROM character WHERE name=$3)",
+            {std::to_string(iAdjContr), std::to_string(iAdjPos), char_name});
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to update data for clan member with name: {} points: {} rank: {}",
+            char_name,
+            iAdjContr,
+            iAdjPos);
+        LOG_ERROR(this->db.last_error_message());
+        return false;
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
