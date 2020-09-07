@@ -361,13 +361,18 @@ CLogin::ConnectLoginServer() {
         if (pCtrl && pCtrl->GetControlType() == CTRL_EDITBOX) {
             pEditBox = (CTEditBox*)pCtrl;
             szTxt = pEditBox->get_text();
-            if (szTxt && strlen(szTxt) >= MIN_ID_LENGTH && strlen(szTxt) <= MAX_ID_LENGTH) {
-                SetID(szTxt);
-            } else {
+
+            if (!szTxt || strlen(szTxt) < MIN_ID_LENGTH) {
+                g_EUILobby.ShowMsgBox(STR_LOGIN_USERNAME_TOO_SHORT, CTMsgBox::BT_OK, true, EUI_LOGIN);
                 pEditBox->SetFocus(true);
-                LogString(LOG_DEBUG_, "Empty or too long ID EditBox in CLogin::SendLoginReq()\n");
+                return false;
+            } else if (!szTxt || strlen(szTxt) > MAX_ID_LENGTH) {
+                g_EUILobby.ShowMsgBox(STR_LOGIN_USERNAME_TOO_LONG, CTMsgBox::BT_OK, true, EUI_LOGIN);
+                pEditBox->SetFocus(true);
                 return false;
             }
+
+            SetID(szTxt);
         } else {
             LogString(LOG_DEBUG_, "Not Found ID EditBox in CLogin::SendLoginReq()\n");
             return false;
@@ -377,16 +382,21 @@ CLogin::ConnectLoginServer() {
         if (pCtrl && pCtrl->GetControlType() == CTRL_EDITBOX) {
             pEditBox = (CTEditBox*)pCtrl;
             szTxt = pEditBox->get_text();
-            if (szTxt && strlen(szTxt) >= MIN_PASSWORD_LENGTH && strlen(szTxt) <= MAX_PASSWORD_LENGTH) {
-                SetPassword(szTxt);
-                pEditBox->clear_text();
-            } else {
+
+            if (!szTxt || strlen(szTxt) < MIN_PASSWORD_LENGTH) {
+                g_EUILobby.ShowMsgBox(STR_LOGIN_PASSWORD_TOO_SHORT, CTMsgBox::BT_OK, true, EUI_LOGIN);
                 pEditBox->SetFocus(true);
-                LogString(LOG_DEBUG_, "Empty or too long Password EditBox in CLogin::SendLoginReq()\n");
+                return false;
+            } else if (!szTxt || strlen(szTxt) > MAX_PASSWORD_LENGTH) {
+                g_EUILobby.ShowMsgBox(STR_LOGIN_PASSWORD_TOO_LONG, CTMsgBox::BT_OK, true, EUI_LOGIN);
+                pEditBox->SetFocus(true);
                 return false;
             }
+
+            SetPassword(szTxt);
+            pEditBox->clear_text();
         } else {
-            LogString(LOG_DEBUG_, "Not Found ID EditBox in CLogin::SendLoginReq()\n");
+            LogString(LOG_DEBUG_, "Not Found PWD EditBox in CLogin::SendLoginReq()\n");
             return false;
         }
     }

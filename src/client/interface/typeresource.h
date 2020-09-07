@@ -244,6 +244,11 @@
 #define STR_SEND CStringManager::GetSingleton().GetString(230)
 #define STR_DELETE CStringManager::GetSingleton().GetString(231)
 
+#define STR_LOGIN_USERNAME_TOO_SHORT CStringManager::GetSingleton().GetString(232)
+#define STR_LOGIN_USERNAME_TOO_LONG CStringManager::GetSingleton().GetString(233)
+#define STR_LOGIN_PASSWORD_TOO_SHORT CStringManager::GetSingleton().GetString(234)
+#define STR_LOGIN_PASSWORD_TOO_LONG CStringManager::GetSingleton().GetString(235)
+
 #define STR_CANT_CASTING_STATE \
     CStringManager::GetSingleton().GetString(245) ///스킬을 사용할수 없는 상태입니다..
 #define STR_NOT_ENOUGH_PROPERTY \
