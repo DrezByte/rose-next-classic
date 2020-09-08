@@ -69,8 +69,12 @@ CSoundLIST::Free_FILE(tagFileDATA<tagSndFILE*>* pDATA) {
 //-------------------------------------------------------------------------------------------------
 bool
 CSoundLIST::KEY_PlaySound(t_HASHKEY HashKEY) {
-    tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
+    if (m_iSoundVol == SOUND_VOLUME_MIN) {
+        return false;
+    }
 
+    tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
+    
     if (NULL == pSoundData) {
         return false;
     }
@@ -89,8 +93,12 @@ CSoundLIST::KEY_PlaySound3D(t_HASHKEY HashKEY,
     const D3DXVECTOR3* velWorld,
     float fMinDistance,
     float fMaxDistance) {
-    tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
+    if (m_iSoundVol == SOUND_VOLUME_MIN) {
+        return false;
+    }
 
+    tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
+    
     if (NULL == pSoundData) {
         return false;
     }
@@ -112,6 +120,10 @@ CSoundLIST::KEY_PlaySound3D(t_HASHKEY HashKEY,
 
 bool
 CSoundLIST::KEY_PlaySound(t_HASHKEY HashKEY, int iVolume, int iPan) {
+    if (iVolume == SOUND_VOLUME_MIN) {
+        return false;
+    }
+
     tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
     if (NULL == pSoundData) {
         return false;
@@ -132,6 +144,10 @@ CSoundLIST::KEY_PlaySound3D(t_HASHKEY HashKEY,
     const D3DXVECTOR3* velWorld,
     float fMinDistance,
     float fMaxDistance) {
+    if (iVolume == SOUND_VOLUME_MIN) {
+        return false;
+    }
+
     tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
 
     if (NULL == pSoundData) {
@@ -158,6 +174,10 @@ CSoundLIST::KEY_PlaySound3D(t_HASHKEY HashKEY,
 ///
 bool
 CSoundLIST::KEY_PlaySound3DLoop(t_HASHKEY HashKEY, const D3DXVECTOR3& posWorld, int iVolume) {
+    if (iVolume == SOUND_VOLUME_MIN) {
+        return false;
+    }
+
     tagSndFILE* pSoundData = Get_DATAUseKEY(HashKEY);
 
     if (NULL == pSoundData) {
@@ -196,6 +216,10 @@ bool
 CSoundLIST::IDX_PlaySound3DLoop(short nIndex,
     const D3DXVECTOR3& posWorld,
     const D3DXVECTOR3* velWorld) {
+    if (m_iSoundVol == SOUND_VOLUME_MIN) {
+        return false;
+    }
+
     tagSndFILE* pSoundData = Get_DATAUseIDX(nIndex);
 
     if (NULL == pSoundData) {
@@ -234,6 +258,10 @@ CSoundLIST::IDX_StopSound3DLoop(short nIndex) {
 //-------------------------------------------------------------------------------------------------
 bool
 CSoundLIST::IDX_PlaySound(short nIndex) {
+    if (m_iSoundVol == SOUND_VOLUME_MIN) {
+        return false;
+    }
+
     tagSndFILE* pSoundData = Get_DATAUseIDX(nIndex);
 
     if (NULL == pSoundData) {
@@ -253,6 +281,10 @@ CSoundLIST::IDX_PlaySound3D(short nIndex,
     const D3DXVECTOR3* velWorld,
     float fMinDistance,
     float fMaxDistance) {
+    if (m_iSoundVol == SOUND_VOLUME_MIN) {
+        return false;
+    }
+
     tagSndFILE* pSoundData = Get_DATAUseIDX(nIndex);
 
     if (NULL == pSoundData) {
