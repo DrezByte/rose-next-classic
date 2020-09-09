@@ -99,10 +99,14 @@ CIconSkill::GetToolTip(CInfo& ToolTip, DWORD dwDialogType, DWORD dwType) {
         case DLG_TYPE_QUICKBAR:
         case DLG_TYPE_QUICKBAR_EXT:
             dwType = INFO_STATUS_FEW;
+            if (GetAsyncKeyState(VK_RBUTTON) < 0) {
+                dwType = INFO_STATUS_SIMPLE;
+            }
             break;
         default:
-            if (GetAsyncKeyState(VK_RBUTTON) < 0)
+            if (GetAsyncKeyState(VK_RBUTTON) < 0) {
                 dwType = INFO_STATUS_DETAIL;
+            }
             break;
     }
 

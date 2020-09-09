@@ -267,7 +267,7 @@ CClientStorage::Save() {
     itoa(m_iChatDlgType, szTemp, 10);
     WritePrivateProfileString("DIALOG", "CHATDLGTYPE", szTemp, g_szIniFileName);
 
-    _itoa(m_iQuickBarDlgType, szTemp, 10);
+    _itoa(m_iQuickBarExtDlgType, szTemp, 10);
     WritePrivateProfileString("DIALOG", "QUICKBAREXTDLGTYPE", szTemp, g_szIniFileName);
 }
 

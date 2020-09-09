@@ -133,184 +133,33 @@ CQuickBAR::Update(POINT ptMouse) {
 //----------------------------------------------------------------------------------------------------
 unsigned int
 CQuickBAR::Process(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
-    if (CTEditBox::s_pFocusEdit == NULL) /// If there is no input focus (if not in the chat)
-    {
-        switch (uiMsg) {
-            case WM_SYSKEYDOWN:
-
-                if (GetQuickBarType() == QUICKBAR_TYPE_EXTENSION) {
-                    m_nCurrentPage = QSLOT_ALT;
-                    UpdateHotIconSlot();
-                }
-
-                switch (wParam) {
-                    // case '1':
-                    case VK_F1:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
+    switch (GetQuickBarType()) {
+        case QUICKBAR_TYPE_NORMAL:
+            if (uiMsg == WM_KEYUP) {
+                if (GetAsyncKeyState(VK_SHIFT) < 0) {
+                    switch (wParam) {
+                        case VK_F1:
                             m_nCurrentPage = 0;
                             UpdateHotIconSlot();
                             return uiMsg;
-                        }
-                        return 0;
-
-                    case VK_F2: // case '2':
-                    case VK_F10:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
+                        case VK_F2:
                             m_nCurrentPage = 1;
                             UpdateHotIconSlot();
                             return uiMsg;
-                        }
-                        return 0;
-
-                    case VK_F3: // case '3':
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
+                        case VK_F3:
                             m_nCurrentPage = 2;
                             UpdateHotIconSlot();
                             return uiMsg;
-                        }
-                        return 0;
-
-                    case VK_F4: // case '4':
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
+                        case VK_F4:
                             m_nCurrentPage = 3;
                             UpdateHotIconSlot();
                             return uiMsg;
-                        }
-                        return 0;
-
-                    case 0x31:
-                    case 0x32:
-                    case 0x33:
-                    case 0x34:
-                    case 0x35:
-                    case 0x36:
-                    case 0x37:
-                    case 0x38:
-                        // ALT
-                        if (GetQuickBarType() == QUICKBAR_TYPE_EXTENSION) {
-                            CIcon* pIcon = m_QuickSlot[wParam - 0x31].GetIcon();
-                            if (pIcon) {
-                                pIcon->ExecuteCommand();
-                            }
-                            return uiMsg;
-                        }
-                        return 0;
-
-                    default:
-                        break;
-                }
-                break;
-            case WM_KEYUP: {
-                switch (wParam) {
-                    case 0x31:
-                    case 0x32:
-                    case 0x33:
-                    case 0x34:
-                    case 0x35:
-                    case 0x36:
-                    case 0x37:
-                    case 0x38: {
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            CIcon* pIcon = m_QuickSlot[wParam - 0x31].GetIcon();
-                            if (pIcon)
-                                pIcon->ExecuteCommand();
-                            return uiMsg;
-                        } else {
-                            if (GetAsyncKeyState(VK_CONTROL) < 0) {
-                                CIcon* pIcon = m_QuickSlot[wParam - 0x31].GetIcon();
-                                if (pIcon)
-                                    pIcon->ExecuteCommand();
-                                return uiMsg;
-                            }
-                        }
-                        return 0;
                     }
-                    case VK_F9:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 0;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
 
-                    case VK_F11:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 2;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-
-                    case VK_F12:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 3;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-
-                    default:
-                        break;
-                }
-                break;
-            }
-
-            case WM_KEYDOWN: {
-                if (GetAsyncKeyState(VK_CONTROL) < 0
-                    && GetQuickBarType() == QUICKBAR_TYPE_EXTENSION) {
-                    m_nCurrentPage = QSLOT_CTRL;
-                    UpdateHotIconSlot();
-                }
-            }
-
-            default:
-                break;
-        }
-
-        // Garnet
-    } else {
-
-        switch (uiMsg) {
-            case WM_SYSKEYDOWN:
-
-                if (GetQuickBarType() == QUICKBAR_TYPE_EXTENSION) {
-                    m_nCurrentPage = QSLOT_ALT;
-                    UpdateHotIconSlot();
+                    return 0;
                 }
 
                 switch (wParam) {
-                    case '1':
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 0;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-
-                    case '2':
-                    case VK_F10:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 1;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-
-                    case '3':
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 2;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-                    case '4':
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 3;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-
                     case VK_F1:
                     case VK_F2:
                     case VK_F3:
@@ -319,36 +168,17 @@ CQuickBAR::Process(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
                     case VK_F6:
                     case VK_F7:
                     case VK_F8:
-                        // ALT
-                        if (GetQuickBarType() == QUICKBAR_TYPE_EXTENSION) {
-                            CIcon* pIcon = m_QuickSlot[wParam - VK_F1].GetIcon();
-                            if (pIcon) {
-                                pIcon->ExecuteCommand();
-                            }
-                            return uiMsg;
+                        CIcon* pIcon = m_QuickSlot[wParam - VK_F1].GetIcon();
+                        if (pIcon) {
+                            pIcon->ExecuteCommand();
                         }
-                        return 0;
-
-                    default:
-                        break;
+                        return uiMsg;
                 }
-                break;
-            case WM_KEYUP: {
+            }
+            break;
+        case QUICKBAR_TYPE_EXTENSION:
+            if (uiMsg == WM_KEYUP && GetAsyncKeyState(VK_CONTROL) < 0) {
                 switch (wParam) {
-                    case '1':
-                    case '2':
-                    case '3':
-                    case '4': {
-                        if (CTControlMgr::GetInstance()->GetKeyboardInputType()
-                                == CTControlMgr::INPUTTYPE_NORMAL
-                            && NULL == CTEditBox::s_pFocusEdit
-                            && GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = wParam - '1';
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                    } break;
-
                     case VK_F1:
                     case VK_F2:
                     case VK_F3:
@@ -356,63 +186,15 @@ CQuickBAR::Process(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
                     case VK_F5:
                     case VK_F6:
                     case VK_F7:
-                    case VK_F8: {
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            CIcon* pIcon = m_QuickSlot[wParam - VK_F1].GetIcon();
-                            if (pIcon)
-                                pIcon->ExecuteCommand();
-                            return uiMsg;
-                        } else {
-                            if (GetAsyncKeyState(VK_CONTROL) < 0) {
-                                CIcon* pIcon = m_QuickSlot[wParam - VK_F1].GetIcon();
-                                if (pIcon)
-                                    pIcon->ExecuteCommand();
-                                return uiMsg;
-                            }
+                    case VK_F8:
+                        CIcon* pIcon = m_QuickSlot[wParam - VK_F1].GetIcon();
+                        if (pIcon) {
+                            pIcon->ExecuteCommand();
                         }
-                        return 0;
-                    }
-                    case VK_F9:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 0;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-
-                    case VK_F11:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 2;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-
-                    case VK_F12:
-                        if (GetQuickBarType() == QUICKBAR_TYPE_NORMAL) {
-                            m_nCurrentPage = 3;
-                            UpdateHotIconSlot();
-                            return uiMsg;
-                        }
-                        return 0;
-
-                    default:
-                        break;
-                }
-                break;
-            }
-
-            case WM_KEYDOWN: {
-                if (GetAsyncKeyState(VK_CONTROL) < 0
-                    && GetQuickBarType() == QUICKBAR_TYPE_EXTENSION) {
-                    m_nCurrentPage = QSLOT_CTRL;
-                    UpdateHotIconSlot();
+                        return uiMsg;
                 }
             }
-
-            default:
-                break;
-        }
+            break;
     }
 
     if (!IsVision())
@@ -460,6 +242,31 @@ CQuickBAR::UpdateHotIconSlot() {
     }
 
     UpdateCSlotPosition();
+
+    CWinCtrl* pCtrl = Find(IID_NUMBER);
+    if (pCtrl) {
+        CTImage* image = (CTImage*)pCtrl;
+        int texture_id = 0;
+        switch (m_nCurrentPage) {
+            case 1:
+            case 5:
+                texture_id = CResourceMgr::GetInstance()->GetImageNID(IMAGE_RES_UI, "UI21_NUMBER_2");
+                break;
+            case 2:
+            case 6:
+                texture_id = CResourceMgr::GetInstance()->GetImageNID(IMAGE_RES_UI, "UI21_NUMBER_3");
+                break;
+            case 3:
+            case 7:
+                texture_id = CResourceMgr::GetInstance()->GetImageNID(IMAGE_RES_UI, "UI21_NUMBER_4");
+                break;
+            default:
+                texture_id = CResourceMgr::GetInstance()->GetImageNID(IMAGE_RES_UI, "UI21_NUMBER_1");
+                break;
+        }
+
+        image->SetImage(texture_id, IMAGE_RES_UI);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -761,13 +568,11 @@ CQuickBAR::SetQuickBarType(short nType) {
 
     switch (nType) {
         case QUICKBAR_TYPE_NORMAL:
-            SetStartEndPage(0, MAX_ICONS_PAGES);
+            SetStartEndPage(0, QUICKBAR_MAX_HOT_ICONS_PAGES);
             break;
-        /*
         case QUICKBAR_TYPE_EXTENSION:
-            SetStartEndPage(MAX_ICONS_PAGES_NORMAL, MAX_ICONS_PAGES);
+            SetStartEndPage(QUICKBAR_MAX_HOT_ICONS_PAGES, MAX_ICONS_PAGES);
             break;
-        */
     }
     m_nCurrentPage = m_nStartPage;
 }

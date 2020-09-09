@@ -79,21 +79,6 @@ public:
 
     enum { TYPE_VERTICAL, TYPE_HORIZONTAL };
 
-    enum {
-        QSLOT_00 = 0,
-        QSLOT_01,
-        QSLOT_02,
-        QSLOT_03,
-        QSLOT_ALT,
-        QSLOT_CTRL,
-    };
-    /**
-    enum
-    {
-        QUICKBAR_TYPE_NORMAL = 0,
-        QUICKBAR_TYPE_EXTENSION,
-    }; **/
-
     void SetType(short nType) { m_nType = nType; }
     int GetType() { return m_nType; }
 

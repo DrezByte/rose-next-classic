@@ -2,10 +2,13 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#define MAX_ICONS_PAGES 4
+#define MAX_ICONS_PAGES 8
 #define HOT_ICONS_PER_PAGE 8
 
-#define MAX_HOT_ICONS 48
+#define MAX_HOT_ICONS 64
+
+#define QUICKBAR_MAX_HOT_ICONS_PAGES 4
+#define QUICKBAR_MAX_HOT_ICONS 32
 
 enum t_HotIconTYPE {
     INV_ICON = 1,
