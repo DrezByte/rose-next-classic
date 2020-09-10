@@ -1611,33 +1611,19 @@ CThreadGUILD::Query_AdjustClanMember(char* szCharName, int iAdjContr, int iAdjPo
 //-------------------------------------------------------------------------------------------------
 bool
 CThreadGUILD::Query_UpdateClanMOTD(DWORD dwClanID, char* szMessage) {
-    /* TODO: RAM: Port to postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanMOTD(%d,\'%s\')}", dwClanID, szMessage)) {
-        while (this->db->GetMoreRESULT()) {
-            ;
-        }
-        switch (iResultSP) {
-            case 0: // 성공
-                g_LOG.CS_ODS(0xffff, "update clan motd : %d / %s\n", dwClanID, szMessage);
-                return true;
-            // case -1 :	// ????
-            //	g_LOG.CS_ODS( 0xffff, "not clan user name :  %s \n", szCharName);
-            //	break;
-            case -2: // 디비 오류
-                g_LOG.CS_ODS(0xffff, "update clan motd failed : %d / %s\n", dwClanID, szMessage);
-                break;
-            default:
-                assert("invalid ws_ClanMOTD SP retrun value" && 0);
-        }
-    } else {
-        // 디비 SP 오류...
+    std::string motd(szMessage);
+    if (motd.empty()) {
+        return false;
     }
-    */
-    return false;
+
+    QueryResult res = this->db.query("UPDATE clan SET motd=$1 WHERE id=$2", {motd, std::to_string(dwClanID)});
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to update motd for clan with id: {} {}", dwClanID, motd);
+        LOG_ERROR(this->db.last_error_message());
+        return false;
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
