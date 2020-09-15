@@ -350,12 +350,6 @@
     <ClCompile Include="Terrain\PatchManager.cpp">
       <Filter>Source Files\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="Terrain\RoughMap.cpp">
-      <Filter>Source Files\Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="Terrain\WideTerrain.cpp">
-      <Filter>Source Files\Terrain</Filter>
-    </ClCompile>
     <ClCompile Include="CApplication.cpp">
       <Filter>Source Files\winMAIN</Filter>
     </ClCompile>
@@ -1462,13 +1456,7 @@
     <ClInclude Include="Terrain\PatchManager.h">
       <Filter>Source Files\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="Terrain\RoughMap.h">
-      <Filter>Source Files\Terrain</Filter>
-    </ClInclude>
     <ClInclude Include="Terrain\TerrainDef.h">
-      <Filter>Source Files\Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="Terrain\WideTerrain.h">
       <Filter>Source Files\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="CApplication.h">

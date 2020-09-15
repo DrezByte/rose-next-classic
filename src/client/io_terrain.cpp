@@ -2418,7 +2418,6 @@ CTERRAIN::LoadZONE(short nZoneNO, bool bPlayBGM) {
         strncpy(pStr, ZONE_FILE(nZoneNO), iCount);
         pStr[iCount] = 0;
         m_ZoneDIR.Set(pStr);
-        m_WideTerrain.SetZoneDir(pStr);
     }
 
     pFileSystem->ReadInt32(&iCount);
@@ -2475,7 +2474,6 @@ CTERRAIN::FreeZONE() {
 
     this->m_PatchManager.Clear_VisiblePatch();
     this->SubMAP(MOVE_UPDATE_ALL);
-    m_WideTerrain.SubRoughMap(MOVE_UPDATE_ALL);
 
     SAFE_DELETE_ARRAY(m_pEventPOS);
 
@@ -2516,7 +2514,6 @@ CTERRAIN::InitZONE(float fCenterX, float fCenterY) {
     m_nCenterMapYIDX = (short)(fCenterY / (16 * fPATCH_SIZE));
 
     this->AddMAP(m_nCenterMapXIDX, m_nCenterMapYIDX, MOVE_UPDATE_ALL, true, true);
-    m_WideTerrain.AddRoughMap(m_nCenterMapXIDX, m_nCenterMapYIDX, MOVE_UPDATE_ALL);
     this->m_wViewFRAME = 0;
 
     fCenterZ = g_pTerrain->GetHeight(fCenterX, fCenterY) + 150;
@@ -3224,7 +3221,6 @@ CTERRAIN::SetCenterPosition(float fWorldX, float fWorldY) {
         /// Sub map
         //----------------------------------------------------------------------------------------------------
         SubMAP(wUpdateFLAG);
-        m_WideTerrain.SubRoughMap(wUpdateFLAG);
 
         m_nCenterMapXIDX = nZoneMapX;
         m_nCenterMapYIDX = nZoneMapY;
@@ -3233,7 +3229,6 @@ CTERRAIN::SetCenterPosition(float fWorldX, float fWorldY) {
         /// Add map
         //----------------------------------------------------------------------------------------------------
         AddMAP(nZoneMapX, nZoneMapY, wUpdateFLAG, true, false);
-        m_WideTerrain.AddRoughMap(nZoneMapX, nZoneMapY, wUpdateFLAG);
 
         /// 패치 재구성
         bPatchOrganizing = true;
@@ -3404,14 +3399,6 @@ CTERRAIN::InsertCameraPatch(float xChar, float yChar) {
     }
 
 */
-}
-
-//----------------------------------------------------------------------------------------------------
-/// @brief Wide terrain
-//----------------------------------------------------------------------------------------------------
-void
-CTERRAIN::SubWideMap(WORD wUpdateFLAG) {
-    m_WideTerrain.SubRoughMap(wUpdateFLAG);
 }
 
 bool

@@ -276,8 +276,6 @@
     <ClCompile Include="IO_Skeleton.cpp" />
     <ClCompile Include="IO_Terrain.cpp" />
     <ClCompile Include="Terrain\PatchManager.cpp" />
-    <ClCompile Include="Terrain\RoughMap.cpp" />
-    <ClCompile Include="Terrain\WideTerrain.cpp" />
     <ClCompile Include="CApplication.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Create</PrecompiledHeader>
@@ -655,9 +653,7 @@
     <ClInclude Include="IO_Skeleton.h" />
     <ClInclude Include="IO_Terrain.h" />
     <ClInclude Include="Terrain\PatchManager.h" />
-    <ClInclude Include="Terrain\RoughMap.h" />
     <ClInclude Include="Terrain\TerrainDef.h" />
-    <ClInclude Include="Terrain\WideTerrain.h" />
     <ClInclude Include="CApplication.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="StdAfx.h" />

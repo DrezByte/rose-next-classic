@@ -1461,7 +1461,7 @@ typedef struct _tagGODDESSSTR {
         hGoddess = NULL;
         hSprite = NULL;
 
-        for (register int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             pEffect[i] = NULL;
             hParticle[i] = NULL;
         }

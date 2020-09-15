@@ -15,6 +15,8 @@
 #include "Interface/SlotContainer/CItemSlot.h"
 #include "Interface/SlotContainer/HotIconSlot.h"
 
+#include "sound/io_sound.h"
+
 #include <list>
 #include <algorithm>
 

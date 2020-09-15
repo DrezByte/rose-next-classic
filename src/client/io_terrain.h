@@ -1,21 +1,19 @@
-/*
-    $Header: /Client/IO_Terrain.h 100   05-01-26 1:54p Navy $
-*/
 #ifndef __IO_TERRAIN_H
 #define __IO_TERRAIN_H
+
 #include "IO_Basic.h"
 #include "IO_Material.h"
 #include "IO_Effect.h"
-#include "Common\IO_STB.h"
-#include "Sound\IO_Sound.h"
-#include "Object.h"
-#include "Common\CRegenAREA.h"
-#include "CEconomy.h"
 
-#include "Util\\CFileSystem.h"
-#include "Terrain\WideTerrain.h"
-#include "Terrain\PatchManager.h"
-#include "Terrain/TerrainDef.h"
+#include "ceconomy.h"
+#include "object.h"
+#include "common/cregenarea.h"
+#include "common/io_stb.h"
+#include "sound/io_sound.h"
+
+#include "terrain/patchmanager.h"
+#include "terrain/terraindef.h"
+#include "util/cfileSystem.h"
 
 #include <list>
 
@@ -231,42 +229,10 @@ enum MAP_LUMP_TYPE {
 };
 enum { MAP_EMPTY = 0, MAP_USING, MAP_DIRTY };
 
-//----------------------------------------------------------------------------------------------------
-///
-/// Map class. One map container..
-///
-//----------------------------------------------------------------------------------------------------
-
 class CMAP {
-private:
-    static int* m_pObjectIndex[LUMP_MAP_MAX];
-    HNODE m_hLightMAP;
-    short m_nUseMODE;
-    short m_nXPatchCnt;
-    short m_nYPatchCnt;
-
-    CMAP_PATCH m_PATCH[PATCH_COUNT_PER_MAP_AXIS][PATCH_COUNT_PER_MAP_AXIS];
-    //   추가
-
-    float** m_ppHeight; //[ VERTEX_COUNT_PER_MAP_AXIS ][ VERTEX_COUNT_PER_MAP_AXIS ];
-
-    float m_fPatchHeightMN[PATCH_COUNT_PER_MAP_AXIS * PATCH_COUNT_PER_MAP_AXIS][2]; //    추가
-    float m_fQuadPatchHeightMN[85][2]; //    추가
-
-    classDLLIST<HNODE> m_OceanLIST;
-    classDLLIST<HNODE> m_OceanMatLIST;
-
-    void ReadMapINFO(CFileSystem* pFileSystem, long lOffset);
-    void ReadOceanINFO(CFileSystem* pFileSystem, long lOffset);
-    void ReadObjINFO(CFileSystem* pFileSystem, long lOffset, int iType);
-    bool LoadLightMapINFO(int iLumpType, char* szLightFileINF, char* szPath);
-
-    void GetHeightsByCoordinates(float fWorldX,
-        float fWorldY,
-        float fHeights[4],
-        float* pfWeightHoriz = NULL,
-        float* pfWeightVert = NULL);
-    POINT GetMapIndexFromWorld(float fWorldX, float fWorldY);
+public:
+    CQuadPatchManager m_QuadManager;
+    std::list<CMAP_PATCH*> m_PatchUpdateList;
 
 public:
     CMAP();
@@ -293,49 +259,48 @@ public:
     void GetNormal(float fWorldX, float fWorldY, D3DXVECTOR3& vNormal);
     void MappingToZONE(short nXFrom3x3, short nYFrom3x3);
 
-#ifdef __VIRTUAL_SERVER
-    classDLLNODE<CRegenAREA>* m_pRegenNODE;
-
-    int RegenCHAR(CRegenPOINT* pRegenPOINT, int iCharIDX, float fXPos, float fYPos);
-#endif
-
     CMAP_PATCH* GetPATCH(int iX, int iY) { return &m_PATCH[iY][iX]; }
     CQuadPatchManager* GetQaudManager() { return &m_QuadManager; }
+
     bool
     AddObject(int iObjectIndex, D3DXVECTOR3& Position, D3DXQUATERNION& Rotate, D3DXVECTOR3& Scale);
+
     void
     AddSound(D3DVECTOR& Position, char* szSoundFile, unsigned int uiInterval, unsigned uiRange);
     void AddEffect(D3DVECTOR& Position, char* szEffectFile);
 
-public:
-    ///
-    /// 현재 월드 위치로 해당 패치를 구하기
-    ///
     CMAP_PATCH* GetPatchFromWorld(float fWorldX, float fWorldY);
-    CQuadPatchManager m_QuadManager;
-
     void CompareSizePath2ObjAll();
 
-    ///
-    /// 맵 로딩후 쿼드트리 재구성이 필요한 패치들
-    ///
-    std::list<CMAP_PATCH*> m_PatchUpdateList;
-    // CChatBox* pBox = NULL;
+private:
+    void ReadMapINFO(CFileSystem* pFileSystem, long lOffset);
+    void ReadOceanINFO(CFileSystem* pFileSystem, long lOffset);
+    void ReadObjINFO(CFileSystem* pFileSystem, long lOffset, int iType);
+    bool LoadLightMapINFO(int iLumpType, char* szLightFileINF, char* szPath);
 
-    // std::list< CChatBox* >::iterator begin = m_ActiveChatBoxList.begin();
+    void GetHeightsByCoordinates(float fWorldX,
+        float fWorldY,
+        float fHeights[4],
+        float* pfWeightHoriz = NULL,
+        float* pfWeightVert = NULL);
+    POINT GetMapIndexFromWorld(float fWorldX, float fWorldY);
 
-    // for(; begin != m_ActiveChatBoxList.end() ; ++begin )
-    //{
-    //	pBox = *begin;
+private:
+    static int* m_pObjectIndex[LUMP_MAP_MAX];
+    HNODE m_hLightMAP;
+    short m_nUseMODE;
+    short m_nXPatchCnt;
+    short m_nYPatchCnt;
 
-    //	/// 이미 다른 말중이라면.. 갱신..
-    //	if( iCharIndex == pBox->GetChatIndex() )
-    //	{
-    //		pBox->SetMember( iCharIndex, Msg, Color );
-    //		return;
-    //	}
-    //}
-    /// 다사용후에는 m_patchUpdateList.clear()
+    CMAP_PATCH m_PATCH[PATCH_COUNT_PER_MAP_AXIS][PATCH_COUNT_PER_MAP_AXIS];
+
+    float** m_ppHeight; //[ VERTEX_COUNT_PER_MAP_AXIS ][ VERTEX_COUNT_PER_MAP_AXIS ];
+
+    float m_fPatchHeightMN[PATCH_COUNT_PER_MAP_AXIS * PATCH_COUNT_PER_MAP_AXIS][2]; //    추가
+    float m_fQuadPatchHeightMN[85][2]; //    추가
+
+    classDLLIST<HNODE> m_OceanLIST;
+    classDLLIST<HNODE> m_OceanMatLIST;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -379,18 +344,32 @@ struct Brush {
     int type;
 };
 
+/*
+    CTERRAIN represents a single map in the game.
+
+    Each map is broken down into a grid of chunks with each chunk being
+    handled independently. The data for each chunk is saved to disk in the
+    TIL, HIM, IFO formats using the coordinates of the chunk (e.g. 30_30.TIL).
+    Each chunk also has a directory containing the lightmaps.
+
+    Each chunk is broken down into a grid of tiles (16x16). Each tile uses
+    a predefined brush to paint textures to that tile. Blending is handled by
+    the shader.
+
+    CTERRAIN: A single map
+    CMAP: A singe chunk
+    CMAP_PATCH: A single tile in a chunk
+    CPatchManager: Manages inserting/removing patches to/from the scene
+    CQuadPatchManger: Manages view culling??
+*/
 #define MAX_MAP_BUFFER (3 * 3 + 6)
+
 class CTERRAIN {
 public:
     std::vector<Brush> brushes;
 
 private:
     CRITICAL_SECTION m_csZONE;
-
-    /// 개선된 광대역 지형관리를 위한 클래스..
-    CWideTerrain m_WideTerrain;
-
-    /// 패치 관리를 위한 클래스
 
     short m_nZoneNO;
     CStrVAR m_ZoneDIR;
@@ -552,12 +531,6 @@ public:
     void UpdatePatchManager(short nCenterMapXIDX, short nCenterMapYIDX);
     void InsertCameraPatch(float xChar, float yChar);
 
-    //----------------------------------------------------------------------------------------------------
-    /// @brief Wide terrain
-    //----------------------------------------------------------------------------------------------------
-    void SubWideMap(WORD wUpdateFLAG);
-
-    /// 현재 등록된 패치 개수
     static int m_RegistedPatchCnt;
 };
 
