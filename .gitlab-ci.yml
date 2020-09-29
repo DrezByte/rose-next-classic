@@ -1,0 +1,32 @@
+default:
+    tags:
+        - windows
+
+build-debug:
+    stage: build
+    script: scripts/build.ps1 -config debug
+    only:
+        - master
+        - merge_requests
+        - tags
+    artifacts:
+        paths:
+            - bin/debug/*.exe
+            - bin/debug/*.dll
+            - bin/debug/thirdparty/*.exe
+            - bin/debug/thirdparty/*.dll
+
+
+build-release:
+    stage: build
+    script: scripts/build.ps1 -config release
+    only:
+        - master
+        - merge_requests
+        - tags
+    artifacts:
+        paths:
+            - bin/release/*.exe
+            - bin/release/*.dll
+            - bin/release/thirdparty/*.exe
+            - bin/release/thirdparty/*.dll
