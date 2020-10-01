@@ -46,6 +46,7 @@ private:
     CTCommand* m_pCmdItemEquiped;
     CTCommand* m_pCmdItemBullet;
     CTCommand* m_pCmdItemPatEquiped;
+    CTCommand* m_pCmdItemEquipCostumeInInventory;
 
     CTEventItem* m_pEvent;
 };

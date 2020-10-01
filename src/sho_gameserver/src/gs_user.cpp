@@ -2731,6 +2731,13 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
         // 주변에 무기 바뀜을 통보...
         this->Send_gsv_EQUIP_ITEM(nEquipInvIDX, pEquipITEM);
 
+        // If a costume item is equiped, show this one instead of equiped item
+        tagITEM* costume_item = &this->get_costume_item(nEquipInvIDX);
+        if (!costume_item->IsEmpty()) {
+            this->send_gameserver_equip_costume_item(nEquipInvIDX + INVENTORY_COSTUME_ITEM0,
+                costume_item);
+        }
+
         if (this->GetPARTY()) {
             // 변경에 의해 옵션이 붙어 회복이 바뀌면 파티원에게 전송.
             if (btCurCON != this->GetCur_CON() || btRecvHP != this->m_btRecoverHP
@@ -2769,6 +2776,101 @@ classUSER::Recv_cli_EQUIP_ITEM(t_PACKET* pPacket) {
 
     return this->Change_EQUIP_ITEM(pPacket->m_cli_EQUIP_ITEM.m_nEquipInvIDX,
         pPacket->m_cli_EQUIP_ITEM.m_nWeaponInvIDX);
+}
+
+bool
+classUSER::send_gameserver_equip_costume_item(short equip_idx, tagITEM* item) {
+    classPACKET* packet = Packet_AllocNLock();
+    if (!packet) {
+        return false;
+    }
+
+    packet->m_HEADER.m_wType = GSV_EQUIP_COSTUME_ITEM;
+    packet->m_HEADER.m_nSize = sizeof(gsv_EQUIP_COSTUME_ITEM);
+    packet->m_gsv_EQUIP_COSTUME_ITEM.object_idx = this->Get_INDEX();
+
+    packet->m_gsv_EQUIP_COSTUME_ITEM.equip_idx = equip_idx;
+    packet->m_gsv_EQUIP_COSTUME_ITEM.part_item.m_nItemNo = item->GetItemNO();
+    packet->m_gsv_EQUIP_COSTUME_ITEM.part_item.m_nGEM_OP = item->GetGemNO();
+    packet->m_gsv_EQUIP_COSTUME_ITEM.part_item.m_cGrade = item->GetGrade();
+    packet->m_gsv_EQUIP_COSTUME_ITEM.part_item.m_bHasSocket = item->m_bHasSocket;
+
+    this->GetZONE()->SendPacketToSectors(this, packet);
+    Packet_ReleaseNUnlock(packet);
+
+    return true;
+}
+
+bool
+classUSER::receive_client_equip_costume_item(t_PACKET* packet) {
+    if (packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx < INVENTORY_COSTUME_ITEM0
+        || packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx
+            > INVENTORY_COSTUME_ITEM0 + MAX_COSTUME_IDX) {
+        return IS_HACKING(this, "receive_client_equip_costume_item Invalid costume idx");
+    }
+
+    classPACKET* pCPacket = Packet_AllocNLock();
+    pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT = 0;
+
+    tagITEM* item = &m_Inventory.m_ItemLIST[packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx];
+
+    if (packet->m_cli_EQUIP_COSTUME_ITEM.item_idx == 0) {
+        if (item->GetTYPE() && item->GetTYPE() < ITEM_TYPE_USE) {
+            const short inventory_idx = this->Add_ITEM(*item);
+            if (inventory_idx > 0) {
+                pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT = 2;
+
+                pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[0].m_btInvIDX =
+                    (BYTE)packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx;
+                pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[0].m_ITEM.Clear();
+
+                pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_btInvIDX = (BYTE)inventory_idx;
+                pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_ITEM = *item;
+
+                this->ClearITEM(packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx);
+            }
+        }
+    } else {
+        tagITEM equip_item = m_Inventory.m_ItemLIST[packet->m_cli_EQUIP_COSTUME_ITEM.item_idx];
+        if (this->Check_EquipCondition(equip_item,
+                packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx - INVENTORY_COSTUME_ITEM0)
+            && equip_item.IsEquipITEM()) {
+            pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT = 2;
+
+            m_Inventory.m_ItemLIST[packet->m_cli_EQUIP_COSTUME_ITEM.item_idx] = *item;
+            *item = equip_item;
+
+            pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[0].m_btInvIDX = 
+                (BYTE)packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx;
+            pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[0].m_ITEM =
+                m_Inventory.m_ItemLIST[packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx];
+
+            pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_btInvIDX = 
+                (BYTE)packet->m_cli_EQUIP_COSTUME_ITEM.item_idx;
+            pCPacket->m_gsv_SET_INV_ONLY.m_sInvITEM[1].m_ITEM =
+                m_Inventory.m_ItemLIST[packet->m_cli_EQUIP_COSTUME_ITEM.item_idx];
+        }
+    }
+
+    if (pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT) {
+        this->set_costume_item(packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx);
+
+        pCPacket->m_HEADER.m_wType = GSV_SET_INV_ONLY;
+        pCPacket->m_HEADER.m_nSize = sizeof(gsv_SET_INV_ONLY)
+            + pCPacket->m_gsv_SET_INV_ONLY.m_btItemCNT * sizeof(tag_SET_INVITEM);
+        this->SendPacket(pCPacket);
+        Packet_ReleaseNUnlock(pCPacket);
+
+        // When costume item is unequiped we return the normal equiped item
+        if (packet->m_cli_EQUIP_COSTUME_ITEM.item_idx == 0) {
+            item = &m_Inventory.m_ItemLIST[packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx
+                - INVENTORY_COSTUME_ITEM0];
+        }
+
+        this->send_gameserver_equip_costume_item(packet->m_cli_EQUIP_COSTUME_ITEM.equip_idx, item);
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -7570,6 +7672,9 @@ classUSER::Proc_ZonePACKET(t_PACKET* pPacket) {
 
         case CLI_EQUIP_ITEM:
             return Recv_cli_EQUIP_ITEM(pPacket);
+
+        case CLI_EQUIP_COSTUME_ITEM:
+            return receive_client_equip_costume_item(pPacket);
 
         case CLI_ASSEMBLE_RIDE_ITEM:
             return Recv_cli_ASSEMBLE_RIDE_ITEM(pPacket);

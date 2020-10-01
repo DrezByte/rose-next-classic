@@ -233,7 +233,7 @@
 #define CLI_SET_BULLET 0x07ab
 #define GSV_SET_BULLET 0x07ab
 
-//#define	CLI_CHANGE_SKIN				0x07ac
+//#define	CLI_CHANGE_SKIN	0x07ac
 #define GSV_CHANGE_SKIN 0x07ac
 
 #define CLI_BANK_LIST_REQ 0x07ad
@@ -385,6 +385,9 @@
 #define SRV_UPDATE_NAME 0x07ec
 #define PXY_UPDATE_NAME 0x07ed
 #define PXY_SET_RIGHTS 0x07ef
+
+#define GSV_EQUIP_COSTUME_ITEM 0x07f0
+#define CLI_EQUIP_COSTUME_ITEM 0x07f0
 
 struct cli_CHECK_AUTH: public t_PACKETHEADER {};
 
@@ -666,6 +669,7 @@ struct gsv_SELECT_CHAR: public t_PACKETHEADER {
     short m_nReviveZoneNO;
 
     tagPartITEM m_PartITEM[MAX_BODY_PART];
+    tagPartITEM costume[MAX_BODY_PART];
     //	tagPartITEM			m_RideITEM[ MAX_RIDING_PART ];
 
     tagBasicINFO m_BasicINFO;
@@ -911,6 +915,7 @@ struct gsv_AVT_CHAR: public tag_ADD_CHAR {
     short m_nPsvAtkSpeed; // 패시브 값만...  기본속도, 지속에 의해 보정된값 제외 ..
     BYTE m_btWeightRate; // 현재소지량/최대소지량*100
     tagPartITEM m_PartITEM[MAX_BODY_PART];
+    tagPartITEM costume[MAX_BODY_PART];
     tagShotDATA m_sShotItem[MAX_SHOT_TYPE];
 
     short m_nJOB;
@@ -1255,10 +1260,10 @@ struct gsv_SET_ITEM_LIFE: public t_PACKETHEADER {
     short m_nLife; // 서버에서의 현재 수명
 };
 
-// struct cli_CHANGE_SKIN : public t_PACKETHEADER {
-//	BYTE	m_btBodyIDX;
-//	short	m_nItemNO;
-//} ;
+//struct cli_CHANGE_SKIN : public t_PACKETHEADER {
+//    BYTE m_btBodyIDX;
+//	short m_nItemNO;
+//};
 struct gsv_CHANGE_SKIN: public t_PACKETHEADER {
     WORD m_wObjectIDX;
     WORD m_wAbilityTYPE;
@@ -2481,6 +2486,17 @@ struct pxy_SET_RIGHTS: public t_PACKETHEADER {
     DWORD wRIGHT;
 };
 
+struct cli_EQUIP_COSTUME_ITEM: public t_PACKETHEADER {
+    short equip_idx;
+    short item_idx;
+};
+
+struct gsv_EQUIP_COSTUME_ITEM: public t_PACKETHEADER {
+    WORD object_idx;
+    short equip_idx;
+    tagPartITEM part_item;
+};
+
 //-------------------------------------------------------------------------------------------------
 
 #if defined(__SERVER) && !defined(__SKIP_SRV_PROTOTYPE)
@@ -2665,7 +2681,7 @@ struct t_PACKET {
 
         gsv_SET_ITEM_LIFE m_gsv_SET_ITEM_LIFE;
 
-        // cli_CHANGE_SKIN				m_cli_CHANGE_SKIN;
+        // cli_CHANGE_SKIN m_cli_CHANGE_SKIN;
         gsv_CHANGE_SKIN m_gsv_CHANGE_SKIN;
 
         cli_DROP_ITEM m_cli_DROP_ITEM;
@@ -2854,6 +2870,9 @@ struct t_PACKET {
         gsv_UPDATE_NAME m_gsv_UPDATE_NAME;
         pxy_UPDATE_NAME m_pxy_UPDATE_NAME;
         pxy_SET_RIGHTS m_pxy_SET_RIGHTS;
+
+        cli_EQUIP_COSTUME_ITEM m_cli_EQUIP_COSTUME_ITEM;
+        gsv_EQUIP_COSTUME_ITEM m_gsv_EQUIP_COSTUME_ITEM;
 
 #if defined(__SERVER) && !defined(__SKIP_SRV_PROTOTYPE)
         gsv_LOG_SQL m_gsv_LOG_SQL;

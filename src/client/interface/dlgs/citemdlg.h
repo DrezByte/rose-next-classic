@@ -46,6 +46,8 @@ public:
     void AddActionEventListener2Slots();
     void RemoveActionEventListener2Slots();
 
+    bool is_costume_tab_open();
+
 private:
     void SwitchIcon(int iReal,
         int iVirtual); /// 실제 인벤토리 인덱스와 가상 인벤토리인덱스로 아이콘 위치 이동
@@ -58,9 +60,7 @@ private:
     ProcessSlots(unsigned uiMsg, WPARAM wParam, LPARAM lParam); /// 슬롯들의 CTDialog::Process처리
 
     CWinCtrl* FindChildInPane(unsigned uiPaneID, unsigned uiChildID);
-    void Minimize(); /// 최소화 처리
-    void Maximize(); /// 최대화 처리
-
+    
     bool IsAvailableRepair(CIcon* pIcon); /// 수리 가능한 아이템인가?
 
 private:
@@ -70,24 +70,28 @@ private:
         IID_BTN_MONEY = 12,
         IID_BTN_EQUIP_PAT = 23,
         IID_BTN_EQUIP_AVATAR = 33,
+        IID_BTN_EQUIP_COSTUME = 43,
         IID_TABBEDPANE_INVEN_ITEM = 50,
         IID_BTN_INVEN_EQUIP = 53,
         IID_BTN_INVEN_USE = 63,
         IID_BTN_INVEN_ETC = 73,
         IID_TABBEDPANE_INVEN_PAT = 100,
         IID_PANE_EQUIP = 200,
-        IID_BTN_MINIMIZE = 213,
-        IID_BTN_MAXIMIZE = 214,
         IID_PANE_INVEN = 300
     };
-    int m_iEquipTab; /// 0 ~ 1
+
+    enum {
+        EQUIPMENT_TAB_ITEMS,
+        EQUIPMENT_TAB_TUNING,
+        EQUIPMENT_TAB_COSTUME
+    };
+    int m_iEquipTab; /// 0 ~ 2
     int m_iInventoryTab; /// 0 ~ 2
 
     CSlot m_AvatarEquipSlots[MAX_EQUIP_IDX - 1]; /// 캐릭터 아이템 장착 슬롯
     CSlot m_BulletEquipSlots[MAX_SHOT_TYPE]; /// 소모탄 아이콘 슬롯
-
     CSlot m_PatEquipSlots[MAX_RIDING_PART]; /// PAT 아이템 장착 슬롯
-
+    CSlot costume_slots[MAX_COSTUME_IDX];
     CSlot m_ItemSlots[MAX_INV_TYPE][INVENTORY_PAGE_SIZE]; /// 모든 인벤토리 아이템 슬롯
 
     CDragItem* m_pInvenDragItem; /// 인벤토리의 아이템 아이콘 드래그 아이템
@@ -95,7 +99,5 @@ private:
 
     CTCmdNumberInput* m_pCmdDropMoney;
     CTCmdNumberInput* m_pCmdAddMyMoney2Exchange;
-
-    bool m_bMinimize; /// 최소화 or 최대화
 };
 #endif

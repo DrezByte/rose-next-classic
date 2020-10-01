@@ -925,6 +925,7 @@ CGame::CreateSelectedAvata() {
 
     //	g_pAVATAR->SetAllPARTS( m_SelectedAvataInfo.m_nPartItemIDX );
     g_pAVATAR->SetAllPARTS(m_SelectedAvataInfo.m_PartITEM);
+    g_pAVATAR->set_costume(m_SelectedAvataInfo.costume);
 
     /// Add Observer to CItemSlot<-
     CItemSlot* pItemSlot = g_pAVATAR->GetItemSlot();

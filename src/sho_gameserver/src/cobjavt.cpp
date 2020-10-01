@@ -84,6 +84,10 @@ CObjAVT::Make_gsv_ADD_OBJECT(classPACKET* pCPacket) {
         this->m_PartITEM,
         sizeof(tagPartITEM) * MAX_BODY_PART);
 
+    ::CopyMemory(pCPacket->m_gsv_AVT_CHAR.costume,
+        this->costume,
+        sizeof(tagPartITEM) * MAX_BODY_PART);
+
     pCPacket->m_gsv_AVT_CHAR.m_sShotItem[SHOT_TYPE_ARROW].m_wShotITEM =
         this->m_Inventory.m_ItemSHOT[SHOT_TYPE_ARROW].GetHEADER();
     pCPacket->m_gsv_AVT_CHAR.m_sShotItem[SHOT_TYPE_BULLET].m_wShotITEM =
@@ -211,6 +215,19 @@ CObjAVT::SetRideITEM(short nRideInvIDX) {
 
     if (this->GetCur_MOVE_MODE() == MOVE_MODE_DRIVE)
         this->UpdateAbility(); // Å¾½Â ¾ÆÀÌÅÛ ¼³Á¤
+}
+
+void
+CObjAVT::set_costume_item(short equip_idx) {
+    short part_index = s_nEquipIdxToPartNO[equip_idx - INVENTORY_COSTUME_ITEM0];
+    if (part_index < 0) {
+        return;
+    }
+
+    this->costume[part_index].m_nItemNo = this->m_Inventory.m_ItemLIST[equip_idx].GetItemNO();
+    this->costume[part_index].m_nGEM_OP = this->m_Inventory.m_ItemLIST[equip_idx].GetGemNO();
+    this->costume[part_index].m_cGrade = this->m_Inventory.m_ItemLIST[equip_idx].GetGrade();
+    this->costume[part_index].m_bHasSocket = this->m_Inventory.m_ItemLIST[equip_idx].m_bHasSocket;
 }
 
 //-------------------------------------------------------------------------------------------------

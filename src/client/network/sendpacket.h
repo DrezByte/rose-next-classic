@@ -69,6 +69,9 @@ public:
     void Send_cli_CHANGE_SKIN(BYTE btBodyIDX, short nItemNO);
 
     void Send_cli_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX);
+
+    void send_client_equip_costume_item(short equip_idx, short item_idx);
+
     bool Send_cli_GET_FIELDITEM_REQ(CGameOBJ* pUSER, int iServerObject);
 
     // 필드에 아이템을 떨군다...

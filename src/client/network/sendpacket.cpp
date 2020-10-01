@@ -704,10 +704,10 @@ CSendPACKET::Send_cli_CHANGE_SKIN(BYTE btBodyIDX, short nItemNO) {
     m_pSendPacket->m_gsv_CHANGE_SKIN.m_nItemNO = nItemNO;
 #else
     /*m_pSendPacket->m_HEADER.m_wType = CLI_CHANGE_SKIN;
-    m_pSendPacket->m_HEADER.m_nSize = sizeof( cli_CHANGE_SKIN );
+    m_pSendPacket->m_HEADER.m_nSize = sizeof(cli_CHANGE_SKIN);
 
-    m_pSendPacket->m_cli_CHANGE_SKIN.m_btBodyIDX  = btBodyIDX;
-    m_pSendPacket->m_cli_CHANGE_SKIN.m_nItemNO	  = nItemNO;*/
+    m_pSendPacket->m_cli_CHANGE_SKIN.m_btBodyIDX = btBodyIDX;
+    m_pSendPacket->m_cli_CHANGE_SKIN.m_nItemNO = nItemNO;*/
 #endif
     this->Send_PACKET(m_pSendPacket);
 }
@@ -1840,4 +1840,29 @@ CSendPACKET::Send_cli_SET_RIGHTS(DWORD dwRight) {
     m_pSendPacket->m_pxy_SET_RIGHTS.wRIGHT = dwRight;
 
     Send_PACKET(m_pSendPacket);
+}
+
+void
+CSendPACKET::send_client_equip_costume_item(short equip_idx, short item_idx) {
+    if (g_pAVATAR->m_bCastingSTART && g_pAVATAR->bCanActionActiveSkill()) {
+        return;
+    }
+
+    if (CPrivateStore::GetInstance().IsOpened()) {
+        return;
+    }
+
+    if (g_pAVATAR->IsPersonalStoreMode()) {
+        return;
+    }
+
+    _ASSERT(equip_idx >= INVENTORY_COSTUME_ITEM0
+        && equip_idx <= INVENTORY_COSTUME_ITEM0 + MAX_COSTUME_IDX);
+
+    m_pSendPacket->m_HEADER.m_wType = CLI_EQUIP_COSTUME_ITEM;
+    m_pSendPacket->m_HEADER.m_nSize = sizeof(cli_EQUIP_ITEM);
+    m_pSendPacket->m_cli_EQUIP_COSTUME_ITEM.equip_idx = equip_idx;
+    m_pSendPacket->m_cli_EQUIP_COSTUME_ITEM.item_idx = item_idx;
+
+    this->Send_PACKET(m_pSendPacket);
 }

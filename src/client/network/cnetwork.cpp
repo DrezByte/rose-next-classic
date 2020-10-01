@@ -294,6 +294,10 @@ CNetwork::Proc_ZonePacket() {
             Recv_gsv_EQUIP_ITEM();
             break;
 
+        case GSV_EQUIP_COSTUME_ITEM:
+            receive_gameserver_equip_costume_item();
+            break;
+
         case GSV_ADD_FIELDITEM:
             Recv_gsv_ADD_FIELDITEM();
             break;

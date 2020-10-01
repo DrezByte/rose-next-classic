@@ -19,39 +19,48 @@
 
 #include "tgamectrl/actionevent.h"
 #include "tgamectrl/tpane.h"
+#include "tgamectrl/tabbedpane.h"
 
 const int MAX_DROP_MONEY = 100000; ///돈을 바닥에 버릴경우 최대 10만까지
 
 const POINT c_ptEquipedSlotOffsets[] = {
-    {19, 67}, /// Face
-    {69, 67}, /// Helmet
-    {69, 113}, /// Armor
-    {119, 67}, /// Knapsack
-    {19, 159}, /// Gauntlet
-    {69, 159}, /// boots
-    {19, 113}, /// Weapon_R
-    {119, 113}, /// Weapon_L
-    {69, 205}, /// Necklace
-    {19, 205}, /// Ring
-    {119, 205} /// Earring
+    {23, 66}, /// Face
+    {73, 66}, /// Helmet
+    {73, 112}, /// Armor
+    {123, 66}, /// Knapsack
+    {23, 158}, /// Gauntlet
+    {73, 158}, /// boots
+    {23, 112}, /// Weapon_R
+    {123, 112}, /// Weapon_L
+    {73, 204}, /// Necklace
+    {23, 204}, /// Ring
+    {123, 204} /// Earring
 };
 
-const POINT c_ptBulletEquipSlots[] = {{169, 67}, {169, 113}, {169, 159}};
+const POINT c_ptBulletEquipSlots[] = {
+    {223, 66}, 
+    {223, 112}, 
+    {223, 158}
+};
 
 ///배틀 카트 시스템 적용으로 파츠가 1개 추가
 #if defined(_GBC)
 const POINT c_ptPatEquipSlots[] = {{19, 79}, {19, 125}, {19, 171}, {119, 79}, {119, 125}};
 #else
-const POINT c_ptPatEquipSlots[] = {{19, 68}, {19, 114}, {19, 160}, {19, 206}};
+const POINT c_ptPatEquipSlots[] = {
+    {23, 66}, 
+    {73, 66}, 
+    {123, 66}, 
+    {173, 66}
+};
 #endif
 
 CItemDlg::CItemDlg(int iType) {
     SetDialogType(iType);
     CTCommand* pCmd = NULL;
 
-    m_iEquipTab = 0;
+    m_iEquipTab = EQUIPMENT_TAB_ITEMS;
     m_iInventoryTab = 0;
-    m_bMinimize = false;
     m_pEquipDragItem = new CDragItem;
     pCmd = new CTCmdDragItemFromEquipInItemDlg;
     m_pEquipDragItem->AddTarget(iType, pCmd);
@@ -77,6 +86,13 @@ CItemDlg::CItemDlg(int iType) {
         m_PatEquipSlots[iSlot].SetOffset(c_ptPatEquipSlots[iSlot]);
         m_PatEquipSlots[iSlot].SetDragAvailable();
         m_PatEquipSlots[iSlot].SetDragItem(m_pEquipDragItem);
+    }
+
+    for (iSlot = 0; iSlot < MAX_COSTUME_IDX - 1; ++iSlot) {
+        costume_slots[iSlot].SetParent(iType);
+        costume_slots[iSlot].SetOffset(c_ptEquipedSlotOffsets[iSlot]);
+        costume_slots[iSlot].SetDragAvailable();
+        costume_slots[iSlot].SetDragItem(m_pEquipDragItem);
     }
 
     m_pInvenDragItem = new CDragItem;
@@ -153,8 +169,8 @@ CItemDlg::CItemDlg(int iType) {
     POINT ptOffset;
     for (int iItemType = 0; iItemType < MAX_INV_TYPE; ++iItemType) {
         for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot) {
-            ptOffset.x = 13 + (iSlot % 5) * (m_ItemSlots[iItemType][iSlot].GetWidth() + 1);
-            ptOffset.y = 284 + (iSlot / 5) * (m_ItemSlots[iItemType][iSlot].GetHeight() + 1);
+            ptOffset.x = 11 + (iSlot % 6) * (m_ItemSlots[iItemType][iSlot].GetWidth() + 5);
+            ptOffset.y = 279 + (iSlot / 6) * (m_ItemSlots[iItemType][iSlot].GetHeight() + 5);
             m_ItemSlots[iItemType][iSlot].SetParent(iType);
             m_ItemSlots[iItemType][iSlot].SetOffset(ptOffset);
             m_ItemSlots[iItemType][iSlot].SetDragAvailable();
@@ -180,21 +196,26 @@ CItemDlg::Draw() {
     CTDialog::Draw();
 
     int iSlot = 0;
-    if (m_iEquipTab == 1) {
-        if (!m_bMinimize)
-            for (iSlot = 0; iSlot < MAX_RIDING_PART; ++iSlot)
-                m_PatEquipSlots[iSlot].Draw();
+    if (m_iEquipTab == EQUIPMENT_TAB_TUNING) {
+        for (iSlot = 0; iSlot < MAX_RIDING_PART; ++iSlot)
+            m_PatEquipSlots[iSlot].Draw();
 
         for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
             m_ItemSlots[MAX_INV_TYPE - 1][iSlot].Draw();
-    } else {
-        if (!m_bMinimize) {
-            for (iSlot = 0; iSlot < MAX_EQUIP_IDX - 1; ++iSlot)
-                m_AvatarEquipSlots[iSlot].Draw();
-
-            for (iSlot = 0; iSlot < MAX_SHOT_TYPE; ++iSlot)
-                m_BulletEquipSlots[iSlot].Draw();
+    } else if (m_iEquipTab == EQUIPMENT_TAB_COSTUME) {
+        for (iSlot = 0; iSlot < MAX_COSTUME_IDX -1; ++iSlot) {
+            costume_slots[iSlot].Draw();
         }
+        
+        for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot) {
+            m_ItemSlots[0][iSlot].Draw();
+        }
+    } else {
+        for (iSlot = 0; iSlot < MAX_EQUIP_IDX - 1; ++iSlot)
+            m_AvatarEquipSlots[iSlot].Draw();
+
+        for (iSlot = 0; iSlot < MAX_SHOT_TYPE; ++iSlot)
+            m_BulletEquipSlots[iSlot].Draw();
 
         if (m_iInventoryTab == 1) {
             ::endSprite();
@@ -216,16 +237,16 @@ CItemDlg::Draw() {
 
     ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL],
         true,
-        40,
-        0,
+        34,
+        -5,
         D3DCOLOR_XRGB(255, 240, 0),
         "%s",
         money_buffer);
     ///무게
     ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL],
         true,
-        145,
-        0,
+        198,
+        -5,
         D3DCOLOR_XRGB(0, 210, 255),
         "%d/%d",
         g_pAVATAR->GetCur_WEIGHT(),
@@ -235,12 +256,6 @@ CItemDlg::Draw() {
 void
 CItemDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
     switch (uiProcID) {
-        case IID_BTN_MAXIMIZE:
-            Maximize();
-            break;
-        case IID_BTN_MINIMIZE:
-            Minimize();
-            break;
         case IID_BTN_ICONIZE:
             g_itMGR.AddDialogIcon(GetDialogType());
             break;
@@ -283,7 +298,7 @@ void
 CItemDlg::OnLButtonDown(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
     switch (uiProcID) {
         case IID_BTN_EQUIP_PAT: {
-            m_iEquipTab = 1;
+            m_iEquipTab = EQUIPMENT_TAB_TUNING;
 
             CWinCtrl* pCtrl;
             if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_PAT))
@@ -301,7 +316,7 @@ CItemDlg::OnLButtonDown(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
             break;
         }
         case IID_BTN_EQUIP_AVATAR: {
-            m_iEquipTab = 0;
+            m_iEquipTab = EQUIPMENT_TAB_ITEMS;
             CWinCtrl* pCtrl;
             if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_PAT))
                 pCtrl->Hide();
@@ -319,6 +334,26 @@ CItemDlg::OnLButtonDown(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
             for (int iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
                 m_ItemSlots[m_iInventoryTab][iSlot].MoveWindow(m_sPosition);
 
+            break;
+        }
+        case IID_BTN_EQUIP_COSTUME: {
+            m_iEquipTab = EQUIPMENT_TAB_COSTUME;
+            CWinCtrl* pCtrl;
+            if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_PAT))
+                pCtrl->Hide();
+
+            if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_ITEM))
+                pCtrl->Hide();
+
+            int iSlot = 0;
+            for (iSlot = 0; iSlot < MAX_COSTUME_IDX - 1; ++iSlot) {
+                costume_slots[iSlot].MoveWindow(m_sPosition);
+            }
+
+            for (int iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot) {
+                m_ItemSlots[0][iSlot].MoveWindow(m_sPosition);
+            }
+            
             break;
         }
         case IID_BTN_INVEN_EQUIP:
@@ -370,29 +405,30 @@ CItemDlg::Process(unsigned uiMsg, WPARAM wParam, LPARAM lParam) {
 void
 CItemDlg::Show() {
     CTDialog::Show();
-
     CWinCtrl* pCtrl = NULL;
+    
+    switch (m_iEquipTab) { 
+        case EQUIPMENT_TAB_ITEMS:
+            if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_PAT))
+                pCtrl->Hide();
 
-    if (m_iEquipTab == 0) {
-        if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_PAT))
-            pCtrl->Hide();
+            if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_ITEM))
+                pCtrl->Show();
+            break;
+        case EQUIPMENT_TAB_TUNING:
+            if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_PAT))
+                pCtrl->Show();
 
-        if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_ITEM))
-            pCtrl->Show();
-    } else {
-        if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_PAT))
-            pCtrl->Show();
+            if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_ITEM))
+                pCtrl->Hide();
+            break;
+        case EQUIPMENT_TAB_COSTUME:
+            if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_PAT))
+                pCtrl->Hide();
 
-        if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_ITEM))
-            pCtrl->Hide();
-    }
-
-    if (m_bMinimize) {
-        if (pCtrl = FindChildInPane(IID_PANE_EQUIP, IID_BTN_MINIMIZE))
-            pCtrl->Hide();
-    } else {
-        if (pCtrl = FindChildInPane(IID_PANE_EQUIP, IID_BTN_MAXIMIZE))
-            pCtrl->Hide();
+            if (pCtrl = FindChildInPane(IID_PANE_INVEN, IID_TABBEDPANE_INVEN_ITEM))
+                pCtrl->Hide();
+            break;
     }
 }
 
@@ -410,16 +446,15 @@ CItemDlg::Update(CObservable* pObservable, CTObject* pObj) {
         case CTEventItem::EID_ADD_ITEM: {
             CItem* pItem = pEvent->GetItem();
 
-            if (iIndex >= 1 && iIndex < MAX_EQUIP_IDX)
+            if (iIndex >= 1 && iIndex < MAX_EQUIP_IDX) {
                 m_AvatarEquipSlots[iIndex - 1].AttachIcon(pItem->CreateItemIcon());
-            else if (iIndex >= INVENTORY_SHOT_ITEM0
-                && iIndex < INVENTORY_SHOT_ITEM0 + MAX_SHOT_TYPE)
-                m_BulletEquipSlots[iIndex - INVENTORY_SHOT_ITEM0].AttachIcon(
-                    pItem->CreateItemIcon());
-            else if (iIndex >= INVENTORY_RIDE_ITEM0
-                && iIndex < INVENTORY_RIDE_ITEM0 + MAX_RIDING_PART)
+            } else if (iIndex >= INVENTORY_SHOT_ITEM0 && iIndex < INVENTORY_SHOT_ITEM0 + MAX_SHOT_TYPE) {
+                m_BulletEquipSlots[iIndex - INVENTORY_SHOT_ITEM0].AttachIcon(pItem->CreateItemIcon());
+            } else if (iIndex >= INVENTORY_RIDE_ITEM0 && iIndex < INVENTORY_RIDE_ITEM0 + MAX_RIDING_PART) {
                 m_PatEquipSlots[iIndex - INVENTORY_RIDE_ITEM0].AttachIcon(pItem->CreateItemIcon());
-            else if (iIndex >= INVENTORY_ITEM_INDEX_0 && iIndex <= INVENTORY_ITEM_INDEX_LAST) {
+            } else if (iIndex >= INVENTORY_COSTUME_ITEM0 && iIndex <= INVENTORY_COSTUME_ITEM0 + MAX_COSTUME_IDX) {
+                costume_slots[iIndex - 1 - INVENTORY_COSTUME_ITEM0].AttachIcon(pItem->CreateItemIcon());
+            } else if (iIndex >= INVENTORY_ITEM_INDEX_0 && iIndex <= INVENTORY_ITEM_INDEX_LAST) {
                 int iInvenSlotIndex = iIndex - INVENTORY_ITEM_INDEX_0;
                 int iType = iInvenSlotIndex / INVENTORY_PAGE_SIZE;
                 for (int iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot) {
@@ -440,6 +475,9 @@ CItemDlg::Update(CObservable* pObservable, CTObject* pObj) {
             else if (iIndex >= INVENTORY_RIDE_ITEM0
                 && iIndex < INVENTORY_RIDE_ITEM0 + MAX_RIDING_PART)
                 m_PatEquipSlots[iIndex - INVENTORY_RIDE_ITEM0].DetachIcon();
+            else if (iIndex >= INVENTORY_COSTUME_ITEM0
+                && iIndex <= INVENTORY_COSTUME_ITEM0 + MAX_COSTUME_IDX)
+                costume_slots[iIndex - 1 - INVENTORY_COSTUME_ITEM0].DetachIcon();
             else if (iIndex >= INVENTORY_ITEM_INDEX_0 && iIndex <= INVENTORY_ITEM_INDEX_LAST) {
                 int iInvenSlotIndex = iIndex - INVENTORY_ITEM_INDEX_0;
                 int iType = iInvenSlotIndex / INVENTORY_PAGE_SIZE;
@@ -464,12 +502,20 @@ CItemDlg::MoveWindow(POINT pt) {
     CTDialog::MoveWindow(pt);
     int iSlot;
 
-    if (m_iEquipTab == 1) {
+    if (m_iEquipTab == EQUIPMENT_TAB_TUNING) {
         for (iSlot = 0; iSlot < MAX_RIDING_PART; ++iSlot)
             m_PatEquipSlots[iSlot].MoveWindow(m_sPosition);
 
         for (int iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
             m_ItemSlots[MAX_INV_TYPE - 1][iSlot].MoveWindow(m_sPosition);
+    } else if (m_iEquipTab == EQUIPMENT_TAB_COSTUME) {
+        for (iSlot = 0; iSlot < MAX_COSTUME_IDX - 1; ++iSlot) {
+            costume_slots[iSlot].MoveWindow(m_sPosition);
+        }
+        
+        for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot) {
+            m_ItemSlots[0][iSlot].MoveWindow(m_sPosition);
+        }
     } else {
         for (iSlot = 0; iSlot < MAX_EQUIP_IDX - 1; ++iSlot)
             m_AvatarEquipSlots[iSlot].MoveWindow(m_sPosition);
@@ -488,21 +534,26 @@ CItemDlg::Update(POINT ptMouse) {
     CTDialog::Update(ptMouse);
 
     int iSlot = 0;
-    if (m_iEquipTab == 1) {
-        if (!m_bMinimize)
-            for (iSlot = 0; iSlot < MAX_RIDING_PART; ++iSlot)
-                m_PatEquipSlots[iSlot].Update(ptMouse);
+    if (m_iEquipTab == EQUIPMENT_TAB_TUNING) {
+        for (iSlot = 0; iSlot < MAX_RIDING_PART; ++iSlot)
+            m_PatEquipSlots[iSlot].Update(ptMouse);
 
         for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
             m_ItemSlots[MAX_INV_TYPE - 1][iSlot].Update(ptMouse);
-    } else {
-        if (!m_bMinimize) {
-            for (iSlot = 0; iSlot < MAX_EQUIP_IDX - 1; ++iSlot)
-                m_AvatarEquipSlots[iSlot].Update(ptMouse);
-
-            for (iSlot = 0; iSlot < MAX_SHOT_TYPE; ++iSlot)
-                m_BulletEquipSlots[iSlot].Update(ptMouse);
+    } else if (m_iEquipTab == EQUIPMENT_TAB_COSTUME) {
+        for (iSlot = 0; iSlot < MAX_COSTUME_IDX - 1; ++iSlot) {
+            costume_slots[iSlot].Update(ptMouse);
         }
+
+        for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot) {
+            m_ItemSlots[0][iSlot].Update(ptMouse);
+        }
+    } else {
+        for (iSlot = 0; iSlot < MAX_EQUIP_IDX - 1; ++iSlot)
+            m_AvatarEquipSlots[iSlot].Update(ptMouse);
+
+        for (iSlot = 0; iSlot < MAX_SHOT_TYPE; ++iSlot)
+            m_BulletEquipSlots[iSlot].Update(ptMouse);
 
         for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
             m_ItemSlots[m_iInventoryTab][iSlot].Update(ptMouse);
@@ -511,26 +562,31 @@ CItemDlg::Update(POINT ptMouse) {
 
 bool
 CItemDlg::ProcessSlots(unsigned uiMsg, WPARAM wParam, LPARAM lParam) {
-    int iSlot;
-    if (m_iEquipTab == 1) {
-        if (!m_bMinimize)
-            for (iSlot = 0; iSlot < MAX_RIDING_PART; ++iSlot)
-                if (m_PatEquipSlots[iSlot].Process(uiMsg, wParam, lParam))
-                    return true;
+    int iSlot = 0;
+    if (m_iEquipTab == EQUIPMENT_TAB_TUNING) {
+        for (iSlot = 0; iSlot < MAX_RIDING_PART; ++iSlot)
+            if (m_PatEquipSlots[iSlot].Process(uiMsg, wParam, lParam))
+                return true;
 
         for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
             if (m_ItemSlots[MAX_INV_TYPE - 1][iSlot].Process(uiMsg, wParam, lParam))
                 return true;
-    } else {
-        if (!m_bMinimize) {
-            for (iSlot = 0; iSlot < MAX_EQUIP_IDX - 1; ++iSlot)
-                if (m_AvatarEquipSlots[iSlot].Process(uiMsg, wParam, lParam))
-                    return true;
+    } else if (m_iEquipTab == EQUIPMENT_TAB_COSTUME) {
+        for (iSlot = 0; iSlot < MAX_COSTUME_IDX - 1; ++iSlot)
+            if (costume_slots[iSlot].Process(uiMsg, wParam, lParam))
+                return true;
 
-            for (iSlot = 0; iSlot < MAX_SHOT_TYPE; ++iSlot)
-                if (m_BulletEquipSlots[iSlot].Process(uiMsg, wParam, lParam))
-                    return true;
-        }
+        for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
+            if (m_ItemSlots[0][iSlot].Process(uiMsg, wParam, lParam))
+                return true;
+    } else {
+        for (iSlot = 0; iSlot < MAX_EQUIP_IDX - 1; ++iSlot)
+            if (m_AvatarEquipSlots[iSlot].Process(uiMsg, wParam, lParam))
+                return true;
+
+        for (iSlot = 0; iSlot < MAX_SHOT_TYPE; ++iSlot)
+            if (m_BulletEquipSlots[iSlot].Process(uiMsg, wParam, lParam))
+                return true;
 
         for (iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
             if (m_ItemSlots[m_iInventoryTab][iSlot].Process(uiMsg, wParam, lParam))
@@ -541,7 +597,7 @@ CItemDlg::ProcessSlots(unsigned uiMsg, WPARAM wParam, LPARAM lParam) {
 
 bool
 CItemDlg::IsInsideInven(POINT pt) {
-    RECT rc = {10, 290, 220, 530};
+    RECT rc = {10, 276, 277, 502};
     POINT ptTemp = {pt.x - m_sPosition.x, pt.y - m_sPosition.y};
 
     return PtInRect(&rc, ptTemp) ? true : false;
@@ -549,11 +605,9 @@ CItemDlg::IsInsideInven(POINT pt) {
 
 bool
 CItemDlg::IsInsideEquip(POINT pt) {
-    if (m_bMinimize)
-        return false;
-
-    RECT rc = {10, 60, 220, 250};
+    RECT rc = {10, 57, 277, 252};
     POINT ptTemp = {pt.x - m_sPosition.x, pt.y - m_sPosition.y};
+
     return PtInRect(&rc, ptTemp) ? true : false;
 }
 
@@ -565,9 +619,6 @@ CItemDlg::IsInsideEquip(POINT pt) {
 
 int
 CItemDlg::GetEquipSlot(POINT pt) {
-    if (m_bMinimize)
-        return -1;
-
     RECT rt;
     POINT ptTemp = {pt.x - m_sPosition.x, pt.y - m_sPosition.y};
 
@@ -590,7 +641,7 @@ CSlot*
 CItemDlg::GetInvenSlot(POINT pt) {
     int iInvenType = 0;
 
-    if (m_iEquipTab == 1)
+    if (m_iEquipTab == EQUIPMENT_TAB_TUNING)
         iInvenType = MAX_INV_TYPE - 1;
     else
         iInvenType = m_iInventoryTab;
@@ -601,6 +652,7 @@ CItemDlg::GetInvenSlot(POINT pt) {
 
     return NULL;
 }
+
 CWinCtrl*
 CItemDlg::FindChildInPane(unsigned uiPaneID, unsigned uiChildID) {
     CWinCtrl* pCtrl = Find(uiPaneID);
@@ -609,63 +661,6 @@ CItemDlg::FindChildInPane(unsigned uiPaneID, unsigned uiChildID) {
         return pPane->FindChild(uiChildID);
     }
     return NULL;
-}
-
-void
-CItemDlg::Minimize() {
-    CWinCtrl* pCtrl = NULL;
-    m_bMinimize = true;
-
-    if (pCtrl = FindChildInPane(IID_PANE_EQUIP, IID_BTN_MINIMIZE))
-        pCtrl->Hide();
-
-    if (pCtrl = FindChildInPane(IID_PANE_EQUIP, IID_BTN_MAXIMIZE))
-        pCtrl->Show();
-
-    if (pCtrl = Find(IID_PANE_INVEN)) {
-        pCtrl->SetOffset(0, 54);
-        SetHeight(pCtrl->GetHeight() + 54);
-    }
-
-    POINT ptOffset;
-    for (int iItemType = 0; iItemType < MAX_INV_TYPE; ++iItemType) {
-        for (int iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot) {
-            ptOffset.x = 13 + (iSlot % 5) * (m_ItemSlots[iItemType][iSlot].GetWidth() + 1);
-            ptOffset.y = 84 + (iSlot / 5) * (m_ItemSlots[iItemType][iSlot].GetHeight() + 1);
-            m_ItemSlots[iItemType][iSlot].SetOffset(ptOffset);
-        }
-    }
-
-    MoveWindow(m_sPosition);
-}
-
-void
-CItemDlg::Maximize() {
-    CWinCtrl* pCtrl = NULL;
-    m_bMinimize = false;
-
-    if (pCtrl = FindChildInPane(IID_PANE_EQUIP, IID_BTN_MINIMIZE))
-        pCtrl->Show();
-
-    if (pCtrl = FindChildInPane(IID_PANE_EQUIP, IID_BTN_MAXIMIZE))
-        pCtrl->Hide();
-
-    if (pCtrl = Find(IID_PANE_INVEN)) {
-        pCtrl->SetOffset(0, 254);
-        SetHeight(pCtrl->GetHeight() + 254);
-    }
-
-    POINT ptOffset;
-    for (int iItemType = 0; iItemType < MAX_INV_TYPE; ++iItemType) {
-        for (int iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot) {
-            ptOffset.x = 13 + (iSlot % 5) * (m_ItemSlots[iItemType][iSlot].GetWidth() + 1);
-            ptOffset.y = 284 + (iSlot / 5) * (m_ItemSlots[iItemType][iSlot].GetHeight() + 1);
-
-            m_ItemSlots[iItemType][iSlot].SetOffset(ptOffset);
-        }
-    }
-
-    MoveWindow(m_sPosition);
 }
 
 void
@@ -886,6 +881,9 @@ CItemDlg::AddActionEventListener2Slots() {
     for (int iType = 0; iType < MAX_INV_TYPE; ++iType)
         for (int iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
             m_ItemSlots[iType][iSlot].AddActionListener(this);
+
+    for (iIndex = 0; iIndex < MAX_COSTUME_IDX - 1; ++iIndex)
+        costume_slots[iIndex].AddActionListener(this);
 }
 void
 CItemDlg::RemoveActionEventListener2Slots() {
@@ -899,4 +897,12 @@ CItemDlg::RemoveActionEventListener2Slots() {
     for (int iType = 0; iType < MAX_INV_TYPE; ++iType)
         for (int iSlot = 0; iSlot < INVENTORY_PAGE_SIZE; ++iSlot)
             m_ItemSlots[iType][iSlot].RemoveActionListener(this);
+
+    for (iIndex = 0; iIndex < MAX_COSTUME_IDX - 1; ++iIndex)
+        costume_slots[iIndex].RemoveActionListener(this);
+}
+
+bool
+CItemDlg::is_costume_tab_open() {
+    return this->m_iEquipTab == EQUIPMENT_TAB_COSTUME;
 }

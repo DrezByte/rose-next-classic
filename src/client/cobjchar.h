@@ -1267,6 +1267,16 @@ public:
     void SetAllPARTS(tagPartITEM* pPartItemIDX) {
         ::CopyMemory(m_sPartItemIDX, pPartItemIDX, sizeof(tagPartITEM) * MAX_BODY_PART);
     }
+    
+    void set_costume(tagPartITEM* part_item) {
+        for (int index = BODY_PART_HELMET; index < MAX_BODY_PART; index++) {
+            if (!part_item[index].m_nItemNo) {
+                continue;
+            }
+            this->SetPartITEM(index, part_item[index]);
+        }
+    }
+
     void SetAllPetPARTS(tagPartITEM* pPetPartItemIDX) {
         ::CopyMemory(m_sPetPartItemIDX, pPetPartItemIDX, sizeof(tagPartITEM) * MAX_RIDING_PART);
     }

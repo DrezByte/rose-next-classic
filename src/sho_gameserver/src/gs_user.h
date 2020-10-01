@@ -269,6 +269,9 @@ private:
     bool Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX);
     bool Recv_cli_EQUIP_ITEM(t_PACKET* pPacket);
 
+    bool send_gameserver_equip_costume_item(short equip_idx, tagITEM* item);
+    bool receive_client_equip_costume_item(t_PACKET* packet);
+
     bool Recv_cli_ASSEMBLE_RIDE_ITEM(t_PACKET* pPacket);
 
     bool Recv_cli_STORE_TRADE_REQ(t_PACKET* pPacket);

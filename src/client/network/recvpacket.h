@@ -103,6 +103,8 @@ public:
     void Recv_gsv_CHANGE_SKIN();
     void Recv_gsv_EQUIP_ITEM();
 
+    void receive_gameserver_equip_costume_item();
+
     void Recv_gsv_ADD_FIELDITEM();
     void Recv_gsv_GET_FIELDITEM_REPLY();
 

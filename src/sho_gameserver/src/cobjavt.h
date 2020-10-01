@@ -260,6 +260,22 @@ public:
         };
     };
 
+    union {
+        tagPartITEM costume[MAX_BODY_PART];
+        struct {
+            tagPartITEM face;
+            tagPartITEM hair;
+            tagPartITEM helmet;
+            tagPartITEM armor;
+            tagPartITEM gauntlet;
+            tagPartITEM boots;
+            tagPartITEM mask;
+            tagPartITEM knapsack;
+            tagPartITEM weapon_r;
+            tagPartITEM weapon_l;
+        };
+    };
+
     // CLAN interface ......
     tag_MY_CLAN m_CLAN;
     CStrVAR m_ClanNAME;
@@ -374,6 +390,9 @@ public:
     }
     void SetPartITEM(short nEquipInvIDX);
     void SetRideITEM(short nRideInvIDX);
+
+    tagITEM get_costume_item(short equip_idx) { return m_Inventory.costume[equip_idx]; }
+    void set_costume_item(short equip_idx);
 
     short GetPsv_ATKSPEED() { return this->m_nPassiveAttackSpeed; }
     virtual void UpdateAbility() {

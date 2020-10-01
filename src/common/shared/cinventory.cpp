@@ -186,6 +186,33 @@ CInventory::GetBodyPartByEquipSlot(short nEquipSlot) {
     return nBodyPartIDX;
 }
 
+short
+CInventory::GetBodyPartByEquipCostumeSlot(short nEquipSlot) {
+    short nBodyPartIDX = MAX_BODY_PART;
+    switch (nEquipSlot) {
+        case COSTUME_IDX_FACE_ITEM:
+            nBodyPartIDX = BODY_PART_FACE_ITEM;
+            break;
+        case COSTUME_IDX_HELMET:
+            nBodyPartIDX = BODY_PART_HELMET;
+            break;
+        case COSTUME_IDX_ARMOR:
+            nBodyPartIDX = BODY_PART_ARMOR;
+            break;
+        case COSTUME_IDX_KNAPSACK:
+            nBodyPartIDX = BODY_PART_KNAPSACK;
+            break;
+        case COSTUME_IDX_GAUNTLET:
+            nBodyPartIDX = BODY_PART_GAUNTLET;
+            break;
+        case COSTUME_IDX_BOOTS:
+            nBodyPartIDX = BODY_PART_BOOTS;
+            break;
+    }
+
+    return nBodyPartIDX;
+}
+
 tagITEM
 CInventory::LST_GetITEM(short nListNO) {
     _ASSERT(nListNO >= 0 && nListNO < INVENTORY_TOTAL_SIZE);

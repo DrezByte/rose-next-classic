@@ -677,13 +677,24 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
             continue;
         }
 
-        const size_t part_idx = inventory2part(slot);
+        size_t part_idx = inventory2part(slot);
         if (part_idx >= BODY_PART_HELMET && part_idx < MAX_BODY_PART) {
             tagPartITEM& part = basic_etc.m_PartITEM[part_idx];
             part.m_nItemNo = item_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
             part.m_cGrade = item_res.get_int32(row_idx, INV_COL_GRADE);
             part.m_nGEM_OP = item_res.get_int32(row_idx, INV_COL_STAT_ID);
             part.m_bHasSocket = item_res.get_bool(row_idx, INV_COL_SOCKET) ? 1 : 0;
+        }
+
+        if (slot >= INVENTORY_COSTUME_ITEM0 && slot <= INVENTORY_COSTUME_ITEM0 + MAX_COSTUME_IDX) {
+            part_idx = inventory2part(slot - INVENTORY_COSTUME_ITEM0);
+            if (part_idx >= BODY_PART_HELMET && part_idx < MAX_BODY_PART) {
+                tagPartITEM& part = basic_etc.costume[part_idx];
+                part.m_nItemNo = item_res.get_int32(row_idx, INV_COL_GAME_DATA_ID);
+                part.m_cGrade = item_res.get_int32(row_idx, INV_COL_GRADE);
+                part.m_nGEM_OP = item_res.get_int32(row_idx, INV_COL_STAT_ID);
+                part.m_bHasSocket = item_res.get_bool(row_idx, INV_COL_SOCKET) ? 1 : 0;
+            }
         }
 
         const size_t ride_part_idx = inventory2ride(slot);
@@ -754,6 +765,10 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         &basic_etc.m_RideITEM[0] + MAX_RIDING_PART,
         &user->m_RideITEM[0]);
 
+    std::copy(&basic_etc.costume[0], 
+        &basic_etc.costume[0] + MAX_BODY_PART, 
+        &user->costume[0]);
+
     user->m_BasicINFO.Init(0, 0, 0);
     user->m_BasicAbility.Init();
     user->m_GrowAbility.Init();
@@ -808,6 +823,10 @@ GS_CThreadSQL::Proc_cli_SELECT_CHAR(tagQueryDATA* pSqlPACKET) {
         std::copy(&basic_etc.m_PartITEM[0],
             &basic_etc.m_PartITEM[0] + MAX_BODY_PART,
             &p->m_gsv_SELECT_CHAR.m_PartITEM[0]);
+
+        std::copy(&basic_etc.costume[0],
+            &basic_etc.costume[0] + MAX_BODY_PART,
+            &p->m_gsv_SELECT_CHAR.costume[0]);
 
         std::memcpy(&p->m_gsv_SELECT_CHAR.m_BasicINFO, &basic_info, sizeof(tagBasicINFO));
         std::memcpy(&p->m_gsv_SELECT_CHAR.m_BasicAbility, &basic_ability, sizeof(tagBasicAbility));

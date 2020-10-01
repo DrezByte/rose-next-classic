@@ -19,6 +19,7 @@ public:
             tagITEM m_ItemPAGE[MAX_INV_TYPE][INVENTORY_PAGE_SIZE];
             tagITEM m_ItemSHOT[MAX_SHOT_TYPE]; // 설정된 소모탄..
             tagITEM m_ItemRIDE[MAX_RIDING_PART]; // 설정된 승용 아이템..
+            tagITEM costume[MAX_COSTUME_IDX];
         };
     };
 
@@ -45,6 +46,7 @@ public:
 
     static short GetBodyPartToItemType(short nEquipSlot);
     static short GetBodyPartByEquipSlot(short nEquipSlot);
+    static short GetBodyPartByEquipCostumeSlot(short nEquipSlot);
 
     bool IDX_GetITEM(short nIndexNO, tagITEM& OutITEM);
     bool IDX_GetITEM(short nInvTYPE, short nPageIndexNO, tagITEM& OutITEM);

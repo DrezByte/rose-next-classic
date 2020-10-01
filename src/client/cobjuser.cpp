@@ -600,7 +600,9 @@ CObjUSER::Set_ITEM(short nListRealNO, tagITEM& sITEM) {
         if (!sITEM.IsEmpty()) {
             if ((nListRealNO > 0 && nListRealNO < INVENTORY_ITEM_INDEX_0)
                 || (nListRealNO >= INVENTORY_SHOT_ITEM0
-                    && nListRealNO < INVENTORY_SHOT_ITEM0 + MAX_SHOT_TYPE)) ///ÀåÂø½Ã
+                    && nListRealNO < INVENTORY_SHOT_ITEM0 + MAX_SHOT_TYPE)
+                || (nListRealNO >= INVENTORY_COSTUME_ITEM0
+                    && nListRealNO < INVENTORY_COSTUME_ITEM0 + MAX_COSTUME_IDX)) ///ÀåÂø½Ã
                 g_pSoundLIST->IDX_PlaySound(ITEM_EQUIP_SOUND(sITEM.GetTYPE(), sITEM.GetItemNO()));
         }
     }

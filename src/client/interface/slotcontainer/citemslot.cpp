@@ -21,6 +21,7 @@ CItemSlot::CItemSlot(void) {
     m_pCmdItemEquiped = new CTCmdItemEquiped;
     m_pCmdItemBullet = new CTCmdItemBullet;
     m_pCmdItemPatEquiped = new CTCmdDisAssembleRideItem;
+    m_pCmdItemEquipCostumeInInventory = new CTCmdItemEquipCostumeInInventory;
 
     m_pEvent = new CTEventItem;
 }
@@ -34,6 +35,7 @@ CItemSlot::~CItemSlot(void) {
     SAFE_DELETE(m_pCmdItemEquiped);
     SAFE_DELETE(m_pCmdItemBullet);
     SAFE_DELETE(m_pCmdItemPatEquiped);
+    SAFE_DELETE(m_pCmdItemEquipCostumeInInventory);
 
     SAFE_DELETE(m_pEvent);
 }
@@ -74,8 +76,10 @@ CItemSlot::CreateItem(int iInvenIdx, tagITEM& Item) {
         }
     } else if (iInvenIdx >= INVENTORY_SHOT_ITEM0 && iInvenIdx < INVENTORY_RIDE_ITEM0) {
         pItem->SetCommand(m_pCmdItemBullet);
-    } else if (iInvenIdx >= INVENTORY_RIDE_ITEM0 && iInvenIdx < INVENTORY_TOTAL_SIZE) {
+    } else if (iInvenIdx >= INVENTORY_RIDE_ITEM0 && iInvenIdx < INVENTORY_COSTUME_ITEM0) {
         pItem->SetCommand(m_pCmdItemPatEquiped);
+    } else if (iInvenIdx >= INVENTORY_COSTUME_ITEM0 && iInvenIdx <= INVENTORY_TOTAL_SIZE) {
+        pItem->SetCommand(m_pCmdItemEquipCostumeInInventory);
     } else {
         SAFE_DELETE(pItem);
         assert(0 && CStr::Printf("Invalid Inventory Index(%d), CItemSlot::AddItem()", iInvenIdx));

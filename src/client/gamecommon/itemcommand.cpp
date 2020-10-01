@@ -6,6 +6,7 @@
 #include "../network/cnetwork.h"
 #include "../System/CGame.h"
 #include "../interface/dlgs/chattingdlg.h"
+#include "../interface/dlgs/citemdlg.h"
 #include "../interface/dlgs/makedlg.h"
 #include "../interface/command/ctcmdhotexec.h"
 #include "../interface/command/uicommand.h"
@@ -100,10 +101,83 @@ AddAbilities(tagBaseITEM* item, int* curr_abilities, const int ability_count) {
         curr_abilities[nType] += nValue;
     }
 }
+
+bool
+equip_costume(CTObject* object) {
+    if (g_pAVATAR->GetPetMode() >= 0) {
+        g_itMGR.AppendChatMsg(STR_CANT_EQUIP_USING_DRIVESKILL, IT_MGR::CHAT_TYPE_SYSTEM);
+        return true;
+    }
+
+    if (object == NULL) {
+        assert(object && "Object is null");
+        return true;
+    }
+
+    CItem* pItem = (CItem*)object;
+    tagITEM& item = pItem->GetItem();
+
+    if (item.IsEmpty()) {
+        assert(0 && "Item is empty");
+        return true;
+    }
+
+    short equip_idx = 0;
+    switch (item.GetTYPE()) {
+        case ITEM_TYPE_FACE_ITEM:
+            equip_idx = COSTUME_IDX_FACE_ITEM;
+            break;
+        case ITEM_TYPE_HELMET:
+            equip_idx = COSTUME_IDX_HELMET;
+            break;
+        case ITEM_TYPE_ARMOR:
+            equip_idx = COSTUME_IDX_ARMOR;
+            break;
+        case ITEM_TYPE_KNAPSACK:
+            equip_idx = COSTUME_IDX_KNAPSACK;
+            break;
+        case ITEM_TYPE_GAUNTLET:
+            equip_idx = COSTUME_IDX_GAUNTLET;
+            break;
+        case ITEM_TYPE_BOOTS:
+            equip_idx = COSTUME_IDX_BOOTS;
+            break;
+        default:
+            return true;
+    }
+
+    if (g_pAVATAR->Check_EquipCondition(item)) {
+        const bool remove_costume_item = equip_idx + INVENTORY_COSTUME_ITEM0 == pItem->GetIndex();
+        if (remove_costume_item && g_pAVATAR->m_Inventory.GetEmptyInvenSlotCount(INV_WEAPON) == 0) {
+            g_itMGR.OpenMsgBox(STR_NOT_ENOUGH_INVENTORY_SPACE);
+        } else {
+            g_pNet->send_client_equip_costume_item(equip_idx + INVENTORY_COSTUME_ITEM0, pItem->GetIndex());
+
+            if (remove_costume_item) {
+                g_pNet->send_client_equip_costume_item(equip_idx + INVENTORY_COSTUME_ITEM0, 0);
+            }
+        }
+    } else {
+        g_itMGR.AppendChatMsg(STR_NOTIFY_06, IT_MGR::CHAT_TYPE_SYSTEM);
+    }
+
+    return true;
+}
+
 //-------------------------------------------------------------------------------------------------------------------
 
 bool
 CTCmdItemEquipInInventory::Exec(CTObject* pObj) {
+    CTDialog* dialog = g_itMGR.FindDlg(DLG_TYPE_ITEM);
+    if (dialog == NULL) {
+        return true;
+    }
+    
+    CItemDlg* inventory_dialog = (CItemDlg*)dialog;
+    if (inventory_dialog->is_costume_tab_open()) {
+        return equip_costume(pObj);
+    }
+
     if (g_pAVATAR->GetPetMode() >= 0) ///드라이브 스킬 사용중이라면
     {
         g_itMGR.AppendChatMsg(STR_CANT_EQUIP_USING_DRIVESKILL, IT_MGR::CHAT_TYPE_SYSTEM);
@@ -588,4 +662,9 @@ CTCmdItemBullet::Exec(CTObject* pObj) {
             g_pNet->Send_cli_SET_BULLET(ShotType, 0);
     }
     return true;
+}
+
+bool
+CTCmdItemEquipCostumeInInventory::Exec(CTObject* object) {
+    return equip_costume(object);
 }

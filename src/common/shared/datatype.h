@@ -317,6 +317,21 @@ enum t_EquipINDEX {
     MAX_EQUIP_IDX
 };
 
+enum costume_index {
+    COSTUME_IDX_NULL = 0,
+
+    COSTUME_IDX_FACE_ITEM,
+    COSTUME_IDX_HELMET,
+    COSTUME_IDX_ARMOR,
+    COSTUME_IDX_KNAPSACK,
+    COSTUME_IDX_GAUNTLET,
+    COSTUME_IDX_BOOTS,
+    COSTUME_IDX_WEAPON_R,
+    COSTUME_IDX_WEAPON_L,
+
+    MAX_COSTUME_IDX
+};
+
 enum t_eSHOT {
     SHOT_TYPE_ARROW = 0, // 화살용
     SHOT_TYPE_BULLET, // 총/쌍권총
@@ -360,7 +375,7 @@ enum t_eRidePART {
     RIDE_PART_ENGINE,
     RIDE_PART_LEG,
 
-#if defined(_GBC)
+#if defined(_GBC) // TODO JV add RIDE_PART_ABIL as ridepart to prevent migration of item slots in database. If we add this later we have to migrate item data as costume slots are added after ride slots
     RIDE_PART_ABIL,
     RIDE_PART_ARMS,
 #else
@@ -395,19 +410,20 @@ enum t_InvTYPE { INV_WEAPON = 0, INV_USE, INV_ETC, INV_RIDING, MAX_INV_TYPE };
 #endif
 */
 
-#define INVENTORY_PAGE_SIZE (5 * 6)
+#define INVENTORY_PAGE_SIZE (6 * 5)
 #define INVENTORY_TOTAL_SIZE \
-    (MAX_EQUIP_IDX + MAX_SHOT_TYPE + MAX_INV_TYPE * INVENTORY_PAGE_SIZE + MAX_RIDING_PART)
+    (MAX_EQUIP_IDX + MAX_SHOT_TYPE + MAX_INV_TYPE * INVENTORY_PAGE_SIZE + MAX_RIDING_PART + MAX_COSTUME_IDX)
 #define INVENTORY_USE_ITEM0 (MAX_EQUIP_IDX + INVENTORY_PAGE_SIZE) /// 소모 아이템 시작 인벤 번호
 #define INVENTORY_ETC_ITEM0 \
     (INVENTORY_USE_ITEM0 + INVENTORY_PAGE_SIZE) /// 기타 이이템 시작 인벤 번호
 #define INVENTORY_SHOT_ITEM0 (MAX_EQUIP_IDX + MAX_INV_TYPE * INVENTORY_PAGE_SIZE)
 #define INVENTORY_RIDE_ITEM0 (INVENTORY_SHOT_ITEM0 + MAX_SHOT_TYPE)
+#define INVENTORY_COSTUME_ITEM0 (INVENTORY_RIDE_ITEM0 + MAX_RIDING_PART)
 
 #ifndef __SERVER ///.nAvy.
     #define INVENTORY_ITEM_INDEX_0 MAX_EQUIP_IDX ///게임상 인벤토리의 첫번째 INDEX NO
     #define INVENTORY_ITEM_INDEX_LAST \
-        MAX_EQUIP_IDX + MAX_INV_TYPE* INVENTORY_PAGE_SIZE - 1 ///게임상 인벤토리의 마지막 INDEX NO
+        MAX_EQUIP_IDX + MAX_INV_TYPE * INVENTORY_PAGE_SIZE - 1 ///게임상 인벤토리의 마지막 INDEX NO
 #endif
 
 enum t_eItemCLASS {

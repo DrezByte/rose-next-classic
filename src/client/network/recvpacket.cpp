@@ -761,12 +761,13 @@ CRecvPACKET::Recv_gsv_SELECT_CHAR() {
         m_pRecvPacket->m_gsv_SELECT_CHAR.m_PartITEM,
         sizeof(refGame.m_SelectedAvataInfo.m_PartITEM));
 
+    ::CopyMemory(refGame.m_SelectedAvataInfo.costume,
+        m_pRecvPacket->m_gsv_SELECT_CHAR.costume,
+        sizeof(refGame.m_SelectedAvataInfo.costume));
+
     ::CopyMemory(&refGame.m_SelectedAvataInfo.m_BasicINFO,
         &m_pRecvPacket->m_gsv_SELECT_CHAR.m_BasicINFO,
         sizeof(tagBasicINFO));
-    ::CopyMemory(&refGame.m_SelectedAvataInfo.m_BasicAbility,
-        &m_pRecvPacket->m_gsv_SELECT_CHAR.m_BasicAbility,
-        sizeof(tagBasicAbility));
     ::CopyMemory(&refGame.m_SelectedAvataInfo.m_BasicAbility,
         &m_pRecvPacket->m_gsv_SELECT_CHAR.m_BasicAbility,
         sizeof(tagBasicAbility));
@@ -1435,10 +1436,11 @@ CRecvPACKET::Recv_gsv_AVT_CHAR() {
     for (int i = 0; i < MAX_SHOT_TYPE; ++i)
         pNewAVT->SetShotData(i, m_pRecvPacket->m_gsv_AVT_CHAR.m_sShotItem[i].m_nItemNo);
     //------------------------------------------------------------------------------------------
-
+    
     // 아래 3줄은 순서 주의
     //	pNewAVT->SetAllPARTS    ( m_pRecvPacket->m_gsv_AVT_CHAR.m_nPartItemIDX );
     pNewAVT->SetAllPARTS(m_pRecvPacket->m_gsv_AVT_CHAR.m_PartITEM);
+    pNewAVT->set_costume(m_pRecvPacket->m_gsv_AVT_CHAR.costume);
     //	pNewAVT->SetAllPetPARTS ( m_pRecvPacket->m_gsv_AVT_CHAR.m_nRidingITEM );
     pNewAVT->SetAllPetPARTS(m_pRecvPacket->m_gsv_AVT_CHAR.m_RidingITEM);
     pNewAVT->stats.move_speed = m_pRecvPacket->m_gsv_AVT_CHAR.m_nRunSpeed;
@@ -2162,13 +2164,10 @@ CRecvPACKET::Recv_gsv_EQUIP_ITEM() {
             pCHAR->SetUpdateMotionFlag(true);
         }
 
-        if (nBodyPart
-            < MAX_BODY_PART) /// 2004 / 2 / 2 :nAvy추가 - 반지,목걸이, 귀걸이의 경우는 없다.
-        {
+        if (nBodyPart < MAX_BODY_PART) {
             pCHAR->SetPartITEM(nBodyPart, nEquipItemNO);
         }
 
-        // 등급, 보석번호 포함...
         pCHAR->SetPartITEM(nBodyPart, m_pRecvPacket->m_gsv_EQUIP_ITEM.m_PartITEM);
 
         if (!pCHAR->IsPersonalStoreMode())
@@ -2189,6 +2188,25 @@ CRecvPACKET::Recv_gsv_EQUIP_ITEM() {
 
         pCHAR->stats.move_speed = m_pRecvPacket->m_gsv_EQUIP_ITEM.m_nRunSPEED[0];
         pCHAR->Update_SPEED();
+    }
+}
+
+void
+CRecvPACKET::receive_gameserver_equip_costume_item() {
+    CObjAVT* character =
+        g_pObjMGR->Get_ClientCharAVT(m_pRecvPacket->m_gsv_EQUIP_COSTUME_ITEM.object_idx, false);
+    if (character) {
+        const short part_idx = CInventory::GetBodyPartByEquipCostumeSlot(
+            m_pRecvPacket->m_gsv_EQUIP_COSTUME_ITEM.equip_idx - INVENTORY_COSTUME_ITEM0);
+
+        if (part_idx == MAX_BODY_PART) {
+            _ASSERT(0 && "nBodyPart == MAX_BODY_PART");
+            return;
+        }
+
+        character->SetPartITEM(part_idx, m_pRecvPacket->m_gsv_EQUIP_COSTUME_ITEM.part_item.m_nItemNo);
+        character->SetPartITEM(part_idx, m_pRecvPacket->m_gsv_EQUIP_COSTUME_ITEM.part_item);
+        character->Update();
     }
 }
 

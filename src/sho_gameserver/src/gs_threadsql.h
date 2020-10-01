@@ -13,6 +13,7 @@ struct tagBasicETC {
 
     tagPartITEM m_PartITEM[MAX_BODY_PART];
     tagPartITEM m_RideITEM[MAX_RIDING_PART];
+    tagPartITEM costume[MAX_BODY_PART];
 
     BYTE m_btCharSlotNO;
 
@@ -24,6 +25,7 @@ struct tagBasicETC {
 
         ::ZeroMemory(m_PartITEM, sizeof(tagPartITEM) * MAX_BODY_PART);
         ::ZeroMemory(m_RideITEM, sizeof(tagPartITEM) * MAX_RIDING_PART);
+        ::ZeroMemory(costume, sizeof(tagPartITEM) * MAX_BODY_PART);
     }
     void SetPartITEM(short nPartIdx, tagITEM& sITEM) {
         m_PartITEM[nPartIdx].m_nItemNo = sITEM.GetItemNO();

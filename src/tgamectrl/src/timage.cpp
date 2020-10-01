@@ -23,7 +23,11 @@ CTImage::Create(int iScrX, int iScrY, int iWidth, int iHeight, int iGraphicID, i
     Init(CTRL_IMAGE, iScrX, iScrY, iWidth, iHeight);
     m_iGraphicID = iGraphicID;
     m_iModuleID = iModuleID;
-    m_pDraw = CTControlMgr::GetInstance()->GetDrawMgr();
+
+    // When the image has no GID, we don't draw it
+    if (m_iGraphicID != -1) {
+        m_pDraw = CTControlMgr::GetInstance()->GetDrawMgr();
+    }
     return true;
 }
 

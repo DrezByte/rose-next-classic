@@ -39,4 +39,11 @@ public:
     virtual bool Exec(CTObject* pObj);
 };
 
+class CTCmdItemEquipCostumeInInventory: public CTCommand {
+public:
+    CTCmdItemEquipCostumeInInventory(void) {}
+    virtual ~CTCmdItemEquipCostumeInInventory(void) {}
+    virtual bool Exec(CTObject* object);
+};
+
 #endif
