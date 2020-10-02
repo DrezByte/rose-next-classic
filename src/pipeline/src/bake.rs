@@ -155,7 +155,7 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
         entry
             .file_name()
             .to_str()
-            .map(|s| s.starts_with('.'))
+            .map(|s| s != "." && s != ".." && s.starts_with('.'))
             .unwrap_or(false)
     };
 
@@ -317,27 +317,19 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                 }
                 "dds" => {
                     let convert = || -> Result<(), PipelineError> {
-                        let out_dir = match &output_filepath
+                        let out_dir = &output_filepath
                             .parent()
                             .unwrap_or_else(|| output_dir.as_path())
                             .to_str()
-                        {
-                            Some(d) => d.to_owned(),
-                            None => {
-                                return Err(PipelineError::Message(
+                            .ok_or_else(|| {
+                                PipelineError::Message(
                                     "Failed to get output dir as string".to_string(),
-                                ))
-                            }
-                        };
+                                )
+                            })?;
 
-                        let in_file = match &input_filepath.to_str() {
-                            Some(d) => d.to_owned(),
-                            None => {
-                                return Err(PipelineError::Message(
-                                    "Failed to get input file as string".to_string(),
-                                ))
-                            }
-                        };
+                        let in_file = &input_filepath.to_str().ok_or_else(|| {
+                            PipelineError::Message("Failed to get input file as string".to_string())
+                        })?;
 
                         println!("Converting to DDS {}", input_filepath.display());
                         let res = process::Command::new("texconv.exe")
@@ -351,7 +343,10 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                                 &out_dir,
                                 &in_file,
                             ])
-                            .output()?;
+                            .output()
+                            .map_err(|e| {
+                                PipelineError::Message(format!("Error running texconv: {}", e))
+                            })?;
 
                         if !res.status.success() {
                             let mut error_string = String::from("texconv_failed");
@@ -368,7 +363,15 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                         fs::rename(
                             output_filepath.with_extension("DDS"),
                             output_filepath.with_extension("dds"),
-                        )?;
+                        )
+                        .map_err(|e| {
+                            PipelineError::Message(format!(
+                                "Failed to rename output dds from {} to {}: {}",
+                                output_filepath.with_extension("DDS").display(),
+                                output_filepath.with_extension("dds").display(),
+                                e
+                            ))
+                        })?;
 
                         Ok(())
                     };
