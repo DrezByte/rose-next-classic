@@ -15,7 +15,7 @@ build-debug:
             - bin/debug/*.dll
             - bin/debug/thirdparty/*.exe
             - bin/debug/thirdparty/*.dll
-
+            - thirdparty/directxtex-2020.9.30/*.exe
 
 build-release:
     stage: build
@@ -30,3 +30,4 @@ build-release:
             - bin/release/*.dll
             - bin/release/thirdparty/*.exe
             - bin/release/thirdparty/*.dll
+            - thirdparty/directxtex-2020.9.30/*.exe
