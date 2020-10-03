@@ -237,15 +237,15 @@ CPartyDlg::Draw() {
     D3DXMatrixTranslation(&mat, (float)m_sPosition.x, (float)m_sPosition.y, 0.0f);
     ::setTransformSprite(mat);
 
-    drawFont(g_GameDATA.m_hFONT[FONT_NORMAL_BOLD], true, 35, 7, g_dwBLACK, STR_PARTY);
+    drawFont(g_GameDATA.m_hFONT[FONT_NORMAL_BOLD], true, 35, 5, g_dwBLACK, STR_PARTY);
     // drawFont( g_GameDATA.m_hFONT[ FONT_NORMAL ], true, 17, 34, g_dwWHITE, CStr::Printf("%s %d",
     // STR_PARTYLEVEL, Party.GetLevel() ));
     drawFont(g_GameDATA.m_hFONT[FONT_NORMAL],
         true,
-        11,
-        32,
+        10,
+        31,
         g_dwWHITE,
-        CStr::Printf("%s %d", STR_PARTYLEVEL, Party.GetLevel()));
+        CStr::Printf(FORMAT_STR_PARTY_LEVEL, Party.GetLevel()));
 
     ///°æÇèÄ¡
     short nWidth = 0;
@@ -261,8 +261,8 @@ CPartyDlg::Draw() {
 
     nWidth = (g_iPartyExpGuageWidth * iPartyExp) / iPartyExpMax;
 
-    g_DrawImpl.Draw(m_sPosition.x + 96, m_sPosition.y + 34, IMAGE_RES_UI, m_iGuagePartyExpBGIdx);
-    g_DrawImpl.Draw(m_sPosition.x + 96,
+    g_DrawImpl.Draw(m_sPosition.x + 103, m_sPosition.y + 34, IMAGE_RES_UI, m_iGuagePartyExpBGIdx);
+    g_DrawImpl.Draw(m_sPosition.x + 103,
         m_sPosition.y + 34,
         nWidth,
         IMAGE_RES_UI,
@@ -271,7 +271,7 @@ CPartyDlg::Draw() {
     ///
     float fExp = iPartyExp * 100 / (float)iPartyExpMax;
 
-    RECT rcDraw = {0, 0, g_iPartyExpGuageWidth, g_iPartyExpGuageHeight + 5};
+    RECT rcDraw = {0, -3, g_iPartyExpGuageWidth, g_iPartyExpGuageHeight + 5};
 
     ::drawFont(g_GameDATA.m_hFONT[FONT_NORMAL],
         true,
