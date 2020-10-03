@@ -689,12 +689,12 @@
 #define STR_BILLING_MSG_KICKOUT_EXIST_ACCOUNT \
     CStringManager::GetSingleton().GetString(603) // 접속되어 있는 계정을 짤랐다.
 
-#define STR_BILLING_MSG_TYPE_SET_DATE \
-    CStringManager::GetSingleton().GetString(604) // 만료 일자 설정	szMsg = 200309101025
-#define STR_BILLING_MSG_TYPE_SET_TIME \
-    CStringManager::GetSingleton().GetString(605) // 만료 시간 설정	szMsg = 남은분
-#define STR_BILLING_MSG_TYPE_TIME_ALERT \
-    CStringManager::GetSingleton().GetString(606) // 남은 시간 경고	szMsg = 남은분
+#define STR_CREATE_AVATAR_NAME_IS_REQUIRED \
+    CStringManager::GetSingleton().GetString(604)
+#define STR_CREATE_AVATAR_ACCEPT_JOB \
+    CStringManager::GetSingleton().GetString(605)
+#define STR_CREATE_AVATAR_BLOCKED \
+    CStringManager::GetSingleton().GetString(606)
 
 #define STR_RESULT_SELECT_SERVER_NEED_CHARGE \
     CStringManager::GetSingleton().GetString(607) //사용시간이 만료되어 더 이상 접속하실수 없습니다

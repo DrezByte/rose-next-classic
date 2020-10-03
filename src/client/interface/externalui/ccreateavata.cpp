@@ -16,10 +16,7 @@
 #include "../../System/CGame.h"
 #include "../../System/SystemProcScript.h"
 #include "../../GameData/CGameDataCreateAvatar.h"
-
-#include "rose/common/game_types.h"
-
-using namespace Rose::Common;
+#include "command/exuicommand.h"
 
 CCreateAvata::CCreateAvata() {
     m_iSelectedSex = 0;
@@ -81,7 +78,7 @@ CCreateAvata::RecvCreateAvata(t_PACKET* recvPacket) {
             g_EUILobby.ShowMsgBox(STR_CANT_CREATE_MORE_CHARACTER, CMsgBox::BT_OK, true, 0);
             break;
         case RESULT_CREATE_CHAR_BLOCKED:
-            g_EUILobby.ShowMsgBox("You have been blocked from creating a new character",
+            g_EUILobby.ShowMsgBox(STR_CREATE_AVATAR_BLOCKED,
                 CMsgBox::BT_OK,
                 true,
                 0);
@@ -118,8 +115,26 @@ CCreateAvata::OnLButtonUp(unsigned iProcID) {
 
             strcpy(szName, pEditBox->get_text());
 
-            CreateAvata(std::string(szName), iSex, iHair, iFace, iJob);
+            if (strlen(szName) == 0) {
+                g_EUILobby.ShowMsgBox(STR_CREATE_AVATAR_NAME_IS_REQUIRED,
+                    CTMsgBox::BT_OK,
+                    true,
+                    GetDialogType(),
+                    NULL
+                );
+                return;
+            }
 
+            CTCommand* ok_cmd =
+                new CTCmdCreateAvatar(std::string(szName), iSex, iHair, iFace, iJob);
+            g_EUILobby.ShowMsgBox(CStr::Printf(STR_CREATE_AVATAR_ACCEPT_JOB, 
+                m_mapJob[m_iSelectedJob].m_strIdentify.c_str()),
+                CTMsgBox::BT_OK | CTMsgBox::BT_CANCEL,
+                true,
+                GetDialogType(),
+                ok_cmd,
+                NULL
+            );
         } break;
         case IID_BTN_CANCEL:
             CGame::GetInstance().ChangeState(CGame::GS_SELECTAVATAR);
@@ -201,25 +216,6 @@ CCreateAvata::OnLButtonUp(unsigned iProcID) {
         default:
             break;
     }
-}
-
-void
-CCreateAvata::CreateAvata(const std::string& name,
-    int gender_id,
-    int hair_id,
-    int face_id,
-    int job_id) {
-
-    if (name.empty())
-        return;
-
-    g_pNet->send_char_create_req(name,
-        face_id,
-        hair_id,
-        gender_from(gender_id),
-        job_from(job_id));
-
-    g_EUILobby.ShowWaitMsgBox();
 }
 
 void

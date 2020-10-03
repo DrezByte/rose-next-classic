@@ -26,4 +26,18 @@ protected:
     int m_iSelectListID;
     std::string m_strName;
 };
+
+class CTCmdCreateAvatar : public CTCommand {
+public:
+    CTCmdCreateAvatar(const std::string& name, int gender_id, int hair_id, int face_id, int job_id);
+    virtual ~CTCmdCreateAvatar(void) {}
+    virtual bool Exec(CTObject* object);
+
+protected:
+    std::string name;
+    int gender_id;
+    int hair_id;
+    int face_id;
+    int job_id;
+};
 #endif
