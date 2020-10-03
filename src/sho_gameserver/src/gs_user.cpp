@@ -2732,10 +2732,12 @@ classUSER::Change_EQUIP_ITEM(short nEquipInvIDX, short nWeaponInvIDX) {
         this->Send_gsv_EQUIP_ITEM(nEquipInvIDX, pEquipITEM);
 
         // If a costume item is equiped, show this one instead of equiped item
-        tagITEM* costume_item = &this->get_costume_item(nEquipInvIDX);
-        if (!costume_item->IsEmpty()) {
-            this->send_gameserver_equip_costume_item(nEquipInvIDX + INVENTORY_COSTUME_ITEM0,
-                costume_item);
+        if (nEquipInvIDX < MAX_COSTUME_IDX) {
+            tagITEM* costume_item = &this->get_costume_item(nEquipInvIDX);
+            if (!costume_item->IsEmpty()) {
+                this->send_gameserver_equip_costume_item(nEquipInvIDX + INVENTORY_COSTUME_ITEM0,
+                    costume_item);
+            }
         }
 
         if (this->GetPARTY()) {
