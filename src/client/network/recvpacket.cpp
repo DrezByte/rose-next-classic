@@ -2410,6 +2410,7 @@ CRecvPACKET::Recv_gsv_USE_ITEM() {
 
                         break;
                     case AT_STAMINA:
+                    case AT_GUILD_SCORE:
                         break;
                     default:
                         assert(0 && "Invalid property is modified");
