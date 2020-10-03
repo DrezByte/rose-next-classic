@@ -1220,21 +1220,23 @@ CSkillManager::CheckNeedProperty(int iSkillIDX, CObjCHAR* pCaster) {
 
 /// 필요장비 체크..
 /*static*/ bool
-CSkillManager::CheckNeedWeapon(int iSkillIDX, CObjCHAR* pCaster) {
-    bool bResult = true;
-
-    int iCurrentRWeaponNO = pCaster->Get_RWeapon();
+CSkillManager::CheckNeedWeapon(int skill_idx, CObjCHAR* character) {
+    bool result = true;
+    const int weapon_right = character->Get_RWeapon();
+    const int weapon_left = character->Get_LWeapon();
 
     for (int i = 0; i < SKILL_NEED_WEAPON_CNT; i++) {
-        /// 조건 무기가 있다면 일단,false 로 만들고 만족하면 바로 리턴..
-        if (SKILL_NEED_WEAPON(iSkillIDX, i)) {
-            bResult = false;
-            if (SKILL_NEED_WEAPON(iSkillIDX, i) == WEAPON_TYPE(iCurrentRWeaponNO))
+        if (SKILL_NEED_WEAPON(skill_idx, i)) {
+            result = false;
+
+            if (SKILL_NEED_WEAPON(skill_idx, i) == WEAPON_TYPE(weapon_right) || 
+                SKILL_NEED_WEAPON(skill_idx, i) == SUBWPN_TYPE(weapon_left)) {
                 return true;
+            }
         }
     }
 
-    return bResult;
+    return result;
 }
 
 /// 중복적용 가능 체크...

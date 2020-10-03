@@ -651,6 +651,7 @@ public:
 public:
     /// not overrided function
     int Get_RWeapon() { return Get_R_WEAPON(); }
+    int Get_LWeapon() { return Get_L_WEAPON(); }
 
     CObjCHAR();
     virtual ~CObjCHAR();
