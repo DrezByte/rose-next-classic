@@ -2,9 +2,14 @@ default:
     tags:
         - windows
 
-build-debug:
+variables:
+    RUSTC_WRAPPER: sccache
+
+build:
     stage: build
-    script: scripts/build.ps1 -config debug
+    script:
+        - scripts/build.ps1 -config debug
+        - scripts/build.ps1 -config release
     only:
         - master
         - merge_requests
@@ -14,20 +19,11 @@ build-debug:
             - bin/debug/*.exe
             - bin/debug/*.dll
             - bin/debug/thirdparty/*.exe
-            - bin/debug/thirdparty/*.dll
-            - thirdparty/directxtex-2020.9.30/*.exe
-
-build-release:
-    stage: build
-    script: scripts/build.ps1 -config release
-    only:
-        - master
-        - merge_requests
-        - tags
-    artifacts:
-        paths:
             - bin/release/*.exe
             - bin/release/*.dll
             - bin/release/thirdparty/*.exe
-            - bin/release/thirdparty/*.dll
             - thirdparty/directxtex-2020.9.30/*.exe
+cache:
+    paths:
+        - bin/**/thirdparty/
+        - build/**/thirdparty/
