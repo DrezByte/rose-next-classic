@@ -46,7 +46,7 @@ CNotifyButtonDlg::UpdatePosition() {
     std::list<CTButton*>::iterator iter;
     int iCount = 0;
 
-    m_sPosition.y = g_pCApp->GetHEIGHT() - 290;
+    m_sPosition.y = g_pCApp->GetHEIGHT() - 360;
 
     int x = m_sPosition.x;
     int y = m_sPosition.y;
