@@ -33,7 +33,6 @@ CGameStateSelectAvatar::Update(bool bLostFocus) {
 
     // processing  ...
     if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
-        this->pre_begin_scene();
         if (!::beginScene()) //  디바이스가 손실된 상태라면 0을 리턴하므로, 모든 렌더링 스킵
         {
             return 0;
@@ -56,7 +55,7 @@ CGameStateSelectAvatar::Update(bool bLostFocus) {
         CGameDataCreateAvatar::GetInstance().Update();
         ::endSprite();
 
-        this->pre_end_scene();
+        this->render_dev_ui();
         ::endScene();
         ::swapBuffers();
     }

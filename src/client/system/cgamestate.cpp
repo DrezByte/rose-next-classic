@@ -68,15 +68,9 @@ CGameState::ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 void
-CGameState::pre_begin_scene(void) {
+CGameState::render_dev_ui(void) {
     if (this->dev_ui_enabled) {
         dev_ui_frame();
-    }
-}
-
-void
-CGameState::pre_end_scene(void) {
-    if (this->dev_ui_enabled) {
         dev_ui_render();
     }
 }

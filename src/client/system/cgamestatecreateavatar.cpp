@@ -33,7 +33,6 @@ CGameStateCreateAvatar::Update(bool bLostFocus) {
 
     // processing  ...
     if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
-        this->pre_begin_scene();
         if (!::beginScene())
         {
             return 0;
@@ -52,7 +51,7 @@ CGameStateCreateAvatar::Update(bool bLostFocus) {
         CTIme::GetInstance().Draw();
         ::endSprite();
 
-        this->pre_end_scene();
+        this->render_dev_ui();
         ::endScene();
         ::swapBuffers();
     }

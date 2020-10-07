@@ -137,7 +137,6 @@ CGameStateMain::Update(bool bLostFocus) {
                 UpdateCheckFrame();
                 CTargetManager::GetSingleton().Proc();
                 CSkillCommandDelay::GetSingleton().Proc();   */
-        this->pre_begin_scene();
 
         if (::beginScene()) {
             ::clearScreen();
@@ -147,7 +146,7 @@ CGameStateMain::Update(bool bLostFocus) {
                 Render_GameMENU();
             }
 
-            this->pre_end_scene();
+            this->render_dev_ui();
 
             ::endScene();
             ::swapBuffers();

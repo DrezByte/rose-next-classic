@@ -32,9 +32,7 @@ public:
     virtual int ProcMouseInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) = 0;
     virtual int ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) = 0;
 
-    // Rendering hooks
-    virtual void pre_begin_scene();
-    virtual void pre_end_scene();
+    void render_dev_ui();
 
     // Handlers
     virtual void on_loginserver_connected(){};

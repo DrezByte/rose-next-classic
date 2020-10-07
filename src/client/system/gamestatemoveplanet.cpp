@@ -47,8 +47,6 @@ CGameStateMovePlanet::Update(bool bLostFocus) {
 
     // processing  ...
     if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
-        pre_begin_scene();
-        this->pre_begin_scene();
         if (::beginScene()) //  디바이스가 손실된 상태라면 0을 리턴하므로, 모든 렌더링 스킵
         {
             ::setClearColor(0.0f, 0.0f, 0.0f);
@@ -69,8 +67,7 @@ CGameStateMovePlanet::Update(bool bLostFocus) {
             /// for test
             /// Render_GameMENU();
 
-            this->pre_end_scene();
-            pre_end_scene();
+            this->render_dev_ui();
             ::endScene();
             ::swapBuffers();
         }

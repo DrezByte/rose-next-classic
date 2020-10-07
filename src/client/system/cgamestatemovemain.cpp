@@ -45,7 +45,6 @@ CGameStateMoveMain::Update(bool bLostFocus) {
 
     // processing  ...
     if (g_ClientStorage.m_VideoOption.background_render || !bLostFocus) {
-        this->pre_begin_scene();
         if (::beginScene()) // 성공한 경우에만 렌더링
         {
             ::clearScreen();
@@ -60,7 +59,7 @@ CGameStateMoveMain::Update(bool bLostFocus) {
 
             ::endSprite();
 
-            this->pre_end_scene();
+            this->render_dev_ui();
             ::endScene();
             ::swapBuffers();
         }
