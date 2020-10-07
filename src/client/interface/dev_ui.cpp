@@ -3,6 +3,10 @@
 #include "dev_ui.h"
 
 #include "ccamera.h"
+#include "network/cnetwork.h"
+#include "interface/ctdrawimpl.h"
+#include "interface/io_imageres.h"
+#include "common/io_pat.h"
 #include "system/cgame.h"
 #include "system/cgamestate.h"
 #include "jcommandstate.h"
@@ -14,12 +18,53 @@
 
 #include "zz_hash_table.h"
 #include "zz_node.h"
-#include "zz_system.h"
+#include "zz_texture.h"
 #include "zz_visible.h"
 
-static bool target_window_open = false;
-
 #ifdef _DEBUG
+
+static bool target_window_open = false;
+static unsigned int selected_item_type = ITEM_TYPE_FACE_ITEM;
+
+static const std::array<std::tuple<unsigned int, STBDATA*>, 14> item_data = {
+    std::make_tuple(ITEM_TYPE_FACE_ITEM, &g_TblFACEITEM),
+    std::make_tuple(ITEM_TYPE_HELMET, &g_TblHELMET),
+    std::make_tuple(ITEM_TYPE_ARMOR, &g_TblARMOR),
+    std::make_tuple(ITEM_TYPE_GAUNTLET, &g_TblGAUNTLET),
+    std::make_tuple(ITEM_TYPE_BOOTS, &g_TblBOOTS),
+    std::make_tuple(ITEM_TYPE_KNAPSACK, &g_TblBACKITEM),
+    std::make_tuple(ITEM_TYPE_JEWEL, &g_TblJEWELITEM),
+    std::make_tuple(ITEM_TYPE_WEAPON, &g_TblWEAPON),
+    std::make_tuple(ITEM_TYPE_SUBWPN, &g_TblSUBWPN),
+    std::make_tuple(ITEM_TYPE_USE, &g_TblUSEITEM),
+    std::make_tuple(ITEM_TYPE_GEM, &g_TblGEMITEM),
+    std::make_tuple(ITEM_TYPE_NATURAL, &g_TblNATUAL),
+    std::make_tuple(ITEM_TYPE_QUEST, &g_TblQUESTITEM),
+    std::make_tuple(ITEM_TYPE_RIDE_PART, &g_PatITEM.m_ItemDATA),
+};
+
+constexpr const char*
+item_type_label(unsigned int type) {
+    switch (type) {
+        case ITEM_TYPE_FACE_ITEM: return "Mask";
+        case ITEM_TYPE_HELMET: return "Hat";
+        case ITEM_TYPE_ARMOR: return "Chest";
+        case ITEM_TYPE_GAUNTLET: return "Gloves";
+        case ITEM_TYPE_BOOTS: return "Shoes";
+        case ITEM_TYPE_KNAPSACK: return "Back";
+        case ITEM_TYPE_JEWEL: return "Accessory";
+        case ITEM_TYPE_WEAPON: return "Weapon";
+        case ITEM_TYPE_SUBWPN: return "Subweapon";
+        case ITEM_TYPE_USE: return "Consumable";
+        case ITEM_TYPE_GEM: return "Gem";
+        case ITEM_TYPE_NATURAL: return "ETC";
+        case ITEM_TYPE_QUEST: return "Quest";
+        case ITEM_TYPE_RIDE_PART: return "Cart";
+        default:
+            return "";
+    }
+}
+
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd,
     UINT msg,
@@ -180,6 +225,91 @@ draw_target_window() {
 }
 
 void
+draw_item_info() {
+    CImageRes* item_image_manager = CImageResManager::GetSingleton().GetImageRes(IMAGE_RES_ITEM);
+    if (!item_image_manager) {
+        return;
+    }
+
+    {
+        if (!ImGui::BeginChild("item_window_left_pane", ImVec2(150, 250), true)) {
+            return ImGui::EndChild();
+        }
+
+        for (auto [item_type, _]: item_data) {
+            if (ImGui::Selectable(item_type_label(item_type), selected_item_type == item_type)) {
+                selected_item_type = item_type;
+            }
+        }
+        ImGui::EndChild();
+    }
+    ImGui::SameLine();
+    {
+        if (!ImGui::BeginChild("item_window_right_pane",
+                ImVec2(500, 250),
+                true,
+                ImGuiWindowFlags_HorizontalScrollbar)) {
+            return ImGui::EndChild();
+        }
+
+        for (auto [item_type, stb]: item_data) {
+            if (item_type != selected_item_type) {
+                continue;
+            }
+
+            for (short item_id = 0; item_id < stb->m_nDataCnt; ++item_id) {
+                const int icon_id = ITEM_ICON_NO(item_type, item_id);
+                if (!icon_id) {
+                    continue;
+                }
+
+                stTexture* texture_data = item_image_manager->GetTexture(icon_id);
+                stSprite* sprite_data = item_image_manager->GetSprite(icon_id);
+                if (!texture_data || !sprite_data) {
+                    continue;
+                }
+
+                zz_texture* tex = reinterpret_cast<zz_texture*>(texture_data->m_Texture);
+                if (!tex) {
+                    continue;
+                }
+                HNODE tex_d3d_id = ::getTexturePointer(texture_data->m_Texture);
+                if (!tex_d3d_id) {
+                    continue;
+                }
+                float x1 = static_cast<float>(sprite_data->m_Rect.left) / tex->get_width();
+                float y1 = static_cast<float>(sprite_data->m_Rect.top) / tex->get_width();
+                float x2 = static_cast<float>(sprite_data->m_Rect.right) / tex->get_width();
+                float y2 = static_cast<float>(sprite_data->m_Rect.bottom) / tex->get_width();
+
+                ImTextureID im_tex_id = reinterpret_cast<ImTextureID>(tex_d3d_id);
+                ImVec2 size(40, 40);
+                ImVec2 uv1(x1, y1);
+                ImVec2 uv2(x2, y2);
+
+                std::string button_label = fmt::format("Spawn##{}_{}", item_type, item_id);
+                if (ImGui::Button(button_label.c_str())) {
+                    std::string spawn_cmd;
+                    if (tagBaseITEM::is_stackable(item_type)) {
+                        spawn_cmd = fmt::format("/item {} {} {}", item_type, item_id, 1);
+                    } else {
+                        spawn_cmd = fmt::format("/item {} {} {} {}", item_type, item_id, 0, 0);
+                    }
+                    g_pNet->Send_cli_CHAT(const_cast<char*>(spawn_cmd.c_str()));
+                }
+                ImGui::SameLine(65.0f);
+                ImGui::Text("%d:%d", item_type, item_id);
+                ImGui::SameLine(115.0f);
+                ImGui::Image(im_tex_id, size, uv1, uv2);
+                ImGui::SameLine(165.0f);
+                ImGui::Text("%s", ITEM_NAME(item_type, item_id));
+            }
+        }
+        ImGui::EndChild();
+    }
+}
+
+void
 dev_ui_init(HWND handle) {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -285,21 +415,8 @@ dev_ui_frame() {
         ImGui::Text("422 Bourgeois");
     }
 
-    if (ImGui::CollapsingHeader("Item Information")) {
-        ImGui::Text("1 Mask");
-        ImGui::Text("2 Hat");
-        ImGui::Text("3 Armor");
-        ImGui::Text("4 Gloves");
-        ImGui::Text("5 Boots");
-        ImGui::Text("6 Back Items");
-        ImGui::Text("7 Accessories");
-        ImGui::Text("8 Weapons");
-        ImGui::Text("9 Sub-Weapons");
-        ImGui::Text("10 Consumables");
-        ImGui::Text("11 Gems");
-        ImGui::Text("12 Materials");
-        ImGui::Text("13 Quest Item");
-        ImGui::Text("14 Vehicles");
+    if (ImGui::CollapsingHeader("Items")) {
+        draw_item_info();
     }
     ImGui::End();
 
