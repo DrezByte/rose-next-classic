@@ -4,7 +4,7 @@
 #include <list>
 #include <map>
 #include <algorithm>
-#include "../Common/IO_STB.h"
+#include "rose/io/stb.h"
 
 #include "rose/common/status_effect/goddess_effect.h"
 

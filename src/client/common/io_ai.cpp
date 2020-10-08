@@ -4,7 +4,7 @@
 #ifndef __SERVER
     #include "..\util\CGameSTB.h"
 #else
-    #include "..\util\classSTB.h"
+    #include "util/classstb.h"
 #endif
 #include "CObjCHAR.h"
 #include "IO_AI.h"
@@ -38,7 +38,7 @@ CAI_LIST::Load(char* szBaseDIR, char* szSTBFile, char* szLangSTB, int iLangCol) 
             } else
                 pFullPath = szLangSTB;
 
-            AILang.LoadWSTB(pFullPath, -1, iLangCol, -1);
+            AILang.LoadWSTB(true, pFullPath, -1, iLangCol, -1);
         }
 
         char* szFileName;

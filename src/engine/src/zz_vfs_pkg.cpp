@@ -194,7 +194,7 @@
 
 #include <sys/stat.h>
 #include <string>
-#include "classHASH.h"
+#include "util/classhash.h"
 
 #ifdef WIN32
 #include <windows.h>

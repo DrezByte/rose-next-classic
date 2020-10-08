@@ -16,6 +16,9 @@
     <Filter Include="util">
       <UniqueIdentifier>{13e1d4ad-4fb9-4503-8c22-ab0bb2cbffba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="io">
+      <UniqueIdentifier>{9dccc8fc-9564-4d2d-9f16-22372da6b13c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rose\common\log.h" />
@@ -51,6 +54,9 @@
     <ClInclude Include="include\rose\util\sha256.h">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="include\rose\io\stb.h">
+      <Filter>io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
@@ -63,6 +69,9 @@
     </ClCompile>
     <ClCompile Include="include\rose\util\sha256.cpp">
       <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\stb.cpp">
+      <Filter>io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 
 #include "CWS_Server.h"
 #include "ETC_Math.h"
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 #include "SHO_WS_LIB.h"
 #include "WS_ThreadSQL.h"
 #include "WS_ZoneLIST.h"

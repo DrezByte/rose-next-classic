@@ -3,7 +3,7 @@
 #include <windows.h>
 
 #include "CRandom.h"
-#include "classSTR.h"
+#include "util/classstr.h"
 #include "classUTIL.h"
 #include "ioDataPOOL.h"
 

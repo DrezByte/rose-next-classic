@@ -1,6 +1,6 @@
 #ifndef __ZONEFILE_H
 #define __ZONEFILE_H
-#include "classHASH.h"
+#include "util/classhash.h"
 #include "CBitARRAY.h"
 
 #undef __NPC_TEST

@@ -6,7 +6,7 @@
 #ifndef __SERVER
     #include "Game.h"
     #include "..\\Util\\VFSManager.h"
-    #include "..\\Common\\IO_STB.h"
+    #include "rose/io/stb.h"
 #endif
 
 #ifndef SAFE_DELETE

@@ -3,7 +3,7 @@
 #include <wininet.h>
 #include <IO.h>
 #include <stdio.h>
-#include "classSTR.h"
+#include "util/classstr.h"
 #include "classUTIL.h"
 
 #pragma comment(lib, "Wininet.lib")

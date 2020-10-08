@@ -23,6 +23,7 @@
     <ClInclude Include="include\rose\common\status_effect\status_effect_data.h" />
     <ClInclude Include="include\rose\common\status_effect\status_effect_flag.h" />
     <ClInclude Include="include\rose\common\util.h" />
+    <ClInclude Include="include\rose\io\stb.h" />
     <ClInclude Include="include\rose\network\packet.h" />
     <ClInclude Include="include\rose\util\sha256.h" />
     <ClInclude Include="include\rose\util\uuid.h" />
@@ -30,6 +31,7 @@
   <ItemGroup>
     <ClCompile Include="include\rose\util\sha256.cpp" />
     <ClCompile Include="src\goddess_effect.cpp" />
+    <ClCompile Include="src\io\stb.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\util.cpp" />
     <ClCompile Include="src\uuid.cpp" />
@@ -116,7 +118,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)include\rose\common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)include\rose\common;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_util\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
@@ -152,7 +154,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)include\rose\common;$(SolutionDir)src\common-lib\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)include\rose\common;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\lib_util\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>

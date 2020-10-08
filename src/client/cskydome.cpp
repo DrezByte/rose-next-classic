@@ -3,7 +3,7 @@
 */
 #include "stdAFX.h"
 
-#include "common\\IO_STB.h"
+#include "rose/io/stb.h"
 #include "CSkyDOME.h"
 
 CSkyDOME* CSkyDOME::m_pInstance = NULL;

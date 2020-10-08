@@ -5,7 +5,7 @@
 #include "OBJECT.h"
 #include "BULLET.h"
 #include "CSkyDOME.h"
-#include "Common\IO_STB.h"
+#include "rose/io/stb.h"
 #include "Common\IO_AI.h"
 #include "IO_MESH.h"
 #include "IO_MATERIAL.h"

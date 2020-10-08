@@ -1058,9 +1058,6 @@
     <ClCompile Include="Common\IO_Skill.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\IO_STB.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Ai_lib\AI_Action.cpp">
       <Filter>Source Files\Common\AI_LIB</Filter>
     </ClCompile>
@@ -1222,9 +1219,6 @@
     <ClInclude Include="Util\classCRC.h">
       <Filter>Source Files\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Util\classHASH.h">
-      <Filter>Source Files\Util</Filter>
-    </ClInclude>
     <ClInclude Include="Util\classLUA.h">
       <Filter>Source Files\Util</Filter>
     </ClInclude>
@@ -1232,12 +1226,6 @@
       <Filter>Source Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\classQUEUE.h">
-      <Filter>Source Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\classSTB.h">
-      <Filter>Source Files\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Util\classSTR.h">
       <Filter>Source Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="Util\classTIME.h">
@@ -2150,9 +2138,6 @@
       <Filter>Source Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\IO_Skill.h">
-      <Filter>Source Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\IO_STB.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Game_FUNC.h">

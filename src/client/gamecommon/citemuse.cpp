@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include ".\citemuse.h"
-#include "../common/io_stb.h"
+#include "rose/io/stb.h"
 #include "../JCommandState.h"
 #include "../interface/typeresource.h"
 #include "../object.h"

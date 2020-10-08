@@ -5,7 +5,7 @@
 
 #include "CObjFIXED.h"
 #include "GameProc/CDayNNightProc.h"
-#include "../Common/IO_STB.H"
+#include "rose/io/stb.h"
 #include "CObjGROUND.h"
 
 // UINT CObjFIXED::m_iLightMapTAG = 0;

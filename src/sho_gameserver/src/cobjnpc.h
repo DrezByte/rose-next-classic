@@ -6,7 +6,7 @@
 #ifndef __COBJNPC_H
 #define __COBJNPC_H
 #include "CObjCHAR.H"
-#include "common/io_stb.h"
+#include "rose/io/stb.h"
 
 //-------------------------------------------------------------------------------------------------
 

@@ -8,7 +8,7 @@
 #include "ceconomy.h"
 #include "object.h"
 #include "common/cregenarea.h"
-#include "common/io_stb.h"
+#include "rose/io/stb.h"
 #include "sound/io_sound.h"
 
 #include "terrain/patchmanager.h"

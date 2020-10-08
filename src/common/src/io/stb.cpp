@@ -1,8 +1,45 @@
-#include "stdAFX.h"
+// Windows includes need to come before the others
+// because some of the child includes depend on windows
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
-#include "IO_STB.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "rose/io/stb.h"
+#include "util/classstb.h"
+
+
+#ifndef SAFE_DELETE
+    #define SAFE_DELETE(p)  \
+        {                   \
+            if (p) {        \
+                delete (p); \
+                (p) = NULL; \
+            }               \
+        }
+#endif
+
+#ifndef SAFE_DELETE_ARRAY
+    #define SAFE_DELETE_ARRAY(p) \
+        {                        \
+            if (p) {             \
+                delete[](p);     \
+                (p) = NULL;      \
+            }                    \
+        }
+#endif
+
+#ifndef SAFE_RELEASE
+    #define SAFE_RELEASE(p)     \
+        {                       \
+            if (p) {            \
+                (p)->Release(); \
+                (p) = NULL;     \
+            }                   \
+        }
+#endif
 
 //-------------------------------------------------------------------------------------------------
 STBVALUE::STBVALUE() {
@@ -24,7 +61,7 @@ STBVALUE::SetVALUE(char* szValue) {
 
     m_iValue = atoi(szValue);
 
-    int iLen = strlen(szValue);
+    int iLen = static_cast<int>(strlen(szValue));
     for (int iC = 0; iC < iLen; iC++) {
         if (!isdigit((unsigned char)szValue[iC])) {
             m_bString = true;
@@ -46,7 +83,7 @@ STBVALUE::SetVALUE(int iValue) {
 
 bool
 STBDATA::Load2(char* szFileName, bool bHasTYPE, bool bMakeKEY) {
-    CGameSTB cFILE;
+    classSTB cFILE;
     short nX, nY, nFindKEY;
     char* pStr;
 
@@ -74,7 +111,7 @@ STBDATA::Load2(char* szFileName, bool bHasTYPE, bool bMakeKEY) {
                 pStr = cFILE.GetString(nX, nY);
 #endif
                 if (pStr) {
-                    this->m_ppVALUE[nY][nX].SetTYPE(0 == strcmpi(pStr, "string"));
+                    this->m_ppVALUE[nY][nX].SetTYPE(0 == _strcmpi(pStr, "string"));
                 } else
                     this->m_ppVALUE[nY][nX].SetTYPE(false);
             }
@@ -91,6 +128,7 @@ STBDATA::Load2(char* szFileName, bool bHasTYPE, bool bMakeKEY) {
                     pHashNode = this->m_KeyTable.Search(HashKEY);
                     nFindKEY = (pHashNode) ? pHashNode->m_DATA : 0;
                     if (nFindKEY) {
+                        /*
 #ifndef __SERVER
                         g_pCApp->ErrorBOX(CStr::Printf("[ %s / %s ] dupicated key ...",
                                               cFILE.GetNAME(nY),
@@ -98,6 +136,7 @@ STBDATA::Load2(char* szFileName, bool bHasTYPE, bool bMakeKEY) {
                             szFileName,
                             MB_OK);
 #endif
+*/
                     }
 
                     this->m_KeyTable.Insert(HashKEY, nY);
@@ -126,11 +165,13 @@ STBDATA::Load2(char* szFileName, bool bHasTYPE, bool bMakeKEY) {
 
         cFILE.Close();
     } else {
+        /*
 #ifndef __SERVER
         char szStr[MAX_PATH];
         sprintf(szStr, "STB file[ %s ] open error !!!", szFileName);
         g_pCApp->ErrorBOX(szStr, "ERROR", MB_OK);
 #endif
+*/
         return false;
     }
 
@@ -141,7 +182,7 @@ STBDATA::Load2(char* szFileName, bool bHasTYPE, bool bMakeKEY) {
 
 bool
 STBDATA::Load(char* szFileName, bool bHasNameCol, bool bHasDescCol, bool bMakeKEY) {
-    CGameSTB cFILE;
+    classSTB cFILE;
     short nX, nY, nFindKEY;
     char* pStr;
 
@@ -169,6 +210,7 @@ STBDATA::Load(char* szFileName, bool bHasNameCol, bool bHasDescCol, bool bMakeKE
                     pHashNode = this->m_KeyTable.Search(HashKEY);
                     nFindKEY = pHashNode ? pHashNode->m_DATA : 0;
                     if (nFindKEY) {
+                        /*
 #ifndef __SERVER
                         g_pCApp->ErrorBOX(CStr::Printf("[ %s / %s ] dupicated key ...",
                                               cFILE.GetNAME(nY),
@@ -176,6 +218,7 @@ STBDATA::Load(char* szFileName, bool bHasNameCol, bool bHasDescCol, bool bMakeKE
                             szFileName,
                             MB_OK);
 #endif
+*/
                     }
 
                     this->m_KeyTable.Insert(HashKEY, nY);
@@ -186,7 +229,7 @@ STBDATA::Load(char* szFileName, bool bHasNameCol, bool bHasDescCol, bool bMakeKE
                 pStr = cFILE.GetString(0, nY);
                 if (NULL != pStr) {
                     this->m_ppNAME[nY] = new char[1 + strlen(pStr)];
-                    strcpy(this->m_ppNAME[nY], pStr);
+                    strcpy_s(this->m_ppNAME[nY], 1 + strlen(pStr), pStr);
                 } else
                     this->m_ppNAME[nY] = NULL;
 
@@ -215,7 +258,7 @@ STBDATA::Load(char* szFileName, bool bHasNameCol, bool bHasDescCol, bool bMakeKE
 #endif
                 if (NULL != pStr) {
                     this->m_ppDESC[nY] = new char[1 + strlen(pStr)];
-                    strcpy(this->m_ppDESC[nY], pStr);
+                    strcpy_s(this->m_ppDESC[nY], 1 + strlen(pStr), pStr);
                 } else
                     this->m_ppDESC[nY] = NULL;
             }
@@ -223,11 +266,13 @@ STBDATA::Load(char* szFileName, bool bHasNameCol, bool bHasDescCol, bool bMakeKE
 
         cFILE.Close();
     } else {
+/*
 #ifndef __SERVER
         char szStr[MAX_PATH];
         sprintf(szStr, "STB file[ %s ] open error !!!", szFileName);
         g_pCApp->ErrorBOX(szStr, "ERROR", MB_OK);
 #endif
+*/
         return false;
     }
 
@@ -265,8 +310,8 @@ STBDATA::Free(void) {
 
 //-------------------------------------------------------------------------------------------------
 bool
-STBDATA::LoadWSTB(char* szFileName, int iKeyColIDX, ...) {
-    CGameSTB cFILE;
+STBDATA::LoadWSTB(bool bCheckQuotationMark, char* szFileName, int iKeyColIDX, ...) {
+    classSTB cFILE;
     short nY, nFindKEY;
 
     if (cFILE.Open(szFileName)) {
@@ -298,6 +343,7 @@ STBDATA::LoadWSTB(char* szFileName, int iKeyColIDX, ...) {
                         pHashNode = this->m_KeyTable.Search(HashKEY);
                         nFindKEY = (pHashNode) ? pHashNode->m_DATA : 0;
                         if (nFindKEY) {
+/*
 #ifndef __SERVER
                             g_pCApp->ErrorBOX(CStr::Printf("[ %s / %s ] dupicated key ...",
                                                   cFILE.GetNAME(nY),
@@ -305,22 +351,16 @@ STBDATA::LoadWSTB(char* szFileName, int iKeyColIDX, ...) {
                                 szFileName,
                                 MB_OK);
 #else
+*/
                             for (int iP = 0; iP < iRetCnt; iP++) {
                                 if (!pStr[iP])
                                     break;
                                 if (pStr[iP] != ' ') {
-                                    // ::MessageBox( NULL, CStr::Printf("[ %s: %s / %s ] dupicated
-                                    // key ...", szFileName, cFILE.GetNAME(nY),
-                                    // cFILE.GetNAME(nFindKEY) ), "ERROR", MB_OK );
-                                    LogString(0xffff,
-                                        "       >>>>>> Duplicated Key[ %d:%s ] in %s\n",
-                                        nY,
-                                        pStr,
-                                        szFileName);
+                                    // LOG_WARN("Duplicate key[ {}:{} ] in %s", nY, pStr, szFileName);
                                     break;
                                 }
                             }
-#endif
+// #endif
                         }
 
                         this->m_KeyTable.Insert(HashKEY, nY);
@@ -333,11 +373,24 @@ STBDATA::LoadWSTB(char* szFileName, int iKeyColIDX, ...) {
             va_start(vaLst, iKeyColIDX);
             int iColIDX;
 
+            char* pTmpStr;
             while ((iColIDX = va_arg(vaLst, int)) >= 0) {
+                assert(iColIDX < this->m_nColCnt);
+
                 pWStr = (wchar_t*)cFILE.GetString(iColIDX, nY);
                 iRetCnt =
                     ::WideCharToMultiByte(CP_ACP, 0, pWStr, -1, pStr, MAX_TEMP_STR, NULL, NULL);
-                this->m_ppVALUE[nY][iColIDX].SetVALUE(pStr);
+                if (iRetCnt) {
+                    if (bCheckQuotationMark) {
+                        pTmpStr = pStr;
+                        while (*pTmpStr) {
+                            if (*pTmpStr == '\'')
+                                *pTmpStr = '`';
+                            pTmpStr++;
+                        }
+                    }
+                    this->m_ppVALUE[nY][iColIDX].SetVALUE(pStr);
+                }
                 // if ( *pStr && iRetCnt )
                 //	LogString(0xffff,"    %d:%s", iColIDX, pStr );
             }
@@ -349,11 +402,13 @@ STBDATA::LoadWSTB(char* szFileName, int iKeyColIDX, ...) {
 
         cFILE.Close();
     } else {
+        /*
 #ifndef __SERVER
         char szStr[MAX_PATH];
         sprintf(szStr, "STB file[ %s ] open error !!!", szFileName);
         g_pCApp->ErrorBOX(szStr, "ERROR", MB_OK);
 #endif
+*/
         return false;
     }
 

@@ -3,10 +3,10 @@
 #include "CEconomy.h"
 
 #ifdef __SERVER
-    #include "IO_STB.h"
+    #include "rose/io/stb.h"
     #include "ZoneLIST.H"
 #else
-    #include "common/io_stb.h"
+    #include "rose/io/stb.h"
 #endif
 
 #include "nlohmann/json.hpp"

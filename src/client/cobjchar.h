@@ -3,7 +3,7 @@
 #include "IO_Model.h"
 #include "CModelCHAR.h"
 #include "Common\CObjAI.h"
-#include "Common\IO_STB.h"
+#include "rose/io/stb.h"
 #include "common\IO_AI.h"
 #include "NET_Prototype.h"
 #include "Interface/CEnduranceProperty.h"

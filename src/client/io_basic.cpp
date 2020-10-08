@@ -1,9 +1,9 @@
 
 #include "stdAFX.h"
 
-#include "util\classSTB.h"
+#include "util/classstb.h"
 #include "IO_Basic.h"
-#include "Common\\IO_STB.h"
+#include "rose/io/stb.h"
 #include "Game.h"
 
 CBasicDATA g_DATA;

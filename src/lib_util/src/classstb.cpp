@@ -1,17 +1,46 @@
 /*
     $History: classSTB.cpp $
  *
+ * *****************  Version 5  *****************
+ * User: Netggun      Date: 05-06-05   Time: 2:31a
+ * Updated in $/7HeartsOnline/LIB_Util
+ *
+ * *****************  Version 4  *****************
+ * User: Netggun      Date: 05-06-04   Time: 1:00p
+ * Updated in $/7HeartsOnline/LIB_Util
+ * STB 로딩시 MAX_PATH 만큼 읽던 것을 버퍼 길이만큼 읽는 것으로 고침
+ *
  * *****************  Version 3  *****************
- * User: Netggun      Date: 04-08-16   Time: 11:01a
- * Updated in $/Client/Util
+ * User: Icarus       Date: 04-05-27   Time: 8:32p
+ * Updated in $/7HeartsOnline/LIB_Util
  *
  * *****************  Version 2  *****************
- * User: Icarus       Date: 04-04-02   Time: 3:30p
- * Updated in $/Client/Util
+ * User: Icarus       Date: 04-04-01   Time: 5:44p
+ * Updated in $/7HeartsOnline/LIB_Util
  *
  * *****************  Version 1  *****************
- * User: Icarus       Date: 03-11-21   Time: 11:01a
- * Created in $/Client/Util
+ * User: Icarus       Date: 04-03-25   Time: 11:20a
+ * Created in $/7HeartsOnline/LIB_Util
+ *
+ * *****************  Version 1  *****************
+ * User: Icarus       Date: 04-03-25   Time: 11:09a
+ * Created in $/SevenHearts/LIB_Util
+ *
+ * *****************  Version 1  *****************
+ * User: Icarus       Date: 04-03-25   Time: 10:51a
+ * Created in $/SevenHearts/LIB_Util/LIB_Util
+ *
+ * *****************  Version 1  *****************
+ * User: Icarus       Date: 04-03-25   Time: 10:47a
+ * Created in $/SevenHearts/LIB_Util
+ *
+ * *****************  Version 1  *****************
+ * User: Icarus       Date: 04-03-25   Time: 10:35a
+ * Created in $/SHO/LIB_Util
+ *
+ * *****************  Version 1  *****************
+ * User: Icarus       Date: 04-03-25   Time: 10:26a
+ * Created in $/SevenHearts/LIB_Util/LIB_Util
  *
  * *****************  Version 1  *****************
  * User: Icarus       Date: 03-07-03   Time: 11:38a
@@ -32,17 +61,23 @@
 
 #include <windows.h>
 #include <stdlib.h>
-#include "classSTB.h"
-#include "classSTR.h"
+#include "util/classstb.h"
+#include "util/classstr.h"
+
+#include "rose/common/log.h"
 
 //-------------------------------------------------------------------------------------------------
 classSTB::classSTB() {
     m_fp = NULL;
-    m_pOffset = NULL;
     m_RowNAME = NULL;
 
-    m_iRowCount = m_iColCount = 0;
+#ifdef __MAPPING_FPOS2MEM
     m_pDataOFF = NULL;
+#else
+    m_pOffset = NULL;
+#endif
+
+    m_iRowCount = m_iColCount = 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -53,11 +88,13 @@ classSTB::~classSTB() {
     if (m_RowNAME)
         delete[] m_RowNAME;
 
+#ifdef __MAPPING_FPOS2MEM
+    if (m_pDataOFF)
+        delete[] m_pDataOFF;
+#else
     if (m_pOffset)
         delete[] m_pOffset;
-
-    if (m_ppData)
-        delete[] m_pDataOFF;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -68,9 +105,9 @@ classSTB::Open(char* szFileName, long lFilePtr) {
         long lValue;
     } u;
 
-    m_fp = fopen(szFileName, "rb");
-    if (m_fp == NULL) {
-        ::MessageBox(NULL, "File open error...", szFileName, MB_OK);
+    if (0 != fopen_s(&m_fp, szFileName, "rb")) {
+        LOG_ERROR("Failed to open file {}", szFileName);
+        //::MessageBox (NULL, "File open error...", szFileName, MB_OK);
         return false;
     }
 
@@ -118,7 +155,7 @@ classSTB::Open(char* szFileName, long lFilePtr) {
 
     // 데이타 이름.
     m_RowNAME = new CStrVAR[m_iRowCount];
-    char* pStr = CStr::GetString();
+    char* pStr; // = CStr::GetString ();
 
     // skip colume title line ...
     fread(&nLen, sizeof(short), 1, m_fp);
@@ -126,37 +163,42 @@ classSTB::Open(char* szFileName, long lFilePtr) {
 
     for (nI = 0; nI < m_iRowCount - 1; nI++) {
         fread(&nLen, sizeof(short), 1, m_fp);
+        m_RowNAME[nI].Alloc(nLen + 1);
+
+        pStr = m_RowNAME[nI].Get();
         fread(pStr, sizeof(char), nLen, m_fp);
         pStr[nLen] = 0;
-        m_RowNAME[nI].Set(pStr);
     }
 
     m_iRowCount--;
     m_iColCount--;
 
+    fseek(m_fp, m_lFP, SEEK_SET);
+
+#ifndef __MAPPING_FPOS2MEM
     m_iRowIndex = 0;
     m_iColIndex = 0;
 
-    fseek(m_fp, m_lFP, SEEK_SET);
-    /*
-        m_pOffset = new long [ m_iRowCount ];
-        ::ZeroMemory (m_pOffset, sizeof(long) * m_iRowCount);
-        m_pOffset[ 0 ] = ftell(m_fp);
-    */
+    m_pOffset = new long[m_iRowCount];
+    ::ZeroMemory(m_pOffset, sizeof(long) * m_iRowCount);
+    m_pOffset[0] = ftell(m_fp);
+#else
     m_pDataOFF = new tagSTB[m_iRowCount * m_iColCount];
     ::ZeroMemory(m_pDataOFF, sizeof(tagSTB) * m_iRowCount * m_iColCount);
 
-    short nStrLen;
+    tagSTB* pSTB;
     for (int iR = 0; iR < m_iRowCount; iR++) {
         for (int iC = 0; iC < m_iColCount; iC++) {
-            fread(&m_pDataOFF[iR * m_iColCount + iC].m_nStrLen, 1, sizeof(short), m_fp);
-            m_pDataOFF[iR * m_iColCount + iC].m_lFilePOS = ftell(m_fp);
+            pSTB = &m_pDataOFF[iR * m_iColCount + iC];
 
-            if (m_pDataOFF[iR * m_iColCount + iC].m_nStrLen)
-                fseek(m_fp, m_pDataOFF[iR * m_iColCount + iC].m_nStrLen, SEEK_CUR);
+            fread(&pSTB->m_nStrLen, 1, sizeof(short), m_fp);
+            pSTB->m_lFilePOS = ftell(m_fp);
+            if (pSTB->m_nStrLen) {
+                fseek(m_fp, pSTB->m_nStrLen, SEEK_CUR);
+            }
         }
     }
-
+#endif
     return true;
 }
 
@@ -168,18 +210,21 @@ classSTB::Close() {
         m_fp = NULL;
     }
 
-    if (m_pOffset) {
-        delete[] m_pOffset;
-        m_pOffset = NULL;
-    }
-
+#ifdef __MAPPING_FPOS2MEM
     if (m_pDataOFF) {
         delete[] m_pDataOFF;
         m_pDataOFF = NULL;
     }
+#else
+    if (m_pOffset) {
+        delete[] m_pOffset;
+        m_pOffset = NULL;
+    }
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
+#ifndef __MAPPING_FPOS2MEM
 bool
 classSTB::SetIndexPosition(int iCol, int iRow) {
     if (iRow >= m_iRowCount || iCol >= m_iColCount)
@@ -223,47 +268,52 @@ classSTB::SetIndexPosition(int iCol, int iRow) {
 
     return true;
 }
+#endif
 
 //-------------------------------------------------------------------------------------------------
 int
 classSTB::GetInteger(int iCol, int iRow) {
-    if (m_pDataOFF[iRow * m_iColCount + iCol].m_nStrLen) {
-        fseek(m_fp, m_pDataOFF[iRow * m_iColCount + iCol].m_lFilePOS, SEEK_SET);
-        fread(m_szValue, nStrLen, sizeof(char), m_fp);
-        m_szValue[nStrLen] = '\0';
+#ifdef __MAPPING_FPOS2MEM
+    tagSTB* pSTB = &m_pDataOFF[iRow * m_iColCount + iCol];
+    if (pSTB->m_nStrLen) {
+        fseek(m_fp, pSTB->m_lFilePOS, SEEK_SET);
+        fread(m_szValue, pSTB->m_nStrLen, sizeof(char), m_fp);
+        m_szValue[pSTB->m_nStrLen] = '\0';
 
         return atoi(m_szValue);
     }
     return 0;
-
-    /*
-    if ( !SetIndexPosition(iCol, iRow) )
+#else
+    if (!SetIndexPosition(iCol, iRow))
         return 0;
 
     return GetInteger();
-    */
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 char*
 classSTB::GetString(int iCol, int iRow) {
-    if (m_pDataOFF[iRow * m_iColCount + iCol].m_nStrLen) {
-        fseek(m_fp, m_pDataOFF[iRow * m_iColCount + iCol].m_lFilePOS, SEEK_SET);
-        fread(m_szValue, nStrLen, sizeof(char), m_fp);
-        m_szValue[nStrLen] = '\0';
+#ifdef __MAPPING_FPOS2MEM
+    tagSTB* pSTB = &m_pDataOFF[iRow * m_iColCount + iCol];
+    if (pSTB->m_nStrLen) {
+        fseek(m_fp, pSTB->m_lFilePOS, SEEK_SET);
+        fread(m_szValue, pSTB->m_nStrLen, sizeof(char), m_fp);
+        m_szValue[pSTB->m_nStrLen] = '\0';
 
         return m_szValue;
     }
     return NULL;
-    /*
-    if ( !SetIndexPosition(iCol, iRow) )
+#else
+    if (!SetIndexPosition(iCol, iRow))
         return NULL;
 
     return GetString();
-    */
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
+#ifndef __MAPPING_FPOS2MEM
 int
 classSTB::GetInteger() {
     if (feof(m_fp))
@@ -292,8 +342,8 @@ classSTB::GetInteger() {
 
     return 0;
 }
-
-//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    #define MAX_STB_BUFFER_LENGTH 4096 // STB 로딩시 읽을 수 있는 최대 문자열 길이..
 char*
 classSTB::GetString() {
     if (feof(m_fp))
@@ -311,16 +361,21 @@ classSTB::GetString() {
 
     if (m_iColIndex++ == 0)
         m_pOffset[m_iRowIndex] = ftell(m_fp);
-
     fread(&nStrLen, 1, sizeof(short), m_fp);
-    if (nStrLen && nStrLen < MAX_PATH) {
+    if (nStrLen && nStrLen < MAX_STB_BUFFER_LENGTH) {
         fread(m_szValue, nStrLen, sizeof(char), m_fp);
         m_szValue[nStrLen] = '\0';
+
+        return m_szValue;
+    } else if (nStrLen > 0) {
+        fread(m_szValue, sizeof(char), MAX_STB_BUFFER_LENGTH - 1, m_fp);
+        m_szValue[MAX_STB_BUFFER_LENGTH - 1] = '\0';
 
         return m_szValue;
     }
 
     return NULL;
 }
+#endif
 
 //-------------------------------------------------------------------------------------------------

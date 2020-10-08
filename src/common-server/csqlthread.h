@@ -2,7 +2,7 @@
 
 #include "classSYNCOBJ.h"
 #include "classTHREAD.h"
-#include "classSTR.h"
+#include "util/classstr.h"
 #include "CDLList.h"
 #include "PacketHEADER.h"
 

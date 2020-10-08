@@ -3,7 +3,7 @@
 #include "citemequip.h"
 
 #include "../object.h"
-#include "../common/io_stb.h"
+#include "rose/io/stb.h"
 #include "cinventory.h"
 
 #include "../interface/typeresource.h"

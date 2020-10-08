@@ -7,7 +7,7 @@
 #define __CObjCHAR_H
 #include "CGameOBJ.h"
 #include "CCharDATA.h"
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 #include "IO_AI.h"
 #include "IO_PAT.h"
 

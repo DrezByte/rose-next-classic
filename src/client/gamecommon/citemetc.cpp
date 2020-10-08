@@ -2,7 +2,7 @@
 
 #include ".\citemetc.h"
 #include "../game.h"
-#include "../common/io_stb.h"
+#include "rose/io/stb.h"
 #include "../network/cnetwork.h"
 #include "../interface/typeresource.h"
 #include "../interface/dlgs/MakeDlg.h"

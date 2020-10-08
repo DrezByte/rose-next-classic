@@ -12,7 +12,7 @@
 #include "../CommandFilter.h"
 #include "../GameData/CPrivateStore.h"
 #include "GameProc/preventduplicatedcommand.h"
-#include "../common/io_stb.h"
+#include "rose/io/stb.h"
 #include "../System/CGame.h"
 #include "../System/GameStateMovePlanet.h"
 

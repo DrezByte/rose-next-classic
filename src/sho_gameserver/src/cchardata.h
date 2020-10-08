@@ -5,7 +5,7 @@
  */
 #ifndef __CCharDATA_H
 #define __CCharDATA_H
-#include "classSTR.h"
+#include "util/classstr.h"
 #include "IO_Motion.h"
 //-------------------------------------------------------------------------------------------------
 

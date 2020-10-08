@@ -109,9 +109,6 @@
     <ClInclude Include="src\common\io_skill.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\io_stb.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="src\srv_common\cchatroom.h">
       <Filter>Source Files\srv_common</Filter>
     </ClInclude>
@@ -256,9 +253,6 @@
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\io_skill.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\io_stb.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="src\ai_lib\ai_action.cpp">

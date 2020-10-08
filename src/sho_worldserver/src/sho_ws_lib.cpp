@@ -3,7 +3,7 @@
 #include "CWS_Client.h"
 #include "CWS_Server.h"
 #include "IO_PAT.h"
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 #include "SHO_WS_LIB.h"
 #include "WS_SocketLSV.h"
 #include "WS_ThreadSQL.h"

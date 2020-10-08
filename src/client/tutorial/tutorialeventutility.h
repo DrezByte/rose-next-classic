@@ -1,7 +1,7 @@
 #ifndef _TUTORIAL_EVENT_UTILITY_
 #define _TUTORIAL_EVENT_UTILITY_
 
-#include "../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "../Util/JSingleton.h"
 
 //---------------------------------------------------------------------------------------

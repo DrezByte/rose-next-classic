@@ -6,10 +6,10 @@
 
 #ifdef __SERVER
     #include "PacketHEADER.h"
-    #include "classHASH.h"
+    #include "util/classhash.h"
 #else
     #include "../util/PacketHEADER.h"
-    #include "../util/classHASH.h"
+    #include "util/classhash.h"
 #endif
 
 #define __APPLY_04_10_15_TEAMNO // 04.10.15일자 팀번호 변경 패킷 적용할래 ?

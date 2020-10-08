@@ -5,8 +5,8 @@
 
 #include "CDLList.h"
 #include "DLLIST.h"
-#include "classHASH.h"
-#include "classSTR.h"
+#include "util/classhash.h"
+#include "util/classstr.h"
 #include "classSYNCOBJ.h"
 #include "classTIME.h"
 #include "ioDataPOOL.h"

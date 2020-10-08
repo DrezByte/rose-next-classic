@@ -6,7 +6,7 @@
 #include "../../CDragItem.h"
 #include "../../CDragNDropMgr.h"
 #include "../../IO_ImageRes.h"
-#include "../../../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "../../CInfo.h"
 #include "../../CToolTipMgr.h"
 #include "../../../GameData/CPrivateStore.h"

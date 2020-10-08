@@ -52,9 +52,9 @@ typedef LPDIRECT3DVERTEXBUFFER9 LPD3DVERTEXBUFFER;
 #include "DataTYPE.h"
 
 #include "util\CD3DUtil.h"
-#include "util\classSTR.h"
+#include "util/classstr.h"
 #include "util\classLUA.h"
-#include "util\classHASH.h"
+#include "util/classhash.h"
 #include "util\classUTIL.h"
 #include "util\SLLIST.h"
 #include "util\DLLIST.h"

@@ -8,7 +8,7 @@
 
 #include "CDataPOOL.h"
 #include "GS_USER.h"
-#include "classHASH.h"
+#include "util/classhash.h"
 #include "classSYNCOBJ.h"
 #include "iocpSocketSERVER.h"
 

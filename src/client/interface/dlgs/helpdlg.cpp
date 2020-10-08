@@ -16,7 +16,7 @@
 #include "tgamectrl/jcontainer.h"
 #include "tgamectrl/tabbedpane.h"
 #include "../../Util/Localizing.h"
-#include "../../Common/IO_STB.h"
+#include "rose/io/stb.h"
 
 CHelpDlg::CHelpDlg(void) {
     m_pTreeModel = NULL;

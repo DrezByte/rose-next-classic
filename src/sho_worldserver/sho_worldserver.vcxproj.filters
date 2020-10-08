@@ -23,9 +23,6 @@
     <ClCompile Include="..\common\io_skill.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\io_stb.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="..\common-server\src\cthreadguild.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>

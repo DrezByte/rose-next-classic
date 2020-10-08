@@ -83,7 +83,7 @@
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)src\lib_util;$(SolutionDir)src\triggervfs\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-5.0\include;$(SolutionDir)thirdparty\zlib-1.2.3;$(SolutionDir)thirdparty\zlib-1.2.3\contrib\minizip;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_util\include;$(SolutionDir)src\triggervfs\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-5.0\include;$(SolutionDir)thirdparty\zlib-1.2.3;$(SolutionDir)thirdparty\zlib-1.2.3\contrib\minizip;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ZZ_DLL_EXPORT;XXXZZ_MEM_ON;D3D_DEBUG_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -134,7 +134,7 @@
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)src\lib_util;$(SolutionDir)src\triggervfs\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-5.0\include;$(SolutionDir)thirdparty\zlib-1.2.3;$(SolutionDir)thirdparty\zlib-1.2.3\contrib\minizip;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)include;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_util\include;$(SolutionDir)src\triggervfs\include;$(SolutionDir)thirdparty\directx9\include;$(SolutionDir)thirdparty\lua-5.0\include;$(SolutionDir)thirdparty\zlib-1.2.3;$(SolutionDir)thirdparty\zlib-1.2.3\contrib\minizip;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ZZ_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>

@@ -1,6 +1,6 @@
 #include "stdAFX.h"
 
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 #include "CUserDATA.h"
 #include "Object.h"
 #include "calculation.h"

@@ -5,7 +5,7 @@
  */
 #ifndef __CRIDEITEM_H
 #define __CRIDEITEM_H
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 //-------------------------------------------------------------------------------------------------
 
 #define PAT_ITEM_PART_IDX(I) g_PatITEM.GetValue(I, 2)

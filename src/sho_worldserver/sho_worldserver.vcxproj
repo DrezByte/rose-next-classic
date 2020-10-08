@@ -17,7 +17,6 @@
     <ClCompile Include="..\common\etc_math.cpp" />
     <ClCompile Include="..\common\io_pat.cpp" />
     <ClCompile Include="..\common\io_skill.cpp" />
-    <ClCompile Include="..\common\io_stb.cpp" />
     <ClCompile Include="..\common\shared\cinventory.cpp" />
     <ClCompile Include="..\common\shared\citem.cpp" />
     <ClCompile Include="..\common\shared\cuserdata_new.cpp" />
@@ -102,7 +101,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_util\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;__WORLDSERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -123,7 +122,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\client;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_util\include;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_MBCS;__WORLDSERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>

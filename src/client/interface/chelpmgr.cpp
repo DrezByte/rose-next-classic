@@ -3,7 +3,7 @@
 #include ".\chelpmgr.h"
 #include "dlgs/CSystemMsgDlg.h"
 #include "interfacetype.h"
-#include "../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "../Object.h"
 #include "../GameCommon/StringManager.h"
 

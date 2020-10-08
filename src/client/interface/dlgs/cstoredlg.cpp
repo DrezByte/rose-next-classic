@@ -12,7 +12,7 @@
 #include "../Command/dragcommand.h"
 
 #include "../../Network/CNetwork.h"
-#include "../../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "../../System/CGame.h"
 #include "../../gamecommon/item.h"
 #include "../../gamedata/Cstore.h"

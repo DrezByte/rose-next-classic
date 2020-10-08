@@ -74,7 +74,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_util\include;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -92,7 +92,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)src\client;$(SolutionDir)src\client\common;$(SolutionDir)src\client\util;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common\shared;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\common-server;$(SolutionDir)src\common-server\include;$(SolutionDir)src\lib_util;$(SolutionDir)src\lib_util\include;$(GeneratedDirCommon);$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(SolutionDir)thirdparty\json-3.7.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>_MBCS;__SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>

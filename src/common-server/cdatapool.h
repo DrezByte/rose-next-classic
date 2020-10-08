@@ -1,7 +1,7 @@
 #ifndef __CDATAPOOL_H
 #define __CDATAPOOL_H
 #include "SLLIST.h"
-#include "classSTR.h"
+#include "util/classstr.h"
 #include "classSYNCOBJ.h"
 #include "crtdbg.h"
 #include "rose/common/log.h"

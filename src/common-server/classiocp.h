@@ -3,7 +3,7 @@
 // #include <ScktComp.hpp>
 /*
 #include "DLLIST.h"
-#include "classHASH.h"
+#include "util/classhash.h"
 #include "classINDEX.h"
 #include "classSYNCOBJ.h"
 #include "iocpSOCKET.h"

@@ -95,6 +95,15 @@
     <ClInclude Include="classLOG.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\util\classstr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\classhash.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\classstb.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBITArray.cpp">
@@ -103,16 +112,7 @@
     <ClCompile Include="cdxHPC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="classHASH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="classMD5.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="classSTB.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="classSTR.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="classTIME.cpp">
@@ -147,6 +147,15 @@
     </ClCompile>
     <ClCompile Include="classTHREAD.cpp">
       <Filter>Source Files\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\classstr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\classhash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\classstb.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
 #include ".\cseparate.h"
 #include "../GameCommon/Item.h"
 #include "citem.h"
-#include "../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "../Network/CNetwork.h"
 #include "event/CTEventItem.h"
 CSeparate::CSeparate(void) {

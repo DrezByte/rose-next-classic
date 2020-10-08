@@ -1,7 +1,7 @@
 #ifndef ipLISTH
 #define ipLISTH
-#include "classHASH.h"
-#include "classSTR.h"
+#include "util/classhash.h"
+#include "util/classstr.h"
 #include "classTIME.h"
 //-------------------------------------------------------------------------------------------------
 

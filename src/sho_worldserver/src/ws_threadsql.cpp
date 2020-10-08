@@ -2,7 +2,7 @@
 
 #include "CThreadGUILD.h"
 #include "CWS_Client.h"
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 #include "WS_ThreadSQL.h"
 #include "WS_ZoneLIST.h"
 

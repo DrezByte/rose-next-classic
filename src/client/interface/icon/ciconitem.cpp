@@ -8,7 +8,7 @@
 #include "../IO_ImageRes.h"
 #include "../slotcontainer/CItemSlot.h"
 #include "../../GameCommon/Item.h"
-#include "../../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "citem.h"
 #include "../../System/CGame.h"
 #include "../command/uicommand.h"

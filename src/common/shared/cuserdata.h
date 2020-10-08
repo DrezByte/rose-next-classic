@@ -1,9 +1,9 @@
 #pragma once
 
 #ifdef __SERVER
-    #include "io_stb.h"
+    #include "rose/io/stb.h"
 #else
-    #include "common/io_stb.h"
+    #include "rose/io/stb.h"
 #endif
 
 #include "calculation.h"

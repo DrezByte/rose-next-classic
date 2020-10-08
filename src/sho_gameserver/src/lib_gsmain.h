@@ -13,10 +13,10 @@
 #include "DataTYPE.h"
 #include "NET_Prototype.h"
 #include "SLLIST.h"
-#include "classHASH.h"
+#include "util/classhash.h"
 #include "classINDEX.h"
 #include "classIOCP.h"
-#include "classSTR.h"
+#include "util/classstr.h"
 #include "classSYNCOBJ.h"
 #include "classTIME.h"
 #include "classUTIL.h"
@@ -24,7 +24,7 @@
 
 #include "ETC_Math.h"
 
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 #include "OBJECT.h"
 
 #include "rose/common/log.h"

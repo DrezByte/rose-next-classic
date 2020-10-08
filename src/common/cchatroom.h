@@ -3,7 +3,7 @@
         #define __CCHAT_ROOM_H
         #include "CDLList.h"
         #include "classINDEX.h"
-        #include "classSTR.h"
+        #include "util/classstr.h"
         #include "classSyncOBJ.h"
 
         #if !defined(__SHO_WS) && !defined(__SHO_GS)

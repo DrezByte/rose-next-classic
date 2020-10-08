@@ -2,7 +2,7 @@
 
 #include "LIB_gsMAIN.h"
 #include "ZoneLIST.h"
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 #include "GS_ThreadSQL.h"
 #include "GS_SocketLSV.h"
 

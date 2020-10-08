@@ -5,7 +5,7 @@
 #include "../CToolTipMgr.h"
 #include "../dlgs/subclass/CSlot.h"
 
-#include "../../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "../../Game.h"
 
 #include "tgamectrl/tdialog.h"

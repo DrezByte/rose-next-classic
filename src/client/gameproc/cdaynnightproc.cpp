@@ -2,7 +2,7 @@
 
 #include "CDayNNightProc.h"
 #include "Game.h"
-#include "../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include <algorithm>
 #include "IO_Effect.h"
 #include "../Misc/GameUtil.h"

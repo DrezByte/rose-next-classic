@@ -6,7 +6,7 @@
 #include "CObjGROUND.h"
 #include "zz_interface.h"
 #include "Game.h"
-#include "common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "CViewMSG.h"
 #include "../interface/TypeResource.h"
 

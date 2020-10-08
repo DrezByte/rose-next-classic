@@ -4,7 +4,7 @@
 #include "Interface/Dlgs/ChattingDLG.h"
 #include "interface/Dlgs/QuickToolBar.h"
 #include "Game.h"
-#include "Common/IO_STB.H"
+#include "rose/io/stb.h"
 
 CClientStorage g_ClientStorage;
 const char g_szIniFileName[] = "./rose-next.ini";

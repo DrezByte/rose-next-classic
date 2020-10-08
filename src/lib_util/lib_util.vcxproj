@@ -64,7 +64,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\client\util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\client\util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadeddebug</RuntimeLibrary>
@@ -97,7 +97,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\client\util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include\;$(SolutionDir)src\common;$(SolutionDir)src\common\include;$(SolutionDir)src\common-lib\include;$(SolutionDir)src\client\util;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\srv_COMMON;$(SolutionDir)src\SHO_GS\SHO_GS_LIB\Common;$(SolutionDir)thirdparty\flatbuffers-1.11.0\include;$(SolutionDir)thirdparty\fmt-6.2.1\include;$(GeneratedDirCommon);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -155,6 +155,9 @@
     <ClInclude Include="CWaveFILE.h" />
     <ClInclude Include="..\Client\Util\DLLIST.h" />
     <ClInclude Include="DynamicData.h" />
+    <ClInclude Include="include\util\classhash.h" />
+    <ClInclude Include="include\util\classstb.h" />
+    <ClInclude Include="include\util\classstr.h" />
     <ClInclude Include="LIB_Util.h" />
     <ClInclude Include="..\Client\Util\SLLIST.h" />
   </ItemGroup>
@@ -177,34 +180,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="classHASH.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Disabled</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='release|Win32'">MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
     <ClCompile Include="classMD5.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Disabled</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='release|Win32'">MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="classSTB.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Disabled</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='release|Win32'">MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <ClCompile Include="classSTR.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -304,6 +280,9 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="src\classhash.cpp" />
+    <ClCompile Include="src\classstb.cpp" />
+    <ClCompile Include="src\classstr.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,7 +2,7 @@
     #ifndef __CCHAT_ROOM_H
         #define __CCHAT_ROOM_H
         #include "CDLList.h"
-        #include "classSTR.h"
+        #include "util/classstr.h"
         #include "classSyncOBJ.h"
         #include "classINDEX.h"
 

@@ -26,8 +26,8 @@
 #include "rose/common/log.h"
 
 #include "LIB_Util.h"
-#include "classHASH.h"
-#include "classSTR.h"
+#include "util/classhash.h"
+#include "util/classstr.h"
 #include "classTIME.h"
 
 #include "CDLList.h"

@@ -3,7 +3,7 @@
 */
 #include "stdAFX.h"
 
-#include "Common\IO_STB.h"
+#include "rose/io/stb.h"
 #include "IO_Event.h"
 
 //-------------------------------------------------------------------------------------------------

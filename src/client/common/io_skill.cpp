@@ -4,7 +4,7 @@
 #ifndef __SERVER
     #include "..\util\CGameSTB.h"
 #else
-    #include "..\util\classSTB.h"
+    #include "util/classstb.h"
     #include "..\GameProc\UseItemDelay.h"
 #endif
 

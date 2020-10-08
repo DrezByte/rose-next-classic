@@ -30,10 +30,10 @@
     #include "rose/common/log.h"
 
     #include "LIB_Util.h"
-    #include "classHASH.h"
+    #include "util/classhash.h"
     #include "classTIME.h"
-    #include "classSTR.h"
-    #include "classSTB.h"
+    #include "util/classstr.h"
+    #include "util/classstb.h"
     #include "classSYNCOBJ.h"
     #include "CRandom.h"
     #include "CDataPOOL.h"

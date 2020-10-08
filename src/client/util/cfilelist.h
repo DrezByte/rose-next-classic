@@ -3,9 +3,9 @@
 */
 #ifndef __CFILELIST_H
 #define __CFILELIST_H
-#include "classSTB.h"
-#include "classSTR.h"
-#include "classHASH.h"
+#include "util/classstb.h"
+#include "util/classstr.h"
+#include "util/classhash.h"
 
 #ifdef CLIENT
     #include "util/dllist.h"

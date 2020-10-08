@@ -12,7 +12,7 @@ using namespace Rose::Database;
 
     #include "CThreadMSGR.h"
     //#include "classLOG.h"
-    #include "IO_STB.h"
+    #include "rose/io/stb.h"
 
 //-------------------------------------------------------------------------------------------------
 CThreadMSGR::CThreadMSGR(UINT uiInitDataCNT, UINT uiIncDataCNT):

@@ -5,7 +5,7 @@
 #include "../../Game.h"
 #include "../../System/CGame.h"
 #include "../../CApplication.h"
-#include "../../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "../../JCommandState.h"
 #include "../Cursor/CCursor.h"
 #include "../../Sound/MusicMgr.h"

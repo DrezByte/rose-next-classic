@@ -2,7 +2,7 @@
 
 #include ".\bgmmanager.h"
 #include "../Sound/MusicMgr.h"
-#include "../Common/IO_STB.h"
+#include "rose/io/stb.h"
 
 #include "../CClientStorage.h"
 #include "../Game.h"

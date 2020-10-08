@@ -4,7 +4,7 @@
 #include "../Icon/CIconItem.h"
 #include "tgamectrl/teditbox.h"
 #include "../../GameData/CPrivateStore.h"
-#include "../../common/io_stb.h"
+#include "rose/io/stb.h"
 CGoodsDlg::CGoodsDlg(int iDlgType) {
     SetDialogType(iDlgType);
     m_Slot.SetParent(iDlgType);

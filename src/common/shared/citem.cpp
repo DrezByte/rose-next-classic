@@ -1,7 +1,7 @@
 #include "stdAFX.h"
 
 #include "CItem.h"
-#include "Common/IO_STB.h"
+#include "rose/io/stb.h"
 
 #ifndef __SERVER
     #include "CInventory.h"

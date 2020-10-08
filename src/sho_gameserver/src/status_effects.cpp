@@ -4,7 +4,7 @@
 #include "status_effects.h"
 
 #include "rose/common/status_effect/status_effect_data.h"
-#include "IO_STB.h"
+#include "rose/io/stb.h"
 
 using namespace Rose::Common;
 

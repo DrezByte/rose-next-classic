@@ -6,8 +6,8 @@
 #ifndef __GS_GUILD_H
 #define __GS_GUILD_H
 #include "CDLList.h"
-#include "classHASH.h"
-#include "classSTR.h"
+#include "util/classhash.h"
+#include "util/classstr.h"
 
 #if !defined(__SHO_WS) && !defined(__SHO_GS)
     #error>>> ERROR :: must defined __SHO_WS or __SHO_GS

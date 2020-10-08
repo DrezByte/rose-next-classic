@@ -1,30 +1,12 @@
 #ifndef __IO_STB_H
 #define __IO_STB_H
-#include "..\Util\classHASH.h"
-#ifndef __SERVER
-    #include "../GameCommon/StringManager.h"
-#else
-    #include "classstr.h"
-#endif
 
-#include "rose/common/log.h"
+#include "util/classstr.h"
+#include "util/classhash.h"
 
+// This comes from data_type.h but we can't import it here
+const size_t STB_FILE_COUNT = 14;
 
-//-------------------------------------------------------------------------------------------------
-
-/**
- * \ingroup SHO_GS_LIB
- * \date 2005-08-25
- *
- * \brief
- *
- * \todo
- *
- * \bug
- *
- * \warning
- *
- */
 class STBVALUE {
 private:
     bool m_bString;
@@ -51,7 +33,6 @@ public:
             return NULL;
 
         if (!m_pString) {
-            g_LOG.CS_ODS(0xffff, (char*)"Null String Founded\n");
             return NULL;
         }
 
@@ -63,19 +44,6 @@ public:
 #endif
 };
 
-/**
- * \ingroup SHO_GS_LIB
- * \date 2005-08-25
- *
- * \brief
- *
- * \todo
- *
- * \bug
- *
- * \warning
- *
- */
 class STBDATA {
 private:
     classHASH<short> m_KeyTable;
@@ -129,7 +97,7 @@ public:
     #define ITEM_NAME(T, I) g_pTblSTBs[T]->m_ppNAME[I] // 아이템 이름
     #define ITEM_DESC(T, I) g_pTblSTBs[T]->m_ppDESC[I] // 아이템 설명
 #else
-    #define ITEM_NAME(T, I) CStringManager::GetSingleton().GetItemName(T, I) // 아이템 이름
+    #define ITEM_NAME(T, I) CStringManager::GetSingleton().GetItemName(T, I)
     #define ITEM_DESC(T, I) CStringManager::GetSingleton().GetItemDesc(T, I) // 아이템 설명
 #endif
 
@@ -298,9 +266,12 @@ public:
 #define USEITEM_USE_SOUND(I) g_TblUSEITEM.m_ppDATA[I][23] // 사용 효과음
 #define USEITME_STATUS_STB(I) g_TblUSEITEM.m_ppDATA[I][24] // 지속형 상태
 
-#define MAX_USEITEM_COOLTIME_TYPE 4 // 0~3
+#define USEITME_DELAYTIME_TYPE(I) g_TblUSEITEM.m_ppDATA[I][25]
+#define USEITME_DELAYTIME_TICK(I) g_TblUSEITEM.m_ppDATA[I][26]
 #define USEITEM_COOLTIME_TYPE(I) g_TblUSEITEM.m_ppDATA[I][25]
 #define USEITEM_COOLTIME_DELAY(I) g_TblUSEITEM.m_ppDATA[I][26]
+
+#define MAX_USEITEM_COOLTIME_TYPE 4 // 0~3
 
 //-------------------------------------------------------------------------------------------------
 // LIST_JEMITEM.STB		보석아이템
@@ -376,6 +347,7 @@ public:
 #define NPC_TYPE(I) g_TblNPC.m_ppVALUE[I][27].GetINT()
 #define NPC_HIT_MATERIAL_TYPE(I) g_TblNPC.m_ppVALUE[I][28].GetINT()
 #define NPC_FACE_ICON(I) g_TblNPC.m_ppVALUE[I][29].GetINT()
+#define NPC_SUMMONMOB_TYPE(I) g_TblNPC.m_ppVALUE[I][29].GetINT()
 #define NPC_NORMAL_EFFECT_SOUND(I) g_TblNPC.m_ppVALUE[I][30].GetINT()
 #define NPC_ATTACK_SOUND(I) g_TblNPC.m_ppVALUE[I][31].GetINT() // 공격 시작 사운드
 #define NPC_HITTED_SOUND(I) g_TblNPC.m_ppVALUE[I][32].GetINT() // 맞았을때 내는 소리
@@ -391,6 +363,8 @@ public:
 #define NPC_STRING_ID(I) g_TblNPC.m_ppVALUE[I][NPC_STRING_ID_COLOUM].GetSTR() //	스트링 아이디
 
 #define NPC_ATTRIBUTE(I) g_TblNPC.m_ppVALUE[I][43].GetINT()
+#define NPC_CREATE_EFFECT(I) g_TblNPC.m_ppVALUE[I][44].GetINT() // 생성시 효과.
+#define NPC_CREATE_SOUND(I) g_TblNPC.m_ppVALUE[I][45].GetINT() // 생성시 효과음.
 
 #define FILE_MOTION(WEAPON, ACTION) g_TblAniTYPE.m_ppDATA[ACTION][WEAPON]
 
@@ -520,6 +494,9 @@ public:
 
 #define ZONE_PARTY_EXP_A(I) g_TblZONE.m_ppVALUE[I][28].GetINT()
 #define ZONE_PARTY_EXP_B(I) g_TblZONE.m_ppVALUE[I][29].GetINT()
+//
+//#define	ZONE_OCEAN_TEXTURE_DIRECTORY(I)		g_TblZONE.m_ppVALUE[ I ][ 30 ].GetINT()
+//#define	ZONE_OCEAN_FRAME(I)					g_TblZONE.m_ppVALUE[ I ][ 31 ].GetINT()
 
 #define ZONE_RIDING_REFUSE_FLAG(I) g_TblZONE.m_ppVALUE[I][30].GetINT() // 탑승 거부 플래그
 #define ZONE_REVIVE_ZONENO(I) g_TblZONE.m_ppVALUE[I][31].GetINT() // 사망시 부활존 번호
@@ -700,7 +677,7 @@ extern STBDATA g_TblSKY;
 
 extern STBDATA g_TblZONE;
 
-extern STBDATA* g_pTblSTBs[ITEM_TYPE_RIDE_PART + 1];
+extern STBDATA* g_pTblSTBs[STB_FILE_COUNT + 1];
 
 extern STBDATA g_TblString; // String table
 extern STBDATA g_TblHitSound; // 재질에 따른 타격시의 사운드

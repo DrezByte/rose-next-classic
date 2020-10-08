@@ -4,7 +4,7 @@
 #include "stdAFX.h"
 
 #include "CMessageQ.h"
-#include "classSTR.h"
+#include "util/classstr.h"
 
 //-------------------------------------------------------------------------------------------------
 void

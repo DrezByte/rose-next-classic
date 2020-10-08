@@ -5,7 +5,7 @@
 #include <crtdbg.h>
 #include "classUTIL.h"
 #include "rose/common/log.h"
-#include "classSTR.h"
+#include "util/classstr.h"
 #include "IP_Addr.h"
 
 //-------------------------------------------------------------------------------------------------

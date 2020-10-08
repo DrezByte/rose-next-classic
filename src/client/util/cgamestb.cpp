@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <stdlib.h>
 #include "CGameSTB.h"
-#include "classSTR.h"
+#include "util/classstr.h"
 
 //-------------------------------------------------------------------------------------------------
 CGameSTB::CGameSTB() {

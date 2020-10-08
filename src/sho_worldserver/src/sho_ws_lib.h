@@ -1,7 +1,7 @@
 #ifndef __SHO_WS_LIB_H
 #define __SHO_WS_LIB_H
 
-#include "classSTR.h"
+#include "util/classstr.h"
 #include "classtime.h"
 
 namespace Rose {

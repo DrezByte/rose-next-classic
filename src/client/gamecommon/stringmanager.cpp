@@ -3,7 +3,7 @@
 #include "stringmanager.h"
 #include "../Util/VFSManager.h"
 #include "../Util/Localizing.h"
-#include "../Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "../Common/IO_skill.h"
 #include "../Common/IO_Quest.h"
 #include "../Interface/CHelpMgr.h"

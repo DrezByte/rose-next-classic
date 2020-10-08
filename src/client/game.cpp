@@ -10,7 +10,7 @@
 #include "CModelCHAR.h"
 #include "CSkyDOME.h"
 #include "Common/IO_AI.h"
-#include "Common/IO_STB.h"
+#include "rose/io/stb.h"
 #include "IO_Basic.h"
 #include "IO_Effect.h"
 #include "IO_Event.h"
