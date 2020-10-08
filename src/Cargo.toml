@@ -4,3 +4,6 @@ members = [
     "launcher",
     "pipeline"
 ]
+
+[patch."https://github.com/rminderhoud/rose-tools"]
+roselib = { path = "../../../rose-tools/rose-lib" }

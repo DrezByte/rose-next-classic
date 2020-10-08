@@ -9,6 +9,6 @@ bincode = "1.2"
 clap = "2.33"
 csv = "1"
 globset = "0.4"
-roselib = {path = "../../thirdparty/rose-lib"}
+roselib = {git = "https://github.com/rminderhoud/rose-tools"}
 serde = { version = "1", features = ["derive"] }
 walkdir = "2"
