@@ -5,5 +5,7 @@ members = [
     "pipeline"
 ]
 
-[patch."https://github.com/rminderhoud/rose-tools"]
-roselib = { path = "../../../rose-tools/rose-lib" }
+# Enable this when you want to make changes to a local copy of rose-tools
+# and test it before publishing a new version to github
+# [patch."https://github.com/rminderhoud/rose-tools"]
+# roselib = { path = "../../../rose-tools/rose-lib" }
