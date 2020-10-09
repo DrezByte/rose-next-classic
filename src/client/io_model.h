@@ -153,13 +153,15 @@ CMODEL<CModelPart>::Load(CFileSystem* pFileSystem,
     //--------------------------------------------------------------------------------
     m_pParts = new CModelPart[m_nPartCNT];
     for (short nP = 0; nP < m_nPartCNT; nP++) {
-        pFileSystem->ReadInt16(&nListIDX); // mesh file
-        m_pParts[nP].m_uiMeshKEY = pMeshKEY[nListIDX];
+        int16_t mesh_id = 0;
+        pFileSystem->ReadInt16(&mesh_id); // mesh file
+        mesh_id = max(0, mesh_id);
+        m_pParts[nP].m_uiMeshKEY = pMeshKEY[mesh_id];
 
-        pFileSystem->ReadInt16(&nListIDX); // mat file
-
-        // nListIDX < 0 인경우는 보이지 않는 충돌체크용...
-        m_pParts[nP].m_uiMatKEY = (nListIDX >= 0) ? pMatKEY[nListIDX] : 0;
+        int16_t material_id = 0;
+        pFileSystem->ReadInt16(&material_id); // mat file
+        material_id = max(0, material_id);
+        m_pParts[nP].m_uiMatKEY = pMatKEY[material_id];
 
         m_pParts[nP].Load(pFileSystem, nLinkBoneNo, nLinkDummyNo);
         if (m_pParts[nP].IsRoot())
@@ -173,7 +175,7 @@ CMODEL<CModelPart>::Load(CFileSystem* pFileSystem,
     /// 포인터 정보 로드
     //--------------------------------------------------------------------------------
     pFileSystem->ReadInt16(&m_nDummyPointCNT);
-    if (0 != m_nDummyPointCNT) {
+    if (m_nDummyPointCNT > 0) {
         short nEffectType; // 밤낮 적용을 받는 이펙트 인가?
         m_pDummyPoints = new CPointPART[m_nDummyPointCNT];
         for (short nP = 0; nP < m_nDummyPointCNT; nP++) {

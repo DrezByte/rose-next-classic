@@ -336,10 +336,12 @@ CFixedPART::Load(CFileSystem* pFileSystem, short nLinkBoneNo, short nLinkDummyNo
                 pFileSystem->Read(szZmoFile, sizeof(char) * btLen);
                 szZmoFile[btLen] = 0;
 
-                m_HashZMOFile = g_MotionFILE.Add_FILE(szZmoFile);
-                LogString(LOG_DEBUG_, "Cnst ZMO :: %d : %s \n", m_HashZMOFile, szZmoFile);
-                if (!m_HashZMOFile)
-                    g_pCApp->ErrorBOX(szZmoFile, "File not found ...");
+                if (btLen > 0) {
+                    m_HashZMOFile = g_MotionFILE.Add_FILE(szZmoFile);
+                    LogString(LOG_DEBUG_, "Cnst ZMO :: %d : %s \n", m_HashZMOFile, szZmoFile);
+                    if (!m_HashZMOFile)
+                        g_pCApp->ErrorBOX(szZmoFile, "File not found ...");
+                }
                 break;
             }
 

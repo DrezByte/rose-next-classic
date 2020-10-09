@@ -40,3 +40,9 @@ impl From<std::str::Utf8Error> for PipelineError {
         PipelineError::Message(format!("String Utf8 Error: {}", e))
     }
 }
+
+impl From<serde_json::Error> for PipelineError {
+    fn from(e: serde_json::Error) -> PipelineError {
+        PipelineError::Message(format!("JSON Error: {}", e))
+    }
+}

@@ -8,9 +8,10 @@ use std::time;
 use clap::ArgMatches;
 use globset::{Glob, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
+use serde_json;
 use walkdir::WalkDir;
 
-use roselib::files::STB;
+use roselib::files::{STB, TSI, ZSC};
 use roselib::io::RoseFile;
 
 use crate::error::PipelineError;
@@ -258,8 +259,9 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
             let command = args[0].to_lowercase();
             let output_filepath = match command.as_str() {
                 "copy" => output_dir.join(&relative_filepath),
-                "stb" => output_dir.join(&relative_filepath).with_extension("stb"),
                 "dds" => output_dir.join(&relative_filepath).with_extension("dds"),
+                "stb" => output_dir.join(&relative_filepath).with_extension("stb"),
+                "zsc" => output_dir.join(&relative_filepath).with_extension("zsc"),
                 _ => PathBuf::new(),
             };
 
@@ -269,7 +271,18 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                 continue 'file_loop;
             }
 
-            let output_filedir = output_filepath.parent().unwrap();
+            let output_filedir = match output_filepath.parent() {
+                Some(p) => p,
+                None => {
+                    eprintln!(
+                        "Output filepath {} generated from input file {} has no parent",
+                        &output_filepath.display(),
+                        &relative_filepath.display()
+                    );
+                    continue;
+                }
+            };
+
             if let Err(e) = fs::create_dir_all(&output_filedir) {
                 eprintln!(
                     "Error creating output dir {}: {}",
@@ -310,6 +323,21 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                     println!("Converting to STB {}", input_filepath.display());
                     if let Err(e) = convert() {
                         eprintln!("Error converting stb {}: {}", &input_filepath.display(), e);
+                        false
+                    } else {
+                        true
+                    }
+                }
+                "zsc" => {
+                    let convert = || -> Result<(), PipelineError> {
+                        let mut zsc: ZSC = serde_json::from_reader(File::open(&input_filepath)?)?;
+                        zsc.write_to_path(&output_filepath)?;
+                        Ok(())
+                    };
+
+                    println!("Converting to ZSC {}", input_filepath.display());
+                    if let Err(e) = convert() {
+                        eprintln!("Error converting ZSC {}: {}", &input_filepath.display(), e);
                         false
                     } else {
                         true
