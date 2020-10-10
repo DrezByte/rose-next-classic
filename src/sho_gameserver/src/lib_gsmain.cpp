@@ -233,13 +233,13 @@ CLIB_GameSRV::init(HINSTANCE hInstance, const ServerConfig& config) {
 
 bool
 CLIB_GameSRV::CheckSTB_UseITEM() {
-    for (short nD = 0; nD < g_TblUSEITEM.m_nDataCnt; nD++) {
+    for (short nD = 0; nD < g_TblUSEITEM.row_count; nD++) {
         if (USEITEM_COOLTIME_TYPE(nD) < 0)
-            USEITEM_COOLTIME_TYPE(nD) = 0;
+            SET_USEITEM_COOLTIME_TYPE(nD, 0);
         else if (USEITEM_COOLTIME_TYPE(nD) >= MAX_USEITEM_COOLTIME_TYPE)
-            USEITEM_COOLTIME_TYPE(nD) = 0;
+            SET_USEITEM_COOLTIME_TYPE(nD, 0);
         if (USEITEM_COOLTIME_DELAY(nD) < 0)
-            USEITEM_COOLTIME_DELAY(nD) = 0;
+            SET_USEITEM_COOLTIME_DELAY(nD, 0);
 
         if (0 == USEITME_STATUS_STB(nD))
             continue;
@@ -260,22 +260,23 @@ CLIB_GameSRV::CheckSTB_UseITEM() {
 
     return true;
 }
+
 bool
 CLIB_GameSRV::CheckSTB_NPC() {
     t_HASHKEY HashKey;
     CQuestTRIGGER* pQuestTrigger;
 
     int iDropTYPE;
-    for (short nI = 0; nI < g_TblNPC.m_nDataCnt; nI++) {
+    for (short nI = 0; nI < g_TblNPC.row_count; nI++) {
         if (NPC_LEVEL(nI) < 1)
             SET_NPC_LEVEL(nI, 1);
         if (NPC_ATK_SPEED(nI) <= 0)
             SET_NPC_ATK_SPEED(nI, 100);
-        if (NPC_DROP_TYPE(nI) >= g_TblDropITEM.m_nDataCnt) {
+        if (NPC_DROP_TYPE(nI) >= g_TblDropITEM.row_count) {
             iDropTYPE = NPC_DROP_TYPE(nI);
             SET_NPC_DROP_TYPE(nI, 0);
 
-            assert(NPC_DROP_TYPE(nI) < g_TblDropITEM.m_nDataCnt);
+            assert(NPC_DROP_TYPE(nI) < g_TblDropITEM.row_count);
         }
 
         if (nI && NPC_DEAD_EVENT(nI)) {
@@ -301,8 +302,8 @@ CLIB_GameSRV::CheckSTB_DropITEM() {
     int iDropITEM;
     tagITEM sITEM;
 
-    for (short nI = 1; nI < g_TblDropITEM.m_nDataCnt; nI++) {
-        for (short nC = 1; nC < g_TblDropITEM.m_nColCnt; nC++) {
+    for (short nI = 1; nI < g_TblDropITEM.row_count; nI++) {
+        for (short nC = 1; nC < g_TblDropITEM.col_count; nC++) {
             iDropITEM = DROPITEM_ITEMNO(nI, nC);
             if (iDropITEM <= 0)
                 continue;
@@ -313,7 +314,7 @@ CLIB_GameSRV::CheckSTB_DropITEM() {
             if ((sITEM.m_cType < ITEM_TYPE_FACE_ITEM || sITEM.m_cType > ITEM_TYPE_RIDE_PART
                     || sITEM.m_cType == ITEM_TYPE_QUEST)
                 && iDropITEM > 1000) {
-                DROPITEM_ITEMNO(nI, nC) = 0;
+                SET_DROPITEM_ITEMNO(nI, nC, 0);
                 continue;
             }
 
@@ -321,18 +322,18 @@ CLIB_GameSRV::CheckSTB_DropITEM() {
                 if (iDropITEM >= 1 && iDropITEM <= 4) {
                     // 다시 계산
                     int iDropTblIDX = 26 + (iDropITEM * 5) + 4 /*RANDOM(5)의 최대값 4 */;
-                    if (iDropTblIDX >= g_TblDropITEM.m_nColCnt) {
+                    if (iDropTblIDX >= g_TblDropITEM.col_count) {
                         // 테이블 컬럼 갯수 초과...
                         g_LOG.CS_ODS(0xffff, "This drop item[ %d %d ] may be too big\n", nI, nC);
                     }
                     continue;
                 }
-                DROPITEM_ITEMNO(nI, nC) = 0;
+                SET_DROPITEM_ITEMNO(nI, nC, 0);
                 continue;
             }
 
-            if (sITEM.m_nItemNo > g_pTblSTBs[sITEM.m_cType]->m_nDataCnt) {
-                DROPITEM_ITEMNO(nI, nC) = 0;
+            if (sITEM.m_nItemNo > g_pTblSTBs[sITEM.m_cType]->row_count) {
+                SET_DROPITEM_ITEMNO(nI, nC, 0);
                 continue;
             }
 
@@ -343,28 +344,30 @@ CLIB_GameSRV::CheckSTB_DropITEM() {
 
     return true;
 }
+
 bool
 CLIB_GameSRV::CheckSTB_ItemRateTYPE() {
     short nD, nRateTYPE;
 
-    for (nD = 0; nD < g_TblUSEITEM.m_nDataCnt; nD++) {
+    for (nD = 0; nD < g_TblUSEITEM.row_count; nD++) {
         nRateTYPE = ITEM_RATE_TYPE(ITEM_TYPE_USE, nD);
         assert(nRateTYPE >= 0 && nRateTYPE < MAX_PRICE_TYPE);
     }
 
-    for (nD = 0; nD < g_TblNATUAL.m_nDataCnt; nD++) {
+    for (nD = 0; nD < g_TblNATUAL.row_count; nD++) {
         nRateTYPE = ITEM_RATE_TYPE(ITEM_TYPE_NATURAL, nD);
         assert(nRateTYPE >= 0 && nRateTYPE < MAX_PRICE_TYPE);
     }
     return true;
 }
+
 bool
 CLIB_GameSRV::CheckSTB_Motion() {
     short nX, nY, nFileIDX;
 
     // type_motion.stb
-    for (nY = 0; nY < g_TblAniTYPE.m_nDataCnt; nY++) {
-        for (nX = 0; nX < g_TblAniTYPE.m_nColCnt; nX++) {
+    for (nY = 0; nY < g_TblAniTYPE.row_count; nY++) {
+        for (nX = 0; nX < g_TblAniTYPE.col_count; nX++) {
             nFileIDX = FILE_MOTION(nX, nY);
             if (!nFileIDX)
                 continue;
@@ -377,7 +380,7 @@ bool
 CLIB_GameSRV::CheckSTB_GemITEM() {
     short nType, nValue;
 
-    for (short nC = 0; nC < g_TblGEMITEM.m_nDataCnt; nC++) {
+    for (short nC = 0; nC < g_TblGEMITEM.row_count; nC++) {
         for (short nI = 0; nI < 2; nI++) {
             nType = GEMITEM_ADD_DATA_TYPE(nC, nI);
             nValue = GEMITEM_ADD_DATA_VALUE(nC, nI);
@@ -391,7 +394,7 @@ CLIB_GameSRV::CheckSTB_GemITEM() {
 bool
 CLIB_GameSRV::CheckSTB_ListPRODUCT() {
     tagITEM sOutITEM;
-    for (short nI = 0; nI < g_TblPRODUCT.m_nDataCnt; nI++) {
+    for (short nI = 0; nI < g_TblPRODUCT.row_count; nI++) {
         for (short nS = 0; nS < 4; nS++) {
             if (PRODUCT_NEED_ITEM_NO(nI, nS)) {
                 sOutITEM.Init(PRODUCT_NEED_ITEM_NO(nI, nS), 1);
@@ -418,89 +421,37 @@ CLIB_GameSRV::Load_BasicDATA() {
             m_iLangTYPE))
         return false;
 
-    g_TblHAIR.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Hair.STB"), true, false);
-    g_TblFACE.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Face.STB"), true, false);
-    g_TblARMOR.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Body.STB"), true, true);
+    std::filesystem::path base_dir(BASE_DATA_DIR);
 
-    g_TblGAUNTLET.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Arms.STB"),
-        true,
-        true);
-    g_TblBOOTS.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Foot.STB"), true, true);
-    g_TblHELMET.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Cap.STB"), true, true);
-
-    g_TblWEAPON.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Weapon.STB"),
-        true,
-        true);
-    g_TblSUBWPN.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SUBWPN.STB"),
-        true,
-        true);
-    g_TblEFFECT.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_EFFECT.STB"),
-        false,
-        false);
-    g_TblDropITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\ITEM_DROP.STB"),
-        false,
-        false);
-
-    g_TblPRODUCT.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_PRODUCT.STB"),
-        true,
-        false);
-    g_TblNATUAL.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NATURAL.STB"),
-        true,
-        true);
-    g_TblFACEITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_FACEITEM.STB"),
-        true,
-        true);
-    g_TblUSEITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_USEITEM.STB"),
-        true,
-        true);
-    g_TblBACKITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_BACK.STB"),
-        true,
-        true);
-    g_TblGEMITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEMITEM.STB"),
-        true,
-        true);
-    g_TblJEWELITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEWEL.STB"),
-        true,
-        true);
-    g_TblQUESTITEM.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_QUESTITEM.STB"),
-        true,
-        true);
-    g_TblStore.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SELL.STB"), true, false);
-
-    g_TblAniTYPE.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\TYPE_MOTION.STB"),
-        false,
-        false);
-
-    g_TblEVENT.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_EVENT.STB"),
-        false,
-        true);
-
-    g_TblWARP.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\WARP.STB"), true, false);
-    g_TblZONE.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ZONE.STB"), true, false);
-
-    g_TblNPC.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NPC.STB"), true, false);
-    //	assert( g_TblNPC.m_nColCnt > 43 );
-
-    g_TblAVATAR.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\INIT_AVATAR.STB"),
-        false,
-        false);
-    g_TblSTATE.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_STATUS.STB"),
-        true,
-        false);
-
-    g_TblUnion.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_UNION.STB"),
-        false,
-        false);
-    g_TblClass.Load2(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_CLASS.STB"),
-        false,
-        false);
-
-    g_TblItemGRADE.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_GRADE.STB"),
-        false,
-        false);
-    g_TblSkillPoint.Load(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Skill_P.STB"),
-        false,
-        false);
+    g_TblGAUNTLET.load(base_dir / ARMS_STB);
+    g_TblARMOR.load(base_dir / BODY_STB);
+    g_TblHELMET.load(base_dir / CAP_STB);
+    g_TblClass.load(base_dir / CLASS_STB);
+    g_TblEFFECT.load(base_dir / EFFECT_STB);
+    g_TblEVENT.load(base_dir / EVENT_STB);
+    g_TblFACE.load(base_dir / FACE_STB);
+    g_TblFACEITEM.load(base_dir / FACE_ITEM_STB);
+    g_TblBOOTS.load(base_dir / FOOT_STB);
+    g_TblItemGRADE.load(base_dir / GRADE_STB);
+    g_TblHAIR.load(base_dir / HAIR_STB);
+    g_TblDropITEM.load(base_dir / ITEM_DROP_STB);
+    g_TblAVATAR.load(base_dir / INIT_AVATAR_STB);
+    g_TblGEMITEM.load(base_dir / JEM_ITEM_STB);
+    g_TblJEWELITEM.load(base_dir / JEWEL_STB);
+    g_TblNATUAL.load(base_dir / NATURAL_STB);
+    g_TblNPC.load(base_dir / NPC_STB);
+    g_TblPRODUCT.load(base_dir / PRODUCT_STB);
+    g_TblQUESTITEM.load(base_dir / QUEST_ITEM_STB);
+    g_TblStore.load(base_dir / SELL_STB);
+    g_TblSkillPoint.load(base_dir / SKILL_P_STB);
+    g_TblSTATE.load(base_dir / STATUS_STB);
+    g_TblSUBWPN.load(base_dir / SUBWPN_STB);
+    g_TblAniTYPE.load(base_dir / TYPE_MOTION_STB);
+    g_TblUnion.load(base_dir / UNION_STB);
+    g_TblUSEITEM.load(base_dir / USE_ITEM_STB);
+    g_TblWARP.load(base_dir / WARP_STB);
+    g_TblWEAPON.load(base_dir / WEAPON_STB);
+    g_TblZONE.load(base_dir / ZONE_STB);
 
     if (!g_MotionFILE.Load("3DDATA\\STB\\FILE_MOTION.stb", 0, BASE_DATA_DIR))
         return false;
@@ -551,6 +502,7 @@ CLIB_GameSRV::Load_BasicDATA() {
 
     return true;
 }
+
 void
 CLIB_GameSRV::Free_BasicDATA() {
     // STBDATA는 자동 풀림..
@@ -564,7 +516,7 @@ CLIB_GameSRV::Free_BasicDATA() {
 //-------------------------------------------------------------------------------------------------
 char*
 CLIB_GameSRV::GetZoneName(short nZoneNO) {
-    if (nZoneNO > 0 && nZoneNO < g_TblZONE.m_nDataCnt) {
+    if (nZoneNO > 0 && nZoneNO < g_TblZONE.row_count) {
         if (nZoneNO >= TEST_ZONE_NO)
             return NULL;
 
@@ -582,19 +534,19 @@ short
 CLIB_GameSRV::InitLocalZone(bool bAllActive) {
     SAFE_DELETE_ARRAY(m_pCheckedLocalZONE);
 
-    m_pCheckedLocalZONE = new bool[g_TblZONE.m_nDataCnt];
+    m_pCheckedLocalZONE = new bool[g_TblZONE.row_count];
 
-    ::FillMemory(m_pCheckedLocalZONE, sizeof(bool) * g_TblZONE.m_nDataCnt, bAllActive);
+    ::FillMemory(m_pCheckedLocalZONE, sizeof(bool) * g_TblZONE.row_count, bAllActive);
 
-    for (short nI = TEST_ZONE_NO; nI < g_TblZONE.m_nDataCnt; nI++) {
+    for (short nI = TEST_ZONE_NO; nI < g_TblZONE.row_count; nI++) {
         m_pCheckedLocalZONE[nI] = false;
     }
 
-    return g_TblZONE.m_nDataCnt;
+    return g_TblZONE.row_count;
 }
 bool
 CLIB_GameSRV::CheckZoneToLocal(short nZoneNO, bool bChecked) {
-    if (nZoneNO > 0 && nZoneNO < g_TblZONE.m_nDataCnt) {
+    if (nZoneNO > 0 && nZoneNO < g_TblZONE.row_count) {
         if (nZoneNO >= TEST_ZONE_NO)
             return false;
 

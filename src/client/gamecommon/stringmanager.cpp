@@ -497,10 +497,14 @@ CStringManager::GetItemStringData(int iType, int iItemNo) {
     if (iType < 1 || iType > ITEM_TYPE_RIDE_PART)
         return NULL;
 
-    if (g_pTblSTBs[iType]->m_ppDESC[iItemNo] == NULL)
+    STBDATA* stb = g_pTblSTBs[iType];
+    if (!stb) {
         return NULL;
+    }
 
-    std::string strKey(g_pTblSTBs[iType]->m_ppDESC[iItemNo]);
+    const std::string& strKey = stb->value(iItemNo, stb->col_count - 1);
+    if (strKey.empty())
+        return NULL;    
 
     stItemTypeTable* pItemTypeTable =
         m_ItemTypeTables[_ItemTypeToItemTable[iType]].GetObjectByName(strKey.c_str());
@@ -548,10 +552,10 @@ CStringManager::GetItemDesc(int iType, int iItemNo) {
 //---------------------------------------------------------------------------------------
 stItemTypeTable*
 CStringManager::GetSkillStringData(int iSkillNo) {
-    if (g_SkillList.m_SkillDATA.m_ppDESC[iSkillNo] == NULL)
+    if (g_SkillList.m_SkillDATA.get_cstr(iSkillNo, 87) == NULL)
         return NULL;
 
-    std::string strKey(g_SkillList.m_SkillDATA.m_ppDESC[iSkillNo]);
+    const std::string& strKey = g_SkillList.m_SkillDATA.value(iSkillNo, 87);
 
     stItemTypeTable* pItemTypeTable =
         m_ItemTypeTables[LIST_SKILL_S_TB].GetObjectByName(strKey.c_str());
@@ -591,7 +595,7 @@ CStringManager::GetSkillDesc(int iSkillNo) {
 //---------------------------------------------------------------------------------------
 stQuestTypeTable*
 CStringManager::GetStatusStringData(int iStatusNo) {
-    if (iStatusNo < 0 || iStatusNo >= g_TblSTATE.m_nDataCnt)
+    if (iStatusNo < 0 || iStatusNo >= g_TblSTATE.row_count)
         return NULL;
 
     if (STATE_STRING_ID(iStatusNo) == NULL)
@@ -632,11 +636,10 @@ CStringManager::GetStatusEndMsg(int iStatusNo) {
 
 stQuestTypeTable*
 CStringManager::GetQuestStringData(int iQuestNo) {
-    if (g_QuestList.m_STB.m_ppDESC[iQuestNo] == NULL)
-        return NULL;
-
-    std::string strKey(g_QuestList.m_STB.m_ppDESC[iQuestNo]);
-
+    const std::string& strKey = g_QuestList.m_STB.get_cstr(iQuestNo, 4);
+    if (strKey.empty()) {
+        return nullptr;
+    }
     stQuestTypeTable* pQuestTypeTable =
         m_QuestTypeTables[LIST_QUEST_S_TB].GetObjectByName(strKey.c_str());
     if (pQuestTypeTable == NULL) {
@@ -786,19 +789,19 @@ CStringManager::GetAbility(int iIndex) {
 
 const char*
 CStringManager::GetStoreTabName(int iIndex) {
-    if (iIndex < 0 || iIndex > g_TblStore.m_nDataCnt)
+    if (iIndex < 0 || iIndex > g_TblStore.row_count)
         return m_strNull.c_str();
 
-    if (g_TblStore.m_ppVALUE[iIndex][1].GetSTR()) {
-        std::string strKey(g_TblStore.m_ppVALUE[iIndex][1].GetSTR());
-        return GetNormalTypeTableString(LIST_SELL_S, strKey);
+    const std::string& strKey = g_TblStore.value(iIndex, 1);
+    if (!strKey.empty()) {
+        return GetNormalTypeTableString(LIST_SELL_S, std::string(strKey));
     }
     return m_strNull.c_str();
 }
 
 const char*
 CStringManager::GetUnionName(int iIndex) {
-    if (iIndex < 0 || iIndex >= g_TblUnion.m_nDataCnt)
+    if (iIndex < 0 || iIndex >= g_TblUnion.row_count)
         return m_strNull.c_str();
 
     if (UNION_STRING_ID(iIndex)) {
@@ -810,7 +813,7 @@ CStringManager::GetUnionName(int iIndex) {
 
 const char*
 CStringManager::GetClassName(int iIndex) {
-    if (iIndex < 0 || iIndex >= g_TblClass.m_nDataCnt)
+    if (iIndex < 0 || iIndex >= g_TblClass.row_count)
         return m_strNull.c_str();
 
     if (CLASS_STRING_ID(iIndex)) {
@@ -862,15 +865,13 @@ CStringManager::GetZoneDesc(int iZoneNO) {
 
 const char*
 CStringManager::GetTipHeader(int iIndex) {
-    assert(iIndex >= 0 && iIndex < g_TblHELP.m_nDataCnt);
-    if (iIndex < 0 || iIndex >= g_TblHELP.m_nDataCnt)
+    assert(iIndex >= 0 && iIndex < g_TblHELP.row_count);
+    if (iIndex < 0 || iIndex >= g_TblHELP.row_count)
         return m_strNull.c_str();
 
-    assert(g_TblHELP.m_ppVALUE[iIndex][5].GetSTR());
-    if (g_TblHELP.m_ppVALUE[iIndex][5].GetSTR() == NULL)
+    std::string strKey(g_TblHELP.value(iIndex, 5));
+    if (strKey.empty())
         return m_strNull.c_str();
-
-    std::string strKey(g_TblHELP.m_ppVALUE[iIndex][5].GetSTR());
 
     stItemTypeTable* pItemTypeTable = m_ItemTypeTables[HELP_S_TB].GetObjectByName(strKey.c_str());
     if (pItemTypeTable == NULL)
@@ -881,15 +882,13 @@ CStringManager::GetTipHeader(int iIndex) {
 
 const char*
 CStringManager::GetTipContent(int iIndex) {
-    assert(iIndex >= 0 && iIndex < g_TblHELP.m_nDataCnt);
-    if (iIndex < 0 || iIndex >= g_TblHELP.m_nDataCnt)
+    assert(iIndex >= 0 && iIndex < g_TblHELP.row_count);
+    if (iIndex < 0 || iIndex >= g_TblHELP.row_count)
         return m_strNull.c_str();
 
-    assert(g_TblHELP.m_ppVALUE[iIndex][5].GetSTR());
-    if (g_TblHELP.m_ppVALUE[iIndex][5].GetSTR() == NULL)
+     std::string strKey(g_TblHELP.value(iIndex, 5));
+    if (strKey.empty())
         return m_strNull.c_str();
-
-    std::string strKey(g_TblHELP.m_ppVALUE[iIndex][5].GetSTR());
 
     stItemTypeTable* pItemTypeTable = m_ItemTypeTables[HELP_S_TB].GetObjectByName(strKey.c_str());
     if (pItemTypeTable == NULL)

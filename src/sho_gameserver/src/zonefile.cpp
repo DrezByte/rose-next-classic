@@ -192,20 +192,21 @@ CZoneFILE::ReadObjINFO(FILE* fp, long lOffset, int iLumpType, short nMapXIDX, sh
                 fread(szName, sizeof(char), cNameLen, fp); // sound file name ..
                 szName[cNameLen] = 0;
 
+                nQuestIDX = 0;
                 if (strlen(szName)) {
-                    nQuestIDX = g_TblEVENT.GetRowIndex(szName);
-                    /*
-                    if ( nIndex ) {
-                        HashEVENT = g_pEventLIST->Add_EVENT( QUEST_FILE( nIndex ) );
-                        if ( HashEVENT ) {
-                            LogString (LOG_NORMAL, "Event File[ %s ]\n", szName);
+                    for (size_t row_idx = 0; row_idx < g_TblEVENT.row_count; ++row_idx) {
+                        char* event_filename = EVENT_FILENAME(row_idx);
+                        if (!event_filename) {
+                            continue;
+                        }
+                        std::filesystem::path path(event_filename);
+                        if (_stricmp(path.filename().string().c_str(), szName) == 0) {
+                            nQuestIDX = row_idx;
                         }
                     }
-                    */
-                } else
-                    nQuestIDX = 0;
+                }
 
-                if (iObjID < 1 || iObjID >= g_TblNPC.m_nDataCnt) {
+                if (iObjID < 1 || iObjID >= g_TblNPC.row_count) {
                     continue;
                 }
                 if (!NPC_NAME(iObjID)) {

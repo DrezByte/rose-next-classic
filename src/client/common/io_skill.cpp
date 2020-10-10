@@ -26,7 +26,6 @@ CSkillLIST::~CSkillLIST() {
 
 void
 CSkillLIST::Free() {
-    m_SkillDATA.Free();
     SAFE_DELETE_ARRAY(m_pCastingAniSPEED);
     SAFE_DELETE_ARRAY(m_pActionAniSPEED);
 
@@ -35,19 +34,26 @@ CSkillLIST::Free() {
 
 bool
 CSkillLIST::LoadSkillTable(const char* pFileName) {
-    if (!m_SkillDATA.Load((char*)pFileName, true, true))
+#ifdef CLIENT
+    if (!CVFSManager::GetSingleton().load_stb(m_SkillDATA, pFileName)) {
         return false;
+    }
+#else
+    if (!m_SkillDATA.load(pFileName)) {
+        return false;
+    }
+#endif
 
-    m_pCastingAniSPEED = new float[m_SkillDATA.m_nDataCnt];
-    m_pActionAniSPEED = new float[m_SkillDATA.m_nDataCnt];
+    m_pCastingAniSPEED = new float[m_SkillDATA.row_count];
+    m_pActionAniSPEED = new float[m_SkillDATA.row_count];
 
-    m_pReloadTIME = new float[m_SkillDATA.m_nDataCnt];
-    ::ZeroMemory(m_pReloadTIME, sizeof(float) * m_SkillDATA.m_nDataCnt);
+    m_pReloadTIME = new float[m_SkillDATA.row_count];
+    ::ZeroMemory(m_pReloadTIME, sizeof(float) * m_SkillDATA.row_count);
 
-    for (short nI = 1; nI < m_SkillDATA.m_nDataCnt; nI++) {
+    for (short nI = 1; nI < m_SkillDATA.row_count; nI++) {
         if (SKILL_ANI_CASTING_REPEAT_CNT(nI)) {
             if (SKILL_ANI_CASTING_REPEAT(nI) < 1) {
-                SKILL_ANI_CASTING_REPEAT_CNT(nI) = 0;
+                SET_SKILL_ANI_CASTING_REPEAT_CNT(nI, 0);
             }
         }
 
@@ -68,7 +74,7 @@ CSkillLIST::LoadSkillTable(const char* pFileName) {
         }
     }
 
-    m_iSkillCount = m_SkillDATA.m_nDataCnt;
+    m_iSkillCount = m_SkillDATA.row_count;
 
     return true;
 }
@@ -76,7 +82,7 @@ CSkillLIST::LoadSkillTable(const char* pFileName) {
 float
 CSkillLIST::GetDelayTickCount(DWORD i) {
 
-    if ((i < 0) || (i >= m_SkillDATA.m_nDataCnt))
+    if ((i < 0) || (i >= m_SkillDATA.row_count))
         return 1.0f;
 
     return m_pReloadTIME[i];

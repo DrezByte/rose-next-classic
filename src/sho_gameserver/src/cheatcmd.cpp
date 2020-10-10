@@ -78,7 +78,7 @@ maps(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     user->send_server_whisper("| ID | Name |");
     user->send_server_whisper("-------------");
 
-    for (int zone_idx = 0; zone_idx < g_TblZONE.m_nDataCnt; ++zone_idx) {
+    for (int zone_idx = 0; zone_idx < g_TblZONE.row_count; ++zone_idx) {
         const char* zone_name = ZONE_NAME(zone_idx);
         if (!zone_name) {
             continue;
@@ -815,7 +815,7 @@ classUSER::Cheat_item(char* pArg1, char* pArg2, char* pArg3, char* pArg4) {
             return CHEAT_INVALID;
         }
 
-        if (item_id <= 0 || item_id >= g_pTblSTBs[item_type]->m_nDataCnt) {
+        if (item_id <= 0 || item_id >= g_pTblSTBs[item_type]->row_count) {
             this->Send_gsv_WHISPER("Server", "Invalid item id");
             return CHEAT_INVALID;
         }

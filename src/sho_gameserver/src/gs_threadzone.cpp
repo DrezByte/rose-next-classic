@@ -611,7 +611,7 @@ CZoneTHREAD::RegenCharacter(CObjMOB* pNewMOB,
     int iRange,
     int iIndex,
     int iTeamNO) {
-    if (iIndex < 1 || iIndex >= g_TblNPC.m_nDataCnt) {
+    if (iIndex < 1 || iIndex >= g_TblNPC.row_count) {
         return false;
     }
     if (!NPC_NAME(iIndex) || NPC_TYPE(iIndex) >= 900) {
@@ -668,7 +668,7 @@ CZoneTHREAD::RegenCharacter(float fCenterX,
     int iCount,
     int iTeamNO,
     bool bImmediate) {
-    if (iIndex < 1 || iIndex >= g_TblNPC.m_nDataCnt) {
+    if (iIndex < 1 || iIndex >= g_TblNPC.row_count) {
         return NULL;
     }
     if (!NPC_NAME(iIndex) || NPC_TYPE(iIndex) >= 900) {
@@ -700,7 +700,7 @@ CZoneTHREAD::RegenCharacter(float fCenterX,
 //-------------------------------------------------------------------------------------------------
 void
 CZoneTHREAD::RegenCharacter(CRegenPOINT* pRegen, int iIndex, int iCount) {
-    if (iIndex < 1 || iIndex >= g_TblNPC.m_nDataCnt) {
+    if (iIndex < 1 || iIndex >= g_TblNPC.row_count) {
         return;
     }
     if (!NPC_NAME(iIndex)) {

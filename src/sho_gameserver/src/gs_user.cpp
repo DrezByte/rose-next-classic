@@ -621,7 +621,7 @@ classUSER::Add_EXP(__int64 iGetExp, bool bApplyStamina, WORD wFromObjIDX) {
 
         this->AddCur_BonusPOINT((short)(this->Get_LEVEL() * 0.8) + 10);
 
-        for (short nD = 0; nD < g_TblSkillPoint.m_nDataCnt; nD++) {
+        for (short nD = 0; nD < g_TblSkillPoint.row_count; nD++) {
             // Original formula: this->AddCur_SkillPOINT( (short)( ( this->Get_LEVEL() + 4 ) * 0.5f
             // ) - 1 );
             if (SP_LEVEL(nD) == this->Get_LEVEL()) {
@@ -923,9 +923,9 @@ classUSER::Use_InventoryITEM(t_PACKET* pPacket) {
         return IS_HACKING(this, "Use_InventoryITEM-1 :: pITEM->GetTYPE() != ITEM_TYPE_USE");
     }
 
-    if (pITEM->m_nItemNo >= g_TblUSEITEM.m_nDataCnt) {
+    if (pITEM->m_nItemNo >= g_TblUSEITEM.row_count) {
         return IS_HACKING(this,
-            "Recv_cli_USE_ITEM-2 : pITEM->m_nItemNo >= g_TblUSEITEM.m_nDataCnt");
+            "Recv_cli_USE_ITEM-2 : pITEM->m_nItemNo >= g_TblUSEITEM.row_count");
     }
 
     /// 쿨타임 적용..
@@ -4367,7 +4367,7 @@ classUSER::Recv_cli_TELEPORT_REQ(t_PACKET* pPacket) {
         return RET_FAILED;
 
     WORD wWarpIDX = (WORD)(pPacket->m_cli_TELEPORT_REQ.m_nWarpIDX);
-    if (wWarpIDX >= g_TblWARP.m_nDataCnt) {
+    if (wWarpIDX >= g_TblWARP.row_count) {
         g_LOG.CS_ODS(0xffff,
             "[ %s:%s ] Invalied Warp INDEX: %d",
             this->m_IP.Get(),
@@ -6355,7 +6355,7 @@ classUSER::Proc_CRAFT_GEMMING_REQ(t_PACKET* pPacket) {
         &this->m_Inventory.m_ItemLIST[pPacket->m_cli_CRAFT_GEMMING_REQ.m_btJemInvIDX];
     if (ITEM_TYPE_GEM != pJewelITEM->GetTYPE() || pJewelITEM->GetQuantity() < 1)
         return true;
-    if (pJewelITEM->GetItemNO() >= g_TblGEMITEM.m_nDataCnt) {
+    if (pJewelITEM->GetItemNO() >= g_TblGEMITEM.row_count) {
         return false;
     }
     if (411 != ITEM_TYPE(ITEM_TYPE_GEM, pJewelITEM->GetItemNO())) {
@@ -7087,7 +7087,7 @@ classUSER::Send_gsv_SERVER_ZONEINFO_REPLY(void) {
 
     ost_ZoneINFO* pZoneINFO = new ost_ZoneINFO[nZoneCNT];
     int iZI = 0;
-    for (short nI = 0; nI < g_TblZONE.m_nDataCnt; nI++) {
+    for (short nI = 0; nI < g_TblZONE.row_count; nI++) {
         if (iZI >= nZoneCNT) // 여기서 걸린 건 도대체 이해를 할수 없음. 존이 갑자기 추가됐나..
             break;
 
@@ -8317,7 +8317,7 @@ classUSER::level_up(int amount) {
     for (int level = start_level + 1; level <= end_level; ++level) {
         this->AddCur_BonusPOINT((level * 0.8) + 10);
 
-        for (short nD = 0; nD < g_TblSkillPoint.m_nDataCnt; nD++) {
+        for (short nD = 0; nD < g_TblSkillPoint.row_count; nD++) {
             if (SP_LEVEL(nD) == level) {
                 this->AddCur_SkillPOINT(SP_POINT(nD));
                 break;

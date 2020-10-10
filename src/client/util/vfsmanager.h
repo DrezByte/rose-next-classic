@@ -2,9 +2,13 @@
 #define _VFSMANAGER_
 
 #include "JSingleton.h"
-#include <list>
 #include "CFileSystem.h"
 #include "triggervfs/triggervfs.h"
+
+#include <filesystem>
+#include <list>
+
+class STBDATA;
 
 enum {
     VFS_NORMAL = 0,
@@ -35,6 +39,8 @@ public:
     void ReturnToManager(CFileSystem* pFileSystem);
 
     bool IsExistFile(const char* pFileName);
+
+    bool load_stb(STBDATA& stb, const std::filesystem::path& path);
 };
 
 #endif //_VFSMANAGER_

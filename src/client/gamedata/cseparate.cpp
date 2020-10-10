@@ -170,8 +170,8 @@ CSeparate::SetItem(CItem* pItem) {
 
                     int iItemNo = (iRawMaterial - 421) * 10 + iTemp;
 
-                    assert(iItemNo >= 1 && iItemNo <= g_TblNATUAL.m_nDataCnt);
-                    if (iItemNo < 0 || iItemNo > g_TblNATUAL.m_nDataCnt)
+                    assert(iItemNo >= 1 && iItemNo <= g_TblNATUAL.row_count);
+                    if (iItemNo < 0 || iItemNo > g_TblNATUAL.row_count)
                         return;
 
                     MaterialItem.Init(ITEM_TYPE_NATURAL * 1000 + iItemNo);

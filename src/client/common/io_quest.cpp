@@ -181,7 +181,7 @@ inline bool
 Check_UserVAR(tQST_PARAM* pPARAM, STR_ABIL_DATA* pDATA) {
     if (AT_CLASS == pDATA->iType) {
         // 직업을 조회 :: 퀘스트 툴에서 잘못된 데이타가 입력 될수 있으므로...
-        if (pDATA->iValue < 0 || pDATA->iValue >= g_TblClass.m_nDataCnt) {
+        if (pDATA->iValue < 0 || pDATA->iValue >= g_TblClass.row_count) {
 #ifndef __SERVER
             char* szMsg = CStr::Printf("	[QST] 데이타오류 !!! : %s에서  %d 의 직업 번호는 없음",
                 pPARAM->m_pCurrentTRIGGER->m_Name.Get(),
@@ -2306,8 +2306,15 @@ CQuestDATA::LoadQuestTable() {
     }
 
     this->Free();
-    if (!this->m_STB.Load(m_QuestFILE.Get(), true, true))
+#ifdef CLIENT
+    if (!CVFSManager::GetSingleton().load_stb(m_STB, m_QuestFILE.Get())) {
         return false;
+    }
+#else
+    if (!this->m_STB.load(m_QuestFILE.Get())) {
+        return false;
+    }
+#endif
 
     CGameSTB cFILE;
     if (cFILE.Open(m_QuestListSTB.Get())) {
@@ -2451,18 +2458,6 @@ CQuestDATA::Free() {
     while (m_HashQUEST.GetFirst(&HashKEY, &pDATA)) {
         m_HashQUEST.Delete(HashKEY);
     }
-    ///*
-    //    tagHASH< CQuestTRIGGER* > *pFindNODE;
-    //	for (int iL=0; iL<m_HashQUEST.GetTableCount(); iL++) {
-    //		pFindNODE = m_HashQUEST.GetEntryNode( iL );
-    //		while( pFindNODE ) {
-    //			SAFE_DELETE( pFindNODE->m_DATA );
-    //
-    //			pFindNODE = pFindNODE->m_NEXT;
-    //		}
-    //	}
-    //*/
-    m_STB.Free();
 }
 
 eQST_RESULT

@@ -57,6 +57,9 @@
     <ClInclude Include="include\rose\io\stb.h">
       <Filter>io</Filter>
     </ClInclude>
+    <ClInclude Include="include\rose\io\reader.h">
+      <Filter>io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
@@ -71,6 +74,9 @@
       <Filter>util</Filter>
     </ClCompile>
     <ClCompile Include="src\io\stb.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\reader.cpp">
       <Filter>io</Filter>
     </ClCompile>
   </ItemGroup>

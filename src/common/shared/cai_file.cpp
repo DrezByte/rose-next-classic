@@ -208,7 +208,7 @@ CAI_EVENT::Load(FILE* fp, STBDATA* pSTB, int iLangCol) {
             case AIACT_01:
                 break;
             case AIACT_02: {
-                char* szMsg = pSTB->GetValueSTR(iLangCol, m_ppActionLIST[iA]->st02.iStrID - 1);
+                char* szMsg = pSTB->get_cstr(m_ppActionLIST[iA]->st02.iStrID - 1, iLangCol);
                 char* szNull = "unknown";
                 if (!szMsg)
                     szMsg = szNull;
@@ -284,7 +284,7 @@ CAI_EVENT::Load(FILE* fp, STBDATA* pSTB, int iLangCol) {
                 break;
 
             case AIACT_28: {
-                char* szMsg = pSTB->GetValueSTR(iLangCol, m_ppActionLIST[iA]->st28.iStrID - 1);
+                char* szMsg = pSTB->get_cstr(m_ppActionLIST[iA]->st28.iStrID - 1, iLangCol);
                 char* szNull = "unknown";
                 if (!szMsg)
                     szMsg = szNull;
@@ -377,7 +377,7 @@ CAI_EVENT::Load(CFileSystem* pFileSystem, STBDATA* pSTB, int iLangCol) {
             case AIACT_01:
                 break;
             case AIACT_02: {
-                char* szMsg = pSTB->GetValueSTR(iLangCol, m_ppActionLIST[iA]->st02.iStrID - 1);
+                char* szMsg = pSTB->get_cstr(m_ppActionLIST[iA]->st02.iStrID - 1, iLangCol);
                 char* szNull = "unknown";
                 if (!szMsg)
                     szMsg = szNull;
@@ -428,7 +428,7 @@ CAI_EVENT::Load(CFileSystem* pFileSystem, STBDATA* pSTB, int iLangCol) {
                 ((AIACT16*)m_ppActionLIST[iA])->iDistance *= 100;
                 break;
             case AIACT_28: {
-                char* szMsg = pSTB->GetValueSTR(iLangCol, m_ppActionLIST[iA]->st28.iStrID - 1);
+                char* szMsg = pSTB->get_cstr(m_ppActionLIST[iA]->st28.iStrID - 1, iLangCol);
                 char* szNull = "unknown";
                 if (!szMsg)
                     szMsg = szNull;

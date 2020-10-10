@@ -671,7 +671,7 @@ CMinimapDLG::DrawNpcFromMap() {
                     (int)fDrawPosY + 14);
 
                 if (PtInRect(&rcHitTest, ptMouse)) {
-                    if (iterNpcAll->m_iNpcID > 0 && iterNpcAll->m_iNpcID < g_TblNPC.m_nDataCnt) {
+                    if (iterNpcAll->m_iNpcID > 0 && iterNpcAll->m_iNpcID < g_TblNPC.row_count) {
                         ///이하 툴팁 표시
                         CTDialog* pDlg = CTDialog::GetProcessMouseOverDialog();
                         if (!(pDlg && pDlg != this))

@@ -9,13 +9,14 @@ CLevelUpEvent::~CLevelUpEvent(void) {}
 
 bool
 CLevelUpEvent::Init() {
-    if (m_TblLevelEvent.Load("3DDATA\\STB\\LevelUpEvent.STB", false, false) == false)
+    bool loaded = CVFSManager::GetSingleton().load_stb(m_TblLevelEvent, LEVELUP_EVENT_STB);
+    if (!loaded)
         return false;
 
     /// Make event table from stb that loaded above.
-    for (int i = 1; i < m_TblLevelEvent.m_nDataCnt; i++) {
+    for (int i = 1; i < m_TblLevelEvent.row_count; i++) {
         m_LevelUpEventTbl.insert(
-            std::make_pair(m_TblLevelEvent.m_ppDATA[i][0], m_TblLevelEvent.m_ppDATA[i][1]));
+            std::make_pair(m_TblLevelEvent.get_int32(i, 0), m_TblLevelEvent.get_int32(i, 1)));
     }
 
     return true;
@@ -23,7 +24,6 @@ CLevelUpEvent::Init() {
 
 void
 CLevelUpEvent::Release() {
-    m_TblLevelEvent.Free();
 }
 
 void

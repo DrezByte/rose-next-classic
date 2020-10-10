@@ -175,7 +175,7 @@ inline bool
 Check_UserVAR(tQST_PARAM* pPARAM, STR_ABIL_DATA* pDATA) {
     if (AT_CLASS == pDATA->iType) {
         // 직업을 조회 :: 퀘스트 툴에서 잘못된 데이타가 입력 될수 있으므로...
-        if (pDATA->iValue < 0 || pDATA->iValue >= g_TblClass.m_nDataCnt) {
+        if (pDATA->iValue < 0 || pDATA->iValue >= g_TblClass.row_count) {
 #ifndef __SERVER
             char* szMsg = CStr::Printf("	[QST] 데이타오류 !!! : %s에서  %d 의 직업 번호는 없음",
                 pPARAM->m_pCurrentTRIGGER->m_Name.Get(),
@@ -2344,14 +2344,21 @@ CQuestDATA::LoadQuestTable() {
     }
 
     this->Free();
-    if (!this->m_STB.Load(m_QuestFILE.Get(), true, true))
+#ifdef CLIENT
+    if (!CVFSManager::GetSingleton().load_stb(m_STB, m_QuestFILE.Get())) {
         return false;
+    }
+#else
+    if (!this->m_STB.load(m_QuestFILE.Get())) {
+        return false;
+    }
+#endif
 
     CGameSTB cFILE;
     if (cFILE.Open(m_QuestListSTB.Get())) {
         STBDATA AILang;
         if (m_QuestLangSTB.Get()) {
-            AILang.LoadWSTB(false, m_QuestLangSTB.Get(), -1, m_iLangCol, -1);
+            AILang.load(m_QuestLangSTB.Get());
         }
         this->m_pSTB = &AILang;
 
@@ -2374,7 +2381,6 @@ CQuestDATA::LoadQuestTable() {
 #endif
             }
         }
-        AILang.Free();
         cFILE.Close();
         return true;
     }
@@ -2510,8 +2516,6 @@ CQuestDATA::Free() {
     while (m_HashQUEST.GetFirst(&HashKEY, &pDATA)) {
         m_HashQUEST.Delete(HashKEY);
     }
-
-    m_STB.Free();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -2736,7 +2740,7 @@ CQuestTRIGGER::Load(FILE* fpIN, STBDATA* pSTB, int iLangCol) {
                 break;
             }
             case 12: {
-                char* szMsg = pSTB->GetValueSTR(iLangCol, m_ppReward[uiC]->m_Rewd012.iStrID - 1);
+                char* szMsg = pSTB->get_cstr(m_ppReward[uiC]->m_Rewd012.iStrID - 1, iLangCol);
                 char* szNull = "unknown";
                 if (!szMsg)
                     szMsg = szNull;
@@ -2763,7 +2767,7 @@ CQuestTRIGGER::Load(FILE* fpIN, STBDATA* pSTB, int iLangCol) {
                 break;
             }
             case 18: {
-                char* szMsg = pSTB->GetValueSTR(iLangCol, m_ppReward[uiC]->m_Rewd018.iStrID - 1);
+                char* szMsg = pSTB->get_cstr(m_ppReward[uiC]->m_Rewd018.iStrID - 1, iLangCol);
                 char* szNull = "unknown";
                 if (!szMsg)
                     szMsg = szNull;

@@ -529,7 +529,7 @@ CManufacture::LoadMakableItem(int iClass, int iSkillNo, int iSkillLv) {
 int
 CManufacture::LoadClassesFromSTB(t_eITEM itemType, int iMakeNo, int iSkillLv) {
     int iAddClassCount = 0;
-    int iDataCount = g_pTblSTBs[itemType]->m_nDataCnt;
+    int iDataCount = g_pTblSTBs[itemType]->row_count;
     int iMakeLv = 0;
 
     for (int i = 1; i < iDataCount; ++i) {
@@ -546,7 +546,7 @@ CManufacture::LoadClassesFromSTB(t_eITEM itemType, int iMakeNo, int iSkillLv) {
 int
 CManufacture::LoadGemClassesFromSTB(t_eITEM itemType, int iMakeNo, int iSkillLv) {
     int iAddClassCount = 0;
-    int iDataCount = g_pTblSTBs[itemType]->m_nDataCnt;
+    int iDataCount = g_pTblSTBs[itemType]->row_count;
     int iMakeLv = 0;
 
     for (int i = 301; i < iDataCount - 10; i += 10) {
@@ -562,7 +562,7 @@ CManufacture::LoadGemClassesFromSTB(t_eITEM itemType, int iMakeNo, int iSkillLv)
 int
 CManufacture::LoadItemsFromSTB(t_eITEM itemType, int iClass, int iMakeNo, int iSkillLv) {
     int iAddItemCount = 0;
-    int iDataCount = g_pTblSTBs[itemType]->m_nDataCnt;
+    int iDataCount = g_pTblSTBs[itemType]->row_count;
     int iMakeLv = 0;
     tagITEM Item;
 
@@ -587,7 +587,7 @@ CManufacture::LoadItemsFromSTB(t_eITEM itemType, int iClass, int iMakeNo, int iS
 int
 CManufacture::LoadGemItemsFromSTB(t_eITEM itemType, int iLineNo, int iMakeNo, int iSkillLv) {
     int iAddItemCount = 0;
-    int iDataCount = g_pTblSTBs[itemType]->m_nDataCnt;
+    int iDataCount = g_pTblSTBs[itemType]->row_count;
     int iMakeLv = 0;
     tagITEM Item;
 

@@ -166,7 +166,7 @@ CPartyMember::AddStatusIcon(DWORD dwFlag) {
     if (iter == CEndurancePack::m_StateFlagTable.end())
         return false;
 
-    for (int i = 0; i < g_TblSTATE.m_nDataCnt; ++i) {
+    for (int i = 0; i < g_TblSTATE.row_count; ++i) {
         if (STATE_TYPE(i) == iter->second) {
             ToolTip.Clear();
             ToolTip.AddString(STATE_NAME(i));

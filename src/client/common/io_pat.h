@@ -99,9 +99,9 @@ public:
 
     /// icarus:  : 2004. 6. 3 기준가격의 범위 초과 입력으로 short => int로 변환
     int GetValue(WORD wLine, WORD wCol) {
-        _ASSERT(wLine < m_ItemDATA.m_nDataCnt);
+        _ASSERT(wLine < m_ItemDATA.row_count);
 
-        return m_ItemDATA.m_ppDATA[wLine][wCol];
+        return m_ItemDATA.get_int32(wLine, wCol);
     }
 };
 extern CPatITEM g_PatITEM;

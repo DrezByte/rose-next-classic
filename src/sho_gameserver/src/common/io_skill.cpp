@@ -27,7 +27,6 @@ CSkillLIST::~CSkillLIST() {
 
 void
 CSkillLIST::Free() {
-    m_SkillDATA.Free();
     SAFE_DELETE_ARRAY(m_pCastingAniSPEED);
     SAFE_DELETE_ARRAY(m_pActionAniSPEED);
 
@@ -38,23 +37,29 @@ CSkillLIST::Free() {
 
 bool
 CSkillLIST::LoadSkillTable(const char* pFileName) {
-    if (!m_SkillDATA.Load((char*)pFileName, true, true))
+#ifdef CLIENT
+    if (!CVFSManager::GetSingleton().load_stb(m_SkillDATA, pFileName)) {
+        return false
+    }
+#else
+    if (!this->m_SkillDATA.load(pFileName)) {
         return false;
-    //	assert( m_SkillDATA.m_nColCnt > 88 );
+    }
+#endif
 
-    m_pCastingAniSPEED = new float[m_SkillDATA.m_nDataCnt];
-    m_pActionAniSPEED = new float[m_SkillDATA.m_nDataCnt];
+    m_pCastingAniSPEED = new float[m_SkillDATA.row_count];
+    m_pActionAniSPEED = new float[m_SkillDATA.row_count];
 
 #ifdef __SERVER
-    m_pReloadTIME = new DWORD[m_SkillDATA.m_nDataCnt];
-    ::ZeroMemory(m_pReloadTIME, sizeof(DWORD) * m_SkillDATA.m_nDataCnt);
+    m_pReloadTIME = new DWORD[m_SkillDATA.row_count];
+    ::ZeroMemory(m_pReloadTIME, sizeof(DWORD) * m_SkillDATA.row_count);
 #endif
 
     // 0번 스킬 사용안함...
-    for (short nI = 1; nI < m_SkillDATA.m_nDataCnt; nI++) {
+    for (short nI = 1; nI < m_SkillDATA.row_count; nI++) {
         if (SKILL_ANI_CASTING_REPEAT_CNT(nI)) {
             if (SKILL_ANI_CASTING_REPEAT(nI) < 1) {
-                SKILL_ANI_CASTING_REPEAT_CNT(nI) = 0;
+                SET_SKILL_ANI_CASTING_REPEAT_CNT(nI, 0);
             }
         }
 
@@ -65,7 +70,7 @@ CSkillLIST::LoadSkillTable(const char* pFileName) {
             WORD wTotFrame;
             short nMotionTYPE = 0;
             // 반복 모션
-            for (short nM = 0; nM < g_TblAniTYPE.m_nColCnt; nM++) {
+            for (short nM = 0; nM < g_TblAniTYPE.col_count; nM++) {
                 if (FILE_MOTION(nM, SKILL_ANI_CASTING_REPEAT(nI))) {
                     nMotionTYPE = nM;
                     break;
@@ -104,9 +109,9 @@ CSkillLIST::LoadSkillTable(const char* pFileName) {
         }
 
         if (SKILL_RELOAD_TYPE(nI) < 0)
-            SKILL_RELOAD_TYPE(nI) = 0;
+            SET_SKILL_RELOAD_TYPE(nI, 0);
         else if (SKILL_RELOAD_TYPE(nI) >= MAX_SKILL_RELOAD_TYPE)
-            SKILL_RELOAD_TYPE(nI) = 0;
+            SET_SKILL_RELOAD_TYPE(nI, 0);
 
         m_pActionAniSPEED[nI] = SKILL_ANI_ACTION_SPEED(nI) / 100.f;
         if (m_pActionAniSPEED[nI] <= 0.f) {
@@ -114,7 +119,7 @@ CSkillLIST::LoadSkillTable(const char* pFileName) {
         }
     }
 
-    m_iSkillCount = m_SkillDATA.m_nDataCnt;
+    m_iSkillCount = m_SkillDATA.row_count;
 
     return true;
 }

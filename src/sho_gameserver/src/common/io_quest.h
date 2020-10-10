@@ -958,11 +958,11 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 // QUEST
-#define QUEST_NAME(I) g_QuestList.m_STB.m_ppNAME[I]
-#define QUEST_DESC(I) g_QuestList.m_STB.m_ppDESC[I]
+#define QUEST_NAME(I) g_QuestList.m_STB.get_cstr(I, 0)
+#define QUEST_DESC(I) g_QuestList.m_STB.get_cstr(I, 4)
 
-#define QUEST_TIME_LIMIT(I) g_QuestList.m_STB.m_ppDATA[I][1]
-#define QUEST_OWNER_TYPE(I) g_QuestList.m_STB.m_ppDATA[I][2]
+#define QUEST_TIME_LIMIT(I) g_QuestList.m_STB.get_int32(I, 1)
+#define QUEST_OWNER_TYPE(I) g_QuestList.m_STB.get_int32(I, 2)
 
 enum eQST_RESULT {
     QST_RESULT_INVALID = 0, // 서버에서 짤린다.

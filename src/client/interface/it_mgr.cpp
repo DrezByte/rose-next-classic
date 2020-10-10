@@ -226,7 +226,7 @@ IT_MGR::Init() {
 
     m_pNotifyButtonDlg = new CNotifyButtonDlg;
 
-    g_TblHELP.Load2("3DDATA\\STB\\HELP.STB", false, false);
+    CVFSManager::GetSingleton().load_stb(g_TblHELP, HELP_STB);
 
     m_listSavedDialog.push_back(DLG_TYPE_ITEM);
     m_listSavedDialog.push_back(DLG_TYPE_CHAR);
@@ -335,7 +335,6 @@ IT_MGR::Free() {
             g_ClientStorage.SetQuickBarExtDlgType(pQuickBarDlg->GetType());
         }
     }
-    g_TblHELP.Free();
     FreeDLG();
     g_ClientStorage.Save();
 }

@@ -102,8 +102,10 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmd
 #endif
 
     VHANDLE hVFS = OpenVFS("data.idx", "r");
-    (CVFSManager::GetSingleton()).SetVFS(hVFS);
-    (CVFSManager::GetSingleton()).InitVFS(VFS_TRIGGER_VFS);
+
+    CVFSManager& vfs = CVFSManager::GetSingleton();
+    vfs.SetVFS(hVFS);
+    vfs.InitVFS(VFS_TRIGGER_VFS);
 
     GetLocalTime(&g_GameDATA.m_SystemTime);
 
@@ -122,8 +124,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmd
         return 0;
     }
 
-    g_TblResolution.Load2("3DDATA\\STB\\RESOLUTION.STB", false, false);
-    g_TblCamera.Load2("3DDATA\\STB\\LIST_CAMERA.STB", false, false);
+    vfs.load_stb(g_TblResolution, RESOLUTION_STB);
+    vfs.load_stb(g_TblCamera, CAMERA_STB);
 
     g_ClientStorage.Load();
 
@@ -147,9 +149,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmd
     }
 
     Free_DEVICE();
-
-    g_TblCamera.Free();
-    g_TblResolution.Free();
 
     g_pCApp->Destroy();
     g_pNet->Destroy();

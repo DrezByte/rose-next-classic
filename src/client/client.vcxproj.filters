@@ -2233,6 +2233,9 @@
     <ClInclude Include="interface\dev_ui.h">
       <Filter>Source Files\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="io\filesystem.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Res\Attack.cur">

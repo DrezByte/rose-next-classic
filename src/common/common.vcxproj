@@ -23,6 +23,7 @@
     <ClInclude Include="include\rose\common\status_effect\status_effect_data.h" />
     <ClInclude Include="include\rose\common\status_effect\status_effect_flag.h" />
     <ClInclude Include="include\rose\common\util.h" />
+    <ClInclude Include="include\rose\io\reader.h" />
     <ClInclude Include="include\rose\io\stb.h" />
     <ClInclude Include="include\rose\network\packet.h" />
     <ClInclude Include="include\rose\util\sha256.h" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClCompile Include="include\rose\util\sha256.cpp" />
     <ClCompile Include="src\goddess_effect.cpp" />
+    <ClCompile Include="src\io\reader.cpp" />
     <ClCompile Include="src\io\stb.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\util.cpp" />

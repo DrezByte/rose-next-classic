@@ -11,21 +11,21 @@ CHelpMgr g_HelpMgr;
 
 inline short
 GetHelpLowestLimitLv(int i) {
-    return g_TblHELP.m_ppVALUE[i][1].GetSHORT();
+    return g_TblHELP.get_int16(i, 1);
 }
 inline short
 GetHelpUpperLimitLv(int i) {
-    return g_TblHELP.m_ppVALUE[i][2].GetSHORT();
+    return g_TblHELP.get_int16(i, 2);
 }
 inline short
 GetHelpFontColor(int i) {
-    return g_TblHELP.m_ppVALUE[i][3].GetSHORT();
+    return g_TblHELP.get_int16(i, 3);
 }
 
 /// STB에서의 시간은 초단위 , 프로그램에서 사용하는것은 ms단위
 inline short
 GetHelpContinueTime(int i) {
-    return g_TblHELP.m_ppVALUE[i][4].GetSHORT() * 1000;
+    return g_TblHELP.get_int16(i, 4) * 1000;
 }
 
 inline char*
@@ -64,7 +64,7 @@ CHelpMgr::SetNextHelpMsg() {
 
         int iNextShowHelpID = GetNextIndex(m_iPrevShowHelpID);
 
-        if (iNextShowHelpID <= 0 || iNextShowHelpID >= g_TblHELP.m_nDataCnt)
+        if (iNextShowHelpID <= 0 || iNextShowHelpID >= g_TblHELP.row_count)
             return;
 
         char* szTitle = GetHelpTitle(iNextShowHelpID);
@@ -165,7 +165,7 @@ CHelpMgr::Update() {
 
     short iLowestLv = 0;
     short iUpperLv = 0;
-    for (int i = 0; i < g_TblHELP.m_nDataCnt; ++i) {
+    for (int i = 0; i < g_TblHELP.row_count; ++i) {
         iLowestLv = GetHelpLowestLimitLv(i);
         iUpperLv = GetHelpUpperLimitLv(i);
 

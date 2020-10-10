@@ -35,10 +35,11 @@ CAI_LIST::Load(char* szBaseDIR, char* szSTBFile, char* szLangSTB, int iLangCol) 
         if (szLangSTB) {
             if (szBaseDIR) {
                 pFullPath = CStr::Printf("%s%s", szBaseDIR, szLangSTB);
-            } else
+            } else {
                 pFullPath = szLangSTB;
+            }
 
-            AILang.LoadWSTB(false, pFullPath, -1, iLangCol, -1);
+            AILang.load(pFullPath);
         }
 
         char* szFileName;
@@ -75,7 +76,6 @@ CAI_LIST::Load(char* szBaseDIR, char* szSTBFile, char* szLangSTB, int iLangCol) 
 #endif
             }
         }
-        AILang.Free();
         fSTB.Close();
         return true;
     }

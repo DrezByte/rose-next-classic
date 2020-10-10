@@ -257,7 +257,7 @@ draw_item_info() {
                 continue;
             }
 
-            for (short item_id = 0; item_id < stb->m_nDataCnt; ++item_id) {
+            for (short item_id = 0; item_id < stb->row_count; ++item_id) {
                 const int icon_id = ITEM_ICON_NO(item_type, item_id);
                 if (!icon_id) {
                     continue;

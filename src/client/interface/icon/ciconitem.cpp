@@ -171,8 +171,8 @@ CIconItem::Draw() {
 
     if (Item.HasSocket() && m_hSocketTexture) {
         if (Item.GetGemNO() > 300) {
-            assert(Item.GetGemNO() <= g_TblGEMITEM.m_nDataCnt);
-            if (Item.GetGemNO() <= g_TblGEMITEM.m_nDataCnt)
+            assert(Item.GetGemNO() <= g_TblGEMITEM.row_count);
+            if (Item.GetGemNO() <= g_TblGEMITEM.row_count)
                 g_DrawImpl.Draw(m_ptPosition.x,
                     m_ptPosition.y,
                     IMAGE_RES_SOCKETJAM_ICON,

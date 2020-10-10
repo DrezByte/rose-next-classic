@@ -325,7 +325,7 @@ CClientStorage::ApplyCameraOption(short i) {
         i += ZONE_CAMERA_TYPE(iZoneType);
     }
 
-    if (i >= 0 && i < g_TblCamera.m_nDataCnt) {
+    if (i >= 0 && i < g_TblCamera.row_count) {
         float fFogNear = CAMERA_NEAR_ALPHA_FOG(i) * 100;
         float fFogFar = CAMERA_FAR_ALPHA_FOG(i) * 100;
         ::setAlphaFogRange(fFogNear, fFogFar);

@@ -100,7 +100,7 @@ tagBaseITEM::IsValidITEM(DWORD wType, DWORD wItemNO) {
     if (NULL == g_pTblSTBs[wType])
         return false;
 
-    if (wItemNO >= g_pTblSTBs[wType]->m_nDataCnt)
+    if (wItemNO >= g_pTblSTBs[wType]->row_count)
         return false;
 
     return true;

@@ -297,11 +297,16 @@ CGame::Init() {
 #endif
     g_pCApp->Show();
 
-    g_TblString.Load("3DDATA\\STB\\LIST_STRING.STB", true, false);
+    CVFSManager::GetSingleton().load_stb(g_TblString, STRING_STB);
     //	if( CreateAllStringTables( &g_TblString ) == false )
     //		return false;
 
-    CSystemProcScript::GetSingleton().InitSystem();
+    CSystemProcScript& script_system = CSystemProcScript::GetSingleton();
+    if (!script_system.InitSystem()) {
+        // TODO: Install error handler for lua and do something with the
+        // error message
+        return false;
+    }
 
     CCursor::GetInstance().Initialize();
     CCursor::GetInstance().SetCursorType(CCursor::CURSOR_DEFAULT);
@@ -403,39 +408,25 @@ CGame::Exit() {
 }
 void
 CGame::Load_NewVersionData() {
-    /// NPC FACE TABLE( 지역변수로 자동 해제 )
     STBDATA stbNPCFACE;
-    stbNPCFACE.Load2("3DData\\STB\\LIST_NPCFACE.STB", false, false);
+    CVFSManager::GetSingleton().load_stb(stbNPCFACE, NPC_FACE_STB);
 
-    if (stbNPCFACE.m_nDataCnt < 1 || stbNPCFACE.m_nColCnt < 2) {
+    if (stbNPCFACE.row_count < 1 || stbNPCFACE.col_count < 2) {
         _RPT0(_CRT_WARN, "LIST_NPCFACE STB's schima mismatch\n");
         return;
     }
 
-    std::string directory;
-
-    if (stbNPCFACE.m_ppVALUE[0][1].GetSTR())
-        directory = stbNPCFACE.m_ppVALUE[0][1].GetSTR();
-
+    std::string directory(stbNPCFACE.value(0, 1));
     std::string file;
-    for (int row = 1; row < stbNPCFACE.m_nDataCnt; row++) {
+    for (int row = 1; row < stbNPCFACE.row_count; row++) {
         file = directory;
-        if (stbNPCFACE.m_ppVALUE[row][1].GetSTR()) {
-            file.append(stbNPCFACE.m_ppVALUE[row][1].GetSTR());
+        if (!stbNPCFACE.value(row, 1).empty()) {
+            file.append(stbNPCFACE.value(row, 1));
             CImageResManager::GetSingleton().Add_NpcFaceFileInfo(
-                stbNPCFACE.m_ppVALUE[row][0].GetSHORT(),
+                stbNPCFACE.get_int16(row, 0),
                 file.c_str());
         }
     }
-
-    // stbNPCFACE
-    // if ( nCol >= m_nColCnt || nRow >= m_nDataCnt )
-    //	return NULL;
-
-    //
-    //
-    //
-    // return m_ppVALUE[ nRow ][ nCol ].GetSTR();
 }
 bool
 CGame::Load_BasicDATA2() {
@@ -447,25 +438,27 @@ CGame::Load_BasicDATA2() {
     DWORD dwStartTime = timeGetTime();
     g_SkillList.LoadSkillTable("3DData\\STB\\LIST_SKILL.STB");
 
-    /// NPC 테이블
-    g_TblNPC.Load2("3DDATA\\STB\\LIST_NPC.STB", true, false);
+    CVFSManager& vfs = CVFSManager::GetSingleton();
+
+    // NPC
+    vfs.load_stb(g_TblNPC, NPC_STB);
     g_MOBandNPC.Load_MOBorNPC("3DDATA\\NPC\\LIST_NPC.CHR");
     g_QuestList.LoadQuestTable("3DDATA\\STB\\LIST_QUEST.STB", "3DDATA\\STB\\LIST_QuestDATA.STB");
 
-    g_TblFACEITEM.Load("3DDATA\\STB\\LIST_FACEITEM.STB", true, true);
-    ////g_TblHELMET.Load	( "3DDATA\\STB\\LIST_Cap.STB",		true, true  );=>Load_BasicDATA()로
-    ///이,선택할 아바타를 만들기 위해서 필요한 테이블
-    g_TblARMOR.Load("3DDATA\\STB\\LIST_Body.STB", true, true);
-    g_TblGAUNTLET.Load("3DDATA\\STB\\LIST_Arms.STB", true, true);
-    g_TblBOOTS.Load("3DDATA\\STB\\LIST_Foot.STB", true, true);
-    g_TblBACKITEM.Load("3DDATA\\STB\\LIST_BACK.STB", true, true);
-    g_TblJEWELITEM.Load("3DDATA\\STB\\LIST_JEWEL.STB", true, true);
-    g_TblWEAPON.Load("3DDATA\\STB\\LIST_Weapon.STB", true, true);
-    g_TblSUBWPN.Load("3DDATA\\STB\\LIST_SUBWPN.STB", true, true);
-    g_TblUSEITEM.Load("3DDATA\\STB\\LIST_USEITEM.STB", true, true);
-    g_TblGEMITEM.Load("3DDATA\\STB\\LIST_JEMITEM.STB", true, true);
-    g_TblNATUAL.Load("3DDATA\\STB\\LIST_NATURAL.STB", true, true);
-    g_TblQUESTITEM.Load("3DDATA\\STB\\LIST_QUESTITEM.STB", true, true);
+    // Items
+    vfs.load_stb(g_TblFACEITEM, FACE_ITEM_STB);
+    vfs.load_stb(g_TblARMOR, BODY_STB);
+    vfs.load_stb(g_TblGAUNTLET, ARMS_STB);
+    vfs.load_stb(g_TblBOOTS, FOOT_STB);
+    vfs.load_stb(g_TblBACKITEM, BACK_STB);
+    vfs.load_stb(g_TblJEWELITEM, JEWEL_STB);
+    vfs.load_stb(g_TblWEAPON, WEAPON_STB);
+    vfs.load_stb(g_TblSUBWPN, SUBWPN_STB);
+    vfs.load_stb(g_TblUSEITEM, USE_ITEM_STB);
+    vfs.load_stb(g_TblGEMITEM, JEM_ITEM_STB);
+    vfs.load_stb(g_TblNATUAL, NATURAL_STB);
+    vfs.load_stb(g_TblQUESTITEM, QUEST_ITEM_STB);
+
     if (!g_PatITEM.LoadPatITEM("3DDATA\\STB\\LIST_PAT.STB"))
         return false;
 
@@ -484,15 +477,9 @@ CGame::Load_BasicDATA2() {
     g_pTblSTBs[ITEM_TYPE_QUEST] = &g_TblQUESTITEM;
     g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM.m_ItemDATA;
 
-    _RPT1(_CRT_WARN, "Loading Time Basic Data2 %d \n", timeGetTime() - dwStartTime);
-
     return true;
 }
-/// 2004 /3/ 29:nAvy - Client의 실행시 처음 Loading시간을 줄이기 위해서 Load_BasicDATA2로 분리
-/// CGameLoadSelectAvatarState에서 나머지를 Loading한다.
-/// * 현재 Skill, Weapon의 Loading 시간이 각각5초를 넘어간다.
-/// * 2번 로딩하지 않게 주의하거나 STB안에서 이미 Load된 STB는 다시 Load안하게 한다.
-/// * Prototype Pattern을 사용해볼까??
+
 bool
 CGame::Load_BasicDATA() {
     //---------------------------------------------------------------------
@@ -510,37 +497,31 @@ CGame::Load_BasicDATA() {
     g_pEffectLIST =
         new CEffectLIST("3ddata\\stb\\FILE_EFFECT.stb"); // shader 설정된후 로드해야 함..
 
-    if (!g_DATA.Load3DDATA()) // shader 설정된후 로드해야 함..
+    if (!g_DATA.Load3DDATA()) {
         return false;
+    }
 
-    g_TblHAIR.Load("3DDATA\\STB\\LIST_Hair.STB", true, false);
-    g_TblFACE.Load("3DDATA\\STB\\LIST_Face.STB", true, false);
-    g_TblEFFECT.Load("3DDATA\\STB\\LIST_EFFECT.STB", false, false);
-    g_TblDropITEM.Load("3DDATA\\STB\\ITEM_DROP.STB", false, false);
-
-    // *-------------------------------------------------------------------* //
-    g_TblPRODUCT.Load("3DDATA\\STB\\LIST_PRODUCT.STB",
-        true,
-        false); /// 2004 / 2 /4 :nAvy 수정 PRODUCT.STB => LIST_PRODUCT.STB
-
-    g_TblStore.Load2("3DDATA\\STB\\LIST_SELL.STB", false, false);
-    g_TblAniTYPE.Load("3DDATA\\STB\\TYPE_MOTION.STB", false, false);
-    g_TblEVENT.Load2("3DDATA\\STB\\LIST_EVENT.STB", false, true);
-    g_TblSKY.Load2("3DDATA\\STB\\LIST_Sky.STB", false, false);
-    g_TblWARP.Load2("3DDATA\\STB\\WARP.STB", true, false);
-    g_TblZONE.Load2("3DDATA\\STB\\LIST_ZONE.STB", true, false);
-
-    g_TblHitSound.Load("3DDATA\\STB\\LIST_HITSOUND.STB", false, false);
-    g_TblAVATAR.Load("3DDATA\\STB\\INIT_AVATAR.STB", false, false);
-    g_TblRangeSet.Load("3DDATA\\STB\\RangeSet.STB", false, false);
-
-    g_TblSTATE.Load2("3DData\\STB\\LIST_STATUS.STB", false, false);
-    g_TblUnion.Load2("3DDATA\\STB\\LIST_UNION.STB", false, false);
-    g_TblClass.Load2("3DDATA\\STB\\LIST_CLASS.STB", false, false);
-
-    g_TblStepSound.Load("3DDATA\\STB\\LIST_STEPSOUND.STB");
-    g_TblItemGRADE.Load("3DDATA\\STB\\LIST_GRADE.STB");
-    g_TblHELMET.Load("3DDATA\\STB\\LIST_Cap.STB", true, true);
+    CVFSManager& vfs = CVFSManager::GetSingleton();
+    vfs.load_stb(g_TblHELMET, CAP_STB);
+    vfs.load_stb(g_TblClass, CLASS_STB);
+    vfs.load_stb(g_TblEFFECT, EFFECT_STB);
+    vfs.load_stb(g_TblEVENT, EVENT_STB);
+    vfs.load_stb(g_TblFACE, FACE_STB);
+    vfs.load_stb(g_TblItemGRADE, GRADE_STB);
+    vfs.load_stb(g_TblHAIR, HAIR_STB);
+    vfs.load_stb(g_TblHitSound, HIT_SOUND_STB);
+    vfs.load_stb(g_TblAVATAR, INIT_AVATAR_STB);
+    vfs.load_stb(g_TblDropITEM, ITEM_DROP_STB);
+    vfs.load_stb(g_TblPRODUCT, PRODUCT_STB);
+    vfs.load_stb(g_TblRangeSet, RANGE_SET_STB);
+    vfs.load_stb(g_TblStore, SELL_STB);
+    vfs.load_stb(g_TblSKY, SKY_STB);
+    vfs.load_stb(g_TblSTATE, STATUS_STB);
+    vfs.load_stb(g_TblStepSound, STEP_SOUND_STB);
+    vfs.load_stb(g_TblAniTYPE, TYPE_MOTION_STB);
+    vfs.load_stb(g_TblUnion, UNION_STB);
+    vfs.load_stb(g_TblWARP, WARP_STB);
+    vfs.load_stb(g_TblZONE, ZONE_STB);
 
     if (g_MotionFILE.Load("3DDATA\\STB\\FILE_MOTION.stb") == false)
         return false;
@@ -758,34 +739,6 @@ CGame::Free_BasicDATA() {
     CImageResManager::GetSingletonPtr()->ReleaseResources();
 
     FreeScript();
-
-    g_TblNPC.Free();
-    g_TblWEAPON.Free();
-    g_TblHELMET.Free();
-    g_TblBOOTS.Free();
-    g_TblGAUNTLET.Free();
-    g_TblARMOR.Free();
-    g_TblFACE.Free();
-    g_TblHAIR.Free();
-
-    // *----------------------* //
-    g_TblDropITEM.Free();
-    g_TblPRODUCT.Free();
-    g_TblNATUAL.Free();
-    g_TblFACEITEM.Free();
-    g_TblUSEITEM.Free();
-    g_TblBACKITEM.Free();
-    g_TblGEMITEM.Free();
-    g_TblJEWELITEM.Free();
-    g_TblStore.Free();
-    // *----------------------* //
-    g_TblClass.Free();
-    g_TblUnion.Free();
-    g_TblSKY.Free();
-    g_TblEVENT.Free();
-    g_TblWARP.Free();
-    g_TblAniTYPE.Free();
-    g_TblZONE.Free();
 
     g_MatFILE.Free();
     g_MeshFILE.Free();

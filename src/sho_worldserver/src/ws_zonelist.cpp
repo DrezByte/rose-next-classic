@@ -77,7 +77,7 @@ WS_ZoneLIST::Save_WorldVAR() {
 //---------------------------------------------------------------------------------------
 bool
 WS_ZoneLIST::Init(char* szBaseDIR) {
-    m_nZoneCNT = g_TblZONE.m_nDataCnt;
+    m_nZoneCNT = g_TblZONE.row_count;
 
     if (m_nZoneCNT < 1)
         return false;

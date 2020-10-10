@@ -60,138 +60,142 @@ enum enumSKILL_TAGER_FILTER {
 //-------------------------------------------------------------------------------------------------
 
 #ifdef __SERVER
-    #define SKILL_NAME(I) g_SkillList.m_SkillDATA.m_ppNAME[I] /// 스킬 이름
-    #define SKILL_DESC(I) g_SkillList.m_SkillDATA.m_ppDESC[I] /// 스킬 설명
+    #define SKILL_NAME(I) g_SkillList.m_SkillDATA.get_cstr(I, 0)
+    #define SKILL_DESC(I) g_SkillList.m_SkillDATA.get_cstr(I, 87)
 #else
     #define SKILL_NAME(I) CStringManager::GetSingleton().GetSkillName(I)
     #define SKILL_DESC(I) CStringManager::GetSingleton().GetSkillDesc(I)
 #endif
 
-#define SKILL_1LEV_INDEX(S) g_SkillList.m_SkillDATA.m_ppDATA[S][1]
-#define SKILL_LEVEL(S) g_SkillList.m_SkillDATA.m_ppDATA[S][2]
-#define SKILL_NEED_LEVELUPPOINT(S) g_SkillList.m_SkillDATA.m_ppDATA[S][3]
-#define SKILL_TAB_TYPE(S) g_SkillList.m_SkillDATA.m_ppDATA[S][4]
-#define SKILL_TYPE(I) g_SkillList.m_SkillDATA.m_ppDATA[I][5]
+#define SKILL_1LEV_INDEX(S) g_SkillList.m_SkillDATA.get_int32(S, 1)
+#define SKILL_LEVEL(S) g_SkillList.m_SkillDATA.get_int32(S, 2)
+#define SKILL_NEED_LEVELUPPOINT(S) g_SkillList.m_SkillDATA.get_int32(S, 3)
+#define SKILL_TAB_TYPE(S) g_SkillList.m_SkillDATA.get_int32(S, 4)
+#define SKILL_TYPE(I) g_SkillList.m_SkillDATA.get_int32(I, 5)
 
-#define SKILL_DISTANCE(I) g_SkillList.m_SkillDATA.m_ppDATA[I][6] ///	타겟과의 거리
+#define SKILL_DISTANCE(I) g_SkillList.m_SkillDATA.get_int32(I, 6) ///	타겟과의 거리
 #define SKILL_WARP_PLANET_NO(I) \
-    g_SkillList.m_SkillDATA.m_ppDATA[I][6] ///	워프 스킬일 경우 존이 위치한 행성 번호
+    g_SkillList.m_SkillDATA.get_int32(I, 6) ///	워프 스킬일 경우 존이 위치한 행성 번호
 
-#define SKILL_CLASS_FILTER(I) g_SkillList.m_SkillDATA.m_ppDATA[I][7]
-#define SKILL_SCOPE(S) g_SkillList.m_SkillDATA.m_ppDATA[S][8] /// 적용범위
-#define SKILL_POWER(S) g_SkillList.m_SkillDATA.m_ppDATA[S][9]
+#define SKILL_CLASS_FILTER(I) g_SkillList.m_SkillDATA.get_int32(I, 7)
+#define SKILL_SCOPE(S) g_SkillList.m_SkillDATA.get_int32(S, 8) /// 적용범위
+#define SKILL_POWER(S) g_SkillList.m_SkillDATA.get_int32(S, 9)
 #define SKILL_ITEM_MAKE_NUM SKILL_POWER /// 제조번호
-#define SKILL_HARM(I) g_SkillList.m_SkillDATA.m_ppDATA[I][10]
+#define SKILL_HARM(I) g_SkillList.m_SkillDATA.get_int32(I, 10)
 
-#define SKILL_STATE_STB(I, C) g_SkillList.m_SkillDATA.m_ppDATA[I][11 + C] ///	상태 번호
-#define SKILL_STATE_STB1(I) g_SkillList.m_SkillDATA.m_ppDATA[I][11] ///	상태 번호
-#define SKILL_STATE_STB2(I) g_SkillList.m_SkillDATA.m_ppDATA[I][12] ///	상태 번호
-#define SKILL_SUCCESS_RATIO(I) g_SkillList.m_SkillDATA.m_ppDATA[I][13] ///	성공률
-#define SKILL_DURATION(I) g_SkillList.m_SkillDATA.m_ppDATA[I][14] ///	지속 시간
-#define SKILL_DAMAGE_TYPE(S) g_SkillList.m_SkillDATA.m_ppDATA[S][15] /// 적용될 계산식 유형
+#define SKILL_STATE_STB(I, C) g_SkillList.m_SkillDATA.get_int32(I, 11 + C) ///	상태 번호
+#define SKILL_STATE_STB1(I) g_SkillList.m_SkillDATA.get_int32(I, 11) ///	상태 번호
+#define SKILL_STATE_STB2(I) g_SkillList.m_SkillDATA.get_int32(I, 12) ///	상태 번호
+#define SKILL_SUCCESS_RATIO(I) g_SkillList.m_SkillDATA.get_int32(I, 13) ///	성공률
+#define SKILL_DURATION(I) g_SkillList.m_SkillDATA.get_int32(I, 14) ///	지속 시간
+#define SKILL_DAMAGE_TYPE(S) g_SkillList.m_SkillDATA.get_int32(S, 15) /// 적용될 계산식 유형
 
 #define SKILL_USE_PROPERTY_CNT 2
-#define SKILL_USE_PROPERTY(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][16 + (T)*2]
-#define SKILL_USE_VALUE(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][17 + (T)*2]
+#define SKILL_USE_PROPERTY(S, T) g_SkillList.m_SkillDATA.get_int32(S, 16 + (T)*2)
+#define SKILL_USE_VALUE(S, T) g_SkillList.m_SkillDATA.get_int32(S, 17 + (T)*2)
 
-#define SKILL_RELOAD_TIME(S) g_SkillList.m_SkillDATA.m_ppDATA[S][20]
+#define SKILL_RELOAD_TIME(S) g_SkillList.m_SkillDATA.get_int32(S, 20)
 
 // 패시브(지속성) 스킬일 경우 일정시간 상승시킬 능력치...
 #define SKILL_INCREASE_ABILITY_CNT 2
-#define SKILL_INCREASE_ABILITY(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][21 + (T)*3]
-#define SKILL_INCREASE_ABILITY_VALUE(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][22 + (T)*3]
-#define SKILL_CHANGE_ABILITY_RATE(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][23 + (T)*3]
+#define SKILL_INCREASE_ABILITY(S, T) g_SkillList.m_SkillDATA.get_int32(S, 21 + (T)*3)
+#define SKILL_INCREASE_ABILITY_VALUE(S, T) g_SkillList.m_SkillDATA.get_int32(S, 22 + (T)*3)
+#define SKILL_CHANGE_ABILITY_RATE(S, T) g_SkillList.m_SkillDATA.get_int32(S, 23 + (T)*3)
 
 #define SKILL_WARP_ZONE_NO(S) \
-    g_SkillList.m_SkillDATA.m_ppDATA[S][21] /// 워프 스킬일 경우 워프할 존 번호
+    g_SkillList.m_SkillDATA.get_int32(S, 21) /// 워프 스킬일 경우 워프할 존 번호
 #define SKILL_WARP_ZONE_XPOS(S) \
-    g_SkillList.m_SkillDATA.m_ppDATA[S][22] /// 워프 스킬일 경우 워프할 존 위치
-#define SKILL_WARP_ZONE_YPOS(S) g_SkillList.m_SkillDATA.m_ppDATA[S][23]
+    g_SkillList.m_SkillDATA.get_int32(S, 22) /// 워프 스킬일 경우 워프할 존 위치
+#define SKILL_WARP_ZONE_YPOS(S) g_SkillList.m_SkillDATA.get_int32(S, 23)
 
 #define MAX_SKILL_RELOAD_TYPE 16 // 0~15
-#define SKILL_RELOAD_TYPE(S) g_SkillList.m_SkillDATA.m_ppDATA[S][27] /// 재충전 시간 그룹 번호
+#define SKILL_RELOAD_TYPE(S) g_SkillList.m_SkillDATA.get_int32(S, 27) /// 재충전 시간 그룹 번호
+#define SET_SKILL_RELOAD_TYPE(S, V) g_SkillList.m_SkillDATA.set_int32(S, 27, V)
 
-#define SKILL_SUMMON_PET(S) g_SkillList.m_SkillDATA.m_ppDATA[S][28] /// 소환몹 번호
+#define SKILL_SUMMON_PET(S) g_SkillList.m_SkillDATA.get_int32(S, 28) /// 소환몹 번호
 
-#define SKILL_ACTION_MODE(S) g_SkillList.m_SkillDATA.m_ppDATA[S][29] /// 스킬공격 유형
+#define SKILL_ACTION_MODE(S) g_SkillList.m_SkillDATA.get_int32(S, 29) /// 스킬공격 유형
 /// 사용시 장착하고 있어야하는 장비.  T = 0 ~ 3
 #define SKILL_NEED_WEAPON_CNT 5 // <--- 2004. 2. 26 4->5로 늘림고 이후 컬럼 번호+1 by icarus
-#define SKILL_NEED_WEAPON(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][30 + (T)]
+#define SKILL_NEED_WEAPON(S, T) g_SkillList.m_SkillDATA.get_int32(S, 30 + (T))
 
 /*
 // 최초 배울때 필요한 직업.	T = 0 ~ 3
 #define	SKILL_AVAILBLE_CLASS_CNT			4
-#define	SKILL_AVAILBLE_CLASS(S,T)			g_SkillList.m_SkillDATA.m_ppDATA[ S ][ 1+34+(T) ]
+#define	SKILL_AVAILBLE_CLASS(S,T)			g_SkillList.m_SkillDATA.get_int32( S ,  1+34+(T) )
 */
 /// LIST_CLASS.stb 참조 번호...
-#define SKILL_AVAILBLE_CLASS_SET(S) g_SkillList.m_SkillDATA.m_ppDATA[S][35]
+#define SKILL_AVAILBLE_CLASS_SET(S) g_SkillList.m_SkillDATA.get_int32(S, 35)
 
 // 최초 배울때 소속 조합 체크...
 #define SKILL_AVAILBLE_UNION_CNT 3
-#define SKILL_AVAILBLE_UNION(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][36 + (T)]
+#define SKILL_AVAILBLE_UNION(S, T) g_SkillList.m_SkillDATA.get_int32(S, 36 + (T))
 
 /// 최초로 배울때 미리 소유하고 있어야하는 스킬. T = 0 ~ 2
 #define SKILL_NEED_SKILL_CNT 3
-#define SKILL_NEED_SKILL_INDEX(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][39 + (T)*2]
-#define SKILL_NEDD_SKILL_LEVEL(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][40 + (T)*2]
+#define SKILL_NEED_SKILL_INDEX(S, T) g_SkillList.m_SkillDATA.get_int32(S, 39 + (T)*2)
+#define SKILL_NEDD_SKILL_LEVEL(S, T) g_SkillList.m_SkillDATA.get_int32(S, 40 + (T)*2)
 
 /// 최초로 배우거나 레벨업시 필요한 조건 능력치. T = 0 ~ 2
 #define SKILL_NEED_ABILITY_TYPE_CNT 2
 #define SKILL_NEED_ABILITY_TYPE(S, T) \
-    g_SkillList.m_SkillDATA.m_ppDATA[S][45 + (T)*2] // 값은 AT_DEX~AT_SENSE 만 사용됨
-#define SKILL_NEED_ABILITY_VALUE(S, T) g_SkillList.m_SkillDATA.m_ppDATA[S][46 + (T)*2]
+    g_SkillList.m_SkillDATA.get_int32(S, 45 + (T)*2) // 값은 AT_DEX~AT_SENSE 만 사용됨
+#define SKILL_NEED_ABILITY_VALUE(S, T) g_SkillList.m_SkillDATA.get_int32(S, 46 + (T)*2)
 
-#define SKILL_SCRIPT1(I) g_SkillList.m_SkillDATA.m_ppDATA[I][49]
+#define SKILL_SCRIPT1(I) g_SkillList.m_SkillDATA.get_int32(I, 49)
 
-#define SKILL_RESERVE_02(I) g_SkillList.m_SkillDATA.m_ppDATA[I][50]
-#define SKILL_ICON_NO(I) g_SkillList.m_SkillDATA.m_ppDATA[I][51]
+#define SKILL_RESERVE_02(I) g_SkillList.m_SkillDATA.get_int32(I, 50)
+#define SKILL_ICON_NO(I) g_SkillList.m_SkillDATA.get_int32(I, 51)
 
 /// 캐스팅 동작
-#define SKILL_ANI_CASTING(S) g_SkillList.m_SkillDATA.m_ppDATA[S][52]
-#define SKILL_ANI_CASTING_SPEED(S) g_SkillList.m_SkillDATA.m_ppDATA[S][53]
+#define SKILL_ANI_CASTING(S) g_SkillList.m_SkillDATA.get_int32(S, 52)
+#define SKILL_ANI_CASTING_SPEED(S) g_SkillList.m_SkillDATA.get_int32(S, 53)
 
 /// 캐스팅 루프 동작
-#define SKILL_ANI_CASTING_REPEAT(S) g_SkillList.m_SkillDATA.m_ppDATA[S][54]
-#define SKILL_ANI_CASTING_REPEAT_CNT(S) g_SkillList.m_SkillDATA.m_ppDATA[S][55]
+#define SKILL_ANI_CASTING_REPEAT(S) g_SkillList.m_SkillDATA.get_int32(S, 54)
+#define SKILL_ANI_CASTING_REPEAT_CNT(S) g_SkillList.m_SkillDATA.get_int32(S, 55)
+
+#define SET_SKILL_ANI_CASTING_REPEAT(S, V) g_SkillList.m_SkillDATA.set_int32(S, 54, V)
+#define SET_SKILL_ANI_CASTING_REPEAT_CNT(S, V) g_SkillList.m_SkillDATA.set_int32(S, 55, V)
 
 /// 캐스팅 이펙트
 #define SKILL_CASTING_EFFECT_CNT 4
-#define SKILL_CASTING_EFFECT(I, T) g_SkillList.m_SkillDATA.m_ppDATA[I][56 + (T * 3)]
-#define SKILL_CASTING_EFFECT_POINT(I, T) g_SkillList.m_SkillDATA.m_ppDATA[I][57 + (T * 3)]
-#define SKILL_CASTING_SOUND(I, T) g_SkillList.m_SkillDATA.m_ppDATA[I][58 + (T * 3)]
+#define SKILL_CASTING_EFFECT(I, T) g_SkillList.m_SkillDATA.get_int32(I, 56 + (T * 3))
+#define SKILL_CASTING_EFFECT_POINT(I, T) g_SkillList.m_SkillDATA.get_int32(I, 57 + (T * 3))
+#define SKILL_CASTING_SOUND(I, T) g_SkillList.m_SkillDATA.get_int32(I, 58 + (T * 3))
 
 // 실제 동작
-#define SKILL_ANI_ACTION_TYPE(S) g_SkillList.m_SkillDATA.m_ppDATA[S][68]
-#define SKILL_ANI_ACTION_SPEED(S) g_SkillList.m_SkillDATA.m_ppDATA[S][69]
-#define SKILL_ANI_HIT_COUNT(S) g_SkillList.m_SkillDATA.m_ppDATA[S][70]
+#define SKILL_ANI_ACTION_TYPE(S) g_SkillList.m_SkillDATA.get_int32(S, 68)
+#define SKILL_ANI_ACTION_SPEED(S) g_SkillList.m_SkillDATA.get_int32(S, 69)
+#define SKILL_ANI_HIT_COUNT(S) g_SkillList.m_SkillDATA.get_int32(S, 70)
 
 /// 발사 총알 이펙트
-#define SKILL_BULLET_NO(I) g_SkillList.m_SkillDATA.m_ppDATA[I][71]
-#define SKILL_BULLET_LINKED_POINT(I) g_SkillList.m_SkillDATA.m_ppDATA[I][72]
-#define SKILL_BULLET_FIRE_SOUND(I) g_SkillList.m_SkillDATA.m_ppDATA[I][73]
+#define SKILL_BULLET_NO(I) g_SkillList.m_SkillDATA.get_int32(I, 71)
+#define SKILL_BULLET_LINKED_POINT(I) g_SkillList.m_SkillDATA.get_int32(I, 72)
+#define SKILL_BULLET_FIRE_SOUND(I) g_SkillList.m_SkillDATA.get_int32(I, 73)
 
 /// 타격 이펙트
-#define SKILL_HIT_EFFECT(I) g_SkillList.m_SkillDATA.m_ppDATA[I][74] //	타격 효과
-#define SKILL_HIT_EFFECT_LINKED_POINT(I) g_SkillList.m_SkillDATA.m_ppDATA[I][75] //	타격 효과
-#define SKILL_HIT_SOUND(I) g_SkillList.m_SkillDATA.m_ppDATA[I][76] //	타격 효과음
+#define SKILL_HIT_EFFECT(I) g_SkillList.m_SkillDATA.get_int32(I, 74) //	타격 효과
+#define SKILL_HIT_EFFECT_LINKED_POINT(I) g_SkillList.m_SkillDATA.get_int32(I, 75) //	타격 효과
+#define SKILL_HIT_SOUND(I) g_SkillList.m_SkillDATA.get_int32(I, 76) //	타격 효과음
 
 /// 연타 더미 이펙트
 #define SKILL_HIT_DUMMY_EFFECT_CNT 2
 #define SKILL_HIT_DUMMY_EFFECT(I, T) \
-    g_SkillList.m_SkillDATA.m_ppDATA[I][77 + 3 * T] //	더미 타격 효과
+    g_SkillList.m_SkillDATA.get_int32(I, 77 + 3 * T) //	더미 타격 효과
 #define SKILL_HIT_DUMMY_EFFECT_LINKED_POINT(I, T) \
-    g_SkillList.m_SkillDATA.m_ppDATA[I][78 + 3 * T] //	더미 타격 효과
+    g_SkillList.m_SkillDATA.get_int32(I, 78 + 3 * T) //	더미 타격 효과
 #define SKILL_HIT_DUMMY_SOUND(I, T) \
-    g_SkillList.m_SkillDATA.m_ppDATA[I][79 + 3 * T] //	더미 타격 효과음
+    g_SkillList.m_SkillDATA.get_int32(I, 79 + 3 * T) //	더미 타격 효과음
 
-#define SKILL_AREA_HIT_EFFECT(I) g_SkillList.m_SkillDATA.m_ppDATA[I][83] //	지역 타격 효과
-#define SKILL_AREA_HIT_SOUND(I) g_SkillList.m_SkillDATA.m_ppDATA[I][84] //	지역 타격 효과음
+#define SKILL_AREA_HIT_EFFECT(I) g_SkillList.m_SkillDATA.get_int32(I, 83) //	지역 타격 효과
+#define SKILL_AREA_HIT_SOUND(I) g_SkillList.m_SkillDATA.get_int32(I, 84) //	지역 타격 효과음
 
 #define SKILL_LEVELUP_NEED_ZULY(I) \
-    g_SkillList.m_SkillDATA.m_ppDATA[I][85] //	스킬 레렙업시 소모 비용 / 100
+    g_SkillList.m_SkillDATA.get_int32(I, 85) //	스킬 레렙업시 소모 비용 / 100
 
-#define SKILL_AVAILBLE_STATUS(I) g_SkillList.m_SkillDATA.m_ppDATA[I][86] // 스킬 가능 상태
-#define SKILL_ATTRIBUTE(I) g_SkillList.m_SkillDATA.m_ppDATA[I][87] // 스킬 속성
+#define SKILL_AVAILBLE_STATUS(I) g_SkillList.m_SkillDATA.get_int32(I, 86) // 스킬 가능 상태
+#define SKILL_ATTRIBUTE(I) g_SkillList.m_SkillDATA.get_int32(I, 87) // 스킬 속성
 
 /*
 #define	SA_SELF_STOP							0		// 스킬 적용후 정지

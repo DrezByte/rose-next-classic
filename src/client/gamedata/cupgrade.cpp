@@ -54,8 +54,8 @@ CUpgrade::SetTargetItem(CItem* pItem) {
     else
         iMaterialLineNo = Item.GetGrade() + 11;
 
-    assert(iMaterialLineNo >= 0 && iMaterialLineNo <= g_TblPRODUCT.m_nDataCnt);
-    if (iMaterialLineNo >= 0 && iMaterialLineNo <= g_TblPRODUCT.m_nDataCnt) {
+    assert(iMaterialLineNo >= 0 && iMaterialLineNo <= g_TblPRODUCT.row_count);
+    if (iMaterialLineNo >= 0 && iMaterialLineNo <= g_TblPRODUCT.row_count) {
         CRequireMaterial* pRequireItem = NULL;
         if (int iClass = PRODUCT_RAW_MATERIAL(iMaterialLineNo)) {
             pRequireItem = new CRequireMaterial;
@@ -74,8 +74,8 @@ CUpgrade::SetTargetItem(CItem* pItem) {
                 if (iItem > 1000) {
                     iItemType = iItem / 1000;
                     iItemNo = iItem % 1000;
-                    assert(iItemNo >= 0 && iItemNo <= g_pTblSTBs[iItemType]->m_nDataCnt);
-                    if (iItemNo >= 0 && iItemNo <= g_pTblSTBs[iItemType]->m_nDataCnt) {
+                    assert(iItemNo >= 0 && iItemNo <= g_pTblSTBs[iItemType]->row_count);
+                    if (iItemNo >= 0 && iItemNo <= g_pTblSTBs[iItemType]->row_count) {
                         pRequireItem = new CRequireMaterial;
                         pRequireItem->SetItemType(iItemType);
                         pRequireItem->SetItemNo(iItemNo);

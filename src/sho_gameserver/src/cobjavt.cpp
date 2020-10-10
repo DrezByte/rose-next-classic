@@ -135,8 +135,8 @@ CObjAVT::Make_gsv_ADD_OBJECT(classPACKET* pCPacket) {
 tagMOTION*
 CObjAVT::Get_MOTION(short nActionIdx) {
 #ifdef _DEBUG
-    if (nActionIdx >= g_TblAniTYPE.m_nDataCnt) {
-        assert(0 && "nActionIdx >= g_TblAniTYPE.m_nDataCnt");
+    if (nActionIdx >= g_TblAniTYPE.row_count) {
+        assert(0 && "nActionIdx >= g_TblAniTYPE.row_count");
         return NULL;
     }
 #endif

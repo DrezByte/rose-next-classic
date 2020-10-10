@@ -165,7 +165,7 @@ CCal::Get_DropITEM(int level_difference,
         if (iDropITEM >= 1 && iDropITEM <= 4) {
             // ´Ù½Ã °è»ê
             iDropTblIDX = 26 + (iDropITEM * 5) + RANDOM(5);
-            if (iDropTblIDX >= g_TblDropITEM.m_nColCnt) {
+            if (iDropTblIDX >= g_TblDropITEM.col_count) {
                 // Å×ÀÌºí ÄÃ·³ °¹¼ö ÃÊ°ú...
                 return false;
             }

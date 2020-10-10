@@ -4,7 +4,12 @@
 #include "CFileSystemNormal.h"
 #include "CFileSystemTriggerVFS.h"
 
+#include "rose/io/reader.h"
+#include "rose/io/stb.h"
+
 #include <algorithm>
+
+using namespace Rose::IO;
 
 CVFSManager __SingletonVFSManager;
 
@@ -121,5 +126,41 @@ CVFSManager::IsExistFile(const char* pFileName) {
     if (pFileSystem == NULL)
         return false;
 
-    return pFileSystem->IsExist(pFileName);
+    bool res = pFileSystem->IsExist(pFileName);
+    ReturnToManager(pFileSystem);
+    return res;
+}
+
+bool
+CVFSManager::load_stb(STBDATA& stb, const std::filesystem::path& path) {
+    if (path.empty()) {
+        return false;
+    }
+
+    std::string filepath = path.string();
+    CFileSystem* fs = this->GetFileSystem();
+    if (!fs || !fs->IsExist(filepath.c_str())) {
+        return false;
+    }
+
+    if (!fs->OpenFile(filepath.c_str())) {
+        return false;
+    }
+
+    if (!fs->ReadToMemory()) {
+        return false;
+    }
+
+    std::byte* ptr = reinterpret_cast<std::byte*>(fs->GetData());
+    std::vector<std::byte> data(ptr, ptr + fs->GetSize());
+
+    fs->ReleaseData();
+    fs->CloseFile();
+    this->ReturnToManager(fs);
+
+    BinaryReader b;
+    if (!b.open(std::move(data))) {
+        return false;
+    }
+    return stb.load(std::move(b));
 }

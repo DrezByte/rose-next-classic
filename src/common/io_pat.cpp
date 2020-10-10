@@ -12,17 +12,16 @@ CPatITEM::~CPatITEM() {}
 // 2004/9/10일 nAvy(수정) - client는 Desc를 false로 Load하고 있었다.
 bool
 CPatITEM::LoadPatITEM(const char* szFileName) {
-
-    if (!m_ItemDATA.Load((char*)szFileName, true, true))
-        return false;
-
-    return true;
+#ifdef CLIENT
+    return CVFSManager::GetSingleton().load_stb(m_ItemDATA, szFileName);
+#else
+    return m_ItemDATA.load(szFileName);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 void
 CPatITEM::Free() {
-    m_ItemDATA.Free();
 }
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------

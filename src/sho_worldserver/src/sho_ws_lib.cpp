@@ -308,58 +308,21 @@ SHO_WS::ShutdownCLI_SOCKET() {
 
 bool
 SHO_WS::Load_BasicDATA() {
-    g_TblHAIR.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Hair.STB"),
-        true,
-        false);
-    g_TblFACE.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Face.STB"),
-        true,
-        false);
-    g_TblARMOR.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Body.STB"),
-        true,
-        true);
-
-    g_TblGAUNTLET.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Arms.STB"),
-        true,
-        true);
-    g_TblBOOTS.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Foot.STB"),
-        true,
-        true);
-    g_TblHELMET.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Cap.STB"),
-        true,
-        true);
-
-    g_TblWEAPON.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_Weapon.STB"),
-        true,
-        true);
-    g_TblSUBWPN.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SUBWPN.STB"),
-        true,
-        true);
-
-    //	g_TblPRODUCT.Load	( CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_PRODUCT.STB"),
-    // true, false );
-    g_TblNATUAL.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_NATURAL.STB"),
-        true,
-        true);
-
-    g_TblFACEITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_FACEITEM.STB"),
-        true,
-        true);
-    g_TblUSEITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_USEITEM.STB"),
-        true,
-        true);
-    g_TblBACKITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_BACK.STB"),
-        true,
-        true);
-    g_TblGEMITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEMITEM.STB"),
-        true,
-        true);
-    g_TblJEWELITEM.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_JEWEL.STB"),
-        true,
-        true);
-    g_TblQUESTITEM.Load(
-        CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_QUESTITEM.STB"),
-        true,
-        true);
+    std::filesystem::path base_dir(BASE_DATA_DIR);
+    g_TblGAUNTLET.load(base_dir / ARMS_STB);
+    g_TblARMOR.load(base_dir / BODY_STB);
+    g_TblHELMET.load(base_dir / CAP_STB);
+    g_TblFACE.load(base_dir / FACE_STB);
+    g_TblFACEITEM.load(base_dir / FACE_ITEM_STB);
+    g_TblBOOTS.load(base_dir / FOOT_STB);
+    g_TblHAIR.load(base_dir / HAIR_STB);
+    g_TblAVATAR.load(base_dir / INIT_AVATAR_STB);
+    g_TblGEMITEM.load(base_dir / JEM_ITEM_STB);
+    g_TblJEWELITEM.load(base_dir / JEWEL_STB);
+    g_TblQUESTITEM.load(base_dir / QUEST_ITEM_STB);
+    g_TblSUBWPN.load(base_dir / SUBWPN_STB);
+    g_TblUSEITEM.load(base_dir / USE_ITEM_STB);
+    g_TblWEAPON.load(base_dir / WEAPON_STB);
 
     if (!g_SkillList.LoadSkillTable(
             CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SKILL.STB")))
@@ -384,16 +347,6 @@ SHO_WS::Load_BasicDATA() {
     g_pTblSTBs[ITEM_TYPE_QUEST] = &g_TblQUESTITEM;
     g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM.m_ItemDATA;
 
-    g_TblAVATAR.Load(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\INIT_AVATAR.STB"),
-        false,
-        false);
-    g_TblWARP.Load2(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\WARP.STB"),
-        true,
-        false);
-
-    g_TblZONE.Load2(CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_ZONE.STB"),
-        true,
-        false);
     g_ZoneLIST.Init(BASE_DATA_DIR);
 
     return true;

@@ -31,7 +31,7 @@ CWS_ThreadSQL::CWS_ThreadSQL(): CSqlTHREAD(true) {
     m_pDefaultBE = NULL;
     m_pDefaultINV = NULL;
 
-    m_nDefaultDataCNT = g_TblAVATAR.m_nDataCnt;
+    m_nDefaultDataCNT = g_TblAVATAR.row_count;
     if (m_nDefaultDataCNT > 0) {
         m_pDefaultBE = new tagBasicETC[m_nDefaultDataCNT];
         m_pDefaultINV = new CInventory[m_nDefaultDataCNT];
@@ -723,8 +723,8 @@ CWS_ThreadSQL::handle_char_create_req(QueuedPacket& p) {
         && req->name()->size() <= GameStaticConfig::MAX_CHARACTER_NAME
         && std::regex_match(req->name()->c_str(), name_re);
 
-    bool face_valid = req->face_id() > 0 && req->face_id() < g_TblFACE.m_nDataCnt;
-    bool hair_valid = req->hair_id() > 0 && req->hair_id() < g_TblHAIR.m_nDataCnt;
+    bool face_valid = req->face_id() > 0 && req->face_id() < g_TblFACE.row_count;
+    bool hair_valid = req->hair_id() > 0 && req->hair_id() < g_TblHAIR.row_count;
 
     const char* char_name = req->name()->c_str();
     Gender gender = gender_from(req->gender_id());

@@ -38,7 +38,7 @@ CAI_LIST::Load(char* szBaseDIR, char* szSTBFile, char* szLangSTB, int iLangCol) 
             } else
                 pFullPath = szLangSTB;
 
-            AILang.LoadWSTB(true, pFullPath, -1, iLangCol, -1);
+            CVFSManager::GetSingleton().load_stb(AILang, pFullPath);
         }
 
         char* szFileName;
@@ -75,7 +75,6 @@ CAI_LIST::Load(char* szBaseDIR, char* szSTBFile, char* szLangSTB, int iLangCol) 
 #endif
             }
         }
-        AILang.Free();
         fSTB.Close();
         return true;
     }

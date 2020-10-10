@@ -1546,18 +1546,19 @@ CMAP::ReadObjINFO(CFileSystem* pFileSystem, long lOffset, int iLumpType) {
                 pFileSystem->Read(szName, sizeof(char) * cNameLen); // sound file name ..
                 szName[cNameLen] = 0;
 
+                nQuestIDX = 0;
                 if (strlen(szName)) {
-                    nQuestIDX = g_TblEVENT.GetRowIndex(szName);
-                    /*
-                    if ( nIndex ) {
-                        HashEVENT = g_pEventLIST->Add_EVENT( QUEST_FILE_FILENAME( nIndex ) );
-                        if ( HashEVENT ) {
-                            LogString (LOG_DEBUG_, "Event File[ %s ]\n", szName);
+                    for (size_t row_idx = 0; row_idx < g_TblEVENT.row_count; ++row_idx) {
+                        char* event_filename = EVENT_FILENAME(row_idx);
+                        if (!event_filename) {
+                            continue;
+                        }
+                        std::filesystem::path path(event_filename);
+                        if (_stricmp(path.filename().string().c_str(), szName) == 0) {
+                            nQuestIDX = row_idx;
                         }
                     }
-                    */
-                } else
-                    nQuestIDX = 0;
+                }
 
                 if (NPC_TYPE(iObjID) == 999) {
                     g_pObjMGR->AddNpcInfo(this, iObjID, Position);

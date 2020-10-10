@@ -12,12 +12,12 @@ CZoneLIST::CZoneLIST() {
     m_ppThreadZONE = NULL;
     m_pValidZONE = NULL;
 
-    m_nZoneCNT = g_TblZONE.m_nDataCnt;
+    m_nZoneCNT = g_TblZONE.row_count;
 
     m_pSectorSIZE = new short[m_nZoneCNT];
     m_pValidZONE = new bool[m_nZoneCNT];
     m_ppThreadZONE = new CZoneTHREAD*[m_nZoneCNT];
-    m_ppNpcLIST = new CObjNPC*[g_TblNPC.m_nDataCnt];
+    m_ppNpcLIST = new CObjNPC*[g_TblNPC.row_count];
 }
 //-------------------------------------------------------------------------------------------------
 CZoneLIST::~CZoneLIST() {
@@ -67,7 +67,7 @@ CZoneLIST::InitZoneLIST(char* szBaseDIR) {
 
     ::ZeroMemory(m_pValidZONE, sizeof(bool) * m_nZoneCNT);
     ::ZeroMemory(m_ppThreadZONE, sizeof(CZoneTHREAD*) * m_nZoneCNT);
-    ::ZeroMemory(m_ppNpcLIST, sizeof(CObjNPC*) * g_TblNPC.m_nDataCnt);
+    ::ZeroMemory(m_ppNpcLIST, sizeof(CObjNPC*) * g_TblNPC.row_count);
 
     char* szZoneFILE;
     short nZ;
@@ -136,13 +136,13 @@ CZoneLIST::FreeZoneLIST() {
 //-------------------------------------------------------------------------------------------------
 void
 CZoneLIST::Add_LocalNPC(CObjNPC* pObjNPC) {
-    if (pObjNPC->Get_CharNO() < 1 || pObjNPC->Get_CharNO() >= g_TblNPC.m_nDataCnt)
+    if (pObjNPC->Get_CharNO() < 1 || pObjNPC->Get_CharNO() >= g_TblNPC.row_count)
         return;
 }
 
 CObjNPC*
 CZoneLIST::Get_LocalNPC(int iNpcNO) {
-    if (iNpcNO < 1 || iNpcNO >= g_TblNPC.m_nDataCnt)
+    if (iNpcNO < 1 || iNpcNO >= g_TblNPC.row_count)
         return NULL;
 
     return m_ppNpcLIST[iNpcNO];

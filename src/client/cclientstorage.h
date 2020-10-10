@@ -99,29 +99,8 @@ public:
 
     void LoadAvatarData();
 
-    // Get a bool value from the ini
     bool ReadBool(const char* section, const char* key, bool default = false);
-
-    // Save a bool value to the ini
     void WriteBool(const char* section, const char* key, bool val);
-
-    //
-    //	setFogRange( CAMERA_NEAR_FOG, CAMERA_FAR_FOG )
-    //	HNODE camera = loadCamera( "camera_01", CAMERA_ZSC_FILE, 0 )
-    //	setCameraAspectRatio( camera, CAMERA_ASPECT_RATIO )
-    //	setCameraPerspective( camera, CAMERA_FOV, CAMERA_ASPECT_RATIO, CAMERA_NEAR_PLANE,
-    // CAMERA_FAR_PLANE )
-    //
-    //	g_GameDATA.m_nSightRange = CAMERA_MAX_RANGE;
-    //
-    //#define CAMERA_ZSC_FILE(I)					g_TblCamera.m_ppVALUE[ I ][ 0 ].GetSTR()
-    //#define CAMERA_FOV(I)						g_TblCamera.m_ppVALUE[ I ][ 1 ].GetINT()
-    //#define CAMERA_ASPECT_RATIO(I)				g_TblCamera.m_ppVALUE[ I ][ 2 ].GetSTR() /// +>
-    // atof #define CAMERA_MAX_RANGE(I)					g_TblCamera.m_ppVALUE[ I ][ 3 ].GetINT()
-    //#define CAMERA_NEAR_PLANE(I)				g_TblCamera.m_ppVALUE[ I ][ 4 ].GetINT()
-    //#define CAMERA_FAR_PLANE(I)					g_TblCamera.m_ppVALUE[ I ][ 5 ].GetINT()
-    //#define CAMERA_NEAR_FOG(I)					g_TblCamera.m_ppVALUE[ I ][ 6 ].GetINT()
-    //#define CAMERA_FAR_FOG(I)					g_TblCamera.m_ppVALUE[ I ][ 7 ].GetINT()
 
     ///*********************************************************************/
     /// VIDEO

@@ -183,12 +183,12 @@ CHelpDlg::Create(const char* IDD) {
     /// 각 언어에 맞는 헬프파일 선택
     //-------------------------------------------------------------------------
     STBDATA stbFiles;
-    if (stbFiles.Load("3DData\\STB\\List_Help.STB", true)) {
+    if (CVFSManager::GetSingleton().load_stb(stbFiles, HELP_LIST_STB)) {
         int iCurrentLang = CStringManager::GetSingleton().GetLanguageIDInGame(
             CLocalizing::GetSingleton().GetCurrentCharSet());
 
-        if (stbFiles.m_ppNAME[iCurrentLang] != NULL) {
-            if (LoadHelpContents(stbFiles.m_ppNAME[iCurrentLang], m_pTree)) {
+        if (stbFiles.get_cstr(iCurrentLang, 0) != NULL) {
+            if (LoadHelpContents(stbFiles.get_cstr(iCurrentLang, 0), m_pTree)) {
                 m_pTreeNodeRenderer = new CTDefaultTreeNodeRenderer;
 
                 int iModuleID = IMAGE_RES_UI;
@@ -238,8 +238,6 @@ CHelpDlg::Create(const char* IDD) {
             }
             return true;
         }
-
-        stbFiles.Free();
     }
     return false;
 }

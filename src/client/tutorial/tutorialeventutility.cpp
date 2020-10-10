@@ -13,7 +13,8 @@ CTutorialEventUtility::~CTutorialEventUtility(void) {}
 bool
 CTutorialEventUtility::Init() {
     /// Load notify button table
-    if (m_TblNotifyButtonEvent.Load("3DDATA\\STB\\EventButton.STB", true, true) == false)
+    bool loaded = CVFSManager::GetSingleton().load_stb(m_TblNotifyButtonEvent, EVENT_BUTTON_STB);
+    if (!loaded)
         return false;
 
     return true;
@@ -21,7 +22,6 @@ CTutorialEventUtility::Init() {
 
 void
 CTutorialEventUtility::Release() {
-    m_TblNotifyButtonEvent.Free();
 }
 
 /// 알림 버튼 이벤트를 생성한다.
@@ -30,7 +30,7 @@ CTutorialEventUtility::CreateNotifyEventButton(int iEventIdx) {
     if (iEventIdx <= 0)
         return false;
 
-    if (iEventIdx >= m_TblNotifyButtonEvent.m_nDataCnt)
+    if (iEventIdx >= m_TblNotifyButtonEvent.row_count)
         return false;
 
     g_itMGR.AddNotifybutton(iEventIdx);
@@ -46,10 +46,11 @@ CTutorialEventUtility::ExecNotifyEvent(int iEventIdx) {
     if (iEventIdx <= 0)
         return false;
 
-    if (iEventIdx >= m_TblNotifyButtonEvent.m_nDataCnt)
+    if (iEventIdx >= m_TblNotifyButtonEvent.row_count)
         return false;
+    
 
-    CSystemProcScript::GetSingleton().CallLuaFunction(m_TblNotifyButtonEvent.m_ppDESC[iEventIdx],
+    CSystemProcScript::GetSingleton().CallLuaFunction(m_TblNotifyButtonEvent.get_cstr(iEventIdx, m_TblNotifyButtonEvent.col_count - 1),
         ZZ_PARAM_INT,
         g_pAVATAR->Get_INDEX(),
         ZZ_PARAM_END);

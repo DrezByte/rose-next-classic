@@ -658,10 +658,10 @@ CObjNPC::Get_SellITEM(short nSellTAB, short nSellCOL, tagITEM& OutITEM) {
     short nListSellROW, nSellITEM;
 
     nListSellROW = NPC_SELL_TAB(this->Get_CharNO(), nSellTAB);
-    if (0 == nListSellROW || nListSellROW >= g_TblStore.m_nDataCnt)
+    if (0 == nListSellROW || nListSellROW >= g_TblStore.row_count)
         return false;
 
-    if (nSellCOL < 0 || nSellCOL + 2 >= g_TblStore.m_nColCnt)
+    if (nSellCOL < 0 || nSellCOL + 2 >= g_TblStore.col_count)
         return false;
 
     nSellITEM = STORE_ITEM(nListSellROW, nSellCOL);

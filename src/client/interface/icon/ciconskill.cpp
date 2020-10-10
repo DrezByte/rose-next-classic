@@ -851,7 +851,7 @@ CIconSkill::AddSkillRequireJob(int iSkillNo, CInfo& ToolTip) {
     int iClass = SKILL_AVAILBLE_CLASS_SET(iSkillNo);
     /// REMARK FOR TEST<- 2004.3.18.nAvy LIST_SKILL.STB가 아직 수정안되있으므로 해서 임시적으로 막는
     /// 코드
-    if (iClass >= g_TblClass.m_nDataCnt)
+    if (iClass >= g_TblClass.row_count)
         return;
     ///->
     if (iClass) {
