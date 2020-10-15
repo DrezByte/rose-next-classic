@@ -552,10 +552,10 @@ CStringManager::GetItemDesc(int iType, int iItemNo) {
 //---------------------------------------------------------------------------------------
 stItemTypeTable*
 CStringManager::GetSkillStringData(int iSkillNo) {
-    if (g_SkillList.m_SkillDATA.get_cstr(iSkillNo, 87) == NULL)
+    const std::string& strKey = g_SkillList.m_SkillDATA.value(iSkillNo, 86);
+    if (strKey.empty()) {
         return NULL;
-
-    const std::string& strKey = g_SkillList.m_SkillDATA.value(iSkillNo, 87);
+    }
 
     stItemTypeTable* pItemTypeTable =
         m_ItemTypeTables[LIST_SKILL_S_TB].GetObjectByName(strKey.c_str());
