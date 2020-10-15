@@ -631,8 +631,6 @@ CLIB_GameSRV::Start(HWND hMainWND, BYTE btChannelNO, BYTE btLowAge, BYTE btHighA
     m_btHighAGE = btHighAge;
 
     COMPILE_TIME_ASSERT(sizeof(t_PACKETHEADER) == 6);
-
-    COMPILE_TIME_ASSERT(sizeof(gsv_DAMAGE) == (sizeof(t_PACKETHEADER) + 6));
     COMPILE_TIME_ASSERT(sizeof(char) == 1);
     COMPILE_TIME_ASSERT(sizeof(short) >= 2);
     COMPILE_TIME_ASSERT(sizeof(long) >= 4);

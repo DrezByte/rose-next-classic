@@ -923,8 +923,8 @@ classUSER::Cheat_damage(char* pArg1, char* pArg2, char* pArg3) {
             iDistance = 1000;
 
         uniDAMAGE sDamage;
-        if (iDamage < 0 || iDamage >= MAX_DAMAGE)
-            sDamage.m_wDamage = MAX_DAMAGE;
+        if (iDamage < 0 || iDamage >= GameStaticConfig::MAX_DAMAGE)
+            sDamage.m_wDamage = GameStaticConfig::MAX_DAMAGE;
         else
             sDamage.m_wDamage = iDamage;
 

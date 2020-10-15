@@ -954,7 +954,7 @@ CZoneTHREAD::Kill_AllMOB(classUSER* pUSER, bool drop_items) {
     }
 
     uniDAMAGE max_damage;
-    max_damage.m_wDamage = MAX_DAMAGE;
+    max_damage.m_wDamage = GameStaticConfig::MAX_DAMAGE;
 
     while (object_node) {
         if (object_node->DATA->IsA(OBJ_MOB)) {

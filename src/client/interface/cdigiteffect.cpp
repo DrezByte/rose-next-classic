@@ -3,37 +3,9 @@
 #include "CDigitEffect.h"
 #include "..\\Game.h"
 
-/*
-const char* _digit_Texture[ MAX_DIGIT_EFFECT ] = { "3DData\\Effect\\Special\\DigitWorkTex01.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex02.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex03.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex04.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex05.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex06.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex07.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex08.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex09.tga",
-                                                    "3DData\\Effect\\Special\\DigitWorkTex10.tga",
-                                                };
-
-*/
-
-const char* _digit_Mesh[MAX_DIGIT_EFFECT] = {
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-    "3DData\\Effect\\Special\\DigitWork01.zms",
-};
-
 #define DIGIT_WIDTH 32
 #define DIGIT_HEIGHT 32
-#define DIGIT_COUNT 4
+#define DIGIT_COUNT 5
 
 CDigitEffect::CDigitEffect() {
     int i = 0;
@@ -309,29 +281,11 @@ CDigitEffect::CreateDigitEffect(int iPoint, float x, float y, float z, bool bIsU
 
     if (iEmptyNode == INVALID_EFFECTNODE)
         return;
-
-    /// 각 자릿수를 구한다..
-    int iDigit[4];
-    iPoint = iPoint % 10000;
-    iDigit[0] = iPoint / 1000;
-    iDigit[1] = (iPoint % 1000) / 100;
-    iDigit[2] = (iPoint % 100) / 10;
-    iDigit[3] = (iPoint % 10);
-
-    /// 몇개의 숫자를 표시해야하는가?
-    int iDigitCount = 4;
-    for (int i = 0; i < 4; i++) {
-        if (iDigit[i] == 0)
-            iDigitCount--;
-        else
-            break;
-    }
-
-    /// 출력할 숫자가 없다..
-    if (iDigitCount == 0) {
+    
+    if (iPoint == 0) {
         LPD3DTEXTURE workTexture = (LPD3DTEXTURE)::getTexture(m_DigitNode[iEmptyNode].m_hMat, 0);
         LPD3DTEXTURE MissTexture = (LPD3DTEXTURE)::getTexturePointer(m_DigitMissTex);
-
+        
         LPDIRECT3DSURFACE9 psurfWork = NULL;
         LPDIRECT3DSURFACE9 psurfMiss = NULL;
 
@@ -350,7 +304,7 @@ CDigitEffect::CreateDigitEffect(int iPoint, float x, float y, float z, bool bIsU
         if (FAILED(hr))
             return;
 
-        RECT SourceRect = {0, 0, DIGIT_WIDTH * DIGIT_COUNT, DIGIT_HEIGHT};
+        RECT SourceRect = {0, 0, DIGIT_WIDTH * 4, DIGIT_HEIGHT};
         POINT DestinationPoint = {0, 0};
 
         LPD3DDEVICE pDevice = (LPD3DDEVICE)::getDevice();
@@ -372,6 +326,22 @@ CDigitEffect::CreateDigitEffect(int iPoint, float x, float y, float z, bool bIsU
         SAFE_RELEASE(psurfWork);
         SAFE_RELEASE(psurfMiss);
     } else {
+        int iDigitCount = DIGIT_COUNT;
+        int iDigit[DIGIT_COUNT];
+
+        iPoint = iPoint % 100000;
+        iDigit[0] = iPoint / 10000;
+        iDigit[1] = (iPoint % 10000) / 1000;
+        iDigit[2] = (iPoint % 1000) / 100;
+        iDigit[3] = (iPoint % 100) / 10;
+        iDigit[4] = (iPoint % 10);
+
+        for (int i = 0; i < DIGIT_COUNT; i++) {
+            if (iDigit[i] == 0)
+                iDigitCount--;
+            else
+                break;
+        }
 
         if (m_DigitNode[iEmptyNode].m_hMat == NULL)
             return;

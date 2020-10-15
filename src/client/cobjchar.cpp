@@ -1216,15 +1216,8 @@ CObjCHAR::ResetCUR_POS(D3DXVECTOR3& Pos) {
     ::setPositionVec3(m_hNodeMODEL, m_PosCUR);
 }
 
-//--------------------------------------------------------------------------------
-/// class : CObjCHAR
-/// @param  CObjCHAR *pAtkOBJ 공격자
-/// @param  WORD wDamage      데미지
-/// @brief  : 데미지 적용 처리
-//--------------------------------------------------------------------------------
-
 void
-CObjCHAR::Apply_DAMAGE(CObjCHAR* pAtkOBJ, WORD wDamage) {
+CObjCHAR::Apply_DAMAGE(CObjCHAR* pAtkOBJ, int wDamage) {
     if (this->Get_HP() <= DEAD_HP)
         return;
 
@@ -2105,7 +2098,7 @@ CObjCHAR::ProcDamageTimeOut() {
 //--------------------------------------------------------------------------------
 
 void
-CObjCHAR::CreateImmediateDigitEffect(WORD wDamage) {
+CObjCHAR::CreateImmediateDigitEffect(int wDamage) {
     /// 타격수치 바로적용.. 적당한 장소가 없다 일단 여기에..
     uniDAMAGE Damage;
     Damage.m_wDamage = wDamage;

@@ -1046,34 +1046,31 @@ struct cli_DAMAGE: public t_PACKETHEADER {
 };
 
 union uniDAMAGE {
-    WORD m_wDamage;
+    unsigned int m_wDamage;
     struct {
-        WORD m_wVALUE : 11;
-        WORD m_wACTION : 5;
+        unsigned int m_wVALUE : 22;
+        unsigned int m_wACTION : 10;
     };
 };
 
 struct gsv_DAMAGE: public t_PACKETHEADER {
     WORD m_wAtkObjIDX;
     WORD m_wDefObjIDX;
-
     uniDAMAGE m_Damage;
-    tag_DROPITEM m_DropITEM[0]; // 죽는 데미지일경우에만 값이 들어 있다. 드롭된 아이템 인덱스
+    tag_DROPITEM m_DropITEM[0];
 };
-#define MAX_DAMAGE 0x07ff
 
-#define DMG_BIT_DUMMY 0x0800
-#define DMG_BIT_IMMEDIATE 0x1000
-#define DMG_BIT_HITTED 0x2000
-#define DMG_BIT_CRITICAL 0x4000
-#define DMG_BIT_DEAD 0x8000
+#define DMG_BIT_DUMMY 0x08000000
+#define DMG_BIT_IMMEDIATE 0x10000000
+#define DMG_BIT_HITTED 0x20000000
+#define DMG_BIT_CRITICAL 0x40000000
+#define DMG_BIT_DEAD 0x80000000
 
-// gsv_DAMAGE::m_wACTION이 갖는 값...
-#define DMG_ACT_RESERVED 0x01
-#define DMG_ACT_ATTACK 0x02
-#define DMG_ACT_HITTED 0x04
-#define DMG_ACT_CRITICAL 0x08
-#define DMG_ACT_DEAD 0x10
+#define DMG_ACT_RESERVED 0x20
+#define DMG_ACT_ATTACK 0x40
+#define DMG_ACT_HITTED 0x80
+#define DMG_ACT_CRITICAL 0x100
+#define DMG_ACT_DEAD 0x200
 
 struct gsv_CHANGE_NPC: public t_PACKETHEADER {
     WORD m_wObjectIDX;
@@ -1463,7 +1460,7 @@ struct gsv_EFFECT_OF_SKILL: public t_PACKETHEADER {
 struct gsv_DAMAGE_OF_SKILL: public gsv_EFFECT_OF_SKILL {
     union {
         uniDAMAGE m_Damage; // 피해가 있을경우 값이 들어 있음.
-        WORD m_wDamage;
+        int m_wDamage;
     };
     tag_DROPITEM m_DropITEM[0]; // 죽는 데미지일경우에만 값이 들어 있다. 드롭된 아이템 인덱스
 };

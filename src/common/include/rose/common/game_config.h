@@ -8,6 +8,7 @@ const char* const NAME = "ROSE Next";
 constexpr uint8_t MAX_LEVEL = 88;
 constexpr uint16_t MAX_STAT = 300;
 constexpr uint16_t MAX_STAMINA = 5000;
+constexpr uint32_t MAX_DAMAGE = 9999;
 
 constexpr int MAX_CHARACTER_NAME = 20;
 constexpr int MAX_CHARACTERS = 5;

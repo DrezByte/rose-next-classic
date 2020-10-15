@@ -324,7 +324,7 @@ CCal::Get_CriSuccessRATE(CObjCHAR* pATK) {
 
 //-------------------------------------------------------------------------------------------------
 // ÀÏ¹Ý ¹°¸® µ¥¹ÌÁö °è»ê½Ä...
-WORD
+int
 CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     int iDamage, iCriSuc;
 
@@ -363,8 +363,8 @@ CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
                 int iMaxDmg = (int)(pDEF->Get_MaxHP() * 0.35f);
                 if (iDamage > iMaxDmg)
                     iDamage = iMaxDmg;
-            } else if (iDamage > MAX_DAMAGE)
-                iDamage = MAX_DAMAGE;
+            } else if (iDamage > GameStaticConfig::MAX_DAMAGE)
+                iDamage = GameStaticConfig::MAX_DAMAGE;
         }
 
         iDamage |= DMG_BIT_CRITICAL;
@@ -396,8 +396,8 @@ CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
                 int iMaxDmg = (int)(pDEF->Get_MaxHP() * 0.25f);
                 if (iDamage > iMaxDmg)
                     iDamage = iMaxDmg;
-            } else if (iDamage > MAX_DAMAGE)
-                iDamage = MAX_DAMAGE;
+            } else if (iDamage > GameStaticConfig::MAX_DAMAGE)
+                iDamage = GameStaticConfig::MAX_DAMAGE;
         }
     }
 
@@ -406,7 +406,7 @@ CCal::Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
 
 //-------------------------------------------------------------------------------------------------
 // ¸¶¹ý µ¥¹ÌÁö
-WORD
+int
 CCal::Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
     int iDamage, iCriSuc;
 
@@ -444,8 +444,8 @@ CCal::Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
                 int iMaxDmg = (int)(pDEF->Get_MaxHP() * 0.35f);
                 if (iDamage > iMaxDmg)
                     iDamage = iMaxDmg;
-            } else if (iDamage > MAX_DAMAGE)
-                iDamage = MAX_DAMAGE;
+            } else if (iDamage > GameStaticConfig::MAX_DAMAGE)
+                iDamage = GameStaticConfig::MAX_DAMAGE;
         }
 
         iDamage |= DMG_BIT_CRITICAL;
@@ -478,8 +478,8 @@ CCal::Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
                 int iMaxDmg = (int)(pDEF->Get_MaxHP() * 0.25f);
                 if (iDamage > iMaxDmg)
                     iDamage = iMaxDmg;
-            } else if (iDamage > MAX_DAMAGE)
-                iDamage = MAX_DAMAGE;
+            } else if (iDamage > GameStaticConfig::MAX_DAMAGE)
+                iDamage = GameStaticConfig::MAX_DAMAGE;
         }
     }
 
@@ -487,7 +487,7 @@ CCal::Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc) {
 }
 
 //-------------------------------------------------------------------------------------------------
-WORD
+int
 CCal::Get_DAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT) {
     int iSuc = Get_SuccessRATE(pATK, pDEF);
 
@@ -548,7 +548,7 @@ CCal::Get_MagicSkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, int 
     return iDamage;
 }
 
-WORD
+int
 CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHitCNT) {
     int iDamage;
 
@@ -737,10 +737,10 @@ CCal::Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHit
         int iMaxDmg = (int)(pDEF->Get_MaxHP() * 0.45f);
         if (iDamage > iMaxDmg)
             iDamage = iMaxDmg;
-    } // else  °è»ê½Ä pDEF->Get_MaxHP()*0.45f ÀÇ °á°ú°¡ MAX_DAMAGEº¸´Ù Å¬¼ö ÀÖÀ¸¹Ç·Î else »èÁ¦...
+    }
 
-    if (iDamage > MAX_DAMAGE)
-        iDamage = MAX_DAMAGE;
+    if (iDamage > GameStaticConfig::MAX_DAMAGE)
+        iDamage = GameStaticConfig::MAX_DAMAGE;
 
     // È÷Æ® µ¿ÀÛ È®·ü...
     int iHitActRATE;

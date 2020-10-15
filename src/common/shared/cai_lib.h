@@ -148,7 +148,7 @@ public:
     virtual void Set_EconomyVAR(short nVarIDX, int iValue) = 0 { *(int*)0 = 10; }
     virtual void Set_WorldVAR(short nVarIDX, int iValue) = 0 { *(int*)0 = 10; }
 
-    virtual void Add_DAMAGE(WORD wDamage) = 0 { *(int*)0 = 10; }
+    virtual void Add_DAMAGE(int wDamage) = 0 { *(int*)0 = 10; }
 
     virtual bool Send_gsv_CHAT(char* szMsg) = 0 { *(int*)0 = 10; }
     virtual bool Send_gsv_SHOUT(char* szMsg) = 0 { *(int*)0 = 10; }

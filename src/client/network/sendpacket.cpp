@@ -520,13 +520,13 @@ CSendPACKET::Send_cli_ATTACK(int iClientTarget) {
 
 //-------------------------------------------------------------------------------------------------
 void
-CSendPACKET::Send_cli_DAMAGE(CObjCHAR* pAtkOBJ, CObjCHAR* pDefOBJ, WORD wDamage) {
+CSendPACKET::Send_cli_DAMAGE(CObjCHAR* pAtkOBJ, CObjCHAR* pDefOBJ, int wDamage) {
     if (!pAtkOBJ)
         return;
 
     uniDAMAGE sDamage;
     sDamage.m_wDamage = wDamage;
-    short nDamage = sDamage.m_wVALUE;
+    int nDamage = sDamage.m_wVALUE;
 
 #ifdef __VIRTUAL_SERVER
     switch (pDefOBJ->Get_TYPE()) {

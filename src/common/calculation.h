@@ -35,8 +35,8 @@ class CUserDATA;
 class CCal {
 private:
     static int Get_SuccessRATE(CObjCHAR* pATK, CObjCHAR* pDEF);
-    static WORD Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc);
-    static WORD Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc);
+    static int Get_BasicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc);
+    static int Get_MagicDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT, int iSuc);
 
     static int Get_WeaponSkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, int iSuccess);
     static int Get_MagicSkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, int iSuccess);
@@ -52,8 +52,8 @@ public:
         int iCharm);
     static __int64 Get_EXP(CObjCHAR* pAtkCHAR, CObjCHAR* pDefCHAR, int iGiveDamage);
 
-    static WORD Get_DAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT);
-    static WORD Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHitCNT);
+    static int Get_DAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, WORD wHitCNT);
+    static int Get_SkillDAMAGE(CObjCHAR* pATK, CObjCHAR* pDEF, short nSkillIDX, WORD wHitCNT);
     static int Get_StorageFEE(int iBasePrice, int iPriceRate, UINT uiDupCnt) {
         return (int)((iBasePrice * 5 / 1000 + 1) * (iPriceRate + 1)) * uiDupCnt;
     }

@@ -51,7 +51,7 @@ public:
 
     void Send_cli_STOP(D3DVECTOR& PosCUR);
     void Send_cli_ATTACK(int iClientTarget);
-    void Send_cli_DAMAGE(CObjCHAR* pAtkOBJ, CObjCHAR* pDefOBJ, WORD wDamage);
+    void Send_cli_DAMAGE(CObjCHAR* pAtkOBJ, CObjCHAR* pDefOBJ, int wDamage);
     void Send_cli_MOUSECMD(int iClientTarget, D3DVECTOR& PosTO);
     void Send_cli_CANTMOVE();
 

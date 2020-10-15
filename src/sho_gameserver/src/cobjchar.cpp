@@ -436,7 +436,7 @@ CObjCHAR::Send_gsv_SET_MOTION(WORD wValue, short nMotionNO) {
 
 //-------------------------------------------------------------------------------------------------
 bool
-CObjCHAR::Send_gsv_DAMAGE2Sector(int iAttackObject, WORD wDamage, CObjITEM* pDropITEM) {
+CObjCHAR::Send_gsv_DAMAGE2Sector(int iAttackObject, int wDamage, CObjITEM* pDropITEM) {
     // iAttackObject가 자신을 죽일때...
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)
@@ -480,7 +480,7 @@ CObjCHAR::Send_gsv_DAMAGE2Sector(int iAttackObject, WORD wDamage, CObjITEM* pDro
 
 //-------------------------------------------------------------------------------------------------
 bool
-CObjCHAR::Send_gsv_DAMAGE2Target(CObjCHAR* pAtkOBJ, WORD wDamage) {
+CObjCHAR::Send_gsv_DAMAGE2Target(CObjCHAR* pAtkOBJ, int wDamage) {
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)
         return false;
@@ -581,7 +581,7 @@ CObjCHAR::Send_gsv_EFFECT_OF_SKILL(int iSpellOBJ,
 bool
 CObjCHAR::Send_gsv_DAMAGE_OF_SKILL(int iSpellOBJ,
     short nSkillIDX,
-    WORD wDamage,
+    int wDamage,
     BYTE btResult,
     short nSpellerINT,
     CObjITEM* pDropITEM) {
@@ -948,8 +948,7 @@ CObjCHAR::Give_DAMAGE(CObjCHAR* pTarget, uniDAMAGE sDamage, bool bDropItem) {
                     // 있겠지...
                     if (pTarget->IsInRANGE(this, 4000)) { // 거리가 4미터 이내 이면...
                         short nShieldSKILL = pTarget->m_IngSTATUS.GetSkillIDX(ING_SHIELD_DAMAGE);
-                        sDamage.m_wDamage =
-                            (WORD)(sDamage.m_wVALUE * SKILL_POWER(nShieldSKILL) / 100.f);
+                        sDamage.m_wDamage = sDamage.m_wVALUE * SKILL_POWER(nShieldSKILL) / 100.f;
 
                         if (sDamage.m_wDamage > 0) {
                             sDamage.m_wDamage |= DMG_BIT_IMMEDIATE;
@@ -1498,6 +1497,7 @@ CObjCHAR::Attack_START(CObjCHAR* pTarget) {
 
     uniDAMAGE sDamage;
     sDamage.m_wDamage = CCal::Get_DAMAGE(this, pTarget, m_pCurMOTION->m_wTatalAttackFrame);
+
     this->Give_DAMAGE(pTarget, sDamage);
 
     // 공격자 무기 수명 감소...

@@ -28,14 +28,12 @@
 
 const int INVALID_DUMMY_POINT_NUM = 999;
 
-// struct uniDAMAGE;
-
 ///
 /// Damage class
 ///
 struct tagDAMAGE {
     short m_nTargetObjIDX;
-    WORD m_wDamage;
+    int m_wDamage;
 };
 
 class CChangeVisibility;
@@ -478,7 +476,7 @@ public:
     void ProcDamageTimeOut();
 
     /// 타격치 바로 표시
-    void CreateImmediateDigitEffect(WORD wDamage);
+    void CreateImmediateDigitEffect(int wDamage);
 
     /// Damage_of_Skill => 일반 데미지로 전환저장..
     void ConvertDamageOfSkillToDamage(gsv_DAMAGE_OF_SKILL stDamageOfSkill);
@@ -705,7 +703,7 @@ public:
 public:
     tagDAMAGE m_DeadDAMAGE;
     long m_lDeadTIME;
-    void Apply_DAMAGE(CObjCHAR* pAtkOBJ, WORD wDamage);
+    void Apply_DAMAGE(CObjCHAR* pAtkOBJ, int wDamage);
 
     //----------------------------------------------------------------------------------------------------
     /// @brief 특정 액션 중간에 장비를 교체했을시( 특히 무기 ) 바뀐 장비에 맞는 모션으로 교체

@@ -16,6 +16,8 @@
 #include "CObjAI.h"
 #include "status_effects.h"
 
+using namespace Rose;
+
 // #define	__CS_TARGET_LIST
 
 enum enumRIDE_ANI {
@@ -62,8 +64,8 @@ private:
     bool Send_gsv_MOUSECMD(int iTargetObject);
     bool Send_gsv_MOVE();
     bool Send_gsv_ATTACK(int iTargetObject);
-    bool Send_gsv_DAMAGE2Sector(int iAttackObject, WORD wDamage, CObjITEM* pDropITEM);
-    bool Send_gsv_DAMAGE2Target(CObjCHAR* pAtkOBJ, WORD wDamage);
+    bool Send_gsv_DAMAGE2Sector(int iAttackObject, int wDamage, CObjITEM* pDropITEM);
+    bool Send_gsv_DAMAGE2Target(CObjCHAR* pAtkOBJ, int wDamage);
 
 protected:
     bool Send_gsv_TOGGLE(BYTE btTYPE, bool bUpdateSpeed);
@@ -79,7 +81,7 @@ protected:
     bool Send_gsv_EFFECT_OF_SKILL(int iSpellOBJ, short nSkillIDX, BYTE btResult, short nSpellerINT);
     bool Send_gsv_DAMAGE_OF_SKILL(int iSpellOBJ,
         short nSkillIDX,
-        WORD wDamage,
+        int wDamage,
         BYTE btResult,
         short nSpellerINT,
         CObjITEM* pDropITEM = NULL);
@@ -307,11 +309,10 @@ public: // virtual function inherit from CAI_OBJ
     void Set_EconomyVAR(short nVarIDX, int iValue);
     void Set_WorldVAR(short nVarIDX, int iValue);
 
-    void Add_DAMAGE(WORD wDamage) {
-        // 자살 명령
-        if (this->Get_HP() >= MAX_DAMAGE) {
+    void Add_DAMAGE(int wDamage) {
+        if (this->Get_HP() >= GameStaticConfig::MAX_DAMAGE) {
             this->Set_HP(1);
-            wDamage = MAX_DAMAGE;
+            wDamage = GameStaticConfig::MAX_DAMAGE;
         }
         uniDAMAGE sDamage;
         sDamage.m_wDamage = wDamage;
