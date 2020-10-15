@@ -181,7 +181,7 @@ static const std::array<char*, DLG_TYPE_MAX> DIALOG_FILENAME = {
     "dlgskilltree", // DLG_TYPE_SKILLTREE
     "dlginputname", // DLG_TYPE_INPUTNAME
     "DlgBankWindow", // DLG_TYPE_BANKWINDOW
-    "DlgQuickBar", // DLG_TYPE_QUICKBAR_EXT
+    "dlgquickbar2", // DLG_TYPE_QUICKBAR_EXT
     "", // DLG_TYPE_CONSOLE
 };
 
