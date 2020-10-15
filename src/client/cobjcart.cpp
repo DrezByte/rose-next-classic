@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include ".\cobjcart.h"
-#include "Common/IO_Pat.h"
+#include "rose/io/stb.h"
 #include "CObjCHAR_Collision.h"
 
 CObjCART::CObjCART(void) {

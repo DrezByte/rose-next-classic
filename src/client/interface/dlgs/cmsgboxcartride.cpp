@@ -27,7 +27,7 @@ CMsgBox_CartRide::Update(POINT ptMouse) {
         CStr::DebugString("Dist %f \n", pOwnerAVT->Get_DISTANCE(pGuestAVT));
 #endif
 
-        if (pOwnerAVT->Get_DISTANCE(pGuestAVT) > SKILL_SCOPE(26)) // cart ride skill Index = 26.
+        if (pOwnerAVT->Get_DISTANCE(pGuestAVT) > SKILL_SCOPE(25)) // cart ride skill Index = 25.
         {
             SendCommand(m_iInvokerDlgID, m_pCmdCancel);
             m_pCmdCancel = NULL;

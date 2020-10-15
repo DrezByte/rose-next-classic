@@ -251,12 +251,8 @@ public:
             tagPartITEM m_sFrameIDX; // short m_nFrameIDX;	// RIDE_PART_BODY = 0,
             tagPartITEM m_sEngineIDX; // short m_nEngineIDX;	// RIDE_PART_ENGINE,
             tagPartITEM m_sLegIDX; // short m_nLegIDX;	// RIDE_PART_LEG,
-#ifndef __KCHS_BATTLECART__
-            tagPartITEM m_sArmIDX; // short m_nArmIDX;	// RIDE_PART_ARMS = 3,
-#else
             tagPartITEM m_sAbilIDX; // short m_nArmIDX;	// RIDE_PART_ARMS = 3, // kchs
             tagPartITEM m_sArmIDX; // ABIL이 기존 풀린 아이템 때문에 Arms앞에
-#endif
         };
     };
 

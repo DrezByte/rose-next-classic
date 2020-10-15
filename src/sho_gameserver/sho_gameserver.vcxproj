@@ -38,7 +38,6 @@
     <ClInclude Include="src\common\cregenarea.h" />
     <ClInclude Include="src\common\io_ai.h" />
     <ClInclude Include="src\common\io_motion.h" />
-    <ClInclude Include="src\common\io_pat.h" />
     <ClInclude Include="src\common\io_quest.h" />
     <ClInclude Include="src\common\io_skill.h" />
     <ClInclude Include="src\def_stb.h" />
@@ -87,7 +86,6 @@
     <ClCompile Include="src\common\cuserdata.cpp" />
     <ClCompile Include="src\common\io_ai.cpp" />
     <ClCompile Include="src\common\io_motion.cpp" />
-    <ClCompile Include="src\common\io_pat.cpp" />
     <ClCompile Include="src\common\io_quest.cpp" />
     <ClCompile Include="src\common\io_skill.cpp" />
     <ClCompile Include="src\etc_math.cpp" />

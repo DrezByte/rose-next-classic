@@ -26,7 +26,7 @@
 
 #include "GameCommon/Item.h"
 #include "GameData/CParty.h"
-#include "Common/IO_Pat.h"
+#include "rose/io/stb.h"
 #include "Misc/GameUtil.h"
 #include "CommandFilter.h"
 #include "../GameProc/DelayedExp.h"
@@ -5167,20 +5167,12 @@ CObjAVT::CreateCartFromMyData(bool bShowEffect) {
     } else
         return false; /// 바디부폼이 없으면 못탐
 
-#ifdef _GBC
     bool bResult = CreateCart(m_iPetType,
         m_sEngineIDX.m_nItemNo,
         m_sBodyIDX.m_nItemNo,
         m_sLegIDX.m_nItemNo,
         m_sAbilIDX.m_nItemNo,
         m_sWeaponIDX.m_nItemNo);
-#else
-    bool bResult = CreateCart(m_iPetType,
-        m_sEngineIDX.m_nItemNo,
-        m_sBodyIDX.m_nItemNo,
-        m_sLegIDX.m_nItemNo,
-        m_sAbilIDX.m_nItemNo);
-#endif
 
     /// 모든 유리상태 해지하지 말것 2005/7/30 - nAvy
     ///
@@ -5258,17 +5250,8 @@ CObjAVT::CreateCart(unsigned int iPetType,
     SetPetParts(RIDE_PART_BODY, iEnginePart, false);
     SetPetParts(RIDE_PART_ENGINE, iBodyPart, false);
     SetPetParts(RIDE_PART_LEG, iLegPart, false);
-
-    ///<- 2005/7/25 카트 시스템 파츠 추가로 수정 : nAvy
-    // SetPetParts( RIDE_PART_ARMS,	iArmsIDX, false );
-#ifdef _GBC
     SetPetParts(RIDE_PART_ABIL, iAbilIPart, false);
     SetPetParts(RIDE_PART_ARMS, iWeaponPart, false);
-#else
-    SetPetParts(RIDE_PART_ARMS, iAbilIPart, false);
-#endif
-
-    ///->
 
     if (m_pObjCART->Create(this, m_iPetType, this->Get_CurPOS()) == false) {
         g_pObjMGR->Del_Object(m_pObjCART);

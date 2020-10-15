@@ -244,7 +244,6 @@ CBasicCommand::Execute() {
                 return false;
             }
 
-#ifdef _GBC
             //보조석이 장착되어 있어야 함.
             if (g_pAVATAR->IsRideItem(RIDE_PART_ABIL) == false) {
                 g_itMGR.AppendChatMsg(STR_AFFIX_RUMBLE,
@@ -252,7 +251,6 @@ CBasicCommand::Execute() {
                     D3DCOLOR_ARGB(255, 206, 223, 136));
                 return false;
             }
-#endif
 
             // Find Index.
             int iTargetObjClientIndex = g_UserInputSystem.GetCurrentTarget();

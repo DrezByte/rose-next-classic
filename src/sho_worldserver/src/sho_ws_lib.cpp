@@ -2,7 +2,6 @@
 
 #include "CWS_Client.h"
 #include "CWS_Server.h"
-#include "IO_PAT.h"
 #include "rose/io/stb.h"
 #include "SHO_WS_LIB.h"
 #include "WS_SocketLSV.h"
@@ -34,6 +33,7 @@ STBDATA g_TblGEMITEM;
 STBDATA g_TblJEWELITEM;
 STBDATA g_TblNATUAL;
 STBDATA g_TblQUESTITEM;
+STBDATA g_PatITEM;
 
 /*
 STBDATA			 g_TblEFFECT;
@@ -323,13 +323,10 @@ SHO_WS::Load_BasicDATA() {
     g_TblSUBWPN.load(base_dir / SUBWPN_STB);
     g_TblUSEITEM.load(base_dir / USE_ITEM_STB);
     g_TblWEAPON.load(base_dir / WEAPON_STB);
+    g_PatITEM.load(base_dir / PAT_STB);
 
     if (!g_SkillList.LoadSkillTable(
             CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SKILL.STB")))
-        return false;
-
-    if (!g_PatITEM.LoadPatITEM(
-            CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_PAT.STB")))
         return false;
 
     g_pTblSTBs[ITEM_TYPE_FACE_ITEM] = &g_TblFACEITEM;
@@ -345,7 +342,7 @@ SHO_WS::Load_BasicDATA() {
     g_pTblSTBs[ITEM_TYPE_GEM] = &g_TblGEMITEM;
     g_pTblSTBs[ITEM_TYPE_NATURAL] = &g_TblNATUAL;
     g_pTblSTBs[ITEM_TYPE_QUEST] = &g_TblQUESTITEM;
-    g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM.m_ItemDATA;
+    g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM;
 
     g_ZoneLIST.Init(BASE_DATA_DIR);
 
@@ -355,7 +352,6 @@ void
 SHO_WS::Free_BasicDATA() {
     // STBDATA는 자동 풀림..
     g_SkillList.Free();
-    g_PatITEM.Free();
 }
 void
 SHO_WS::Send_ANNOUNCE(char* szMsg) {

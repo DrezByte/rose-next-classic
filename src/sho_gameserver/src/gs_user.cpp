@@ -7920,15 +7920,11 @@ classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
                 // 탑승시에만 & 태우고 있지 않을 경우에만...
                 return true;
             } else {
-#ifdef __KCHS_BATTLECART__
                 tagITEM* pChair = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ABIL];
-                if (!pChair->GetItemNO() || 1 != PAT_ABILITY_TYPE(pChair->GetItemNO())) {
+                if (!pChair->GetItemNO() || 1 != PAT_ITEM_ABILITY_TYPE(pChair->GetItemNO())) {
                     // 탑승시키려면 어빌리티에 의자가 붙어야함.
                     return true;
                 }
-#else
-                return true;
-#endif
             }
 
             pUSER = g_pObjMGR->Get_UserOBJ(pPacket->m_cli_CART_RIDE.m_wGuestObjIDX);
@@ -7938,6 +7934,7 @@ classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
                     pPacket->m_cli_CART_RIDE.m_wGuestObjIDX);
                 return true;
             }
+
             if (pUSER->GetCur_RIDE_MODE()) {
                 // 탑승중인 대상은 못태워~
                 return true;
@@ -8010,23 +8007,25 @@ classUSER::Recv_cli_CART_RIDE(t_PACKET* pPacket) {
  */
 bool
 classUSER::Send_gsv_CART_RIDE(BYTE btType, WORD wSourObjIdx, WORD wDestObjIdx, bool bSendToSector) {
-    /*classPACKET *pCPacket = Packet_AllocNLock ();
-    if ( !pCPacket )
+    classPACKET *pCPacket = Packet_AllocNLock ();
+    if (!pCPacket) {
         return false;
+    }
 
     pCPacket->m_HEADER.m_wType = GSV_CART_RIDE;
-    pCPacket->m_HEADER.m_nSize = sizeof( gsv_CART_RIDE );
+    pCPacket->m_HEADER.m_nSize = sizeof(gsv_CART_RIDE);
 
     pCPacket->m_gsv_CART_RIDE.m_btType = btType;
     pCPacket->m_gsv_CART_RIDE.m_wOwnerObjIDX = wSourObjIdx;
     pCPacket->m_gsv_CART_RIDE.m_wGuestObjIDX = wDestObjIdx;
 
-    if ( bSendToSector )
-        this->GetZONE()->SendPacketToSectors( this, pCPacket );
-    else
-        this->SendPacket( pCPacket );
-
-    Packet_ReleaseNUnlock( pCPacket );*/
+    if (bSendToSector) {
+        this->GetZONE()->SendPacketToSectors(this, pCPacket);
+    } else {
+        this->SendPacket(pCPacket);
+    }
+    
+    Packet_ReleaseNUnlock( pCPacket );
     return true;
 }
 

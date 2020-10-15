@@ -9,7 +9,6 @@
 #include "CCharDATA.h"
 #include "rose/io/stb.h"
 #include "IO_AI.h"
-#include "IO_PAT.h"
 
 #include "CInventory.h"
 #include "CUserDATA.h"

@@ -13,7 +13,7 @@
 #include "../Icon/CIconDialog.h"
 
 #include "citem.h"
-#include "../../Common/IO_Pat.h"
+#include "rose/io/stb.h"
 #include "../../GameData/CManufacture.h"
 #include "../../GameData/CSeparate.h"
 #include "../../gamedata/cprivatestore.h"

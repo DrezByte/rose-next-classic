@@ -374,13 +374,8 @@ enum t_eRidePART {
     RIDE_PART_BODY = 0,
     RIDE_PART_ENGINE,
     RIDE_PART_LEG,
-
-#if defined(_GBC) // TODO JV add RIDE_PART_ABIL as ridepart to prevent migration of item slots in database. If we add this later we have to migrate item data as costume slots are added after ride slots
     RIDE_PART_ABIL,
     RIDE_PART_ARMS,
-#else
-    RIDE_PART_ARMS,
-#endif
 
     MAX_RIDING_PART,
     RIDE_PART_INVALID=999,

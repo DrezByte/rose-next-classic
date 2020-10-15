@@ -13,7 +13,7 @@
 #include "gamedata/cparty.h"
 #include "system/cgame.h"
 #include "gamecommon/item.h"
-#include "common/io_pat.h"
+#include "rose/io/stb.h"
 #include "CommandFilter.h"
 
 //박지호
@@ -431,20 +431,11 @@ CObjUSER::GetCur_MOVE_MODE() {
 /// 현재 펫이 조합이 다되어 탈수 있는가?
 bool
 CObjUSER::CanRidePET() {
-// 홍근 :
-#ifdef _GBC
     for (int i = 0; i < MAX_RIDING_PART - 2; i++) {
         if (m_Inventory.m_ItemRIDE[i].GetTYPE() == 0) {
             return false;
         }
     }
-#else
-    for (int i = 0; i < MAX_RIDING_PART - 1; i++) {
-        if (m_Inventory.m_ItemRIDE[i].GetTYPE() == 0) {
-            return false;
-        }
-    }
-#endif
 
     return true;
 }

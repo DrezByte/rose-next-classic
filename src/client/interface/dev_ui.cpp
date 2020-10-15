@@ -6,7 +6,7 @@
 #include "network/cnetwork.h"
 #include "interface/ctdrawimpl.h"
 #include "interface/io_imageres.h"
-#include "common/io_pat.h"
+#include "rose/io/stb.h"
 #include "system/cgame.h"
 #include "system/cgamestate.h"
 #include "jcommandstate.h"
@@ -40,7 +40,7 @@ static const std::array<std::tuple<unsigned int, STBDATA*>, 14> item_data = {
     std::make_tuple(ITEM_TYPE_GEM, &g_TblGEMITEM),
     std::make_tuple(ITEM_TYPE_NATURAL, &g_TblNATUAL),
     std::make_tuple(ITEM_TYPE_QUEST, &g_TblQUESTITEM),
-    std::make_tuple(ITEM_TYPE_RIDE_PART, &g_PatITEM.m_ItemDATA),
+    std::make_tuple(ITEM_TYPE_RIDE_PART, &g_PatITEM),
 };
 
 constexpr const char*

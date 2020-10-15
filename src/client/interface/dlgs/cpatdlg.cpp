@@ -7,7 +7,7 @@
 //#include "../Command/dragcommand.h"
 //#include "../Command/ctcmdnumberinput.h"
 //#include "../../Object.h"
-//#include "../../Common/IO_Pat.h"
+//#include "rose/io/stb.h"
 //#include "../../gamecommon/CObservable.h"
 //#include "../../gamecommon/item.h"
 //#include "../../GameData/Event/CTEventItem.h"

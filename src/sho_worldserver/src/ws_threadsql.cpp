@@ -26,7 +26,7 @@ using json = nlohmann::json;
 CWS_ThreadSQL::CWS_ThreadSQL(): CSqlTHREAD(true) {
     COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) <= 384);
     COMPILE_TIME_ASSERT(sizeof(tagGrowAbility) == 383);
-    COMPILE_TIME_ASSERT(MAX_RIDING_PART == 4);
+    COMPILE_TIME_ASSERT(MAX_RIDING_PART == 5);
 
     m_pDefaultBE = NULL;
     m_pDefaultINV = NULL;

@@ -1049,9 +1049,6 @@
     <ClCompile Include="Common\IO_Motion.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\IO_PAT.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\IO_Quest.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -2129,9 +2126,6 @@
       <Filter>Source Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\IO_Motion.h">
-      <Filter>Source Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\Io_pat.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\IO_Quest.h">

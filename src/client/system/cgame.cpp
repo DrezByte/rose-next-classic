@@ -49,7 +49,7 @@
 #include "interface/dev_ui.h"
 
 #include "../Common/IO_Quest.h"
-#include "../Common/IO_PAT.h"
+#include "rose/io/stb.h"
 #include "../gamedata/cmanufacture.h"
 #include "../gamedata/CExchange.h"
 #include "../gamedata/CSeparate.h"
@@ -458,9 +458,7 @@ CGame::Load_BasicDATA2() {
     vfs.load_stb(g_TblGEMITEM, JEM_ITEM_STB);
     vfs.load_stb(g_TblNATUAL, NATURAL_STB);
     vfs.load_stb(g_TblQUESTITEM, QUEST_ITEM_STB);
-
-    if (!g_PatITEM.LoadPatITEM("3DDATA\\STB\\LIST_PAT.STB"))
-        return false;
+    vfs.load_stb(g_PatITEM, PAT_STB);
 
     g_pTblSTBs[ITEM_TYPE_FACE_ITEM] = &g_TblFACEITEM;
     g_pTblSTBs[ITEM_TYPE_HELMET] = &g_TblHELMET;
@@ -475,7 +473,7 @@ CGame::Load_BasicDATA2() {
     g_pTblSTBs[ITEM_TYPE_GEM] = &g_TblGEMITEM;
     g_pTblSTBs[ITEM_TYPE_NATURAL] = &g_TblNATUAL;
     g_pTblSTBs[ITEM_TYPE_QUEST] = &g_TblQUESTITEM;
-    g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM.m_ItemDATA;
+    g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM;
 
     return true;
 }
@@ -745,7 +743,6 @@ CGame::Free_BasicDATA() {
     g_MotionFILE.Free();
 
     g_MOBandNPC.Free();
-    g_PatITEM.Free();
 
     g_DATA.Free3DDATA();
 

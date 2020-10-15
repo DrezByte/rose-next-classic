@@ -18,7 +18,7 @@
 #include "../gamedata/cstore.h"
 
 #include "calculation.h"
-#include "../common/io_pat.h"
+#include "rose/io/stb.h"
 #include "../System/CGame.h"
 
 #include "../misc/gameutil.h"

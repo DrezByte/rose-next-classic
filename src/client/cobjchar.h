@@ -1334,13 +1334,9 @@ public:
     /// 팻 파츠..
     /// 물론.. CObjPET 내부에 이 데이터들은 존재한다.. 여기서일단 편의를 위해 관리해준다.
 
-//박지호::카트파츠 수정
-#if defined(_GBC)
     union {
-        // short				m_nPetPartItemIDX[ MAX_RIDING_PART ];
         tagPartITEM m_sPetPartItemIDX[MAX_RIDING_PART];
         struct {
-            // 순서는 t_CharPART에 따라서...
             tagPartITEM m_sEngineIDX; // short			m_nEngineIDX;
             tagPartITEM m_sBodyIDX; // short			m_nBodyIDX;
             tagPartITEM m_sLegIDX; // short			m_nLegIDX;
@@ -1348,19 +1344,6 @@ public:
             tagPartITEM m_sWeaponIDX; // short			m_nWeaponIDX;
         };
     };
-#else
-    union {
-        // short				m_nPetPartItemIDX[ MAX_RIDING_PART ];
-        tagPartITEM m_sPetPartItemIDX[MAX_RIDING_PART];
-        struct {
-            // 순서는 t_CharPART에 따라서...
-            tagPartITEM m_sEngineIDX; // short			m_nEngineIDX;
-            tagPartITEM m_sBodyIDX; // short			m_nBodyIDX;
-            tagPartITEM m_sLegIDX; // short			m_nLegIDX;
-            tagPartITEM m_sAbilIDX; // short			m_nAbilIDX;
-        };
-    };
-#endif
 
     //	int						m_iPetType;
     //	CObjCART*				m_pObjCART;

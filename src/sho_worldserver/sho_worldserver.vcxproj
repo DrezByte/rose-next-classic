@@ -15,7 +15,6 @@
     <ClCompile Include="..\common-server\src\cthreadmsgr.cpp" />
     <ClCompile Include="..\common\cchatroom.cpp" />
     <ClCompile Include="..\common\etc_math.cpp" />
-    <ClCompile Include="..\common\io_pat.cpp" />
     <ClCompile Include="..\common\io_skill.cpp" />
     <ClCompile Include="..\common\shared\cinventory.cpp" />
     <ClCompile Include="..\common\shared\citem.cpp" />
@@ -36,7 +35,6 @@
     <ClInclude Include="..\common-server\include\cthreadmsgr.h" />
     <ClInclude Include="..\common\cchatroom.h" />
     <ClInclude Include="..\common\etc_math.h" />
-    <ClInclude Include="..\common\io_pat.h" />
     <ClInclude Include="..\common\io_skill.h" />
     <ClInclude Include="..\common\shared\cinventory.h" />
     <ClInclude Include="..\common\shared\citem.h" />

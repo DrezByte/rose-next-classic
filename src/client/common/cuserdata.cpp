@@ -7,7 +7,6 @@
 
 #ifndef __SERVER
     #include "../util/classTIME.h"
-    #include "IO_PAT.h"
     #include "NET_Prototype.h"
     #include "../Interface/Dlgs/ChattingDlg.h"
     #include "../Game.h"

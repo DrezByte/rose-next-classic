@@ -43,17 +43,13 @@ const POINT c_ptBulletEquipSlots[] = {
     {223, 158}
 };
 
-///배틀 카트 시스템 적용으로 파츠가 1개 추가
-#if defined(_GBC)
-const POINT c_ptPatEquipSlots[] = {{19, 79}, {19, 125}, {19, 171}, {119, 79}, {119, 125}};
-#else
 const POINT c_ptPatEquipSlots[] = {
     {23, 66}, 
     {73, 66}, 
     {123, 66}, 
-    {173, 66}
+    {173, 66}, 
+    {223, 66}
 };
-#endif
 
 CItemDlg::CItemDlg(int iType) {
     SetDialogType(iType);

@@ -13,7 +13,7 @@
 #include "Interface/Dlgs/ChattingDlg.h"
 #include "GameCommon/Skill.h"
 #include "Event/Quest_FUNC.h"
-#include "Common/IO_PAT.h"
+#include "rose/io/stb.h"
 
 void
 CObjCHAR::FireBulletWithPetWeapon(CObjCHAR* pTarget) {
@@ -26,11 +26,11 @@ CObjCHAR::FireBulletWithPetWeapon(CObjCHAR* pTarget) {
             ///<- 2005/7/25 카트 시스템 파츠 추가로 수정 : nAvy
             /// int	btPoint =
             /// PAT_BULLET_FIRE_POINT(((CObjCART*)this)->GetPetParts(RIDE_PART_ARMS),64);
+#ifdef _GBC
             int btPoint = 0;
 
             btPoint = PAT_BULLET_FIRE_POINT(((CObjCART*)this)->GetPetParts(RIDE_PART_ARMS), 64);
 
-#ifdef _GBC
             g_pBltMGR->Add_BULLET(this, pTarget, iBulletNO, true, btPoint);
 #else
             g_pBltMGR->Add_BULLET(this, pTarget, iBulletNO, true, 8);

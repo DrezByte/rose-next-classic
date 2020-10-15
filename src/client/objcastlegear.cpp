@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include ".\objcastlegear.h"
-#include "Common/IO_Pat.h"
+#include "rose/io/stb.h"
 
 CObjCastleGear::CObjCastleGear(void) {}
 

@@ -100,9 +100,6 @@
     <ClInclude Include="src\common\io_motion.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\io_pat.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\io_quest.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
@@ -244,9 +241,6 @@
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\io_motion.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\io_pat.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\io_quest.cpp">

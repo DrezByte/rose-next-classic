@@ -12,7 +12,7 @@
 #include "GS_PARTY.h"
 #include "GS_SocketLSV.h"
 #include "IO_AI.h"
-#include "IO_PAT.h"
+#include "rose/io/stb.h"
 #include "IO_Quest.h"
 #include "IO_Skill.h"
 #include "ZoneLIST.h"
@@ -53,6 +53,7 @@ STBDATA g_TblBACKITEM;
 STBDATA g_TblGEMITEM;
 STBDATA g_TblQUESTITEM;
 STBDATA g_TblJEWELITEM;
+STBDATA g_PatITEM;
 
 STBDATA g_TblDropITEM;
 
@@ -441,6 +442,7 @@ CLIB_GameSRV::Load_BasicDATA() {
     g_TblNATUAL.load(base_dir / NATURAL_STB);
     g_TblNPC.load(base_dir / NPC_STB);
     g_TblPRODUCT.load(base_dir / PRODUCT_STB);
+    g_PatITEM.load(base_dir / PAT_STB);
     g_TblQUESTITEM.load(base_dir / QUEST_ITEM_STB);
     g_TblStore.load(base_dir / SELL_STB);
     g_TblSkillPoint.load(base_dir / SKILL_P_STB);
@@ -472,9 +474,6 @@ CLIB_GameSRV::Load_BasicDATA() {
         return false;
     }
 
-    if (!g_PatITEM.LoadPatITEM(CStr::Printf("%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_PAT.STB")))
-        return false;
-
     g_pTblSTBs[ITEM_TYPE_FACE_ITEM] = &g_TblFACEITEM;
     g_pTblSTBs[ITEM_TYPE_HELMET] = &g_TblHELMET;
     g_pTblSTBs[ITEM_TYPE_ARMOR] = &g_TblARMOR;
@@ -488,7 +487,7 @@ CLIB_GameSRV::Load_BasicDATA() {
     g_pTblSTBs[ITEM_TYPE_GEM] = &g_TblGEMITEM;
     g_pTblSTBs[ITEM_TYPE_NATURAL] = &g_TblNATUAL;
     g_pTblSTBs[ITEM_TYPE_QUEST] = &g_TblQUESTITEM;
-    g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM.m_ItemDATA;
+    g_pTblSTBs[ITEM_TYPE_RIDE_PART] = &g_PatITEM;
 
     //	CheckSTB_AllITEM ();
     CheckSTB_UseITEM();
@@ -506,7 +505,6 @@ CLIB_GameSRV::Load_BasicDATA() {
 void
 CLIB_GameSRV::Free_BasicDATA() {
     // STBDATA는 자동 풀림..
-    g_PatITEM.Free();
     g_QuestList.Free();
     g_SkillList.Free();
     g_MotionFILE.Free();

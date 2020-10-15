@@ -64,6 +64,7 @@ constexpr const char* MOTION_STB = "3ddata/stb/type_motion.stb";
 constexpr const char* NATURAL_STB = "3ddata/stb/list_natural.stb";
 constexpr const char* NPC_STB = "3ddata/stb/list_npc.stb";
 constexpr const char* NPC_FACE_STB = "3ddata/stb/list_npcface.stb";
+constexpr const char* PAT_STB = "3ddata/stb/list_pat.stb";
 constexpr const char* PRODUCT_STB = "3ddata/stb/list_product.stb";
 constexpr const char* QUEST_ITEM_STB = "3ddata/stb/list_questitem.stb";
 constexpr const char* RANGE_SET_STB = "3ddata/stb/rangeset.stb";
@@ -359,6 +360,81 @@ constexpr const char* ZONE_STB = "3ddata/stb/list_zone.stb";
 #define PRODUCT_NEED_ITEM_NO(P, C) g_TblPRODUCT.get_int32(P, 2 + (C)*2)
 #define PRODUCT_NEED_ITEM_CNT(P, C) g_TblPRODUCT.get_int32(P, 3 + (C)*2)
 
+// list_pat.stb
+#define PAT_ITEM_PART_IDX(I) g_PatITEM.get_int32(I, 2)
+#define PAT_ITEM_USE_RIGHT(I) g_PatITEM.get_int32(I, 3)
+#define PAT_ITEM_TYPE(I) g_PatITEM.get_int32(I, 4)
+
+/*
+#define	PAT_ITEM_BASE_PRICE(I) g_PatITEM.get_int32(I, 5)
+#define	PAT_ITEM_PRICE_RATE(I) g_PatITEM.get_int32(I, 6)
+#define	PAT_ITEM_WEIGHT(I) g_PatITEM.get_int32(I, 7)
+#define	PAT_ITEM_QUALITY(I) g_PatITEM.get_int32(I, 8)
+
+#define	PAT_ITEM_ICON_NO(I) g_PatITEM.get_int32(I, 9)
+#define	PAT_ITEM_FIELD_IMG(I) g_PatITEM.get_int32(I, 10)
+#define	PAT_ITEM_EQUIP_SOUND(I) g_PatITEM.get_int32(I, 11)
+*/
+
+#define PAT_ITEM_PART_TYPE(I) g_PatITEM.get_int32(I, 16)
+#define PAT_ITEM_PART_VER(I) g_PatITEM.get_int32(I, 17)
+
+#define PAT_ITEM_NEED_SKILL_IDX(I) g_PatITEM.get_int32(I, 19)
+#define PAT_ITEM_NEED_SKILL_LEV(I) g_PatITEM.get_int32(I, 20)
+
+#define PAT_ITEM_NEED_ABILITY_IDX(I) g_PatITEM.get_int32(I, 21)
+#define PAT_ITEM_NEED_ABILITY_VALUE(I) g_PatITEM.get_int32(I, 22)
+
+#define PAT_ITEM_ADD_ABILITY_CNT 2
+#define PAT_ITEM_ADD_ABILITY_IDX(I, C) g_PatITEM.get_int32(I, 24 + C * 3)
+#define PAT_ITEM_ADD_ABILITY_VALUE(I, C) g_PatITEM.get_int32(I, 25 + C * 3)
+
+#define PAT_ITEM_MAX_FUEL(I) g_PatITEM.get_int32(I, 31)
+#define PAT_ITEM_USE_FUEL_RATE(I) g_PatITEM.get_int32(I, 32)
+
+#define PAT_ITEM_MOV_SPD(I) g_PatITEM.get_int32(I, 33)
+
+#define PAT_ITEM_ATK_RANGE(I) g_PatITEM.get_int32(I, 35)
+#define PAT_ITEM_ATK_POW(I) g_PatITEM.get_int32(I, 36)
+#define PAT_ITEM_ATK_SPD(I) g_PatITEM.get_int32(I, 37)
+
+#define PAT_ITEM_SEAT_CNT(I) g_PatITEM.get_int32(I, 39)
+
+#define PAT_RELATIVE_MOTION_POS(I) g_PatITEM.get_int32(I, 40)
+#define PAT_RELATIVE_MOTION_POS_AVATAR(I) g_PatITEM.get_int32(I, 41)
+
+#define PAT_RIDE_EFFECT(I) g_PatITEM.get_int32(I, 42)
+#define PAT_RIDE_SOUND(I) g_PatITEM.get_int32(I, 43)
+#define PAT_GETOFF_EFFECT(I) g_PatITEM.get_int32(I, 44)
+#define PAT_GETOFF_SOUND(I) g_PatITEM.get_int32(I, 45)
+#define PAT_DEAD_EFFECT(I) g_PatITEM.get_int32(I, 46)
+#define PAT_DEAD_SOUND(I) g_PatITEM.get_int32(I, 47)
+#define PAT_STOP_SOUND(I) g_PatITEM.get_int32(I, 48)
+#define PAT_MOVE_EFFECT(I) g_PatITEM.get_int32(I, 49)
+#define PAT_MOVE_SOUND(I) g_PatITEM.get_int32(I, 50)
+
+#define PAT_ATTACK_EFFECT(I) g_PatITEM.get_int32(I, 51)
+#define PAT_ATTACK_SOUND(I) g_PatITEM.get_int32(I, 52)
+#define PAT_HIT_EFFECT(I) g_PatITEM.get_int32(I, 53)
+#define PAT_HIT_SOUND(I) g_PatITEM.get_int32(I, 54)
+
+#define PAT_BULLET(I) g_PatITEM.get_int32(I, 55)
+#define PAT_BULLET_FIRE_POINT(l, m) g_PatITEM.get_int32(l, m)
+
+#define PAT_ITEM_ATTACHED_EFFECT_CNT 8
+#define PAT_ITEM_ATTACHED_EFFECT(I, T) g_PatITEM.get_int32(I, 56 + T)
+
+#define PAT_ITEM_CART_GAUAGE(I) g_PatITEM.get_int32(I, 64)
+#define PAT_ITEM_EQUIP_REQUIRE_CLASS(I) g_PatITEM.get_int32(I, 65)
+#define PAT_ITEM_ABILITY_TYPE(I) g_PatITEM.get_int32(I, 66)
+
+#ifdef __KCHS_BATTLECART__
+    #define PAT_ITEM_HP(I) g_PatITEM.get_int32(I, 67)
+    #define PAT_ITEM_EQUIP_REQUIRE_CLASS(I) g_PatITEM.get_int32(I, 68)
+    #define PAT_DAMAGE_TYPE(I) g_PatITEM.get_int32(I, 69)
+    #define PAT_ABILITY_TYPE(I) g_PatITEM.get_int32(I, 70)
+#endif
+
 // list_sell.stb
 #ifdef __SERVER
     #define STORE_NAME(I) g_TblStore.get_cstr(I, 0)
@@ -585,6 +661,7 @@ extern STBDATA g_TblNPC;
 extern STBDATA g_TblDropITEM;
 extern STBDATA g_TblAniTYPE;
 extern STBDATA g_TblPRODUCT;
+extern STBDATA g_PatITEM;
 
 extern STBDATA g_TblQUESTITEM;
 extern STBDATA g_TblStore;
