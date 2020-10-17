@@ -306,7 +306,7 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
 
                 case CMD_SIT:
                     CObjAI::SetCMD_STAND();
-                    this->Send_gsv_SET_HPnMP(0x03); // hp, mp µÑ´Ù.
+                    this->Send_gsv_SET_HPnMP(0x03);
                     break;
 
                 default:
@@ -1041,32 +1041,28 @@ CObjAVT::Check_PerFRAME(DWORD dwPassTIME) {
         case MOVE_MODE_RIDEON:
             break;
         case MOVE_MODE_DRIVE:
-            if (m_dwRecoverTIME >= USE_FUEL_CHEC_TIME) {
-                m_dwRecoverTIME -= USE_FUEL_CHEC_TIME;
+            if (m_dwRecoverTIME >= GameStaticConfig::FUEL_DECREASE_TIME) {
+                m_dwRecoverTIME -= GameStaticConfig::FUEL_DECREASE_TIME;
                 this->Dec_EngineLife();
             }
             break;
         default: // HP / MP È¸º¹
         {
-            DWORD dwCheckTime = 4000;
+            const DWORD dwCheckTime = GameStaticConfig::RECOVERY_RATE_TIME;
             if (m_dwRecoverTIME >= dwCheckTime) {
                 m_dwRecoverTIME -= dwCheckTime;
 
-                // if ( this->GetCur_STAMINA() >= YELLOW_STAMINA )
-                {
-                    // ½ºÅ×¹Ì³Ê Ã¼Å©...
-                    int iAdd;
-                    if (CMD_SIT == Get_COMMAND()) {
-                        iAdd = this->Get_RecoverHP(RECOVER_STATE_SIT_ON_GROUND);
-                        this->Add_HP(iAdd);
+                int iAdd = 0;
+                if (CMD_SIT == Get_COMMAND()) {
+                    iAdd = this->Get_RecoverHP(GameStaticConfig::RECOVERY_RATE_SITTING);
+                    this->Add_HP(iAdd);
 
-                        iAdd = this->Get_RecoverMP(RECOVER_STATE_SIT_ON_GROUND);
-                        this->Add_MP(iAdd);
-                    } else {
-                        iAdd =
-                            (int)((this->GetAdd_RecoverHP() + (this->Get_CON() + 40) / 6.f) / 6.f);
-                        this->Add_HP(iAdd);
-                    }
+                    iAdd = this->Get_RecoverMP(GameStaticConfig::RECOVERY_RATE_SITTING);
+                    this->Add_MP(iAdd);
+                } else {
+                    iAdd =
+                        (int)((this->GetAdd_RecoverHP() + (this->Get_CON() + 40) / 6.f) / 6.f);
+                    this->Add_HP(iAdd);
                 }
             }
         }

@@ -157,6 +157,9 @@
     <ClInclude Include="..\common\shared\ceconomy.h">
       <Filter>Common Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\network.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cchardata.cpp">
@@ -291,6 +294,9 @@
     </ClCompile>
     <ClCompile Include="..\common\shared\ceconomy.cpp">
       <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

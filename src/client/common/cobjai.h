@@ -106,21 +106,6 @@ public:
     CObjTARGET() { m_iServerTarget = 0; }
 };
 
-#define RECOVER_JUST_CHECK_TIME 0 /// 암것도 안하고 시간만 간다.
-#define RECOVER_STATE_CHECK_TIME_OLD 4000 /// 4초당 회복..
-#define RECOVER_STATE_CHECK_TIME_NEW 8000 /// 8초당 회복
-
-#define RECOVER_STATE_SIT_ON_CHAIR \
-    30 /// 의자 앉기		:: nRecoverMODE = 30 : 현재 없는 상태( 2005/5/20 )
-
-#define RECOVER_STATE_SIT_ON_GROUND_OLD 20 /// 바닥 앉기       :: nRecoverMODE = 20
-#define RECOVER_STATE_SIT_ON_GROUND_NEW \
-    25 /// 바닥 앉기       :: nRecoverMODE = 25//대만, 필리핀 적용( 2005/5/19 )
-
-#define RECOVER_STATE_STOP_OR_WALK_OLD 8 /// 정지,걷기 상태	:: nRecoverMODE = 8
-#define RECOVER_STATE_STOP_OR_WALK_NEW \
-    5 /// 정지,걷기 상태	:: nRecoverMODE = 5//대만, 필리핀 적용( 2005/5/19 )
-
 ///
 ///	CObjAI class
 ///
@@ -212,7 +197,6 @@ protected:
     virtual int GetAdd_RecoverHP() { return 0; } // 유저일 경우 return pAVATAR->m_btRecoverHP;
     virtual int GetAdd_RecoverMP() { return 0; } // 유저일 경우 return pAVATAR->m_btRecoverHP;
 
-    /// RECOVER_STATE_CHECK_TIME 간격으로 Get_RecoverHP에서 구한 HP, Get_ReocverMP에서 구한 MP를
     /// 더해 준다.
     virtual void RecoverHP(short nRecoverMODE) { /* nop */
     }

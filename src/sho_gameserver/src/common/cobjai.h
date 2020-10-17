@@ -93,13 +93,6 @@ public:
     CObjTARGET() { m_iServerTarget = 0; }
 };
 
-#define RECOVER_JUST_CHECK_TIME 0 /// 암것도 안하고 시간만 간다.
-#define RECOVER_STATE_CHECK_TIME 8000 /// 4초당 회복..
-#define USE_FUEL_CHEC_TIME 10000 /// 10초당 소모..
-#define RECOVER_STATE_SIT_ON_CHAIR 30 /// 의자 앉기		:: nRecoverMODE = 30
-#define RECOVER_STATE_SIT_ON_GROUND 20 /// 바닥 앉기       :: nRecoverMODE = 20
-#define RECOVER_STATE_STOP_OR_WALK 8 /// 정지,걷기 상태	:: nRecoverMODE = 8
-
 class CObjAI: public CGameOBJ, public CAI_OBJ, public CObjTARGET {
 public:
     Rose::Common::CharacterStats stats;

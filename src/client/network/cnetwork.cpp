@@ -787,6 +787,14 @@ CNetwork::recv_update_stats(Packet& p) {
         target = g_pAVATAR;
     }
 
+    if (flatbuffers::IsFieldPresent(stats, Packets::Stats::VT_HP)) {
+        target->stats.hp = stats->hp();
+        target->Set_HP(stats->hp()); // TODO: Legacy
+    }
+    if (flatbuffers::IsFieldPresent(stats, Packets::Stats::VT_MP)) {
+        target->stats.mp = stats->mp();
+        target->Set_MP(stats->mp()); // TODO: Legacy
+    }
     if (flatbuffers::IsFieldPresent(stats, Packets::Stats::VT_MOVE_SPEED)) {
         target->stats.move_speed = stats->move_speed();
     }

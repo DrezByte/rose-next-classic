@@ -2705,13 +2705,6 @@ CObjCHAR::Reset_Position() {
     ///::setPositionVec3( this->m_hNodeMODEL, m_PosCUR );
 }
 
-//----------------------------------------------------------------------------------------
-/// class : CObjCHAR
-/// @brief  : RECOVER_STATE_CHECK_TIME 간격으로 Get_RecoverHP에서 구한 HP를 더해 준다.
-///			- 서버에서의 HP를 받았을때의 클라이언트에서의 차를 일정양만큼씩 여기서 더해준다.
-///			- arua 상태일경우 50% 증가 시켜준다 : 2005/07/12 - nAvy
-//----------------------------------------------------------------------------------------
-
 void
 CObjCHAR::RecoverHP(short nRecoverMODE) {
     int iRecoverHP = Get_RecoverHP(nRecoverMODE);
@@ -2752,13 +2745,6 @@ CObjCHAR::RecoverHP(short nRecoverMODE) {
     if (Get_HP() > Get_MaxHP())
         Set_HP(Get_MaxHP());
 }
-
-//----------------------------------------------------------------------------------------
-/// class : CObjCHAR
-/// @brief  : RECOVER_STATE_CHECK_TIME 간격으로 Get_ReocverMP에서 구한 MP를 더해 준다.
-///			- 서버에서의 MP를 받았을때의 클라이언트에서의 차를 일정양만큼씩 여기서 더해준다.
-///			- arua 상태일경우 50% 증가 시켜준다 : 2005/07/12 - nAvy
-//----------------------------------------------------------------------------------------
 
 void
 CObjCHAR::RecoverMP(short nRecoverMODE) {
@@ -2938,50 +2924,6 @@ CObjCHAR::Proc(void) {
         - m_dwLastRecoveryUpdateTime; /// 이전프레임에서 현재 프레임 사이에 흐른시간을 더해준다.
     m_dwLastRecoveryUpdateTime = dwCurrentTime;
 
-    //--------------------------------------------------------------------------------
-    /// 리커버관련 처리
-    /// 04/5/28 CObjAVT::Proc 로이동..
-    //--------------------------------------------------------------------------------
-    // if( this->Is_AVATAR() )
-    //{
-    //	switch ( Get_COMMAND() )
-    //	{
-    //		case CMD_SIT :
-    //			this->RecoverHPnMP( RECOVER_STATE_SIT_ON_GROUND );
-    //			break;
-    //		default:
-    //			/// 명령이 sit 에서 바뀌거나.. 연속적인 sit 처리가 아니라면 시간 리셋..
-    //			m_dwElapsedTime = 0;
-    //			break;
-    //	}
-
-    //	//--------------------------------------------------------------------------------
-    //	/// 시간에 따른 액션 모드 처리..
-    //	/// if 문 줄이기 위해서 이쪽으로 이동.. 04/5/28
-    //	//--------------------------------------------------------------------------------
-    //	///if( this->IsA( OBJ_AVATAR ) || this->IsA( OBJ_USER ) )
-    //	{
-    //		m_ChangeActionMode.Proc();
-    //	}
-    //}
-
-#ifdef _DEBUG
-    /*
-    if( ::getUserData( GetZMODEL() ) )
-    {
-        _ASSERT( ::getUserData( GetZMODEL() ) );
-
-        const char* pStrName = ::getName( GetZMODEL() );
-        D3DVECTOR vec;
-        ::getPosition( GetZMODEL(), (float*)( &vec ) );
-    }
-    */
-#endif
-
-    //--------------------------------------------------------------------------------
-    /// 일단은 모든 오브젝트 캐릭터를 다 리스트에..
-    /// 미니맵 출력을 위한 리스트
-    //--------------------------------------------------------------------------------
     g_pObjMGR->AddViewObject(m_nIndex);
 
     //--------------------------------------------------------------------------------
@@ -4974,45 +4916,6 @@ int
 CObjAVT::Proc() {
     m_dwElapsedTime += m_dwFrameElapsedTime;
 
-    //--------------------------------------------------------------------------------
-    /// 리커버관련 처리
-    //--------------------------------------------------------------------------------
-    /// if( GetStamina() > 3000 )
-    {
-        int iRecoverStateCheckTime = RECOVER_STATE_CHECK_TIME_OLD;
-        int iRecoverStateSitOnGround = RECOVER_STATE_SIT_ON_GROUND_OLD;
-        int iRecoverStateStopWalk = RECOVER_STATE_STOP_OR_WALK_OLD;
-
-        if (m_dwElapsedTime > iRecoverStateCheckTime) {
-            //_RPT3( _CRT_WARN,"Update Recover HP/MP ElapsedTime:%d, CheckTime:%d, CurrTime:%d \n",
-            // m_dwElapsedTime, iRecoverStateCheckTime, timeGetTime() );
-            switch (Get_COMMAND()) {
-                case CMD_SIT:
-                    this->RecoverHP(iRecoverStateSitOnGround);
-                    this->RecoverMP(iRecoverStateSitOnGround);
-                    break;
-                case CMD_DIE:
-                    break;
-                default:
-                    /// 캐슬기어 탑승중일때는 회복 안함
-                    if (this->GetPetMode() < 0) {
-                        /// 앉기가 아닌동작에서는 HP만 회복
-                        this->RecoverHP(iRecoverStateStopWalk);
-                        this->RecoverMP(iRecoverStateStopWalk);
-                    }
-                    break;
-            }
-            m_dwElapsedTime -= iRecoverStateCheckTime;
-        }
-    } /*else
-     {
-         m_dwElapsedTime = 0;
-     }*/
-
-    //--------------------------------------------------------------------------------
-    // 박지호: 펫 바이브레이션
-    // 최종진: 조건문에 m_pObjCART추가(맞을때 카트에서 내릴때 오류 발생 ) 2005/7/31
-    //--------------------------------------------------------------------------------
     if (GetPetMode() && m_pObjCART && SetCartVA()) {
         m_pObjCART->m_ObjVibration.StartVibration();
         SetCartVA() = FALSE;
@@ -5021,11 +4924,6 @@ CObjAVT::Proc() {
     if (GetPetMode() && m_pObjCART)
         m_pObjCART->m_ObjVibration.Proc();
 
-    //--------------------------------------------------------------------------------
-    /// 시간에 따른 액션 모드 처리..
-    /// if 문 줄이기 위해서 이쪽으로 이동.. 04/5/28
-    //--------------------------------------------------------------------------------
-    /// if( this->IsA( OBJ_AVATAR ) || this->IsA( OBJ_USER ) )
     { m_ChangeActionMode.Proc(); }
 
     return CObjCHAR::Proc();

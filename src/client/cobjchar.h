@@ -334,8 +334,6 @@ public:
         return 0;
     }; /// 현재 지속 상태에 적용된 스킬번호
 
-    /// RECOVER_STATE_CHECK_TIME 간격으로 Get_RecoverHP에서 구한 HP, Get_ReocverMP에서 구한 MP를
-    /// 더해 준다.
     /*override*/ virtual void RecoverHP(short nRecoverMODE);
     /*override*/ virtual void RecoverMP(short nRecoverMODE);
 

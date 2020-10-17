@@ -25,6 +25,11 @@ constexpr int MAX_CONSUMABLE_DROP_MULTIPLIER = 1;
 constexpr float CAMERA_MIN_ZOOM = 300.0f;
 constexpr float CAMERA_MAX_ZOOM = 2700.0f;
 
+constexpr int RECOVERY_RATE_TIME = 2000;
+constexpr int RECOVERY_RATE_SITTING = 100;
+
+constexpr int FUEL_DECREASE_TIME = 10'000;
+
 }; // namespace GameStaticConfig
 
 namespace Common {

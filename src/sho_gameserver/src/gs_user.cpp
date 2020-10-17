@@ -16,6 +16,7 @@
 
 #include "rose/common/util.h"
 #include "rose/network/packets/update_stats_generated.h"
+#include "network.h"
 
 #include <iomanip>
 #include <sstream>
@@ -8224,8 +8225,16 @@ classUSER::Proc(void) {
         g_pThreadSQL->Add_BackUpUSER(this);
     }
 
-    if (this->Get_HP() > 0)
+    if (this->Get_HP() > 0) {
+        int prev_hp = this->Get_HP();
+        int prev_mp = this->Get_MP();
         this->Check_PerFRAME(this->GetZONE()->GetPassTIME());
+        int new_hp = this->Get_HP();
+        int new_mp = this->Get_MP();
+        if (new_hp != prev_hp || new_mp != prev_mp) {
+            this->send_update_hpmp();
+        }
+    }
 
     if (this->Is_CartGuest()) {
         if (this->Get_HP() > 0 && this->m_IngSTATUS.GetFLAGs()) {
@@ -8384,6 +8393,15 @@ classUSER::send_update_stats_all() {
     const auto pak = rep.Finish();
 
     return this->send_packet_from_offset(builder, pak, Packets::PacketType::UpdateStats);
+}
+
+bool
+classUSER::send_update_hpmp() {
+    Packet pak = build_update_hpmp_packet(*this, this->Get_HP(), this->Get_MP());
+    if (this->GetPARTY()) {
+        return send_packet_party(*this->GetPARTY(), pak);
+    }
+    return Rose::Network::send_packet(*this, pak);
 }
 
 bool
