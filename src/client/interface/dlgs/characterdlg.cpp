@@ -239,19 +239,16 @@ CCharacterDLG::Update(POINT ptMouse) {
                     if (pCtrl && pCtrl->GetControlType() == CTRL_GUAGE) {
                         CTGuage* pGuage = (CTGuage*)pCtrl;
                         int iValue =
-                            g_pAVATAR->GetCur_STAMINA() * 100 / g_pAVATAR->GetCur_MaxSTAMINA();
+                            g_pAVATAR->GetCur_STAMINA() * 1000 / g_pAVATAR->GetCur_MaxSTAMINA();
 
-                        /// if( iValue != pGuage->GetValue() )
-                        {
-                            pGuage->SetValue(iValue);
-                            pGuage->SetText(CStr::Printf("%d / %d",
-                                g_pAVATAR->GetCur_STAMINA(),
-                                g_pAVATAR->GetCur_MaxSTAMINA()));
-                            if (g_pAVATAR->GetCur_STAMINA() >= g_pAVATAR->GetCur_MaxSTAMINA())
-                                pGuage->SetGuageImageID(m_iGuageBlueGID);
-                            else
-                                pGuage->SetGuageImageID(m_iGuageYellowGID);
-                        }
+                        pGuage->SetValue(iValue);
+                        pGuage->SetText(CStr::Printf("%d / %d",
+                            g_pAVATAR->GetCur_STAMINA(),
+                            g_pAVATAR->GetCur_MaxSTAMINA()));
+                        if (g_pAVATAR->GetCur_STAMINA() >= g_pAVATAR->GetCur_MaxSTAMINA())
+                            pGuage->SetGuageImageID(m_iGuageBlueGID);
+                        else
+                            pGuage->SetGuageImageID(m_iGuageYellowGID);
                     }
                 }
             }
