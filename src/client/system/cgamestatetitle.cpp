@@ -43,7 +43,7 @@ CGameStateTitle::Enter(int iPrevStateID) {
     CGame::GetInstance().Load_DataNotUseThread();
 
     this->background_zone_id = SC_GetBGZoneNO();
-    this->title_texture = loadTexture("logo.png", "logo.png", 1, 0);
+    this->title_texture = loadTexture("3ddata\\control\\res\\logo.dds", "3ddata\\control\\res\\logo.dds", 1, 0);
 
     Draw();
 
