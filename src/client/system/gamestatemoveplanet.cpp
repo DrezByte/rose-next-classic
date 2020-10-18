@@ -60,7 +60,6 @@ CGameStateMovePlanet::Update(bool bLostFocus) {
         }
     }
 
-
     return 0;
 }
 

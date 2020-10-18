@@ -425,6 +425,7 @@ CLIB_GameSRV::Load_BasicDATA() {
     std::filesystem::path base_dir(BASE_DATA_DIR);
 
     g_TblGAUNTLET.load(base_dir / ARMS_STB);
+    g_TblBACKITEM.load(base_dir / BACK_STB);
     g_TblARMOR.load(base_dir / BODY_STB);
     g_TblHELMET.load(base_dir / CAP_STB);
     g_TblClass.load(base_dir / CLASS_STB);
