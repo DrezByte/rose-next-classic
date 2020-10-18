@@ -17,7 +17,6 @@ enum enumPLANET {
 class CGameStateMovePlanet: public CGameState {
 public:
     static int m_iTargetPlanet;
-    tPOINT16 m_PosRButtonClick;
 
 public:
     CGameStateMovePlanet(int iStateID);
@@ -25,16 +24,12 @@ public:
     CGameStateMovePlanet(void);
     ~CGameStateMovePlanet(void);
 
-    /*override*/ int Update(bool bLostFocus);
-    /*override*/ int Enter(int iPrevStateID);
-    /*override*/ int Leave(int iNextStateID);
+    int Update(bool bLostFocus) override;
+    int Enter(int iPrevStateID) override;
+    int Leave(int iNextStateID) override;
 
-    /*override*/ int ProcMouseInput(UINT uiMsg, WPARAM wParam, LPARAM lParam);
-    /*override*/ int ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam);
-
-    /*override*/ bool On_WM_MOUSEWHEEL(WPARAM wParam, LPARAM lParam);
-
-    void Render_GameMENU();
+    int ProcMouseInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) override;
+    int ProcKeyboardInput(UINT uiMsg, WPARAM wParam, LPARAM lParam) override;
 };
 
 #endif //_GAME_STATE_MOVE_PLANET_
