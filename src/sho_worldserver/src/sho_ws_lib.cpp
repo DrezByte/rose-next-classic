@@ -324,6 +324,7 @@ SHO_WS::Load_BasicDATA() {
     g_TblUSEITEM.load(base_dir / USE_ITEM_STB);
     g_TblWEAPON.load(base_dir / WEAPON_STB);
     g_PatITEM.load(base_dir / PAT_STB);
+    g_TblZONE.load(base_dir / ZONE_STB);
 
     if (!g_SkillList.LoadSkillTable(
             CStr::Printf((char*)"%s%s", BASE_DATA_DIR, "3DDATA\\STB\\LIST_SKILL.STB")))
