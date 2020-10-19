@@ -972,8 +972,8 @@ inventory2part(size_t inventory_idx) {
 // Maps an inventory slot position to a ride part
 constexpr size_t
 inventory2ride(size_t inventory_idx) {
-    size_t ride_idx = inventory_idx - (INVENTORY_TOTAL_SIZE - MAX_RIDING_PART);
-    if (ride_idx <= 0 || ride_idx >= MAX_RIDING_PART) {
+    size_t ride_idx = inventory_idx - INVENTORY_RIDE_ITEM0;
+    if (ride_idx < 0 || ride_idx >= MAX_RIDING_PART) {
         return RIDE_PART_INVALID;
     }
 
@@ -981,6 +981,7 @@ inventory2ride(size_t inventory_idx) {
         RIDE_PART_BODY,
         RIDE_PART_ENGINE,
         RIDE_PART_LEG,
+        RIDE_PART_ABIL,
         RIDE_PART_ARMS,
     };
 

@@ -40,14 +40,9 @@ protected:
 
     CCharMODEL m_CharMODEL;
 
-//------------------------------------------------------------------------------------
-//박지호:: 파츠 수정
-#if defined(_GBC)
     union {
         short m_nPartItemIDX[MAX_RIDING_PART];
-
         struct {
-            // 순서는 t_CharPART에 따라서...
             short m_nBodyIDX;
             short m_nEngineIDX;
             short m_nLegIDX;
@@ -55,22 +50,6 @@ protected:
             short m_nWeaponIDX;
         };
     };
-
-#else
-    union {
-        short m_nPartItemIDX[MAX_RIDING_PART];
-
-        struct {
-            // 순서는 t_CharPART에 따라서...
-            short m_nBodyIDX;
-            short m_nEngineIDX;
-            short m_nLegIDX;
-            short m_nAbilIDX;
-        };
-    };
-#endif
-    //------------------------------------------------------------------------------------
-
 public:
     CObjCART(void);
     virtual ~CObjCART(void);
