@@ -8,6 +8,8 @@ server_port = 19000
 password = "password"
 log_level = 0
 log_path = "C:\\rose-next\\server\\logs\\loginserver.log"
+minimum_access_level = 1
+max_users = 0
 
 [worldserver]
 ip = "127.0.0.1"

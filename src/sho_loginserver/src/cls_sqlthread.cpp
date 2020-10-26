@@ -175,7 +175,7 @@ CLS_SqlTHREAD::handle_login_req(QueuedPacket& p) {
     }
 
     DWORD current_time = classTIME::GetCurrentAbsSecond();
-    if (0 == access_level && g_pListCLIENT->IsMaxiumUSER()) {
+    if (access_level < this->minimum_access_level && g_pListCLIENT->IsMaxiumUSER()) {
         g_pListCLIENT->Send_lsv_LOGIN_REPLY(p.socket_id, RESULT_LOGIN_REPLY_TOO_MANY_USER);
         return false;
     }
