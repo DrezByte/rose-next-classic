@@ -311,12 +311,6 @@ CDefaultUserInput::RButtonDown(int iTarget, D3DXVECTOR3& PickPos, WPARAM wParam)
 
 bool
 CDefaultUserInput::DBClickObject(int iTarget, D3DXVECTOR3& PickPos, WPARAM wParam) {
-    /// 선택된게 없다면 마우스 명령 클리거..
-    /// 더블클릭일 경우만..
-    {
-        ///	ClearMouseState();
-    }
-
     if (iTarget) {
         CGameOBJ* pObj = g_pObjMGR->m_pOBJECTS[iTarget];
         if (pObj) {
@@ -335,81 +329,51 @@ CDefaultUserInput::DBClickObject(int iTarget, D3DXVECTOR3& PickPos, WPARAM wPara
                     return true;
             }
         } else {
-            assert(0 && " DBClickOjbect[ pObj is Invalid ] ");
+            return false;
         }
     }
 
     g_pNet->Send_cli_MOUSECMD(iTarget, PickPos);
     CGame::GetInstance().SetMouseTargetEffect(PickPos.x, PickPos.y, PickPos.z);
 
-    /// 선택된게 없다면 마우스 명령 클리거..
-    /// 더블클릭일 경우만..
-    {
-        ///	ClearMouseState();
-    }
-
     return false;
 }
 
 bool
 CDefaultUserInput::OnKeyDown(WPARAM wParam, LPARAM lParam) {
-    //----------------------------------------------------------------------------------------------------
-    /// 매프레임 체크해야될 메세지들..
-    //----------------------------------------------------------------------------------------------------
+    switch (wParam) {
+    	case VK_UP:
+    		{
+    			if (g_pAVATAR == NULL)
+    				return false;
 
-    ///
-    /// 2004/12/10 KeyMove 클래스로 이동.. 동시키 처리를 위해서
-    ///
+    			static int sLastShiftGoFrame = 0;
+    			int CurrentShiftGoFrame = g_GameDATA.GetGameTime();
 
-    // switch ( wParam )
-    //{
-    //	/// 키보드 전진..
-    //	case VK_UP:
-    //		{
-    //			if( g_pAVATAR == NULL )
-    //				return false;
+    			if (CurrentShiftGoFrame - sLastShiftGoFrame > 500) {
+    				D3DVECTOR Dir = g_pAVATAR->Get_CurPOS() - g_pCamera->Get_Position();
+    				D3DXVECTOR3 vDir = D3DXVECTOR3(Dir.x, Dir.y, Dir.z);
+    				D3DXVec3Normalize(&vDir, &vDir);
+    				vDir.z = 0.0f;
 
-    //			static int sLastShiftGoFrame = 0;
-    //			int CurrentShiftGoFrame = g_GameDATA.GetGameTime();
+    				vDir = vDir * 1500.0f;
+    				Dir.x = vDir.x;
+    				Dir.y = vDir.y;
+    				Dir.z = vDir.z;
 
-    //			if( CurrentShiftGoFrame - sLastShiftGoFrame > 500 )
-    //			{
-    //				D3DVECTOR Dir = g_pAVATAR->Get_CurPOS() - g_pCamera->Get_Position();
-    //				D3DXVECTOR3 vDir = D3DXVECTOR3( Dir.x, Dir.y, Dir.z );
-    //				D3DXVec3Normalize( &vDir, &vDir );
-    //				vDir.z = 0.0f;
+    				D3DVECTOR vPos = g_pAVATAR->Get_CurPOS() + Dir;
+    				g_pNet->Send_cli_MOUSECMD(0, vPos);
 
-    //				vDir = vDir * 1500.0f;
-    //				Dir.x = vDir.x;
-    //				Dir.y = vDir.y;
-    //				Dir.z = vDir.z;
-
-    //				D3DVECTOR vPos = g_pAVATAR->Get_CurPOS() + Dir;
-    //				g_pNet->Send_cli_MOUSECMD( 0, vPos );
-
-    //				///CGame::GetInstance().SetMouseTargetEffect( vPos.x, vPos.y, vPos.z );
-
-    //				sLastShiftGoFrame = CurrentShiftGoFrame ;
-    //			}
-    //		}
-    //		return true;
-    //	case VK_LEFT:
-    //		g_pCamera->Add_YAW( -CAMERA_MOVE_SPEED/2 );
-    //		break;
-    //	case VK_RIGHT:
-    //		g_pCamera->Add_YAW( CAMERA_MOVE_SPEED/2 );
-    //		break;
-
-    //	default:
-    //		{
-    //
-    //		}
-    //		break;
-    //}
-
-    if (lParam & 0x40000000) {
-        // 이전에 눌려 있던 키다....
-        return false;
+    				sLastShiftGoFrame = CurrentShiftGoFrame;
+    			}
+    		}
+    		return true;
+    	case VK_LEFT:
+    		g_pCamera->Add_YAW(-CAMERA_MOVE_SPEED / 2);
+    		break;
+    	case VK_RIGHT:
+    		g_pCamera->Add_YAW(CAMERA_MOVE_SPEED / 2);
+    		break;
     }
 
     return false;
@@ -704,7 +668,7 @@ CSevenHeartUserInput::DBClickObject(int iTarget, D3DXVECTOR3& PickPos, WPARAM wP
                     return true;
             }
         } else {
-            assert(0 && " DBClickOjbect[ pObj is Invalid ] ");
+            return false;
         }
     }
 
