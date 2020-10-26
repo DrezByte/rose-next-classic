@@ -72,6 +72,7 @@ CREATE TABLE clan
     money bigint NOT NULL DEFAULT 0,
     marker_front smallint NOT NULL DEFAULT 0,
     marker_back smallint NOT NULL DEFAULT 0,
+    marker_crc smallint NULL,
     created TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 

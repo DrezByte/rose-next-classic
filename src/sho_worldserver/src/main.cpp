@@ -68,7 +68,7 @@ main(int argc, char** argv) {
         config.worldserver.language);
 
     LOG_INFO("Connecting to the database");
-    bool db_connected = g_instance->connect_database(config.database);
+    bool db_connected = g_instance->connect_database(config);
     if (!db_connected) {
         return shutdown(1);
     }

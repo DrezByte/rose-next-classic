@@ -515,8 +515,11 @@ CWS_Client::Recv_cli_CLANMARK_REG_TIME(t_PACKET* pPacket) {
 bool
 CWS_Client::Send_wsv_CLANMARK_REPLY(DWORD dwClanID,
     WORD wMarkCRC,
-    BYTE* pMarkData,
+    char* pMarkData,
     short nDataLen) {
+    if (!pMarkData) {
+        return false;
+    }
 
     classPACKET pCPacket = classPACKET();
 

@@ -256,7 +256,7 @@ classUSER::Recv_cli_CLANMARK_REG_TIME(t_PACKET* pPacket) {
 
 /// 클라이언트가 요청한 클랜 관련 패킷에 대한 응답 패킷 생성후 전송
 bool
-classUSER::Send_wsv_CLANMARK_REPLY(DWORD dwClanID, WORD wMarkCRC, BYTE* pMarkData, short nDataLen) {
+classUSER::Send_wsv_CLANMARK_REPLY(DWORD dwClanID, WORD wMarkCRC, char* pMarkData, short nDataLen) {
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)
         return false;

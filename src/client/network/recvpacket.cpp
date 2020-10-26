@@ -5325,23 +5325,17 @@ CRecvPACKET::Recv_wsv_CLAN_CHAT() {
         IT_MGR::CHAT_TYPE_CLAN);
 }
 
-/// 서버로 부터 전송받은 클랜 마크 저장..
 void
 CRecvPACKET::Recv_wsv_CLANMARK_REPLY() {
-    int iClanID = (int)(m_pRecvPacket->m_wsv_CLANMARK_REPLY.m_dwClanID);
-    if (iClanID) //성공및 변경되었음
-    {
-        WORD wCRC16 = m_pRecvPacket->m_wsv_CLANMARK_REPLY.m_wMarkCRC16;
+    const int iClanID = (int)(m_pRecvPacket->m_wsv_CLANMARK_REPLY.m_dwClanID);
+    if (iClanID) {
+        const WORD wCRC16 = m_pRecvPacket->m_wsv_CLANMARK_REPLY.m_wMarkCRC16;
 
-        int iSize = m_pRecvPacket->m_wsv_CLANMARK_REPLY.m_nSize - sizeof(wsv_CLANMARK_REPLY);
+        const int iSize = m_pRecvPacket->m_wsv_CLANMARK_REPLY.m_nSize - sizeof(wsv_CLANMARK_REPLY);
         short nOffset = sizeof(wsv_CLANMARK_REPLY);
         BYTE* pDATA = (BYTE*)Packet_GetStringPtr(m_pRecvPacket, nOffset);
 
-        ///화일로 저장
         CClanMarkTransfer::GetSingleton().ReceiveMarkFromServer(iClanID, wCRC16, pDATA, iSize);
-
-        ///현재 등록되어서 사용중인 클랜마크가 변경되었을경우 Texture를 변경한다.
-        ///사용중이지 않다면 아무 동작도 하지 않는다.
 
         std::string file_name;
         CClanMarkUserDefined::GetClanMarkFileName(CGame::GetInstance().GetSelectedServerID(),
@@ -5352,32 +5346,25 @@ CRecvPACKET::Recv_wsv_CLANMARK_REPLY() {
 
         if (g_pAVATAR && g_pAVATAR->GetClanID() == iClanID
             && g_pAVATAR->GetClanPos() >= CClan::CLAN_MASTER) {
-            ///현재 2번 내려온다.
             if (g_pAVATAR->GetClanMarkCenter() != wCRC16) {
                 g_pNet->Send_cli_CLANMARK_REG_TIME();
                 g_itMGR.OpenMsgBox(STR_CLANMARK_REGISTER_SUCCESS);
             }
         }
 
-        /// 현재 해당 클랜원들(나포함)의 모든 클랜마크정보를 갱신해주어야 한다.
-        /// 클랜마크가 새로 등록된 경우에는 CNameBox에서 새로 CClanMarkUserDefined를 찾을것이고
-        /// 등록되어 있던 마크가 변경시에는 위에서 Texture가 바뀌므로 별도로 해줄 작업이 없다.
         g_pObjMGR->ResetClanMarkInfo(iClanID, wCRC16);
-        // g_pAVATAR->SetClanMark( 0, wCRC16 );
-    } else //실패
-    {
+    } else {
         switch (m_pRecvPacket->m_wsv_CLANMARK_REPLY.m_wFailedReason) {
-            case RESULT_CLANMARK_TOO_MANY_UPDATE: // 마크 갱신은 일정시간 후에 해야 한다...
+            case RESULT_CLANMARK_TOO_MANY_UPDATE:
                 g_itMGR.OpenMsgBox(STR_CLANMARK_UPDATE_ERROR);
                 break;
-            case RESULT_CLANMARK_DB_ERROR: // 디비 갱신 오류
-                g_itMGR.OpenMsgBox("Register ClanMark Error:DB");
+            case RESULT_CLANMARK_TOO_LARGE_ERROR:
+                g_itMGR.OpenMsgBox("Clan mark file size is too large.");
                 break;
-            case RESULT_CLANMAKR_SP_ERROR: //			0x0003	// 디비 SP 오류
-                g_itMGR.OpenMsgBox("Register ClanMark Error:SP");
-                break;
+            case RESULT_CLANMARK_DB_ERROR:
+            case RESULT_CLANMARK_SP_ERROR:
             default:
-                g_itMGR.OpenMsgBox("Register ClanMark Error");
+                g_itMGR.OpenMsgBox("Unable to register clan mark.");
                 break;
         }
     }

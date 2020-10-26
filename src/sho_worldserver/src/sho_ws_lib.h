@@ -3,6 +3,7 @@
 
 #include "util/classstr.h"
 #include "classtime.h"
+#include "rose/common/server_config.h"
 
 namespace Rose {
 namespace Common {
@@ -42,7 +43,7 @@ private:
     DWORD m_dwRandomSEED;
 
 public:
-    bool connect_database(Rose::Common::DatabaseConfig& config);
+    bool connect_database(Rose::Common::ServerConfig& config);
 
     bool Start(HWND hMainWND,
         char* szLoginServerIP,

@@ -196,12 +196,12 @@ SHO_WS::~SHO_WS() {
 // 3. 사용자 접속 허용..
 // 4. 로그인 서버 접속
 bool
-SHO_WS::connect_database(DatabaseConfig& config) {
+SHO_WS::connect_database(ServerConfig& config) {
     if (NULL == this->GetInstance())
         return false;
 
     g_pThreadSQL = new CWS_ThreadSQL; // suspend 모드로 시작됨.
-    if (!g_pThreadSQL->db.connect(config.connection_string)) {
+    if (!g_pThreadSQL->db.connect(config.database.connection_string)) {
         std::string error_message = g_pThreadSQL->db.last_error_message();
         LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
         return false;
@@ -209,7 +209,7 @@ SHO_WS::connect_database(DatabaseConfig& config) {
     g_pThreadSQL->Resume();
 
     g_pThreadMSGR = new CThreadMSGR(16384, 1024);
-    if(!g_pThreadMSGR->db.connect(config.connection_string)) {
+    if (!g_pThreadMSGR->db.connect(config.database.connection_string)) {
         std::string error_message = g_pThreadSQL->db.last_error_message();
         LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
         return false;
@@ -217,7 +217,8 @@ SHO_WS::connect_database(DatabaseConfig& config) {
     g_pThreadMSGR->Resume();
 
     g_pThreadGUILD = new CThreadGUILD(8192, 512);
-    if (!g_pThreadGUILD->db.connect(config.connection_string)) {
+    g_pThreadGUILD->set_config(config);
+    if (!g_pThreadGUILD->db.connect(config.database.connection_string)) {
         std::string error_message = g_pThreadGUILD->db.last_error_message();
         LOG_ERROR("Failed to connect to the database: {}", error_message.c_str());
 

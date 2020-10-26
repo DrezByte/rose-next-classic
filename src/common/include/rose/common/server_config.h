@@ -47,6 +47,7 @@ struct WorldServerConfig {
     uint32_t server_port;
     std::string world_name;
     std::string data_dir;
+    std::string clanmark_dir;
     LogLevel log_level;
     std::string log_path;
 
@@ -57,6 +58,7 @@ struct WorldServerConfig {
         server_port(19001),
         world_name("1Rose Next"),
         data_dir(get_exe_dir().append("data/")),
+        clanmark_dir(get_exe_dir().append("data/clanmark/")),
         log_level(Rose::Common::LogLevel::Info),
         log_path(get_exe_dir().append("/log/worldserver.log")) {}
 };
@@ -69,6 +71,7 @@ struct GameServerConfig {
     uint32_t port;
     std::string server_name;
     std::string data_dir;
+    std::string clanmark_dir;
     LogLevel log_level;
     std::string log_path;
 
@@ -78,6 +81,7 @@ struct GameServerConfig {
         port(29200),
         server_name("Channel 1"),
         data_dir(get_exe_dir().append("data/")),
+        clanmark_dir(get_exe_dir().append("data/clanmark/")),
         log_level(Rose::Common::LogLevel::Info),
         log_path(get_exe_dir().append("/log/gameserver.log")) {}
 };
@@ -124,6 +128,7 @@ public:
         this->get_uint32("worldserver", "server_port", this->worldserver.server_port);
         this->get_str("worldserver", "world_name", this->worldserver.world_name);
         this->get_str("worldserver", "data_dir", this->worldserver.data_dir);
+        this->get_str("worldserver", "clanmark_dir", this->worldserver.clanmark_dir);
         this->get_loglevel("worldserver", "log_level", this->worldserver.log_level);
         this->get_str("worldserver", "log_path", this->worldserver.log_path);
 
@@ -131,6 +136,7 @@ public:
         this->get_uint32("gameserver", "port", this->gameserver.port);
         this->get_str("gameserver", "server_name", this->gameserver.server_name);
         this->get_str("gameserver", "data_dir", this->gameserver.data_dir);
+        this->get_str("gameserver", "clanmark_dir", this->gameserver.clanmark_dir);
         this->get_loglevel("gameserver", "log_level", this->gameserver.log_level);
         this->get_str("gameserver", "log_path", this->gameserver.log_path);
 

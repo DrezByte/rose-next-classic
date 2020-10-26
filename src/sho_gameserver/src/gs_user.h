@@ -397,7 +397,7 @@ public:
     Send_gsv_CART_RIDE(BYTE btType, WORD wSourObjIdx, WORD wDestObjIDX, bool bSendToSector = false);
 
     bool
-    Send_wsv_CLANMARK_REPLY(DWORD dwClanID, WORD wMarkCRC, BYTE* pMarkData, short nMarkDataLen);
+    Send_wsv_CLANMARK_REPLY(DWORD dwClanID, WORD wMarkCRC, char* pMarkData, short nMarkDataLen);
 
     void Save_ItemToFILED(tagITEM& sDropITEM, int iRemainTime = ITEM_OBJ_DROP_TIME);
     bool Pick_ITEM(CObjITEM* pITEM);

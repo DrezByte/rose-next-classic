@@ -21,6 +21,7 @@ typedef classUSER CWS_Client;
 #endif
 
 #include "CSqlTHREAD.h"
+#include "rose/common/server_config.h"
 
 //-------------------------------------------------------------------------------------------------
 /**
@@ -100,7 +101,7 @@ public:
     CStrVAR m_Motd; // 길드 공지
 
     short m_nClanMarkLEN;
-    BYTE m_pClanMARK[1024];
+    char m_pClanMARK[1024];
 
     wsv_CLANMARK_REG_TIME m_RegTIME;
 
@@ -124,7 +125,7 @@ public:
         BYTE* pClanBIN,
         WORD wMarkCRC,
         short nMarkDataLen,
-        BYTE* pClanMARK) {
+        char* pClanMARK) {
         m_nClanLEVEL = 1;
         m_iClanSCORE = 0;
         m_dwAlliedGroupID = 0;
@@ -244,6 +245,8 @@ private:
     CDLList<tagCLAN_CMD> m_ProcCMD;
     CDLList<tagCLAN_CMD> m_WaitCMD;
 
+    Rose::Common::ServerConfig config;
+
     // inherit virtual function from CSqlTHREAD...
     bool Run_SqlPACKET(tagQueryDATA* pSqlPACKET) { return true; }
 
@@ -256,6 +259,28 @@ private:
 public:
     CThreadGUILD(UINT uiInitDataCNT, UINT uiIncDataCNT);
     ~CThreadGUILD();
+
+    void set_config(Rose::Common::ServerConfig& config) { this->config = config; };
+
+    std::string get_clan_marker_filename(int clan_id) {
+        std::string clanmark_dir = "";
+        #ifdef __SHO_GS
+        clanmark_dir = this->config.gameserver.clanmark_dir;
+        #endif
+        #ifdef __SHO_WS
+        clanmark_dir = this->config.worldserver.clanmark_dir;
+        #endif
+
+        if (clanmark_dir.empty()) {
+            LOG_ERROR("Unable to load clanmark directory");
+            return NULL;
+        }
+
+        std::filesystem::path path(clanmark_dir);
+        path.append("{0}.gz");
+
+        return fmt::format(path.string(), clan_id);
+    };
 
     void Set_EVENT() { m_pEVENT->SetEvent(); }
     bool Add_ClanCMD(BYTE btCMD, int iSocketIDX, t_PACKET* pPacket, char* szCharName = NULL);

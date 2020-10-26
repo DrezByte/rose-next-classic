@@ -1960,10 +1960,12 @@ struct cli_CLANMARK_SET: public t_PACKETHEADER {
     WORD m_wMarkCRC16;
     //	BYTE	m_btMARK[ 0 ];
 };
-// m_dwClanID클랜의 클랜마크 데이타
-#define RESULT_CLANMARK_TOO_MANY_UPDATE 0x0001 // 마크 갱신은 일정시간 후에 해야 한다...
-#define RESULT_CLANMARK_DB_ERROR 0x0002 // 디비 갱신 오류
-#define RESULT_CLANMAKR_SP_ERROR 0x0003 // 디비 SP 오류
+
+#define RESULT_CLANMARK_TOO_MANY_UPDATE 0x0001
+#define RESULT_CLANMARK_DB_ERROR 0x0002
+#define RESULT_CLANMARK_SP_ERROR 0x0003
+#define RESULT_CLANMARK_TOO_LARGE_ERROR 0x0004
+
 struct wsv_CLANMARK_REPLY: public t_PACKETHEADER {
     DWORD m_dwClanID;
     union {

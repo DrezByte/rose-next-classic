@@ -147,7 +147,7 @@ CClanDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
                     CTCommand* pCmdOk = new CTCmdRegisterClanMark(g_pAVATAR->GetClanID(),
                         CClanMarkUserDefined::NewClanMarkFileName.c_str());
                     g_itMGR.OpenMsgBox(
-                        CStr::Printf("%s %s", STR_QUERY_CHANGE_CLANMARK, STR_CLANMARK_UPDATE_ERROR),
+                        STR_QUERY_CHANGE_CLANMARK,
                         CMsgBox::BT_OK | CMsgBox::BT_CANCEL,
                         true,
                         0,
@@ -375,28 +375,6 @@ CClanDlg::DrawInfomation() {
             "%d / %d",
             Clan.GetMemberCount(),
             Clan.GetMemberMaxCount());
-
-        ::drawFont(g_GameDATA.m_hFONT[FONT_NORMAL],
-            true,
-            15,
-            229,
-            g_dwBLACK,
-            STR_CLANMARK_REGISTER_TIME);
-        if (Clan.GetClanNo() && Clan.GetClass() >= CClan::CLAN_MASTER
-            && g_pAVATAR->GetClanMarkBack() == 0) {
-            SYSTEMTIME clanmark_regtime = Clan.GetClanMarkRegTime();
-            ::drawFontf(g_GameDATA.m_hFONT[FONT_NORMAL],
-                true,
-                88,
-                229,
-                g_dwWHITE,
-                "%d/%d/%d %d:%02d",
-                clanmark_regtime.wYear,
-                clanmark_regtime.wMonth,
-                clanmark_regtime.wDay,
-                clanmark_regtime.wHour,
-                clanmark_regtime.wMinute);
-        }
 
         ::drawFont(g_GameDATA.m_hFONT[FONT_NORMAL], true, 15, 248, g_dwBLACK, STR_CLAN_ALLYED);
         ::drawFont(g_GameDATA.m_hFONT[FONT_NORMAL], true, 88, 248, g_dwWHITE, Clan.GetAllyName(0));
@@ -797,9 +775,4 @@ CClanDlg::Hide() {
 void
 CClanDlg::Show() {
     CTDialog::Show();
-    ///내가 마스터 이상이고 등록된 마크 이미지를 사용한다면
-    SYSTEMTIME clanmark_regtime = CClan::GetInstance().GetClanMarkRegTime();
-    if (g_pAVATAR && g_pAVATAR->GetClanPos() >= CClan::CLAN_MASTER
-        && g_pAVATAR->GetClanMarkBack() == 0 && clanmark_regtime.wYear == 0)
-        g_pNet->Send_cli_CLANMARK_REG_TIME();
 }

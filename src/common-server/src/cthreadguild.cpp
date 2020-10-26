@@ -1,4 +1,5 @@
 #include "stdAFX.h"
+#include <fstream>
 
 #ifdef __SHO_WS
     #include "CWS_Client.h"
@@ -1347,11 +1348,10 @@ CThreadGUILD::Find_CLAN(DWORD dwClanID) {
 //-------------------------------------------------------------------------------------------------
 CClan*
 CThreadGUILD::load_clan(int clan_id) {
-    const char* clan_stmt = "SELECT name, description, motd, level, points, marker_front, marker_back, created FROM clan WHERE id=$1";
+    const char* clan_stmt = "SELECT name, description, motd, level, points, money, marker_front, marker_back, marker_crc FROM clan WHERE id=$1";
     QueryResult clan_res = this->db.query(clan_stmt, {std::to_string(clan_id)});
     if (!clan_res.is_ok()) {
-        LOG_ERROR("Failed to load clan with id {}", clan_id);
-        LOG_ERROR(this->db.last_error_message());
+        LOG_ERROR("Failed to load clan with id: {} {}", clan_id, this->db.last_error_message());
         return NULL;
     }
 
@@ -1359,19 +1359,37 @@ CThreadGUILD::load_clan(int clan_id) {
     const std::string clan_description = clan_res.get_string(0, 1);
     const std::string clan_motd = clan_res.get_string(0, 2);
     const int clan_level = clan_res.get_int32(0, 3);
-    const int clan_points = clan_res.get_int32(0, 4);
-    const int clan_marker_front = clan_res.get_int32(0, 5);
-    const int clan_marker_back = clan_res.get_int32(0, 6);
-    const std::string clan_created = clan_res.get_string(0, 7);
+    const int clan_points = clan_res.get_int64(0, 4);
+    const int clan_money = clan_res.get_int64(0, 5);
+    const int clan_marker_front = clan_res.get_int32(0, 6);
+    const int clan_marker_back = clan_res.get_int32(0, 7);
+    const int clan_marker_crc = clan_res.get_int32(0, 8);
     
     // TODO: add missing fields
     const int clan_allies_id = 0;
-    const int clan_money = 0;
     const int clan_rate = 100;
-    const int clan_marker_crc = 0;
-    const int clan_marker_length = 0;
-    BYTE* clan_marker = NULL;
+    int clan_marker_length = 0;
+    char* clan_marker = NULL;
     BYTE* clan_skills = NULL;
+
+    if (clan_marker_crc != NULL) {
+        // Load custom clan marker
+        std::ifstream file;
+        file.open(this->get_clan_marker_filename(clan_id), std::ifstream::binary);
+        
+        if (file) {
+            file.seekg(0, file.end);
+            int clan_marker_length = file.tellg();
+            file.seekg(0, file.beg);
+
+            clan_marker = new char[clan_marker_length];
+            file.read(clan_marker, clan_marker_length);
+        } else {
+            LOG_ERROR("Unable to load custom marker for clan with id: {}", clan_id);
+        }
+
+        file.close();
+    }
 
     CClan* clan = m_Pools.Pool_Alloc();
     if (clan == NULL) {
@@ -1395,7 +1413,6 @@ CThreadGUILD::load_clan(int clan_id) {
     clan->m_iClanRATE = clan_rate;
     clan->m_biClanMONEY = clan_money;
 
-    // TODO: format/convert clan_created date
     clan->m_RegTIME.m_wYear = 0;
     clan->m_RegTIME.m_btMon = 0;
     clan->m_RegTIME.m_btDay = 0;
@@ -1408,8 +1425,9 @@ CThreadGUILD::load_clan(int clan_id) {
     if (!clan_member_res.is_ok()) {
         clan->Free();
         m_Pools.Pool_Free(clan);
-        LOG_ERROR("Failed to load clan members from clan with name {}", clan_name);
-        LOG_ERROR(this->db.last_error_message());
+        LOG_ERROR("Failed to load clan members from clan with name: {} {}",
+            clan_name,
+            this->db.last_error_message());
         return NULL;
     }
 
@@ -1762,53 +1780,44 @@ CThreadGUILD::Query_UpdateClanBINARY(DWORD dwClanID, BYTE* pDATA, unsigned int u
 //-------------------------------------------------------------------------------------------------
 WORD
 CThreadGUILD::Query_UpdateClanMARK(CClan* pClan, WORD wMarkCRC, BYTE* pDATA, unsigned int uiSize) {
-    /* TODO: RAM: Port to Postgres
-    long iResultSP = -99;
-    SDWORD cbSize1 = SQL_NTS;
-
-    this->db->SetParam_long(1, iResultSP, cbSize1);
-    this->db->BindPARAM(2, (BYTE*)pDATA, uiSize);
-
-    // 주의~~wMarkCRC로 될경우 디비에 smallint로 잡혀있어 32767 보다 클경우 디비 오류~~~
-    if (this->db->QuerySQL((char*)"{?=call ws_ClanMarkUPDATE(%d,%d,%d,?)}",
-            pClan->m_dwClanID,
-            (short)(wMarkCRC),
-            uiSize)) {
-        while (this->db->GetMoreRESULT()) {
-            ;
-        }
-        switch (iResultSP) {
-            case 1: // 성공
-                g_LOG.CS_ODS(0xffff, "update clan mark : %d \n", pClan->m_dwClanID);
-                if (this->db->QuerySQL((char*)"select dateMarkREG from tblWS_CLAN where intID=%d",
-                        pClan->m_dwClanID)) {
-                    if (this->db->GetNextRECORD()) {
-                        sqlTIMESTAMP sTimeStamp;
-                        this->db->GetTimestamp(0, &sTimeStamp);
-
-                        pClan->m_RegTIME.m_wYear = sTimeStamp.m_wYear;
-                        pClan->m_RegTIME.m_btMon = sTimeStamp.m_btMon;
-                        pClan->m_RegTIME.m_btDay = sTimeStamp.m_btDay;
-                        pClan->m_RegTIME.m_btHour = sTimeStamp.m_btHour;
-                        pClan->m_RegTIME.m_btMin = sTimeStamp.m_btMin;
-                        pClan->m_RegTIME.m_btSec = sTimeStamp.m_btSec;
-                    }
-                }
-                return 0;
-            case 0: // 날짜비교에서 갱신 실패
-                return RESULT_CLANMARK_TOO_MANY_UPDATE;
-            case -1: // 디비 오류
-                g_LOG.CS_ODS(0xffff, "update clan mark failed : %d \n", pClan->m_dwClanID);
-                return RESULT_CLANMARK_DB_ERROR;
-            default:
-                assert("invalid ws_ClanBinMARK SP retrun value" && 0);
-        }
-    } else {
-        // 디비 SP 오류...
-        g_LOG.CS_ODS(0xffff, "Query ERROR :: ws_ClanMarkUPDATE( %d ) \n", pClan->m_dwClanID);
+    if (!pClan || !wMarkCRC || !pDATA || uiSize == 0) {
+        return RESULT_CLANMARK_SP_ERROR;
     }
-    */
-    return RESULT_CLANMAKR_SP_ERROR;
+
+    if (uiSize > 1024) {
+        return RESULT_CLANMARK_TOO_LARGE_ERROR;
+    }
+
+    std::ofstream clan_marker;
+    clan_marker.open(this->get_clan_marker_filename(pClan->m_dwClanID), std::ofstream::binary);
+
+    if (!clan_marker) {
+        clan_marker.close();
+        LOG_ERROR("Failed to open custom marker for clan with id: {}", pClan->m_dwClanID);
+        return RESULT_CLANMARK_SP_ERROR;
+    }
+
+    const char* buffer = reinterpret_cast<const char*>(pDATA);
+    clan_marker.write(buffer, uiSize);
+
+    if (clan_marker.fail()) {
+        clan_marker.close();
+        LOG_ERROR("Failed to save custom marker for clan with id: {}", pClan->m_dwClanID);
+        return RESULT_CLANMARK_SP_ERROR;
+    }
+
+    clan_marker.close();
+
+    QueryResult res = this->db.query("UPDATE clan SET marker_crc=$1 WHERE id=$2",
+        {std::to_string(wMarkCRC), std::to_string(pClan->m_dwClanID)});
+    if (!res.is_ok()) {
+        LOG_ERROR("Failed to update custom marker for clan with id: {} {}",
+            pClan->m_dwClanID,
+            this->db.last_error_message());
+        return RESULT_CLANMARK_DB_ERROR;
+    }
+
+    return 0;
 }
 
 //-------------------------------------------------------------------------------------------------

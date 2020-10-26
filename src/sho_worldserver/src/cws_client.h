@@ -176,7 +176,7 @@ public:
     bool Recv_cli_CLANMARK_REG_TIME(t_PACKET* pPacket);
 
     bool
-    Send_wsv_CLANMARK_REPLY(DWORD dwClanID, WORD wMarkCRC, BYTE* pMarkData, short nMarkDataLen);
+    Send_wsv_CLANMARK_REPLY(DWORD dwClanID, WORD wMarkCRC, char* pMarkData, short nMarkDataLen);
 
     char* Get_ACCOUNT() { return m_pAccount->m_Account.Get(); }
 
