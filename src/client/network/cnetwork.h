@@ -62,6 +62,7 @@ public:
     void Proc();
 
     void recv_packet(t_PACKET* packet);
+    void recv_char_move(Rose::Network::Packet& p);
     void recv_update_stats(Rose::Network::Packet& p);
 
     void send_packet(const Rose::Network::Packet& packet, Server target = Server::Game);

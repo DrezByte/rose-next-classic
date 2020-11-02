@@ -253,6 +253,8 @@ draw_target_window() {
                 ImGui::Text("PvP state: %d", g_pTerrain->pvp_state);
                 ImGui::Text("PvP enabled: %d", g_pTerrain->is_pvp_zone());
                 ImGui::Separator();
+
+                ImGui::Text("Move mode: %d", character->m_btMoveMODE);
             }
         }
     }

@@ -506,7 +506,7 @@ CZoneTHREAD::GetSECTOR(int iSectorX, int iSectorY) {
     assert(iSectorX >= 0 && iSectorX < Get_SectorXCNT());
     assert(iSectorY >= 0 && iSectorY < Get_SectorYCNT());
 
-    return &m_ppSECTOR[iSectorY][iSectorY];
+    return &m_ppSECTOR[iSectorY][iSectorX];
 }
 
 //-------------------------------------------------------------------------------------------------

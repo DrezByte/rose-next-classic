@@ -691,7 +691,7 @@ classUSER::Dead(CObjCHAR* pKiller) {
 
     this->Clear_SummonCNT(); // 죽을때...자신이 소환시킨 갯수 0개로...
 
-    this->Update_SPEED(); // 상태때문에 적용됐던 이동속도
+    this->update_speed(); // 상태때문에 적용됐던 이동속도
 
     this->m_iAppliedPenaltyEXP = 0;
     if (CObjCHAR::Dead(NULL)) {
@@ -1581,7 +1581,7 @@ classUSER::Send_gsv_SKILL_LEARN_REPLY(short nSkillIDX, bool bCheckCOND) {
                 case 0x03:
                     this->Cal_BattleAbility();
                 case 0x01:
-                    this->Update_SPEED();
+                    this->update_speed();
                     this->Send_gsv_SPEED_CHANGED();
             }
         } else
@@ -3018,7 +3018,7 @@ bool
 classUSER::Send_gsv_SPEED_CHANGED(bool bUpdateSpeed) {
     // 속도 갱신...
     if (bUpdateSpeed)
-        this->Update_SPEED();
+        this->update_speed();
 
     classPACKET* pCPacket = Packet_AllocNLock();
     if (!pCPacket)
@@ -5493,7 +5493,7 @@ classUSER::Recv_cli_SKILL_LEVELUP_REQ(t_PACKET* pPacket) {
                 case 0x03:
                     this->Cal_BattleAbility();
                 case 0x01:
-                    this->Update_SPEED();
+                    this->update_speed();
                     this->Send_gsv_SPEED_CHANGED();
             }
 
@@ -8392,7 +8392,7 @@ classUSER::send_update_stats_all() {
     const auto stats = stats_builder.Finish();
 
     Packets::UpdateStatsBuilder rep(builder);
-    rep.add_target_id(this->Get_INDEX());
+    rep.add_character_id(this->Get_INDEX());
     rep.add_stats(stats);
     const auto pak = rep.Finish();
 
@@ -8418,7 +8418,7 @@ classUSER::send_update_move_speed(uint16_t move_speed) {
     const auto stats = stats_builder.Finish();
 
     Packets::UpdateStatsBuilder rep(builder);
-    rep.add_target_id(this->Get_INDEX());
+    rep.add_character_id(this->Get_INDEX());
     rep.add_stats(stats);
     const auto pak = rep.Finish();
 

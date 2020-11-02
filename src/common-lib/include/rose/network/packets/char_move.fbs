@@ -1,0 +1,23 @@
+include "common/vec3.fbs";
+
+namespace Rose.Network.Packets;
+
+enum CharacterMoveMode: byte {
+	Walk = 0,
+	Run = 1,
+	Drive = 2,
+	Ride = 4,
+}
+
+table CharacterMove {
+	character_id: uint32;
+
+	target_id: uint32;
+	target_pos: Vec3;
+	target_distance: float;
+
+	move_speed: uint16;
+	move_mode: CharacterMoveMode;
+}
+
+root_type CharacterMove;

@@ -29,7 +29,7 @@ table Stats {
 }
 
 table UpdateStats {
-	target_id: uint32;
+	character_id: uint32;
 	stats: Stats;
 }
 

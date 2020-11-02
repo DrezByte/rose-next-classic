@@ -5,6 +5,9 @@
 #include "GS_ThreadZONE.h"
 #include "ZoneLIST.h"
 
+#include "network.h"
+
+using namespace Rose::Network;
 
 CAI_OBJ*
 CObjCHAR::AI_FindFirstOBJ(tPOINTF& PosCENTER, int iDistance) {
@@ -213,29 +216,10 @@ CObjCHAR::Send_gsv_MOUSECMD(int iTargetObject) {
     return true;
 }
 
-//-------------------------------------------------------------------------------------------------
 bool
 CObjCHAR::Send_gsv_MOVE() {
-    //	LogString( 0xffff, "Send_gsv_MOVE( %s:%.0f ) , (%.0f,%.0f) => (%.0f,%.0f) \n",
-    // this->Get_NAME(), m_fCurMoveSpeed, m_PosCUR.x, m_PosCUR.y, m_PosGOTO.x, m_PosGOTO.y);
-
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return false;
-
-    pCPacket->m_HEADER.m_wType = GSV_MOVE;
-    pCPacket->m_HEADER.m_nSize = sizeof(gsv_MOVE);
-    pCPacket->m_gsv_MOVE.m_wSourObjIDX = this->Get_INDEX();
-    pCPacket->m_gsv_MOVE.m_wDestObjIDX = this->Get_TargetIDX();
-    pCPacket->m_gsv_MOVE.m_PosTO = this->m_PosGOTO;
-    pCPacket->m_gsv_MOVE.m_wSrvDIST = (WORD)::distance(m_PosCUR, m_PosGOTO);
-    pCPacket->m_gsv_MOVE.m_btMoveMODE = this->Get_MoveMODE();
-
-    this->GetZONE()->SendPacketToSectors(this, pCPacket);
-
-    Packet_ReleaseNUnlock(pCPacket);
-
-    return true;
+    Packet pak = build_char_move_packet(*this);
+    return send_packet_nearby(*this, pak);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -679,15 +663,9 @@ CObjCHAR::SetCMD_MOVE2D(float fPosX, float fPosY, BYTE btRunMODE) {
     }
     return false;
 }
+
 bool
 CObjCHAR::SetCMD_ATTACK(int iTargetObject) {
-    /*
-        if ( this->m_iTargetObject != iTargetObject ) {
-            if ( this->m_iTargetObject ) {
-                pEnemy->Del_ENEMY( this );
-            }
-        }
-    */
     if (CObjAI::SetCMD_ATTACK(iTargetObject)) {
         if (CMD_ATTACK == this->Get_COMMAND()) {
             // 위장술 해제...

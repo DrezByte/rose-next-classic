@@ -13,7 +13,7 @@ CObjAVT::~CObjAVT() {
 }
 
 void
-CObjAVT::Update_SPEED() {
+CObjAVT::update_speed() {
     float fSpeed = this->Cal_RunSPEED();
     this->stats.move_speed = floor_int(fSpeed);
 
@@ -285,7 +285,7 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
             if (!m_bRunMODE) {
                 this->stats.move_speed = Rose::GameStaticConfig::DEFAULT_WALK_SPEED;;
             } else {
-                this->Update_SPEED();
+                this->update_speed();
             }
 
             if (Get_STATE() == CS_MOVE) {

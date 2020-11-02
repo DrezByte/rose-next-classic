@@ -19,6 +19,9 @@
     <Filter Include="io">
       <UniqueIdentifier>{9dccc8fc-9564-4d2d-9f16-22372da6b13c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="network\packets\common">
+      <UniqueIdentifier>{7bd101c5-06f8-4929-9ecb-950f961b1b83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\rose\common\log.h" />
@@ -61,6 +64,10 @@
     <ClInclude Include="include\rose\io\reader.h">
       <Filter>io</Filter>
     </ClInclude>
+    <ClInclude Include="include\rose\network\network_util.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rose\common\character_state.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />
@@ -80,6 +87,9 @@
     <ClCompile Include="src\io\reader.cpp">
       <Filter>io</Filter>
     </ClCompile>
+    <ClCompile Include="src\network\network_util.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Flatbuffer Include="..\common-lib\include\rose\network\packets\login_rep.fbs">
@@ -96,6 +106,12 @@
     </FlatBuffer>
     <FlatBuffer Include="..\common-lib\include\rose\network\packets\update_stats.fbs">
       <Filter>network\packets</Filter>
+    </FlatBuffer>
+    <FlatBuffer Include="..\common-lib\include\rose\network\packets\char_move.fbs">
+      <Filter>network\packets</Filter>
+    </FlatBuffer>
+    <FlatBuffer Include="..\common-lib\include\rose\network\packets\common\vec3.fbs">
+      <Filter>network\packets\common</Filter>
     </FlatBuffer>
   </ItemGroup>
 </Project>

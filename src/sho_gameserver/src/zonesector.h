@@ -18,6 +18,23 @@
  * \brief	존의 영역을 구성하는 기본 섹터 클래스
  */
 class CZoneSECTOR {
+public:
+    std::vector<CGameOBJ*> objects() {
+        this->LockSector();
+
+        std::vector<CGameOBJ*> res;
+        res.reserve(m_ObjLIST.GetNodeCount());
+
+        classDLLNODE<CGameOBJ*>* pNode;
+        for (pNode = m_ObjLIST.GetHeadNode(); pNode; pNode = m_ObjLIST.GetNextNode(pNode)) {
+            res.push_back(pNode->DATA);
+        }
+
+        this->UnlockSector();
+
+        return res;
+    }
+
 protected:
     static int m_iSectorCNT;
 

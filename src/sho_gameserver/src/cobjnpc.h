@@ -29,6 +29,10 @@ struct tagSavedDAMAGE {
  *			CObjCHAR클래스를 상속받음
  */
 class CObjMOB: public CObjCHAR {
+public:
+    // -- CObjAI overrides
+    void update_speed() override;
+
 private:
     char m_cSkillMotionIDX;
 

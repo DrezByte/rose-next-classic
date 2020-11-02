@@ -532,18 +532,15 @@ CObjMOB::Set_EMOTION(short nEmotionIDX) {
     this->Set_MOTION(nEmotionIDX, m_fCurMoveSpeed);
 }
 
-/*
-bool CObjMOB::Check_EVENT (CGameOBJ *pSourOBJ, short nEventIDX)
-{
-    if ( pSourOBJ->IsA( OBJ_USER ) && m_nQuestIDX ) {
-        return g_pEventLIST->Run_EVENT( this->Get_INDEX(), m_nQuestIDX, nEventIDX );
+void
+CObjMOB::update_speed() {
+    if (this->m_bRunMODE == MOVE_MODE_WALK) {
+        this->stats.move_speed = NPC_WALK_SPEED(this->m_nCharIdx);
+    } else {
+        this->stats.move_speed = NPC_RUN_SPEED(this->m_nCharIdx);
     }
-
-    return false;
 }
-*/
 
-//-------------------------------------------------------------------------------------------------
 int
 CObjMOB::Proc() {
     if (this->Get_HP() <= 0 && CMD_DIE != this->Get_COMMAND()) {

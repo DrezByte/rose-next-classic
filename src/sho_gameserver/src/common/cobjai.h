@@ -104,6 +104,11 @@ public:
     virtual uint32_t total_attack_power();
     virtual uint32_t total_hit_rate();
 
+    /// <summary>
+    /// Update move and attack speed for this entity
+    /// </summary>
+    virtual void update_speed() {};
+
 private:
     WORD m_wState;
     WORD m_wCommand;

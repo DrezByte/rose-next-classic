@@ -18,6 +18,10 @@
  */
 class CObjAVT: public CObjCHAR, public CUserDATA {
 public:
+    // -- CObjAI overrides
+    void update_speed() override;
+
+public:
     // virtual function inherit from CGameOBJ -----------------------------------------------------
     t_ObjTAG Get_TYPE() { return OBJ_AVATAR; }
     char* Get_NAME() { return m_Name.Get(); }
@@ -406,9 +410,9 @@ public:
 
         this->m_IngSTATUS.goddess_effect.update(this->Get_LEVEL());
         Cal_BattleAbility();
-        Update_SPEED();
+        update_speed();
     }
-    void Update_SPEED();
+
     void Resurrection(short nSkillIDX);
 
     classDLLNODE<CObjAVT*>* m_pTargetNODE;

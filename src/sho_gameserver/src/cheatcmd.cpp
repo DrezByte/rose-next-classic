@@ -989,7 +989,7 @@ classUSER::Cheat_set(classUSER* pUSER, char* pArg1, char* pArg2, char* pArg3) {
                     iValue = GameStaticConfig::MAX_STAT;
 
                 pUSER->m_BasicAbility.m_nBasicA[nI] = iValue;
-                pUSER->Update_SPEED();
+                pUSER->update_speed();
                 return CHEAT_SEND;
             }
         }

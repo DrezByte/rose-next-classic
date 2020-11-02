@@ -340,10 +340,7 @@ CObjAI::SetCMD_MOVE(tPOINTF& PosFROM, tPOINTF& PosTO, int iServerTarget) {
         return false;
     }
 #endif
-    // if ( this->Get_WeightRATE() >= WEIGHT_RATE_STOP ) {
-    //	// 무겁다.. 명령 불가...
-    //	return false;
-    //}
+    this->update_speed();
 
     m_wCommand = CMD_MOVE;
 
@@ -384,10 +381,8 @@ CObjAI::SetCMD_ATTACK(int iServerTarget) {
         return false;
     }
 #endif
-    // if ( this->Get_WeightRATE() >= WEIGHT_RATE_STOP ) {
-    //	// 무겁다.. 명령 불가...
-    //	return false;
-    //}
+
+    this->update_speed();
 
     CObjCHAR* pDestCHAR = g_pObjMGR->Get_ClientCharOBJ(iServerTarget, true);
     if (pDestCHAR) {
