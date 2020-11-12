@@ -411,7 +411,7 @@ CZoneFILE::ReadZoneINFO(FILE* fp, long lOffset) {
     m_ppSECTOR = new CZoneSECTOR*[m_iSectorYCnt];
     ::ZeroMemory(m_ppSECTOR, sizeof(CZoneSECTOR*) * m_iSectorYCnt);
     for (nY = 0; nY < m_iSectorYCnt; nY++) {
-        if (AGIT_ZONE_TYPE == ZONE_PVP_STATE(this->m_nZoneNO)) {
+        if (this->is_clan_zone()) {
             // 아지트존
             m_ppSECTOR[nY] = new CAgitSECTOR[m_iSectorXCnt];
         } else
@@ -560,6 +560,8 @@ CZoneFILE::LoadZONE(char* szBaseDIR, short nZoneNO) {
     m_HashKillTRIGGER = ZONE_KILL_TRIGGER(nZoneNO) ? ::StrToHashKey(ZONE_KILL_TRIGGER(nZoneNO)) : 0;
     m_HashDeadTRIGGER = ZONE_DEAD_TRIGGER(nZoneNO) ? ::StrToHashKey(ZONE_DEAD_TRIGGER(nZoneNO)) : 0;
 
+    this->pvp_state = pvp_state_from(ZONE_PVP_STATE(nZoneNO));
+
     short nX, nY;
     for (nY = 0; nY < MAP_MOVE_ATTR_GRID_CNT; nY++) {
         this->m_ppMoveATTR[nY] = new C1BITARRAY(MAP_MOVE_ATTR_GRID_CNT);
@@ -633,7 +635,7 @@ CZoneFILE::LoadZONE(char* szBaseDIR, short nZoneNO) {
     }
 
     this->m_iAgitCNT = 0;
-    if (AGIT_ZONE_TYPE == ZONE_PVP_STATE(this->m_nZoneNO)) {
+    if (this->is_clan_zone()) {
         // 아지트 존이면... 부활위치를 기준으로... 아지트 구성...
         tagEVENTPOS* pRevivePos;
 
@@ -686,6 +688,18 @@ CZoneFILE::FreeZONE(void) {
     for (short nI = 0; nI < MAP_MOVE_ATTR_GRID_CNT; nI++) {
         SAFE_DELETE(m_ppMoveATTR[nI]);
     }
+}
+
+bool
+CZoneFILE::is_pvp_zone() {
+    switch (this->pvp_state) {
+        case PvpState::AllExceptClan:
+        case PvpState::AllExceptParty:
+        case PvpState::All:
+            return true;
+    }
+
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------

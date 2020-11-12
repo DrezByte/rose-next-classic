@@ -28,12 +28,6 @@ enum {
     MAX_FONT,
 };
 
-enum {
-    PVP_CANT = 0,
-    PVP_PERMITION_ALL = 1,
-    PVP_NON_PARTY_ALL = 2,
-};
-
 class CGAMEDATA: public CJSingleton<CGAMEDATA> {
 public:
     CGAMEDATA();
@@ -82,8 +76,6 @@ public:
 #ifdef _DEBUG
     bool m_bShowCurPos;
 #endif
-
-    int m_iPvPState; /// PvP State
 
     /// 시스템 타임.
     SYSTEMTIME m_SystemTime;

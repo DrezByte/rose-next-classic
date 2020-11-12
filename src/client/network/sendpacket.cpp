@@ -505,14 +505,6 @@ CSendPACKET::Send_cli_ATTACK(int iClientTarget) {
         g_pObjMGR->Get_ServerObjectIndex(iClientTarget);
 #endif
 
-    //----------------------------------------------------------------------------------------------------
-    /// PVP 가능존일경우에는 PVP 플래그가 ON 상태가 아니라면 모든 공격명령 패지
-    //----------------------------------------------------------------------------------------------------
-    if (g_pTerrain->IsPVPZone()) {
-        if (g_GameDATA.m_iPvPState == PVP_CANT)
-            return;
-    }
-
     g_CommandFilter.SetPrevCommand(NULL);
 
     this->Send_PACKET(m_pSendPacket);

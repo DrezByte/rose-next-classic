@@ -835,6 +835,7 @@ struct AIACT31
 #endif
 }
 
+// TODO JV: Refactor to allow different pvp_states
 void
 F_AIACT32(stActHead* pActDATA, t_AIPARAM* pEVENT) {
 /*
@@ -848,6 +849,7 @@ struct AIACT32
     BYTE		btOnOff;	// 0 = Off , 1 = On
 };
 */
+/*
 #ifdef __SERVER
     AIACT32* pAct = (AIACT32*)pActDATA;
 
@@ -858,6 +860,7 @@ struct AIACT32
         g_pZoneLIST->Set_PK_FLAG(pAct->nZoneNo, pAct->btOnOff);
     }
 #endif
+*/
 }
 
 void

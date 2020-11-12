@@ -55,6 +55,8 @@ CObjMOB::Init(CZoneTHREAD* pZONE,
 
     this->stats.attack_power = NPC_ATK(m_nCharIdx);
     this->stats.hit_rate = NPC_HIT(m_nCharIdx);
+    
+    this->pvp_state = pvp_state_from(NPC_PVP_STATE(m_nCharIdx));
 
     if (NULL == this->GetZONE()) {
         CObjAI::SetCMD_STOP();

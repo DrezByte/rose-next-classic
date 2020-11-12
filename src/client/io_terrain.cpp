@@ -3403,26 +3403,14 @@ CTERRAIN::InsertCameraPatch(float xChar, float yChar) {
 }
 
 bool
-CTERRAIN::IsAgitZone() {
-    if (ZONE_PVP_STATE(g_pTerrain->GetZoneNO()) == 11)
-        return true;
-
-    return false;
-}
-
-bool
-CTERRAIN::IsPVPZone() {
-    switch (ZONE_PVP_STATE(g_pTerrain->GetZoneNO())) {
-        case 0:
-            return false;
-        case 1:
-        case 2:
+CTERRAIN::is_pvp_zone() {
+    switch (this->pvp_state) {
+        case PvpState::AllExceptClan:
+        case PvpState::AllExceptParty:
+        case PvpState::All:
             return true;
-        case 11:
-            return false;
-        default:
-            return false;
     }
+
     return false;
 }
 //-------------------------------------------------------------------------------------------------

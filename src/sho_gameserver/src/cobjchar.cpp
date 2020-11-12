@@ -518,7 +518,10 @@ CObjCHAR::Init_ADD_CHAR(classPACKET* pCPacket) {
 #else
     pCPacket->m_tag_ADD_CHAR.m_cTeamNO = this->Get_TeamNO();
 #endif
+
+    pCPacket->m_tag_ADD_CHAR.pvp_state = this->pvp_state;
 }
+
 void
 CObjCHAR::Add_ADJ_STATUS(classPACKET* pCPacket) {
     if (this->m_IngSTATUS.GetFLAGs()
@@ -1695,4 +1698,16 @@ CObjCHAR::total_attack_power() {
 uint32_t
 CObjCHAR::total_hit_rate() {
     return this->stats.hit_rate + this->m_IngSTATUS.Adj_HIT();
+}
+
+bool
+CObjCHAR::is_pvp_enabled() {
+    switch (this->pvp_state) {
+        case PvpState::AllExceptClan:
+        case PvpState::AllExceptParty:
+        case PvpState::All:
+            return true;
+    }
+
+    return false;
 }

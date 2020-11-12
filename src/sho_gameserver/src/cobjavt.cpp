@@ -102,6 +102,8 @@ CObjAVT::Make_gsv_ADD_OBJECT(classPACKET* pCPacket) {
     pCPacket->m_gsv_AVT_CHAR.m_nJOB = this->GetCur_JOB();
     pCPacket->m_gsv_AVT_CHAR.m_btLEVEL = this->GetCur_LEVEL();
 
+    pCPacket->m_gsv_AVT_CHAR.pvp_state = this->pvp_state;
+
     /*
     if ( this->m_btRideMODE )
         pCPacket->m_tag_ADD_CHAR.m_btMoveMODE = this->m_btRideMODE;
@@ -569,7 +571,7 @@ CObjAVT::Get_AbilityValue(WORD wType) {
             return GetCur_SkillPOINT();
 
         case AT_PK_FLAG:
-            return GetCur_PK_FLAG();
+            return GetCur_PK_FLAG(); // TODO JV: Replace with this->pvp_state? This would allow us to make gear that is only usable when pvp is enabled
         case AT_TEAM_NO:
             return Get_TeamNO();
 

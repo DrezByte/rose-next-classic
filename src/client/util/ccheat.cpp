@@ -811,19 +811,19 @@ classPARSESTR::DoSpecial(char* pStr) {
     char* pARG;
 
     /// PVP 가 허용되지 않음
-    if (!g_pTerrain->IsPVPZone())
+    if (!g_pTerrain->is_pvp_zone())
         return false;
 
     // ON, OFF
     pARG = ParseString(pStr, 1);
 
     if (strcmp("ON", pARG) == 0) {
-        g_GameDATA.m_iPvPState = PVP_PERMITION_ALL;
+        //g_GameDATA.m_iPvPState = PvpState::AllExceptClan;
         return true;
     }
 
     if (strcmp("OFF", pARG) == 0) {
-        g_GameDATA.m_iPvPState = PVP_CANT;
+        //g_GameDATA.m_iPvPState = PvpState::NoPvp;
         return true;
     }
 

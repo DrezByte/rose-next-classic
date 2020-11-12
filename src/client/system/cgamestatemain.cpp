@@ -210,7 +210,7 @@ CGameStateMain::Enter(int iPrevStateID) {
         sfx_font->AddEffectString(child);
     }
 
-    if (g_pTerrain->IsAgitZone())
+    if (g_pTerrain->is_clan_zone())
         g_itMGR.CloseDialog(DLG_TYPE_MINIMAP);
     else
         g_itMGR.OpenDialog(DLG_TYPE_MINIMAP, false);
@@ -1017,27 +1017,41 @@ CGameStateMain::UpdateCheckFrame() {
                 CGameOBJ* pObj = g_pObjMGR->m_pOBJECTS[this->m_iPickedOBJ];
                 if (pObj) {
                     switch (pObj->Get_TYPE()) {
-                        case OBJ_MOB:
-                            if (((CObjCHAR*)pObj)->CanClickable()) {
-                                refCursor.SetCursorType(CCursor::CURSOR_ATTACK);
-                                {
-                                    CTargetManager::GetSingleton().SetMouseTargetObject(
-                                        this->m_iPickedOBJ);
+                        case OBJ_MOB: {
+                            CObjCHAR* character = reinterpret_cast<CObjCHAR*>(pObj);
+                            if (character->CanClickable()) {
+                                if (character->is_pvp_enabled()) {
+                                    refCursor.SetCursorType(CCursor::CURSOR_ATTACK);
+                                    {
+                                        CTargetManager::GetSingleton().SetMouseTargetObject(
+                                            this->m_iPickedOBJ);
+                                    }
+                                } else {
+                                    refCursor.SetCursorType(CCursor::CURSOR_NPC);
                                 }
                             }
-                            break;
-                        case OBJ_NPC:
-                            if (((CObjCHAR*)pObj)->CanClickable()) {
-                                refCursor.SetCursorType(CCursor::CURSOR_NPC);
+                        } break;
+                        case OBJ_NPC: {
+                            CObjCHAR* character = reinterpret_cast<CObjCHAR*>(pObj);
+                            if (character->CanClickable()) {
+                                if (character->is_pvp_enabled()) {
+                                    refCursor.SetCursorType(CCursor::CURSOR_ATTACK);
+                                } else {
+                                    refCursor.SetCursorType(CCursor::CURSOR_NPC);
+                                }
                             }
-                            break;
-
-                        case OBJ_AVATAR:
-                            if (((CObjCHAR*)pObj)->CanClickable()) {
-                                refCursor.SetCursorType(CCursor::CURSOR_USER);
+                        } break;
+                        case OBJ_AVATAR: {
+                            CObjCHAR* character = reinterpret_cast<CObjCHAR*>(pObj);
+                            if (character->CanClickable()) {
+                                if (g_pAVATAR->is_pvp_enabled()
+                                    && CUserInputState::IsEnemy(character)) {
+                                    refCursor.SetCursorType(CCursor::CURSOR_ATTACK);
+                                } else {
+                                    refCursor.SetCursorType(CCursor::CURSOR_USER);
+                                }
                             }
-                            break;
-
+                        } break;
                         case OBJ_ITEM: {
                             CInfo MouseInfo;
                             MouseInfo.Clear();

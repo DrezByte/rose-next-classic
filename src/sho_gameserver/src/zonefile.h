@@ -3,6 +3,10 @@
 #include "util/classhash.h"
 #include "CBitARRAY.h"
 
+#include "rose/common/pvp_state_types.h"
+
+using namespace Rose::Common;
+
 #undef __NPC_TEST
 
 struct tagEVENTPOS {
@@ -27,6 +31,12 @@ struct tagEVENTPOS {
 class CRegenPOINT;
 
 class CZoneFILE: public classTHREAD {
+public:
+    PvpState pvp_state = PvpState::NoPvp;
+
+    bool is_pvp_zone();
+    bool is_clan_zone() { return this->pvp_state == PvpState::ClanZone; }
+
 private:
     classHASH<tagEVENTPOS*>* m_pPosLIST;
     t_HASHKEY m_HashKeyRevivePOS;

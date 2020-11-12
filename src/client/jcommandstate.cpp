@@ -159,16 +159,21 @@ CUserInputState::PVPTarget_Click(int iTargetType,
     D3DVECTOR& pickPos,
     bool bDBClick) {
     CObjAVT* pObjAVT = g_pObjMGR->Get_CharAVT(iTargetObj, true);
-    if (pObjAVT == NULL)
+    if (pObjAVT == NULL) {
         return;
-
-    /// PVP 허용일경우..
-    if (g_GameDATA.m_iPvPState) {
-        /// 서로 적이라면..
-        if (CUserInputState::IsEnemy(pObjAVT)) {
-            m_iCurrentTarget = iTargetObj;
-            g_pNet->Send_cli_ATTACK(iTargetObj);
-        }
+    }
+    
+    if (!g_pAVATAR->is_pvp_enabled() && pObjAVT->is_pvp_enabled()) {
+        g_itMGR.AppendChatMsg("You cannot attack target when in a save zone.",
+            IT_MGR::CHAT_TYPE_SYSTEM);
+        return;
+    } else if (g_pAVATAR->is_pvp_enabled() && !pObjAVT->is_pvp_enabled()) {
+        g_itMGR.AppendChatMsg("Target is in a save zone.",
+            IT_MGR::CHAT_TYPE_SYSTEM);
+        return;
+    } else if (g_pAVATAR->is_pvp_enabled() && CUserInputState::IsEnemy(pObjAVT)) {
+        m_iCurrentTarget = iTargetObj;
+        g_pNet->Send_cli_ATTACK(iTargetObj);
     }
 }
 
@@ -179,40 +184,37 @@ CUserInputState::PVPTarget_Click(int iTargetType,
 
 bool
 CUserInputState::IsEnemy(CObjCHAR* pTarget) {
-    if (pTarget == NULL)
+    if (pTarget == NULL) {
         return false;
-
-    //----------------------------------------------------------------------------------------------------
-    /// PVP 가능존일경우에는 PVP 플래그가 ON 상태가 아니라면 모든 공격명령 패지
-    //----------------------------------------------------------------------------------------------------
-    if (g_pTerrain->IsPVPZone()) {
-        if (g_GameDATA.m_iPvPState == PVP_CANT)
-            return false;
     }
 
-    switch (g_GameDATA.m_iPvPState) {
-        case PVP_PERMITION_ALL: {
-            if (!(g_pAVATAR->Is_ALLIED(pTarget)))
+    switch (pTarget->pvp_state) {
+        case PvpState::AllExceptClan: {
+            if (!g_pAVATAR->Is_ALLIED(pTarget)) {
                 return true;
+            }
+            
             return false;
         } break;
-        case PVP_NON_PARTY_ALL: {
-            int iServeObjIDX = g_pObjMGR->Get_ServerObjectIndex(pTarget->Get_INDEX());
+        case PvpState::AllExceptParty: {
+            const int object_idx = g_pObjMGR->Get_ServerObjectIndex(pTarget->Get_INDEX());
+            PartyMember party_member;
 
-            PartyMember partMember;
-            /// 내파티가 아니라면..
-            if (CParty::GetInstance().GetMemberInfoByObjSvrIdx(iServeObjIDX, partMember) == false) {
+            if (CParty::GetInstance().GetMemberInfoByObjSvrIdx(object_idx, party_member) == false) {
                 return true;
             }
 
             return false;
         } break;
-        case PVP_CANT:
-            break;
+        case PvpState::All:
+            return true;
+        case PvpState::NoPvp:
+            return false;
     }
 
-    if (g_pAVATAR->Is_ALLIED(pTarget))
+    if (g_pAVATAR->Is_ALLIED(pTarget)) {
         return false;
+    }
 
     return true;
 }
@@ -554,7 +556,7 @@ CDefaultUserInput::SetTargetObject_ShiftClick(int iTargetType,
     int iTargetObj,
     D3DVECTOR& pickPos,
     bool bDBClick) {
-    if (g_GameDATA.m_iPvPState == PVP_PERMITION_ALL) {
+    if (g_pAVATAR->pvp_state == PvpState::AllExceptClan) {
         switch (m_iCurrentTargetType) {
             case OBJ_AVATAR: {
                 CObjAVT* pObjAVT = g_pObjMGR->Get_CharAVT(iTargetObj, true);
@@ -908,7 +910,7 @@ CSevenHeartUserInput::SetTargetObject_ShiftClick(int iTargetType,
     int iTargetObj,
     D3DVECTOR& pickPos,
     bool bDBClick) {
-    if (g_GameDATA.m_iPvPState == PVP_PERMITION_ALL) {
+    if (g_pAVATAR->pvp_state == PvpState::AllExceptClan) {
         switch (m_iCurrentTargetType) {
             case OBJ_AVATAR: {
                 CObjAVT* pObjAVT = g_pObjMGR->Get_CharAVT(iTargetObj, true);

@@ -3254,13 +3254,14 @@ CObjCHAR::SetNewCommandAfterSkill_PET(int iSkillNO) {
         }
 
         case SA_ATTACK: {
-            CObjCHAR* pTarget = (CObjCHAR*)(this->Get_TargetOBJ());
+            CObjCHAR* pTarget = reinterpret_cast<CObjCHAR*>(this->Get_TargetOBJ());
             // g_pObjMGR->Get_ClientCharOBJ(this->m_iServerTarget,false);
 
             if (pTarget) {
                 /// 나일경우 PVP존이 아닌존에서 유져공격명령은 취소한다.
                 if (this->IsA(OBJ_USER) && pTarget->IsUSER()) {
-                    if (!g_pTerrain->IsPVPZone() || g_GameDATA.m_iPvPState == PVP_CANT) {
+                    if (!g_pTerrain->is_pvp_zone() || !g_pAVATAR->is_pvp_enabled()
+                        || !pTarget->is_pvp_enabled()) {
                         m_pObjCART->Set_COMMAND(CMD_STOP);
                         this->Set_COMMAND(CMD_STOP);
                     }
@@ -3290,7 +3291,8 @@ CObjCHAR::SetNewCommandAfterSkill_PET(int iSkillNO) {
                 if (pTarget) {
                     /// 나일경우 PVP존이 아닌존에서 유져공격명령은 취소한다.
                     if (this->IsA(OBJ_USER) && pTarget->IsUSER()) {
-                        if (!g_pTerrain->IsPVPZone() || g_GameDATA.m_iPvPState == PVP_CANT) {
+                        if (!g_pTerrain->is_pvp_zone() || !g_pAVATAR->is_pvp_enabled()
+                            || !pTarget->is_pvp_enabled()) {
                             m_pObjCART->Set_COMMAND(CMD_STOP);
                             this->Set_COMMAND(CMD_STOP);
                         }
@@ -5935,4 +5937,16 @@ CGoddessMgr::ProcessVisible(float& fv, float fseq) {
     }
 
     return -1;
+}
+
+bool
+CObjCHAR::is_pvp_enabled() {
+    switch (this->pvp_state) {
+        case PvpState::AllExceptClan:
+        case PvpState::AllExceptParty:
+        case PvpState::All:
+            return true;
+    }
+
+    return false;
 }

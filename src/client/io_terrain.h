@@ -368,6 +368,11 @@ class CTERRAIN {
 public:
     std::vector<Brush> brushes;
 
+    PvpState pvp_state = PvpState::NoPvp;
+
+    bool is_pvp_zone();
+    bool is_clan_zone() { return this->pvp_state == PvpState::ClanZone; }
+
 private:
     CRITICAL_SECTION m_csZONE;
 
@@ -520,8 +525,6 @@ public:
     /// bool	IsLoadingImmediateMode( ){ return m_bLoadImmediate; };
 
     int GetZoneNO() { return m_nZoneNO; }
-    bool IsPVPZone();
-    bool IsAgitZone();
 
     ///
     /// 현재 월드 위치로 해당 패치를 구하기

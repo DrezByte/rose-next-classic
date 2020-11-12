@@ -24,6 +24,10 @@
     #include "GameProc\changeactionmode.h"
 #endif
 
+#include "rose/common/pvp_state_types.h"
+
+using namespace Rose::Common;
+
 #define QUEST_EVENT_ON_DEAD 0
 
 const int INVALID_DUMMY_POINT_NUM = 999;
@@ -49,6 +53,11 @@ class CObjAVT;
 ///
 
 class CObjCHAR: public CObjAI {
+public:
+    PvpState pvp_state = PvpState::NoPvp;
+
+    bool is_pvp_enabled();
+
 protected:
     int m_iHP;
     int m_iMP;
@@ -1074,7 +1083,7 @@ public:
     void Set_CON(int iCon) { m_iCon = iCon; }
     void Set_AddRecoverHP(int iRecoverHP) { m_iRecoverHP = iRecoverHP; }
     void Set_AddRecoverMP(int iRecoverMP) { m_iRecoverMP = iRecoverMP; }
-
+    
 public:
     /// 캐릭터 표정
     void SetCharExpression(int iFaceNo) { m_iExpression = iFaceNo; }

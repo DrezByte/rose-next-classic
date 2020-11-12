@@ -213,6 +213,10 @@ draw_target_window() {
                     character->Get_CurYPOS(),
                     character->Get_CurZPOS());
                 ImGui::Separator();
+                ImGui::Text("PvP state: %d", character->pvp_state);
+                ImGui::Text("PvP enabled: %d", character->is_pvp_enabled());
+                ImGui::Text("Team number: %d", character->Get_TeamNO());
+                ImGui::Separator();
 
                 ImGui::Text("Stats");
                 ImGui::Separator();
@@ -242,6 +246,12 @@ draw_target_window() {
                 ImGui::Text("Model speed: %.3f", character->Get_ModelSPEED());
                 ImGui::Text("Move speed: %.3f", character->Get_MoveAniSPEED());
                 ImGui::Text("Attack speed: %.3f", character->Get_fAttackSPEED());
+                ImGui::Separator();
+
+                ImGui::Text("Zone");
+                ImGui::Separator();
+                ImGui::Text("PvP state: %d", g_pTerrain->pvp_state);
+                ImGui::Text("PvP enabled: %d", g_pTerrain->is_pvp_zone());
                 ImGui::Separator();
             }
         }

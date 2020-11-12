@@ -310,8 +310,8 @@ CBasicCommand::Execute() {
             CObjAVT* pAVT = g_pObjMGR->Get_CharAVT(iTargetObjClientIndex, true);
 
             if (iTargetObjClientIndex != g_pAVATAR->Get_INDEX() && pAVT) {
-                if (!g_pTerrain->IsPVPZone()
-                    || (g_pTerrain->IsPVPZone() && pAVT->Get_TeamNO() == g_pAVATAR->Get_TeamNO())) {
+                if (!g_pTerrain->is_pvp_zone()
+                    || (g_pTerrain->is_pvp_zone() && pAVT->Get_TeamNO() == g_pAVATAR->Get_TeamNO())) {
                     if (CParty::GetInstance().HasParty()) {
                         ///파티 초대
                         if (CParty::GetInstance().IsPartyLeader()) {

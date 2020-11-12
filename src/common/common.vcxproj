@@ -16,6 +16,7 @@
     <ClInclude Include="include\rose\common\commands.h" />
     <ClInclude Include="include\rose\common\game_types.h" />
     <ClInclude Include="include\rose\common\server_config.h" />
+    <ClInclude Include="include\rose\common\pvp_state_types.h" />
     <ClInclude Include="include\rose\common\log.h" />
     <ClInclude Include="include\rose\common\game_config.h" />
     <ClInclude Include="include\rose\common\status_effect\goddess_effect.h" />

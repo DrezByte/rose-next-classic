@@ -315,6 +315,7 @@ CZoneLIST::Set_PK_FLAG(short nZoneNO, BYTE btOnOff) {
     if (pZONE)
         pZONE->Set_PK_FLAG(btOnOff);
 }
+
 void
 CZoneLIST::Set_PK_FLAG(CAI_OBJ* pChar, BYTE btOnOff) {
     CObjCHAR* pSourCHAR = static_cast<CObjCHAR*>(pChar);
@@ -380,9 +381,17 @@ CZoneLIST::Set_RegenSYSTEM(short nZoneNO, BYTE btOnOff) {
 }
 
 bool
-CZoneLIST::IsAgitZONE(short nZoneNO) {
-    if (IsValidZONE(nZoneNO)) {
-        return AGIT_ZONE_TYPE == ZONE_PVP_STATE(nZoneNO);
+CZoneLIST::is_pvp_zone(int map_id) {
+    if (IsValidZONE(map_id)) {
+        return this->GetZONE(map_id)->is_pvp_zone();
+    }
+    return false;
+}
+
+bool
+CZoneLIST::is_clan_zone(int map_id) {
+    if (IsValidZONE(map_id)) {
+        return this->GetZONE(map_id)->is_clan_zone();
     }
     return false;
 }

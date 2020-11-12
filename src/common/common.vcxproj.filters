@@ -48,6 +48,7 @@
     <ClInclude Include="include\rose\common\commands.h" />
     <ClInclude Include="include\rose\common\game_types.h" />
     <ClInclude Include="include\rose\common\character_stats.h" />
+    <ClInclude Include="include\rose\common\pvp_state_types.h" />
     <ClInclude Include="include\rose\util\uuid.h">
       <Filter>util</Filter>
     </ClInclude>

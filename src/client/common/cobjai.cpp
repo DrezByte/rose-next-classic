@@ -376,7 +376,7 @@ CObjAI::SetNewCommandAfterSkill(int iSkillNO) {
                 CObjCHAR* pDestCHAR = (CObjCHAR*)(this->Get_TargetOBJ());
                 /// 나일경우 PVP존이 아닌존에서 유져공격명령은 취소한다.
                 if (this->IsA(OBJ_USER) && pDestCHAR->IsUSER()) {
-                    if (!g_pTerrain->IsPVPZone() || g_GameDATA.m_iPvPState == PVP_CANT) {
+                    if (!g_pTerrain->is_pvp_zone() || g_pAVATAR->pvp_state == PvpState::NoPvp) {
                         g_pNet->Send_cli_STOP(g_pAVATAR->Get_CurPOS());
                         m_wCommand = CMD_STOP;
                         return;
@@ -397,7 +397,7 @@ CObjAI::SetNewCommandAfterSkill(int iSkillNO) {
                 if (pDestCHAR) {
                     /// 나일경우 PVP존이 아닌존에서 유져공격명령은 취소한다.
                     if (this->IsA(OBJ_USER) && pDestCHAR->IsUSER()) {
-                        if (!g_pTerrain->IsPVPZone() || g_GameDATA.m_iPvPState == PVP_CANT) {
+                        if (!g_pTerrain->is_pvp_zone() || g_pAVATAR->pvp_state == PvpState::NoPvp) {
                             g_pNet->Send_cli_STOP(g_pAVATAR->Get_CurPOS());
                             m_wCommand = CMD_STOP;
                             return;
@@ -768,7 +768,7 @@ CObjAI::SetCMD_ATTACK(int iServerTarget) {
 
         /// 나일경우 PVP존이 아닌존에서 유져공격명령은 취소한다.
         if (this->IsA(OBJ_USER) && pDestCHAR->IsUSER()) {
-            if (!g_pTerrain->IsPVPZone() || g_GameDATA.m_iPvPState == PVP_CANT) {
+            if (!g_pTerrain->is_pvp_zone() || g_pAVATAR->pvp_state == PvpState::NoPvp) {
                 g_pNet->Send_cli_STOP(g_pAVATAR->Get_CurPOS());
                 m_wCommand = CMD_STOP;
                 return false;

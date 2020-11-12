@@ -78,7 +78,7 @@ SetServerVAR(tagVAR_GLOBAL* pVAR) {
             sizeof(BYTE) * MAX_PRICE_TYPE);
     }
 
-    g_GameDATA.m_iPvPState = pVAR->m_dwGlobalFLAGS & ZONE_FLAG_PK_ALLOWED;
+    //g_pAVATAR->pvp_state = pVAR->m_dwGlobalFLAGS & ZONE_FLAG_PK_ALLOWED;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -173,8 +173,8 @@ CRecvPACKET::Recv_gsv_SET_GLOBAL_VAR() {
 //-------------------------------------------------------------------------------------------------
 void
 CRecvPACKET::Recv_gsv_SET_GLOVAL_FLAG() {
-    g_GameDATA.m_iPvPState =
-        m_pRecvPacket->m_gsv_SET_GLOBAL_FLAG.m_dwGlobalFLAGS & ZONE_FLAG_PK_ALLOWED;
+    //g_pAVATAR->pvp_state =
+    //    m_pRecvPacket->m_gsv_SET_GLOBAL_FLAG.m_dwGlobalFLAGS & ZONE_FLAG_PK_ALLOWED;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -588,6 +588,9 @@ void
 CRecvPACKET::Recv_gsv_JOIN_ZONE() {
     if (!g_pAVATAR)
         return;
+
+    g_pTerrain->pvp_state = m_pRecvPacket->m_gsv_JOIN_ZONE.zone_pvp_state;
+    g_pAVATAR->pvp_state = m_pRecvPacket->m_gsv_JOIN_ZONE.pvp_state;
 
     // 내 아바타의 인덱스...
     g_pObjMGR->Set_ServerObjectIndex(g_pAVATAR->Get_INDEX(),
@@ -1262,6 +1265,8 @@ CRecvPACKET::Recv_gsv_NPC_CHAR() {
             /*char Buf[255];
             sprintf( Buf, " 서버로 부터이벤트 변수 받음 %d\n",
             m_pRecvPacket->m_gsv_NPC_CHAR.m_nEventSTATUS ); MessageBox( NULL, Buf, "...", MB_OK );*/
+            
+            pSourCHAR->pvp_state = m_pRecvPacket->m_gsv_NPC_CHAR.pvp_state;
 
             LogString(LOG_NORMAL,
                 "Add NPC : [%s] CObj: %d, SObj: %d \n",
@@ -1361,11 +1366,9 @@ CRecvPACKET::Recv_gsv_MOB_CHAR() {
             g_pObjMGR->Get_CharOBJ( nCObj, false )->Get_CurPOS().y,
             g_pObjMGR->Get_CharOBJ( nCObj, false )->Get_CurPOS().z );*/
 
-            //-------------------------------------------------------------------------------------
-            /// 소환몹일경우.. 소환몹임을 표시함.
-            //-------------------------------------------------------------------------------------
-            if (pChar) {
-                ;
+            CObjCHAR* mob = g_pObjMGR->Get_CharOBJ(nCObj, false);
+            if (mob) {
+                mob->pvp_state = m_pRecvPacket->m_gsv_MOB_CHAR.pvp_state;
             }
 
             //-------------------------------------------------------------------------------------
@@ -1453,6 +1456,8 @@ CRecvPACKET::Recv_gsv_AVT_CHAR() {
 
     pNewAVT->SetAvtLevel(m_pRecvPacket->m_gsv_AVT_CHAR.m_btLEVEL);
     /// Job .. 추가..
+
+    pNewAVT->pvp_state = m_pRecvPacket->m_gsv_AVT_CHAR.pvp_state;
 
     //------------------------------------------------------------------------------------------
     ///파티원일경우

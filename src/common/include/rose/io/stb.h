@@ -311,14 +311,9 @@ constexpr const char* ZONE_STB = "3ddata/stb/list_zone.stb";
 
 #define NPC_QUEST_TYPE(I) g_TblNPC.get_int32(I, 38)
 #define NPC_GLOW_COLOR(I) g_TblNPC.get_int32(I, 39)
-#define NPC_GLOW_COLOR(I) g_TblNPC.get_int32(I, 39)
+#define NPC_STRING_ID(I) g_TblNPC.get_cstr(I, 40)
 
-#define NPC_STRING_ID_COLOUM 40
-#define NPC_STRING_ID(I) g_TblNPC.get_cstr(I, NPC_STRING_ID_COLOUM)
-
-#define NPC_ATTRIBUTE(I) g_TblNPC.get_int32(I, 43)
-#define NPC_CREATE_EFFECT(I) g_TblNPC.get_int32(I, 44)
-#define NPC_CREATE_SOUND(I) g_TblNPC.get_int32(I, 45)
+#define NPC_PVP_STATE(I) g_TblNPC.get_int32(I, 43)
 
 // type_motion.stb
 #define FILE_MOTION(WEAPON, ACTION) g_TblAniTYPE.get_int32(ACTION, WEAPON)

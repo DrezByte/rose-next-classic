@@ -125,7 +125,6 @@ CGAMEDATA::CGAMEDATA():
     m_bNoWeight = false;
     ; ///무게제한 무시 flag: 추후 클라이언트에서 뺄것
     m_fTestVal = 0.0f;
-    m_iPvPState = PVP_CANT;
 
     m_dwGameStartTime = GetTime(); /// 게임 시작 시간.
     m_dwFrevFrameTime = 0; /// 이전 프레임 타임

@@ -61,7 +61,7 @@ classUSER::Reward_WARP(int iZoneNO, tPOINTF& PosGOTO) {
     if (!this->Check_WarpPayment(iZoneNO))
         return false;
 
-    if (g_pZoneLIST->IsAgitZONE(iZoneNO)) {
+    if (g_pZoneLIST->is_clan_zone(iZoneNO)) {
         if (this->GetClanID()) {
             CZoneTHREAD* pZone = g_pZoneLIST->GetZONE(iZoneNO);
             if (pZone) {
@@ -696,8 +696,7 @@ classUSER::Dead(CObjCHAR* pKiller) {
     this->m_iAppliedPenaltyEXP = 0;
     if (CObjCHAR::Dead(NULL)) {
         // 소환된 몹이 아니면...
-        if (!pKiller->IsUSER()
-            && !pKiller->GetSummonedSkillIDX() /* 0 == ZONE_PVP_STATE( this->m_nZoneNO ) */) {
+        if (!pKiller->IsUSER() && !pKiller->GetSummonedSkillIDX()) {
             // 경험치 패널치 적용.
             this->Set_PenalEXP(PENALTY_EXP_TOWN);
         }
@@ -1202,6 +1201,9 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
     }
 
     m_bSetImmediateRevivePOS = false;
+    
+    // Set pvp state before quest triggers. Quest triggers can overwrite this value
+    this->pvp_state = this->GetZONE()->pvp_state;
 
     this->m_iTeamNO = TEAMNO_USER;
     if (this->GetZONE()->Get_HashJoinTRIGGER()) {
@@ -1239,6 +1241,8 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
 #ifdef __APPLY_04_10_15_TEAMNO
     pCPacket->m_gsv_JOIN_ZONE.m_iTeamNO = this->Get_TeamNO();
 #endif
+    pCPacket->m_gsv_JOIN_ZONE.zone_pvp_state = this->GetZONE()->pvp_state;
+    pCPacket->m_gsv_JOIN_ZONE.pvp_state = this->pvp_state;
 
     this->SendPacket(pCPacket);
 
@@ -1439,7 +1443,7 @@ classUSER::Check_WarpPayment(short nZoneNO) {
         }
     }
     if (ZONE_PLANET_NO(nZoneNO) >= 4) {
-        if (AGIT_ZONE_TYPE == ZONE_PVP_STATE(nZoneNO)) {
+        if (g_pZoneLIST->GetZONE(nZoneNO)->is_clan_zone()) {
             // 아지트존은 엔트리.
             if (!(this->m_dwPayFLAG & PLAY_FLAG_BATTLE)) {
                 // 3번째 행성까지 이동은 엔트리로
@@ -2017,9 +2021,9 @@ classUSER::Recv_cli_REVIVE_REQ(BYTE btReviveTYPE, bool bApplyPenalty, bool bSkip
 
             PosREVIVE.x += (RANDOM(1001) - 500); // 랜덤 5미터..
             PosREVIVE.y += (RANDOM(1001) - 500);
-
+            
             // 2%더 경치를 얻어야 한다.
-            // if ( bApplyPenalty && 0 == ZONE_PVP_STATE( this->m_nZoneNO ) ) {
+            // if ( bApplyPenalty && g_pZoneLIST->GetZONE(this->m_nZoneNO)->pvp_state == PvpState::NoPvp ) {
             //	// 경험치 패널치 적용.
             //	this->Set_PenalEXP( PENALTY_EXP_FIELD-PENALTY_EXP_TOWN );
             //}
@@ -2044,7 +2048,7 @@ classUSER::Recv_cli_REVIVE_REQ(BYTE btReviveTYPE, bool bApplyPenalty, bool bSkip
     // zone server ip ...
     if (bApplyPenalty) {
 #define STB_ING_REVIVE_ROW 57
-        if (ZONE_PVP_STATE(this->m_nZoneNO)) {
+        if (g_pZoneLIST->GetZONE(this->m_nZoneNO)->is_pvp_zone()) {
             // PVP존이면 10FPS * 30초간 무적...
             this->m_IngSTATUS.UpdateIngSTATUS(this, STB_ING_REVIVE_ROW, 30, 1, 0);
         }
@@ -4884,7 +4888,7 @@ classUSER::Recv_cli_P_STORE_OPEN(t_PACKET* pPacket) {
     // PVP존에서는 개인상점 열수 없다...
     if (this->Get_ActiveSKILL())
         return true; // 스킬 케스팅 중일땐 못바꿔
-    if (ZONE_PVP_STATE(this->m_nZoneNO) && 11 != ZONE_PVP_STATE(this->m_nZoneNO))
+    if (!g_pZoneLIST->GetZONE(this->m_nZoneNO)->is_clan_zone())
         return true;
 
     if (this->m_IngSTATUS.IsIgnoreSTATUS())

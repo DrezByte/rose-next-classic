@@ -9,8 +9,6 @@
 #include "CWorldVAR.h"
 //-------------------------------------------------------------------------------------------------
 
-#define AGIT_ZONE_TYPE 11 // ZONE_PVP_STATE값이 11이면 아지트 존이다...
-
 /**
  * \ingroup SHO_GS_LIB
  * \class	CZoneLIST
@@ -47,7 +45,8 @@ public:
     bool InitZoneLIST(char* szBaseDIR);
     void FreeZoneLIST();
 
-    bool IsAgitZONE(short nZoneNO);
+    bool is_pvp_zone(int map_id);
+    bool is_clan_zone(int map_id);
     bool IsValidZONE(short nZoneNO) {
         return (nZoneNO > 0 && nZoneNO < m_nZoneCNT) ? m_pValidZONE[nZoneNO] : false;
     }

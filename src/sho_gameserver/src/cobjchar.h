@@ -15,7 +15,10 @@
 #include "CObjAI.h"
 #include "status_effects.h"
 
+#include "rose/common/pvp_state_types.h"
+
 using namespace Rose;
+using namespace Rose::Common;
 
 // #define	__CS_TARGET_LIST
 
@@ -47,11 +50,15 @@ class CGuild;
  */
 class CObjCHAR: public CObjAI {
 public:
+    PvpState pvp_state = PvpState::NoPvp;
+
     uint16_t total_move_speed() override;
     uint16_t total_attack_speed() override;
 
     uint32_t total_attack_power() override;
     uint32_t total_hit_rate() override;
+
+    bool is_pvp_enabled();
 
 private:
     void Adjust_HEIGHT() { /* nop */
@@ -242,8 +249,6 @@ public:
 
     virtual bool Chk_ShotITEM(BYTE btShotCnt) { return true; }
     virtual bool Dec_ShotITEM(BYTE btShotCnt) { return true; }
-
-    virtual WORD Get_ATTRIBUTE() { return 0; } // ¹«¼Ó¼º
 
     virtual void Stamp_AttackTIME() { /* nop */
     }

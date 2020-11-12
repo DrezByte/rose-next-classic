@@ -400,6 +400,11 @@ CObjAI::SetCMD_ATTACK(int iServerTarget) {
             return false;
         }
 
+        // Don't allow player to attack target that doesn't have pvp enabled
+        if (this->IsUSER() && !pDestCHAR->is_pvp_enabled()) {
+            return false;
+        }
+
         m_wCommand = CMD_ATTACK;
         m_PosGOTO = pDestCHAR->m_PosCUR;
 

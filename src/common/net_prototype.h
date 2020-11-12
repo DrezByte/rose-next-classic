@@ -12,6 +12,10 @@
     #include "util/classhash.h"
 #endif
 
+#include "rose/common/pvp_state_types.h"
+
+using namespace Rose::Common;
+
 #define __APPLY_04_10_15_TEAMNO // 04.10.15일자 팀번호 변경 패킷 적용할래 ?
 #define __INC_PLATINUM // 유료화변경 적용여부..
 
@@ -718,6 +722,8 @@ struct gsv_JOIN_ZONE: public t_PACKETHEADER {
 #ifdef __APPLY_04_10_15_TEAMNO
     int m_iTeamNO; // 서버에서 설정된 팀번호	:: 04.10.15 추가..
 #endif
+    PvpState zone_pvp_state;
+    PvpState pvp_state;
 };
 
 struct cli_SCREEN_SHOT_TIME: public t_PACKETHEADER {
@@ -844,6 +850,9 @@ struct tag_ADD_CHAR: public t_PACKETHEADER {
     char m_cTeamNO;
 #endif
     DWORD m_dwStatusFALG;
+
+    PvpState pvp_state;
+
     /*
     지속 스킬에 의해 바뀐 값...	2004.1.4
     if ( m_dwStatusFALG & ( ING_FLAG_MAX_HP | ING_FLAG_xxx_MOV_SPEED | ING_FLAG_xxx_ATK_SPEED ) ) {
@@ -920,6 +929,8 @@ struct gsv_AVT_CHAR: public tag_ADD_CHAR {
 
     short m_nJOB;
     BYTE m_btLEVEL;
+
+    PvpState pvp_state;
 
     //	short		m_nRidingITEM [ MAX_RIDING_PART ];	// 승용 아이템 ..
     tagPartITEM m_RidingITEM[MAX_RIDING_PART]; // 승용 아이템 ..

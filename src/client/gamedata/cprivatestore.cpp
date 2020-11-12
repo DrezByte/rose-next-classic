@@ -369,7 +369,7 @@ CPrivateStore::Open() {
     //---------------------------------------------------------------------------------
     /// PVP존에서는 개인상점 개설 금지.
     //---------------------------------------------------------------------------------
-    if (g_pTerrain->IsPVPZone()) {
+    if (g_pTerrain->is_pvp_zone()) {
         g_itMGR.AppendChatMsg(STR_CANT_OPEN_PRIVATESTORE, IT_MGR::CHAT_TYPE_SYSTEM);
         return false;
     }

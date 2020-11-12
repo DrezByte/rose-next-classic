@@ -367,19 +367,14 @@ CNameBox::DrawMobName(float x, float y, float z, CObjCHAR* pCharOBJ, bool bTarge
 void
 CNameBox::DrawAvatarName(float x, float y, float z, CObjCHAR* pCharOBJ, bool bTargeted) {
     DWORD dwColor = g_dwWHITE;
-
     const char* pName = pCharOBJ->Get_NAME();
-    int pLevel = pCharOBJ->Get_LEVEL();
-#if defined(FRAROSE)
-    if (pLevel == 255)
-        dwColor = 0xFFF7FF00;
-    else if (pLevel >= 200)
-        dwColor = 0xFFFF8400;
-#endif
-    if (g_GameDATA.m_iPvPState) /// PVP 모드라면..
-    {
-        if (CUserInputState::IsEnemy((CObjAVT*)pCharOBJ)) /// 내가 아닌 아바타라면 팀판별..
-            dwColor = g_dwRED;
+    
+    if (CUserInputState::IsEnemy(pCharOBJ)) {
+        dwColor = g_dwRED;
+    }
+
+    if (pCharOBJ->pvp_state == PvpState::All) {
+        // TODO JV: set name color depending on karma status
     }
 
     if (pName && strlen(pName) > 3) {
@@ -480,9 +475,7 @@ CNameBox::DrawAvatarName(float x, float y, float z, CObjCHAR* pCharOBJ, bool bTa
 void
 CNameBox::DrawMyName(float x, float y, float z, CObjCHAR* pCharOBJ, bool bTargeted) {
     DWORD dwColor = g_dwWHITE;
-
     const char* pName = pCharOBJ->Get_NAME();
-    int pLevel = pCharOBJ->Get_LEVEL();
 
     if (pName && strlen(pName) > 3) {
         if (pName[0] == '[' && pName[1] == 'G' && pName[2] == 'M' && pName[3] == ']') {

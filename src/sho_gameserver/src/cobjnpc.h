@@ -106,8 +106,6 @@ public:
     void Add_ToTargetLIST(CObjAVT* pAVTChar);
     void Sub_FromTargetLIST(CObjAVT* pAVTChar);
 
-    WORD Get_ATTRIBUTE() { return NPC_ATTRIBUTE(m_nCharIdx); }
-
 private:
     // CObjMOB ------------------------------------------------------------------------------------
     CCharDATA* m_pCharMODEL;

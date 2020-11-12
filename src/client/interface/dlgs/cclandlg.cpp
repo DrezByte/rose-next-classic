@@ -177,13 +177,13 @@ CClanDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
             ///클랜 마스터일경우에만
             break;
         case IID_BTN_WITHDRAWAL: {
-            if (g_pTerrain->IsAgitZone()) {
+            if (g_pTerrain->is_clan_zone()) {
                 g_itMGR.OpenMsgBox(STR_CANT_SKILL_IN_AGIT);
                 break;
             }
 
             CClan& Clan = CClan::GetInstance();
-            if (Clan.GetClanNo() && !g_pTerrain->IsPVPZone()) {
+            if (Clan.GetClanNo() && !g_pTerrain->is_pvp_zone()) {
                 if (CClan::GetInstance().GetClass() < CClan::CLAN_MASTER) {
                     ///클랜 마스터가 아닐경우에만
                     g_pNet->Send_cli_CLAN_COMMAND(GCMD_QUIT, NULL);
@@ -196,7 +196,7 @@ CClanDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
         } break;
         case IID_BTN_ENTRUST: {
             CClan& Clan = CClan::GetInstance();
-            if (Clan.GetClanNo() && !g_pTerrain->IsPVPZone()) {
+            if (Clan.GetClanNo() && !g_pTerrain->is_pvp_zone()) {
                 if (CClan::GetInstance().GetClass() >= CClan::CLAN_MASTER) {
                     CClanMemberItem* pMember = GetSelectedMember();
                     if (pMember != NULL && strcmpi(pMember->GetName(), g_pAVATAR->Get_NAME())) {
@@ -221,12 +221,12 @@ CClanDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
             }
         } break;
         case IID_BTN_BAN: {
-            if (g_pTerrain->IsAgitZone()) {
+            if (g_pTerrain->is_clan_zone()) {
                 g_itMGR.OpenMsgBox(STR_CANT_SKILL_IN_AGIT);
                 break;
             }
             CClan& Clan = CClan::GetInstance();
-            if (Clan.GetClanNo() && !g_pTerrain->IsPVPZone()) {
+            if (Clan.GetClanNo() && !g_pTerrain->is_pvp_zone()) {
                 if (CClan::GetInstance().GetClass() >= CClan::CLAN_MASTER) {
                     CClanMemberItem* pMember = GetSelectedMember();
                     if (pMember != NULL && strcmpi(pMember->GetName(), g_pAVATAR->Get_NAME())) {
@@ -246,7 +246,7 @@ CClanDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
         case IID_BTN_CLASS_UP: {
             CClanMemberItem* pMember = GetSelectedMember();
             if (pMember != NULL && strcmpi(pMember->GetName(), g_pAVATAR->Get_NAME())
-                && !g_pTerrain->IsPVPZone()) {
+                && !g_pTerrain->is_pvp_zone()) {
                 if (CClan::GetInstance().GetClass() >= CClan::CLAN_MASTER) {
                     if (CClan::GetInstance().IsValidClassUp(pMember->GetClass())) {
                         CTCmdClanCommand* pCmd =
@@ -268,7 +268,7 @@ CClanDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
         case IID_BTN_CLASS_DOWN: {
             CClanMemberItem* pMember = GetSelectedMember();
             if (pMember && strcmpi(pMember->GetName(), g_pAVATAR->Get_NAME())
-                && !g_pTerrain->IsPVPZone()) {
+                && !g_pTerrain->is_pvp_zone()) {
                 if (CClan::GetInstance().GetClass() >= CClan::CLAN_MASTER) {
                     if (pMember->GetClass() >= 0) {
                         CTCmdClanCommand* pCmd =
@@ -288,7 +288,7 @@ CClanDlg::OnLButtonUp(unsigned uiProcID, WPARAM wParam, LPARAM lParam) {
 
             CClan& Clan = CClan::GetInstance();
 
-            if (Clan.GetClanNo() && !g_pTerrain->IsPVPZone()) {
+            if (Clan.GetClanNo() && !g_pTerrain->is_pvp_zone()) {
                 if (Clan.GetClass() >= CClan::CLAN_SUB_MASTER) {
                     CObjAVT* pAvt = g_pObjMGR->Get_ClientCharAVT(
                         g_pObjMGR->Get_ServerObjectIndex(g_UserInputSystem.GetCurrentTarget()),

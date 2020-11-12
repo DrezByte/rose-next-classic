@@ -819,7 +819,7 @@ CSkillManager::FireSkill(int iSkillSlotIDX, int iTargetObj, D3DXVECTOR3& PosTO) 
     //----------------------------------------------------------------------------------------------------
     /// PVP 가능존이라면 소환몹 소환금지
     /// 204/12/6
-    if (ZONE_PVP_STATE(g_pTerrain->GetZoneNO()) == 2) {
+    if (g_pTerrain->pvp_state == PvpState::AllExceptParty) {
         /// 소환몹 번호가 세팅된 스킬은 모두 금지
         if (SKILL_SUMMON_PET(pSkill->GetSkillIndex())) {
             g_itMGR.AppendChatMsg(STR_CANT_SUMMON_IN_PVPZONE, IT_MGR::CHAT_TYPE_SYSTEM);
@@ -832,7 +832,7 @@ CSkillManager::FireSkill(int iSkillSlotIDX, int iTargetObj, D3DXVECTOR3& PosTO) 
     //----------------------------------------------------------------------------------------------------
     /// 아지트라면 제한된 사용..
     /// 204/12/6
-    if (ZONE_PVP_STATE(g_pTerrain->GetZoneNO()) == 11) {
+    if (g_pTerrain->is_clan_zone()) {
         if (iSkillType != 1 && iSkillType != 2 && iSkillType != 16) {
             g_itMGR.AppendChatMsg(STR_CANT_SKILL_IN_AGIT, IT_MGR::CHAT_TYPE_SYSTEM);
             return false;
@@ -878,7 +878,7 @@ CSkillManager::FireSkill(int iSkillSlotIDX, int iTargetObj, D3DXVECTOR3& PosTO) 
                     g_pAVATAR->m_iServerTarget = g_pObjMGR->Get_ServerObjectIndex(iTargetObj);
                     break;
                 case OBJ_AVATAR: {
-                    // if( g_GameDATA.m_iPvPState == PVP_CANT )
+                    // if( g_pAVATAR->pvp_state == PvpState::NoPvp )
                     //{
                     //	/// 적대관계를 유발하는 스킬은 아바타에게 걸수 없다.
                     //	if( SKILL_HARM( pSkill->GetSkillIndex() ) != 0 )
