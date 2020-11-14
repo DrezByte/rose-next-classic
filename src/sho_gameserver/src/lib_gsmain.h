@@ -48,7 +48,6 @@ public:
 private:
     static CLIB_GameSRV* m_pInstance;
 
-    HWND m_hMainWND;
     CTimer* m_pWorldTIMER;
     bool* m_pCheckedLocalZONE;
 

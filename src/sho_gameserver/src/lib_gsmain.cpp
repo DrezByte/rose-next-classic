@@ -103,7 +103,7 @@ using namespace Rose::Common;
 #define WM_LSVSOCK_MSG (WM_SOCKETWND_MSG + 0)
 #define WORLD_TIME_TICK 10000 // 10 sec
 
-VOID CALLBACK
+void CALLBACK
 GS_TimerProc(HWND hwnd /* handle to window */,
     UINT uMsg /* WM_TIMER message */,
     UINT_PTR idEvent /* timer identifier */,
@@ -624,8 +624,6 @@ CLIB_GameSRV::Start(HWND hMainWND, BYTE btChannelNO, BYTE btLowAge, BYTE btHighA
 
     this->ConnectToLSV();
 
-    m_hMainWND = hMainWND;
-
     m_btChannelNO = btChannelNO;
     m_btLowAGE = btLowAge;
     m_btHighAGE = btHighAge;
@@ -648,9 +646,11 @@ CLIB_GameSRV::Start(HWND hMainWND, BYTE btChannelNO, BYTE btLowAge, BYTE btHighA
     g_pZoneLIST->InitZoneLIST(BASE_DATA_DIR);
 
     m_dwRandomSEED = ::timeGetTime();
-
-    m_pWorldTIMER =
-        new CTimer(m_hMainWND, GS_TIMER_WORLD_TIME, WORLD_TIME_TICK, (TIMERPROC)GS_TimerProc);
+    
+    m_pWorldTIMER = new CTimer(CSocketWND::GetInstance()->GetWindowHandle(),
+        GS_TIMER_WORLD_TIME,
+        WORLD_TIME_TICK,
+        (TIMERPROC)GS_TimerProc);
     m_pWorldTIMER->Start();
 
     g_pUserLIST->Active(config.gameserver.port, MAX_ZONE_USER_BUFF, 5 * 60); // 5ºÐ ´ë±â.
