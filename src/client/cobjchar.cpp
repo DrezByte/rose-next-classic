@@ -4835,6 +4835,9 @@ CObjAVT::CanAttackPetMode() {
 void
 CObjAVT::SetCMD_PET_MOVE(const D3DVECTOR& PosTO, BYTE btRunMODE) {
     if (m_pObjCART) {
+        // Since CObjCART handles movement when in a cart, we need to ensure it
+        // uses the correct movement speed.
+        m_pObjCART->stats.move_speed = this->stats.move_speed;
         m_pObjCART->SetCMD_MOVE(PosTO, btRunMODE);
     }
 }
@@ -4848,6 +4851,9 @@ CObjAVT::SetCMD_PET_MOVE(const D3DVECTOR& PosTO, BYTE btRunMODE) {
 void
 CObjAVT::SetCMD_PET_MOVE(WORD wSrvDIST, const D3DVECTOR& PosTO, int iServerTarget) {
     if (m_pObjCART) {
+        // Since CObjCART handles movement when in a cart, we need to ensure it
+        // uses the correct movement speed.
+        m_pObjCART->stats.move_speed = this->stats.move_speed;
         m_pObjCART->SetCMD_MOVE(wSrvDIST, PosTO, iServerTarget);
     }
 }
