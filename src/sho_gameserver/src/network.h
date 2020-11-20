@@ -29,6 +29,8 @@ build_packet_from_offset(flatbuffers::FlatBufferBuilder& builder,
 }
 
 Packet build_char_move_packet(CObjCHAR& character);
+Packet build_char_move_attack_packet(CObjCHAR& character);
+
 //Packet build_update_stats_all_packet(classUSER& user);
 Packet build_update_hpmp_packet(classUSER& user, uint32_t hp, uint32_t mp);
 //Packet build_update_move_speed_packet(classUSER& user, uint16_t move_speed);

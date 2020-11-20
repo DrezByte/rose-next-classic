@@ -753,6 +753,9 @@ CNetwork::recv_packet(t_PACKET* packet) {
             case Packets::PacketType::CharacterMove: {
                 return this->recv_char_move(p);
             }
+            case Packets::PacketType::CharacterMoveAttack: {
+                return this->recv_char_move_attack(p);
+            }
             case Packets::PacketType::UpdateStats: {
                 return this->recv_update_stats(p);
             }
@@ -786,6 +789,30 @@ CNetwork::recv_char_move(Packet& p) {
     to.z = req->target_pos()->z();
 
     character->SetCMD_MOVE(req->target_distance(), to, req->target_id());
+}
+
+void
+CNetwork::recv_char_move_attack(Packet& p) {
+    const Packets::CharacterMoveAttack* req = p.packet_data()->data_as_CharacterMoveAttack();
+    if (!req) {
+        return;
+    }
+
+    CObjCHAR* character = g_pObjMGR->Get_ClientCharOBJ(req->character_id(), true);
+    if (!character) {
+        return;
+    }
+
+    character->stats.move_speed = req->move_speed();
+    character->m_btMoveMODE = static_cast<int8_t>(req->move_mode());
+    character->m_bRunMODE = req->move_mode() != Packets::CharacterMoveMode::Walk;
+
+    D3DVECTOR to;
+    to.x = req->target_pos()->x();
+    to.y = req->target_pos()->y();
+    to.z = req->target_pos()->z();
+
+    character->SetCMD_ATTACK(req->target_id(), req->target_distance(), to);
 }
 
 void

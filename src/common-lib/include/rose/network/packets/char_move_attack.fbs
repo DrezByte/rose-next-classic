@@ -4,7 +4,7 @@ include "common/vec3.fbs";
 namespace Rose.Network.Packets;
 
 
-table CharacterMove {
+table CharacterMoveAttack {
 	character_id: uint32;
 
 	target_id: uint32;
@@ -15,4 +15,4 @@ table CharacterMove {
 	move_mode: CharacterMoveMode;
 }
 
-root_type CharacterMove;
+root_type CharacterMoveAttack;

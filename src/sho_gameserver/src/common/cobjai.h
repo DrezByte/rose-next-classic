@@ -109,6 +109,11 @@ public:
     /// </summary>
     virtual void update_speed() {};
 
+    /// <summary>
+    /// Check this entity can attack the target
+    /// </summary>
+    virtual bool can_attack(int target_id);
+
 private:
     WORD m_wState;
     WORD m_wCommand;

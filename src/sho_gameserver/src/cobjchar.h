@@ -360,6 +360,7 @@ public: // virtual function inherit from CAI_OBJ
     bool SetCMD_STOP();
     bool SetCMD_MOVE2D(float fPosX, float fPosY, BYTE btRunMODE);
     bool SetCMD_ATTACK(int iTargetObject);
+    void SetCMD_RUNnATTACK(int target_id) override;
 
 public: // virtual function inherit from CObjAI
     bool SetCMD_Skill2SELF(short nSkillIDX);

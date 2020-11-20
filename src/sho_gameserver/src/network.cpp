@@ -5,6 +5,7 @@
 
 #include "rose/network/network_util.h"
 #include "rose/network/packets/char_move_generated.h"
+#include "rose/network/packets/char_move_attack_generated.h"
 #include "rose/network/packets/update_stats_generated.h"
 
 namespace Rose::Network {
@@ -102,7 +103,26 @@ build_char_move_packet(CObjCHAR& character) {
     return build_packet_from_offset(builder, pak, Packets::PacketType::CharacterMove);
 }
 
-/*
+Packet
+build_char_move_attack_packet(CObjCHAR& character) {
+    flatbuffers::FlatBufferBuilder builder;
+    builder.ForceDefaults(true);
+
+    const Packets::Vec3 target_pos(character.m_PosGOTO.x, character.m_PosGOTO.y, 0);
+    const Packets::CharacterMoveMode move_mode = move_mode_from_int(character.Get_MoveMODE());
+
+    Packets::CharacterMoveBuilder char_move_builder(builder);
+    char_move_builder.add_character_id(character.Get_INDEX());
+    char_move_builder.add_target_id(character.Get_TargetIDX());
+    char_move_builder.add_target_pos(&target_pos);
+    char_move_builder.add_target_distance(::distance(character.m_PosCUR, character.m_PosGOTO));
+    char_move_builder.add_move_speed(character.total_move_speed());
+    char_move_builder.add_move_mode(move_mode);
+    const auto pak = char_move_builder.Finish();
+
+    return build_packet_from_offset(builder, pak, Packets::PacketType::CharacterMoveAttack);
+}
+    /*
 bool
 send_server_whisper(classUSER& user, const std::string& message) {
     return user.Send_gsv_WHISPER("Server", const_cast<char*>(message.c_str()));

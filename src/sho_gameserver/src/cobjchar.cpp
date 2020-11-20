@@ -681,7 +681,35 @@ CObjCHAR::SetCMD_ATTACK(int iTargetObject) {
     return false;
 }
 
-//-------------------------------------------------------------------------------------------------
+void
+CObjCHAR::SetCMD_RUNnATTACK(int target_id) {
+    if (Is_TauntSTATUS(target_id)) {
+        return;
+    }
+
+    if (!this->can_attack(target_id)) {
+        return;
+    }
+
+    this->m_bRunMODE = true;
+
+    if (!CObjAI::SetCMD_ATTACK(target_id)) {
+        return;
+    }
+
+    if (CMD_ATTACK != this->Get_COMMAND()) {
+        this->Send_gsv_STOP();
+        return;
+    }
+
+    if (this->m_IngSTATUS.IsSET(FLAG_ING_DISGUISE)) {
+        this->m_IngSTATUS.ClearStatusFLAG(FLAG_ING_DISGUISE);
+    }
+
+    Packet p = build_char_move_attack_packet(*this);
+    send_packet_nearby(*this, p);
+}
+
 bool
 CObjCHAR::SetCMD_Skill2SELF(short nSkillIDX) {
     if (SKILL_TYPE_01 != SKILL_TYPE(nSkillIDX)) {

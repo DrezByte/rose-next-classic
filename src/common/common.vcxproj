@@ -51,6 +51,14 @@
       <OutDir Condition="'$(Configuration)|$(Platform)'=='release|Win32'">$(GeneratedDir)rose\network\packets\</OutDir>
       <OutDir Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">$(GeneratedDir)rose\network\packets\</OutDir>
     </FlatBuffer>
+    <FlatBuffer Include="..\common-lib\include\rose\network\packets\char_move_attack.fbs">
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='release|Win32'">$(GeneratedDir)rose\network\packets\</OutDir>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">$(GeneratedDir)rose\network\packets\</OutDir>
+    </FlatBuffer>
+    <FlatBuffer Include="..\common-lib\include\rose\network\packets\common\char_move_mode.fbs">
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='release|Win32'">$(GeneratedDir)rose\network\packets\</OutDir>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">$(GeneratedDir)rose\network\packets\</OutDir>
+    </FlatBuffer>
     <FlatBuffer Include="..\common-lib\include\rose\network\packets\common\vec3.fbs">
       <OutDir Condition="'$(Configuration)|$(Platform)'=='release|Win32'">$(GeneratedDir)rose\network\packets\</OutDir>
       <OutDir Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">$(GeneratedDir)rose\network\packets\</OutDir>

@@ -113,5 +113,11 @@
     <FlatBuffer Include="..\common-lib\include\rose\network\packets\common\vec3.fbs">
       <Filter>network\packets\common</Filter>
     </FlatBuffer>
+    <FlatBuffer Include="..\common-lib\include\rose\network\packets\common\char_move_mode.fbs">
+      <Filter>network\packets\common</Filter>
+    </FlatBuffer>
+    <FlatBuffer Include="..\common-lib\include\rose\network\packets\char_move_attack.fbs">
+      <Filter>network\packets</Filter>
+    </FlatBuffer>
   </ItemGroup>
 </Project>

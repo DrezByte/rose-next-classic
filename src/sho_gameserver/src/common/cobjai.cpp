@@ -384,22 +384,8 @@ CObjAI::SetCMD_ATTACK(int iServerTarget) {
 
     this->update_speed();
 
-    CObjCHAR* pDestCHAR = g_pObjMGR->Get_ClientCharOBJ(iServerTarget, true);
-    if (pDestCHAR) {
-        // 투명 상태면...
-        if (pDestCHAR->m_IngSTATUS.IsSET(FLAG_ING_DISGUISE | FLAG_ING_TRANSPARENT))
-            return false;
-
-        if (CMD_ATTACK == m_wCommand && this->Get_TargetIDX() == iServerTarget) {
-            // 변화 없다..
-            return false;
-        }
-
-        // Don't allow player to attack target that doesn't have pvp enabled
-        if (this->IsUSER() && !pDestCHAR->is_pvp_enabled()) {
-            return false;
-        }
-
+    if (this->can_attack(iServerTarget)) {
+        CObjCHAR* pDestCHAR = g_pObjMGR->Get_ClientCharOBJ(iServerTarget, true);
         m_wCommand = CMD_ATTACK;
         m_PosGOTO = pDestCHAR->m_PosCUR;
 
@@ -421,7 +407,6 @@ CObjAI::SetCMD_ATTACK(int iServerTarget) {
         m_wState = (CS_BIT_INT & this->Get_STATE()) ? CS_NEXT_STOP : CS_STOP;
     }
 
-    /// 상태에 변화가 생겼다.
     return true;
 }
 
@@ -837,4 +822,28 @@ CObjAI::total_attack_power() {
 uint32_t
 CObjAI::total_hit_rate() {
     return this->stats.hit_rate;
+}
+
+bool
+CObjAI::can_attack(int target_id) {
+    CObjCHAR* target = g_pObjMGR->Get_ClientCharOBJ(target_id, true);
+    if (!target) {
+        return false;
+    }
+
+    if (target->m_IngSTATUS.IsSET(FLAG_ING_DISGUISE | FLAG_ING_TRANSPARENT)) {
+        return false;
+    }
+
+    // Already attacking
+    if (m_wCommand == CMD_ATTACK && this->Get_TargetIDX() == target_id) {
+        return false;
+    }
+
+    // Don't allow player to attack target that doesn't have pvp enabled
+    if (this->IsUSER() && !target->is_pvp_enabled()) {
+        return false;
+    }
+
+    return true;
 }
