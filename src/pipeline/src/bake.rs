@@ -8,10 +8,10 @@ use std::time;
 use clap::ArgMatches;
 use globset::{Glob, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
-use serde_json;
 use walkdir::WalkDir;
 
-use roselib::files::{STB, TSI, ZSC};
+use rose_conv::{FromCsv, FromJson};
+use roselib::files::*;
 use roselib::io::RoseFile;
 
 use crate::error::PipelineError;
@@ -85,6 +85,46 @@ fn should_rebake(path: &Path, metadata: &BakeFileMetadata, cache: &mut BakeCache
     } else {
         true
     }
+}
+
+fn bake_dds(input_filepath: &Path, output_filepath: &Path) -> Result<(), PipelineError> {
+    let out_dir = &output_filepath
+        .parent()
+        .ok_or_else(|| PipelineError::Message("Failed to get output dir".to_string()))?
+        .to_str()
+        .ok_or_else(|| PipelineError::Message("Failed to get output dir".to_string()))?;
+
+    let in_file = &input_filepath
+        .to_str()
+        .ok_or_else(|| PipelineError::Message("Failed to get input file as string".to_string()))?;
+
+    let res = process::Command::new("texconv.exe")
+        .args(&[
+            "-y",
+            "-l", // Force lowercase file name
+            "-nologo",
+            "-sepalpha",
+            "-f",
+            "DXT5",
+            "-o",
+            &out_dir,
+            &in_file,
+        ])
+        .output()
+        .map_err(|e| PipelineError::Message(format!("Error running texconv: {}", e)))?;
+
+    if !res.status.success() {
+        let mut error_string = String::from("texconv_failed");
+        for stdres in &[&res.stdout, &res.stderr] {
+            if !stdres.is_empty() {
+                error_string.push('\n');
+                error_string.push_str(&std::str::from_utf8(stdres)?);
+            }
+        }
+        return Err(PipelineError::Message(error_string));
+    }
+
+    Ok(())
 }
 
 pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
@@ -261,6 +301,7 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                 "copy" => output_dir.join(&relative_filepath),
                 "dds" => output_dir.join(&relative_filepath).with_extension("dds"),
                 "stb" => output_dir.join(&relative_filepath).with_extension("stb"),
+                "stl" => output_dir.join(&relative_filepath).with_extension("stl"),
                 "zsc" => output_dir.join(&relative_filepath).with_extension("zsc"),
                 _ => PathBuf::new(),
             };
@@ -292,130 +333,57 @@ pub fn bake(matches: &ArgMatches) -> Result<(), PipelineError> {
                 continue;
             }
 
-            let command_executed = match command.as_str() {
+            // Execute the specific command
+            let command_result = match command.as_str() {
                 "copy" => {
                     println!("Copying file {}", input_filepath.display());
-                    if let Err(e) = fs::copy(&input_filepath, &output_filepath) {
-                        eprintln!("Error copying file {}: {}", input_filepath.display(), e);
-                        false
-                    } else {
-                        true
-                    }
-                }
-                "stb" => {
-                    let convert = || -> Result<(), PipelineError> {
-                        let mut stb = STB::new();
-                        let mut reader = csv::Reader::from_path(&input_filepath)?;
-                        for header in reader.headers()? {
-                            stb.headers.push(header.to_string())
-                        }
-                        for record in reader.records() {
-                            let mut row = Vec::new();
-                            for field in record?.iter() {
-                                row.push(field.to_string());
-                            }
-                            stb.data.push(row);
-                        }
-                        stb.write_to_path(&output_filepath)?;
-                        Ok(())
-                    };
-
-                    println!("Converting to STB {}", input_filepath.display());
-                    if let Err(e) = convert() {
-                        eprintln!("Error converting stb {}: {}", &input_filepath.display(), e);
-                        false
-                    } else {
-                        true
-                    }
-                }
-                "zsc" => {
-                    let convert = || -> Result<(), PipelineError> {
-                        let mut zsc: ZSC = serde_json::from_reader(File::open(&input_filepath)?)?;
-                        zsc.write_to_path(&output_filepath)?;
-                        Ok(())
-                    };
-
-                    println!("Converting to ZSC {}", input_filepath.display());
-                    if let Err(e) = convert() {
-                        eprintln!("Error converting ZSC {}: {}", &input_filepath.display(), e);
-                        false
-                    } else {
-                        true
-                    }
+                    fs::copy(&input_filepath, &output_filepath)
+                        .map_err(|e| PipelineError::from(e))
+                        .err()
                 }
                 "dds" => {
-                    let convert = || -> Result<(), PipelineError> {
-                        let out_dir = &output_filepath
-                            .parent()
-                            .unwrap_or_else(|| output_dir.as_path())
-                            .to_str()
-                            .ok_or_else(|| {
-                                PipelineError::Message(
-                                    "Failed to get output dir as string".to_string(),
-                                )
-                            })?;
-
-                        let in_file = &input_filepath.to_str().ok_or_else(|| {
-                            PipelineError::Message("Failed to get input file as string".to_string())
-                        })?;
-
-                        println!("Converting to DDS {}", input_filepath.display());
-                        let res = process::Command::new("texconv.exe")
-                            .args(&[
-                                "-y",
-                                "-nologo",
-                                "-sepalpha",
-                                "-f",
-                                "DXT5",
-                                "-o",
-                                &out_dir,
-                                &in_file,
-                            ])
-                            .output()
-                            .map_err(|e| {
-                                PipelineError::Message(format!("Error running texconv: {}", e))
-                            })?;
-
-                        if !res.status.success() {
-                            let mut error_string = String::from("texconv_failed");
-                            for stdres in &[&res.stdout, &res.stderr] {
-                                if !stdres.is_empty() {
-                                    error_string.push('\n');
-                                    error_string.push_str(&std::str::from_utf8(stdres)?);
-                                }
-                            }
-                            return Err(PipelineError::Message(error_string));
-                        }
-
-                        // Rename to lowercase DDS extension because `Texconv.exe` defaults to upper
-                        fs::rename(
-                            output_filepath.with_extension("DDS"),
-                            output_filepath.with_extension("dds"),
-                        )
-                        .map_err(|e| {
-                            PipelineError::Message(format!(
-                                "Failed to rename output dds from {} to {}: {}",
-                                output_filepath.with_extension("DDS").display(),
-                                output_filepath.with_extension("dds").display(),
-                                e
-                            ))
-                        })?;
-
-                        Ok(())
-                    };
-
-                    if let Err(e) = convert() {
-                        eprintln!(
-                            "Error converting to dds {}: {}",
-                            &input_filepath.display(),
-                            e
-                        );
-                        false
-                    } else {
-                        true
-                    }
+                    println!("Converting to dds {}", input_filepath.display());
+                    bake_dds(&input_filepath, &output_filepath)
+                        .map_err(|e| PipelineError::from(e))
+                        .err()
                 }
-                _ => false, // Unrecognized command
+                "stb" => {
+                    println!("Converting to stb {}", input_filepath.display());
+                    STB::from_csv_path(&input_filepath)
+                        .and_then(|mut stb| stb.write_to_path(&output_filepath))
+                        .map_err(|e| PipelineError::from(e))
+                        .err()
+                }
+                "stl" => {
+                    println!("Converting to stl {}", input_filepath.display());
+                    STL::from_csv_path(&input_filepath)
+                        .and_then(|mut stl| stl.write_to_path(&output_filepath))
+                        .map_err(|e| PipelineError::from(e))
+                        .err()
+                }
+                "zsc" => {
+                    println!("Converting to zsc {}", input_filepath.display());
+                    ZSC::from_json_path(&input_filepath)
+                        .and_then(|mut zsc| zsc.write_to_path(&output_filepath))
+                        .map_err(|e| PipelineError::from(e))
+                        .err()
+                }
+                _ => Some(PipelineError::Message(format!(
+                    "Unrecognized command {}",
+                    command.as_str()
+                ))),
+            };
+
+            let command_executed = if let Some(e) = command_result {
+                eprintln!(
+                    "Error executing command `{}` for file {}: {}",
+                    command.as_str(),
+                    input_filepath.display(),
+                    e
+                );
+                false
+            } else {
+                true
             };
 
             if command_executed {

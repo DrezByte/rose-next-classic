@@ -9,3 +9,4 @@ members = [
 # and test it before publishing a new version to github
 # [patch."https://github.com/rminderhoud/rose-tools"]
 # roselib = { path = "../../../rose-tools/rose-lib" }
+# rose-conv = { path = "../../../rose-tools/rose-conv" }
