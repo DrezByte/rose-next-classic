@@ -223,7 +223,6 @@ private:
     bool Send_gsv_CHARSTATE_CHANGE(DWORD dwFLAG);
 
     bool Recv_cli_ALIVE();
-    bool Recv_cli_STRESS_TEST(t_PACKET* pPacket);
 
     short Recv_cli_RELAY_REPLY(t_PACKET* pPacket);
 

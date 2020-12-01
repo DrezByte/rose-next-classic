@@ -22,6 +22,7 @@ enum CommandId {
     KILL_ALL,
     LEVELUP,
     MAPS,
+    ONLINE,
     RATES,
     STATS,
     TELEPORT,
@@ -45,6 +46,9 @@ const char* LEVELUP_USAGE = "Usage: levelup <amount>";
 const char* MAPS_HELP = "List all maps by id.";
 const char* MAPS_USAGE = "Usage: maps";
 
+const char* ONLINE_HELP = "Display online user count.";
+const char* ONLINE_USAGE = "Usage: online";
+
 const char* RATES_HELP = "List server rates.";
 const char* RATES_USAGE = "Usage: rates";
 
@@ -65,6 +69,7 @@ static const std::vector<CommandInfo> commands = {
     {"kill_all", 100, KILL_ALL_HELP, KILL_ALL_USAGE, CommandContext::Server },
     {"levelup", 100, LEVELUP_HELP, LEVELUP_USAGE, CommandContext::Server},
     {"maps", 100, MAPS_HELP, MAPS_USAGE, CommandContext::Server},
+    {"online", 1, ONLINE_HELP, ONLINE_USAGE, CommandContext::Server},
     {"rates", 100, RATES_HELP, RATES_USAGE, CommandContext::Server},
     {"stats", 100, STATS_HELP, STATS_USAGE, CommandContext::Server},
     {"tp", 100, TP_HELP, TP_USAGE, CommandContext::Server},

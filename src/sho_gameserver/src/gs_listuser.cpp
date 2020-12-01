@@ -157,69 +157,12 @@ CUserLIST::Check_SocketALIVE() {
     Packet_ReleaseNUnlock(pCPacket);
 }
 
-//-------------------------------------------------------------------------------------------------
-void
-CUserLIST::Send_wsv_CREATE_CHAR(int iSocketIDX, BYTE btResult) {
-    assert(0 && "Send_wsv_CREATE_CHAR");
-    return;
-
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return;
-
-    pCPacket->m_HEADER.m_wType = WSV_CREATE_CHAR;
-    pCPacket->m_HEADER.m_nSize = sizeof(wsv_CREATE_CHAR);
-    pCPacket->m_wsv_CREATE_CHAR.m_btResult = btResult;
-
-    this->SendPacketToSocketIDX(iSocketIDX, pCPacket);
-
-    Packet_ReleaseNUnlock(pCPacket);
-}
-
-//-------------------------------------------------------------------------------------------------
-void
-CUserLIST::Send_wsv_MEMO(int iSocketIDX, BYTE btTYPE, short nMemoCNT) {
-    classPACKET* pCPacket = Packet_AllocNLock();
-    if (!pCPacket)
-        return;
-
-    pCPacket->m_HEADER.m_wType = WSV_MEMO;
-    pCPacket->m_wsv_MEMO.m_btTYPE = btTYPE;
-
-    if (nMemoCNT >= 0) {
-        pCPacket->m_HEADER.m_nSize = sizeof(wsv_MEMO) + sizeof(short);
-        pCPacket->m_wsv_MEMO.m_nRecvCNT[0] = nMemoCNT;
-    } else
-        pCPacket->m_HEADER.m_nSize = sizeof(wsv_MEMO);
-
-    this->SendPacketToSocketIDX(iSocketIDX, pCPacket);
-
-    Packet_ReleaseNUnlock(pCPacket);
-}
-
-//-------------------------------------------------------------------------------------------------
-void
-CUserLIST::Send_wsv_GUILD_COMMAND(int iSocketIDX, BYTE btResult, char* szStr) {
-    assert(0);
-    // classPACKET *pCPacket = Packet_AllocNLock ();
-    // if ( !pCPacket )
-    //	return;
-
-    // pCPacket->m_HEADER.m_wType = WSV_GUILD_COMMAND;
-    // pCPacket->m_HEADER.m_nSize = sizeof( wsv_GUILD_COMMAND );
-    // pCPacket->m_wsv_GUILD_COMMAND.m_btRESULT = btResult;
-
-    // if ( szStr )
-    //	pCPacket->AppendString( szStr );
-
-    // this->SendPacketToSocketIDX( iSocketIDX, pCPacket );
-
-    // Packet_ReleaseNUnlock( pCPacket );
-}
-
-//-------------------------------------------------------------------------------------------------
 bool
 CUserLIST::Add_CHAR(classUSER* pUSER) {
+    // RAM: This function exists because when we insert our user into the user list
+    // they haven't selected a character yet so we can't yet implement a fast way to look
+    // up a user by their character name
+
     // GS_CThreadSQL::Run_SqlPACKET()에서 호출되는 함수로 Lock 필요 없다.
     pUSER->m_HashCHAR = CStrVAR::GetHASH(pUSER->Get_NAME());
     m_csHashCHAR.Lock();
@@ -411,19 +354,6 @@ CUserLIST::Send_zws_ACCOUNT_LIST(CClientSOCKET* pSrvSocket, bool bSendToGUMS) {
     }
 
     Packet_ReleaseNUnlock(pCPacket);
-}
-
-//-------------------------------------------------------------------------------------------------
-void
-CUserLIST::Send_cli_STRESS_TEST(classPACKET* pCPacket) {
-    iocpSOCKET* pSocket;
-
-    for (DWORD dwI = 0; dwI < this->GetMaxSocketCOUNT(); dwI++) {
-        pSocket = this->GetSOCKET(dwI);
-        if (pSocket) {
-            ((classUSER*)pSocket)->SendPacket(pCPacket);
-        }
-    }
 }
 
 void

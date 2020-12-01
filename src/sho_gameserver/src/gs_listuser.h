@@ -21,6 +21,14 @@
  */
 class CUserLIST: public IOCPSocketSERVER, public CDataPOOL<classUSER> {
 public:
+    // TODO: RAM: Refactor this class to use the below stl containers vs. the
+    // old triggersoft containers
+    std::vector<classUSER*> users;
+    std::unordered_map<std::string, classUSER*> users_by_account_name;
+    std::unordered_map<std::string, classUSER*> users_by_character_name;
+    std::vector<classUSER*> users_not_in_map;
+
+public:
     CCriticalSection m_csHashACCOUNT;
     CCriticalSection m_csHashCHAR;
     CCriticalSection m_csNullZONE; // m_csSOCKET;
@@ -47,10 +55,6 @@ public:
     }
     bool SendPacketToSocketIDX(int iClientSocketIDX, classPACKET* pCPacket);
 
-    void Send_wsv_CREATE_CHAR(int iSocketIDX, BYTE btResult);
-    void Send_wsv_MEMO(int iSocketIDX, BYTE btTYPE, short nMemoCNT = -1);
-    void Send_wsv_GUILD_COMMAND(int iSocketIDX, BYTE btResult, char* szStr = NULL);
-
     classUSER* Find_CHAR(char* szCharName);
     bool Add_CHAR(classUSER* pUSER);
 
@@ -60,8 +64,6 @@ public:
     classUSER* Find_IP(char* szIP);
 
     void Send_zws_ACCOUNT_LIST(CClientSOCKET* pSrvSocket, bool bSendIP);
-
-    void Send_cli_STRESS_TEST(classPACKET* pCPacket);
 
     int Get_AccountCNT() { return m_pHashACCOUNT->GetCount(); }
     bool Kick_ACCOUNT(char* szAccount);

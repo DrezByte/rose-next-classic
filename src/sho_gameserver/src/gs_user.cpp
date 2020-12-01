@@ -1879,30 +1879,6 @@ classUSER::Send_gsv_RELAY_REQ(WORD wRelayTYPE, short nZoneGOTO, tPOINTF& PosGOTO
 }
 
 //-------------------------------------------------------------------------------------------------
-bool
-classUSER::Recv_cli_STRESS_TEST(t_PACKET* pPacket) {
-    /*
-    classPACKET *pCPacket = Packet_AllocNLock ();
-    if ( !pCPacket )
-        return false;
-
-    pCPacket->m_HEADER.m_wType = CLI_STRESS_TEST;
-    pCPacket->m_HEADER.m_nSize = sizeof( cli_STRESS_TEST );
-    pCPacket->AppendString( "Reply STRESS_TEST" );
-    pCPacket->m_HEADER.m_nSize = pPacket->m_HEADER.m_nSize;
-
-    _ASSERT( pCPacket->m_HEADER.m_nSize >= sizeof(t_PACKETHEADER ) );
-
-    g_pUserLIST->Send_cli_STRESS_TEST( pCPacket );
-
-    Packet_ReleaseNUnlock( pCPacket );
-
-    return true;
-    */
-    return false;
-}
-
-//-------------------------------------------------------------------------------------------------
 /// 클라이언트에 중계하라는 패킷을 전송후에 받는 응답 패킷 처리...
 short
 classUSER::Recv_cli_RELAY_REPLY(t_PACKET* pPacket) {

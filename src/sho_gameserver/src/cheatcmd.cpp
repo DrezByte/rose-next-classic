@@ -23,7 +23,7 @@ using namespace Rose::Common;
 
 
 bool
-help(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+help(classUSER* user, CommandInfo info, const std::vector<std::string>& args) {
     if (!user) {
         return false;
     }
@@ -38,7 +38,7 @@ help(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
-kill_all(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+kill_all(classUSER* user, CommandInfo info, const std::vector<std::string>& args) {
     if (!user || !user->GetZONE()) {
         return false;
     }
@@ -48,7 +48,7 @@ kill_all(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
-levelup(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+levelup(classUSER* user, CommandInfo info, const std::vector<std::string>& args) {
     if (!user) {
         return false;
     }
@@ -70,7 +70,7 @@ levelup(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
-maps(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+maps(classUSER* user, CommandInfo info, const std::vector<std::string>& args) {
     if (!user) {
         return false;
     }
@@ -94,7 +94,24 @@ maps(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
-rates(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+online(classUSER* user, CommandInfo info, const std::vector<std::string>& args) {
+    if (!user) {
+        return false;
+    }
+
+    // TODO: RAM: Not an ideal implementation. Non-performant if many players.
+    // Ergonomics could be improved (e.g. sort by name).
+    g_pUserLIST->for_each_user([user](classUSER* user2) {
+        user->send_server_whisper(fmt::format("{} (level {})", user2->Get_NAME(), user2->Get_LEVEL() ));
+    });
+
+    user->send_server_whisper(fmt::format("Players Online: {}", g_pUserLIST->Get_AccountCNT()));
+
+    return true;
+}
+
+bool
+rates(classUSER* user, CommandInfo info, const std::vector<std::string>& args) {
     if (!user) {
         return false;
     }
@@ -111,7 +128,7 @@ rates(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
-reload_config(classUSER* user, CommandInfo, std::vector<std::string>&) {
+reload_config(classUSER* user, CommandInfo, const std::vector<std::string>&) {
     const bool res = reload_server_game_config();
     if (res) {
         user->send_server_whisper("Server game config reloaded");
@@ -122,7 +139,7 @@ reload_config(classUSER* user, CommandInfo, std::vector<std::string>&) {
 }
 
 bool
-stats(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+stats(classUSER* user, CommandInfo info, const std::vector<std::string>& args) {
     if (!user) {
         return false;
     }
@@ -147,7 +164,7 @@ stats(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
 }
 
 bool
-teleport(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
+teleport(classUSER* user, CommandInfo info, const std::vector<std::string>& args) {
     if (!user) {
         return false;
     }
@@ -182,13 +199,14 @@ teleport(classUSER* user, CommandInfo info, std::vector<std::string>& args) {
     return true;
 }
 
-using CommandFunction = std::function<bool(classUSER*, CommandInfo, std::vector<std::string>&)>;
+using CommandFunction = std::function<bool(classUSER*, CommandInfo, const std::vector<std::string>&)>;
 static const std::unordered_map<std::string, std::tuple<CommandFunction, CommandInfo>>
     command_registry = {
         REGISTER_COMMAND(Command::HELP, help),
         REGISTER_COMMAND(Command::KILL_ALL, kill_all),
         REGISTER_COMMAND(Command::LEVELUP, levelup),
         REGISTER_COMMAND(Command::MAPS, maps),
+        REGISTER_COMMAND(Command::ONLINE, online),
         REGISTER_COMMAND(Command::RATES, rates),
         REGISTER_COMMAND(Command::STATS, stats),
         REGISTER_COMMAND(Command::TELEPORT, teleport),
