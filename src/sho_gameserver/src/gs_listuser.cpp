@@ -75,7 +75,6 @@ CUserLIST::DeleteUSER(classUSER* pUSER, BYTE btLogOutMODE) {
         if (pUSER->Is_CartDriver()) {
             // 나가는 케릭이 운전자다.. 손님을 걷기 상태로 변경
             pUser2->m_btRideMODE = 0;
-            pUser2->m_btRideATTR = RIDE_ATTR_NORMAL;
         }
 
         pUser2->m_iLinkedCartObjIDX = 0;

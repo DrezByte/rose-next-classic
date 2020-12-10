@@ -431,6 +431,17 @@ CObjUSER::GetCur_MOVE_MODE() {
 /// 현재 펫이 조합이 다되어 탈수 있는가?
 bool
 CObjUSER::CanRidePET() {
+    if (m_Inventory.m_ItemRIDE[0].IsEmpty()) {
+        return false;
+    }
+
+    int item_type = ITEM_TYPE(m_Inventory.m_ItemRIDE[0].GetTYPE(),
+        m_Inventory.m_ItemRIDE[0].GetItemNO());
+
+    if (item_type == TUNING_PART_BODY_MOUNT) {
+        return true;
+    }
+
     for (int i = 0; i < MAX_RIDING_PART - 2; i++) {
         if (m_Inventory.m_ItemRIDE[i].GetTYPE() == 0) {
             return false;

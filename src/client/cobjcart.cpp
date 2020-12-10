@@ -129,9 +129,7 @@ CObjCART::Create(CObjCHAR* pParent, int iCartType, D3DVECTOR& Position) {
 
     float fDir = ::getModelDirection(pParent->GetZMODEL());
 
-    /// CObjCHAR의 메쏘드 사용을 위해서( InserToScene 따위 )
     m_pCharMODEL = &m_CharMODEL;
-
     m_pObjParent = pParent;
     m_iCartType = iCartType;
 
@@ -147,19 +145,13 @@ CObjCART::Create(CObjCHAR* pParent, int iCartType, D3DVECTOR& Position) {
         this->m_iHP = pParent->Get_HP();
         HNODE hChild = m_pObjParent->GetZMODEL();
 
-        this->LinkDummy(hChild, 0);
-        this->Set_ModelDIR(fDir, 1);
-
-        /// CObjCHAR::CreateCHAR 내부에서 DropFromSky 함수를 호출하기 때문에 다시 리셋을 해줘야된다.
-        /// 이것때문에 타고 내릴때 다리아래에서 타고 내리면 문제가 있었다. 아래에서 탔는데 다리 위로
-        /// 올라가 버리는..
+        this->LinkDummy(hChild, PAT_ATTACH_NODE(this->m_nBodyIDX));
+        this->Set_ModelDIR(fDir, true);
         this->ResetCUR_POS(D3DXVECTOR3(Position.x, Position.y, Position.z));
 
         ::setUserData(this->GetZMODEL(), reinterpret_cast<HNODE>(this));
-        ///::setScale( this->GetZMODEL(), 2.0f, 2.0f, 2.0f );
 
         SetEffect();
-
         CopyCollisionInformation(true);
 
         return true;
@@ -215,9 +207,6 @@ CObjCART::Get_MOTION(short nActionIdx) {
 #endif
 
     if (0 == nFileIDX) {
-        assert(0 && "PET Motion is Invalid");
-        g_itMGR.OpenMsgBox("INVALID PET MOTION");
-
 #if defined(_GBC)
         nFileIDX = FILE_MOTION(PAT_RELATIVE_MOTION_POS(this->m_nWeaponIDX), 0);
 #else

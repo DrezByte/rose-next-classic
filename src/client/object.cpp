@@ -676,20 +676,14 @@ CObjectMANAGER::New_AvtCHAR(WORD wServerObjectIndex, char* szName) {
 //----------------------------------------------------------------------------------------------------
 CObjCART*
 CObjectMANAGER::Add_CartCHAR(int iPetType, CObjAVT* pOwner, WORD wServerObjectIndex) {
-    int iObjSlot;
-
-    iObjSlot = Get_EmptySlot();
-    if (!iObjSlot) {
+    const int object_slot = Get_EmptySlot();
+    if (!object_slot) {
         g_itMGR.OpenMsgBox("IS NOT EMPTY OBJECT SLOT");
         LogString(LOG_DEBUG_, "Out of object slot ... in Add_CartCHAR \n");
         return NULL;
     }
 
     CObjCART* pCHAR = NULL;
-
-    //----------------------------------------------------------------------------------------------------
-    /// Pet type 에 따른 적당한 클래스 생성.
-    //----------------------------------------------------------------------------------------------------
     switch (iPetType) {
         case PET_TYPE_CART01:
             pCHAR = new CObjCART();
@@ -697,40 +691,18 @@ CObjectMANAGER::Add_CartCHAR(int iPetType, CObjAVT* pOwner, WORD wServerObjectIn
         case PET_TYPE_CASTLE_GEAR01:
             pCHAR = new CObjCastleGear();
             break;
-#ifdef FRAROSE
-        case PET_TYPE_MOUNT01:
-        case PET_TYPE_MOUNT02:
-        case PET_TYPE_MOUNT03:
-        case PET_TYPE_MOUNT04:
-        case PET_TYPE_MOUNT05:
-        case PET_TYPE_MOUNT06:
-        case PET_TYPE_MOUNT07:
-        case PET_TYPE_MOUNT08:
-        case PET_TYPE_MOUNT09:
-        case PET_TYPE_MOUNT10:
-        case PET_TYPE_MOUNT11:
-        case PET_TYPE_MOUNT12:
-        case PET_TYPE_MOUNT13:
-        case PET_TYPE_MOUNT14:
-        case PET_TYPE_MOUNT15:
-        case PET_TYPE_MOUNT16:
-        case PET_TYPE_MOUNT17:
-        case PET_TYPE_MOUNT18:
-        case PET_TYPE_MOUNT19:
-        case PET_TYPE_MOUNT20:
-            pCHAR = new CObjCART();
-            break;
-#endif
     }
 
-    if (NULL == pCHAR) {
+    if (pCHAR == NULL && iPetType >= PET_TYPE_MOUNT_MIN && iPetType <= PET_TYPE_MOUNT_MAX) {
+        pCHAR = new CObjCART();
+    }
+
+    if (pCHAR == NULL) {
         LogString(LOG_DEBUG_, "Out of memory ... in Add_CartCHAR \n");
         return NULL;
     }
 
-    this->Set_EmptySlot(iObjSlot, wServerObjectIndex, pCHAR);
-
-    /// int iRet = ::setUserData( pCHAR->GetZMODEL(), (HNODE)pCHAR );
+    this->Set_EmptySlot(object_slot, wServerObjectIndex, pCHAR);
 
     return pCHAR;
 }

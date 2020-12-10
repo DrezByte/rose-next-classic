@@ -325,27 +325,29 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
                     if (RIDE_MODE_GUEST == pUSER->GetCur_RIDE_MODE()) {
                         // ÅÂ¿ü´ø ¼Õ´Ôµµ ³»¸®°Ô...
                         pUSER->m_btRideMODE = 0;
-                        pUSER->m_btRideATTR = RIDE_ATTR_NORMAL;
                     }
                     pUSER->m_iLinkedCartObjIDX = 0;
                 }
 
                 this->m_btRideMODE = 0;
-                this->m_btRideATTR = RIDE_ATTR_NORMAL;
                 this->m_iLinkedCartObjIDX = 0;
                 this->m_IngSTATUS.ClearAllGOOD();
             } else {
-                // ½ÂÂ÷, Á¶°Ç Ã¼Å©,
-                for (short nI = 0; nI < MAX_RIDING_PART - 2; nI++) {
-                    if (ITEM_TYPE_RIDE_PART != this->m_Inventory.m_ItemRIDE[nI].GetTYPE()) {
-                        return true;
+                if (this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].IsEmpty()) {
+                    return true;
+                }
+
+                const int item_type = PAT_ITEM_TYPE(this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO());
+                if (item_type != TUNING_PART_BODY_MOUNT) {
+                    for (short nI = 0; nI < MAX_RIDING_PART - 2; nI++) {
+                        if (ITEM_TYPE_RIDE_PART != this->m_Inventory.m_ItemRIDE[nI].GetTYPE()) {
+                            return true;
+                        }
                     }
                 }
 
                 if (ZONE_RIDING_REFUSE_FLAG(this->GetZONE()->Get_ZoneNO())) {
-                    int iType = ITEM_TYPE(ITEM_TYPE_RIDE_PART,
-                        this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO());
-                    if ((iType % 3) & ZONE_RIDING_REFUSE_FLAG(this->GetZONE()->Get_ZoneNO())) {
+                    if ((item_type % 3) & ZONE_RIDING_REFUSE_FLAG(this->GetZONE()->Get_ZoneNO())) {
                         return true;
                     }
                 }
@@ -357,82 +359,6 @@ CObjAVT::SetCMD_TOGGLE(BYTE btTYPE, bool bForce) {
 
                 this->Dec_EngineLife(); // ½ÂÂ÷½Ã ¿¬·á °¨¼Ò
                 this->m_btRideMODE = RIDE_MODE_DRIVE;
-
-                if (PET_TYPE_CASTLE_GEAR01
-                    == PAT_ITEM_PART_TYPE(this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO()))
-                    this->m_btRideATTR = RIDE_ATTR_CASTLE;
-#ifdef FRAROSE
-                else if (PET_TYPE_MOUNT01 >= PAT_ITEM_PART_TYPE(
-                             this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO())
-                    && PET_TYPE_MAX <= PAT_ITEM_PART_TYPE(
-                           this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO())) {
-                    switch (PAT_ITEM_PART_TYPE(
-                        this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY].GetItemNO())) {
-                        case PET_TYPE_MOUNT01:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT01;
-                            break;
-                        case PET_TYPE_MOUNT02:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT02;
-                            break;
-                        case PET_TYPE_MOUNT03:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT03;
-                            break;
-                        case PET_TYPE_MOUNT04:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT04;
-                            break;
-                        case PET_TYPE_MOUNT05:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT05;
-                            break;
-                        case PET_TYPE_MOUNT06:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT06;
-                            break;
-                        case PET_TYPE_MOUNT07:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT07;
-                            break;
-                        case PET_TYPE_MOUNT08:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT08;
-                            break;
-                        case PET_TYPE_MOUNT09:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT09;
-                            break;
-                        case PET_TYPE_MOUNT10:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT10;
-                            break;
-                        case PET_TYPE_MOUNT11:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT11;
-                            break;
-                        case PET_TYPE_MOUNT12:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT12;
-                            break;
-                        case PET_TYPE_MOUNT13:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT13;
-                            break;
-                        case PET_TYPE_MOUNT14:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT14;
-                            break;
-                        case PET_TYPE_MOUNT15:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT15;
-                            break;
-                        case PET_TYPE_MOUNT16:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT16;
-                            break;
-                        case PET_TYPE_MOUNT17:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT17;
-                            break;
-                        case PET_TYPE_MOUNT18:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT18;
-                            break;
-                        case PET_TYPE_MOUNT19:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT19;
-                            break;
-                        case PET_TYPE_MOUNT20:
-                            this->m_btRideATTR = RIDE_ATTR_MOUNT20;
-                            break;
-                    }
-                }
-#endif
-                else
-                    this->m_btRideATTR = RIDE_ATTR_CART;
 
                 // Å¾½Â½Ã ¸ðµç À¯¸® »óÅÂ ÇØÁö...
                 this->m_IngSTATUS.ClearAllGOOD();
@@ -1175,7 +1101,6 @@ CObjAVT::Send_gsv_PATSTATE_CHAGE(BYTE btOnOff, DWORD dwCoolTIME) {
     Packet_ReleaseNUnlock(pCPacket);
 
     if (!btOnOff) {
-        this->m_btRideATTR = RIDE_ATTR_NORMAL;
         this->m_btRideMODE = 0; // ¸ÕÀú ÇÏÂ÷¸ðµå·Î..
         UpdateAbility();
         this->Send_gsv_TOGGLE(TOGGLE_TYPE_DRIVE + this->Get_MoveMODE(),

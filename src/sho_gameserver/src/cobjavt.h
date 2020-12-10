@@ -335,38 +335,6 @@ public:
     int m_iLinkedCartObjIDX; // 존이 동시에 바꿈
     int m_iLinkedCartUsrIDX; // 접속 종료시까지 바뀌지 않음
 
-#define RIDE_ATTR_NORMAL 0x01
-#define RIDE_ATTR_CART 0x02
-#define RIDE_ATTR_CASTLE 0x04
-#define RIDE_ATTR_CART_SUB 0x08
-
-#ifdef FRAROSE
-    #define RIDE_ATTR_MOUNT01 0x10
-    #define RIDE_ATTR_MOUNT02 0x20
-    #define RIDE_ATTR_MOUNT03 0x40
-    #define RIDE_ATTR_MOUNT04 0x80
-    #define RIDE_ATTR_MOUNT05 0x10
-    #define RIDE_ATTR_MOUNT06 0x100
-    #define RIDE_ATTR_MOUNT07 0x200
-    #define RIDE_ATTR_MOUNT08 0x400
-    #define RIDE_ATTR_MOUNT09 0x800
-    #define RIDE_ATTR_MOUNT10 0x1000
-    #define RIDE_ATTR_MOUNT11 0x2000
-    #define RIDE_ATTR_MOUNT12 0x4000
-    #define RIDE_ATTR_MOUNT13 0x8000
-    #define RIDE_ATTR_MOUNT14 0x10000
-    #define RIDE_ATTR_MOUNT15 0x20000
-    #define RIDE_ATTR_MOUNT16 0x40000
-    #define RIDE_ATTR_MOUNT17 0x80000
-    #define RIDE_ATTR_MOUNT18 0x100000
-    #define RIDE_ATTR_MOUNT19 0x200000
-    #define RIDE_ATTR_MOUNT20 0x400000
-
-    DWORD m_btRideATTR; // 0x1:걷기/뛰기, 0x2:카트조정, 0x4:캐슬조정, 0x8:카트얻어타기
-#else
-    BYTE m_btRideATTR; // 0x1:걷기/뛰기, 0x2:카트조정, 0x4:캐슬조정, 0x8:카트얻어타기
-#endif
-
     CStrVAR m_Name;
     CStrVAR m_RName;
 

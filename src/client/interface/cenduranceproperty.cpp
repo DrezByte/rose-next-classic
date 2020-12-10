@@ -584,8 +584,6 @@ CEndurancePack::Draw() {
             CItemSlot* pItemSlot = g_pAVATAR->GetItemSlot();
             CItem* pEngineItem = pItemSlot->GetItem(INVENTORY_RIDE_ITEM0 + RIDE_PART_ENGINE); ///
 
-            assert(pEngineItem);
-
             if (pEngineItem) {
                 iValue = pEngineItem->GetItem().GetLife() / 10;
                 if (pEngineItem->GetItem().GetLife() % 10)

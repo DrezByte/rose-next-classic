@@ -671,14 +671,12 @@ classUSER::Dead(CObjCHAR* pKiller) {
             if (RIDE_MODE_GUEST == pUSER->m_btRideMODE) {
                 // 뒤에 타고 있던 사용자면 운전자가 죽었으니 내려야지...
                 pUSER->m_btRideMODE = 0;
-                pUSER->m_btRideATTR = RIDE_ATTR_NORMAL;
             }
             pUSER->m_iLinkedCartObjIDX = 0;
         }
     }
 
     this->m_iLinkedCartObjIDX = 0;
-    this->m_btRideATTR = RIDE_ATTR_NORMAL;
     this->m_btRideMODE = 0;
     this->m_STORE.m_bActive = false;
 
@@ -1188,7 +1186,6 @@ classUSER::Send_gsv_JOIN_ZONE(CZoneTHREAD* pZONE) {
                 > 0) // 1:카트 불가, 2:캐슬기어 불가, 3:모두 불가
             {
                 this->m_btRideMODE = 0;
-                this->m_btRideATTR = RIDE_ATTR_NORMAL; // 여기가 중요
                 this->m_iLinkedCartObjIDX = 0;
                 //	김영환 2006.8.29일 채크 위치 보정
                 // 2006.05.30/김대성/추가
@@ -1511,7 +1508,6 @@ classUSER::Proc_TELEPORT(short nZoneNO, tPOINTF& PosWARP, bool bSkipPayment) {
 
             // 강제 내리기
             this->m_btRideMODE = 0;
-            this->m_btRideATTR = RIDE_ATTR_NORMAL;
             this->m_iLinkedCartObjIDX = 0;
         }
 
@@ -2404,16 +2400,25 @@ classUSER::Recv_cli_MOUSECMD(t_PACKET* pPacket) {
             return true;
         }
 
-        tagITEM* pItem = &m_Inventory.m_ItemRIDE[RIDE_PART_ENGINE];
-        if (pItem->GetLife() <= 0)
+        tagITEM* ride_part = &m_Inventory.m_ItemRIDE[RIDE_PART_BODY];
+        if (!ride_part) {
             return true;
+        }
+
+        if (PAT_ITEM_TYPE(ride_part->GetItemNO()) != TUNING_PART_BODY_MOUNT) {
+            tagITEM* ride_part = &m_Inventory.m_ItemRIDE[RIDE_PART_ENGINE];
+        }
+
+        if (ride_part->GetLife() <= 0) {
+            return true;
+        }
     }
 
     int iDistance = distance((int)m_PosCUR.x,
         (int)m_PosCUR.y,
         (int)pPacket->m_cli_MOUSECMD.m_PosTO.x,
         (int)pPacket->m_cli_MOUSECMD.m_PosTO.y);
-    if (iDistance > 1000 * 15) // 150 m
+    if (iDistance > 15000) // 150 m
         return true;
 
     this->m_nPosZ = pPacket->m_cli_MOUSECMD.m_nPosZ;
@@ -8271,7 +8276,6 @@ classUSER::Proc(void) {
             // 2. 운전자와 함께 워프하고 존에 입장해 보니 드라이버가 카트에서 내렸다 ??
             // 3. 운전자와 존이 틀리다
             this->m_btRideMODE = 0;
-            this->m_btRideATTR = RIDE_ATTR_NORMAL;
             this->m_iLinkedCartObjIDX = 0;
             this->m_iLinkedCartUsrIDX = 0;
 

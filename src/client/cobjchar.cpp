@@ -5054,39 +5054,19 @@ CObjAVT::GetPetState() {
 
 bool
 CObjAVT::CreateCartFromMyData(bool bShowEffect) {
-
-    //----------------------------------------------------------------------------------------------------
-    /// Pet type 결정
-    /// 아이템 교체시에는 타입이 결정되지만 서버로부터 받은상태에선 알수없다.
-    //----------------------------------------------------------------------------------------------------
-    /*CItemSlot* pItemSlot = g_pAVATAR->GetItemSlot();
-    CItem* pBodyItem = pItemSlot->GetItem( INVENTORY_RIDE_ITEM0 );*/
-
-    if (m_sBodyIDX.m_nItemNo) {
+    if (m_sEngineIDX.m_nItemNo && PAT_ITEM_TYPE(m_sEngineIDX.m_nItemNo) == TUNING_PART_BODY_MOUNT) {
+        this->SetPetType(PAT_ITEM_PART_TYPE(m_sEngineIDX.m_nItemNo));
+    } else if (m_sBodyIDX.m_nItemNo) {
         this->SetPetType(PAT_ITEM_PART_TYPE(m_sBodyIDX.m_nItemNo));
     } else
-        return false; /// 바디부폼이 없으면 못탐
-
+        return false;
+    
     bool bResult = CreateCart(m_iPetType,
         m_sEngineIDX.m_nItemNo,
         m_sBodyIDX.m_nItemNo,
         m_sLegIDX.m_nItemNo,
         m_sAbilIDX.m_nItemNo,
         m_sWeaponIDX.m_nItemNo);
-
-    /// 모든 유리상태 해지하지 말것 2005/7/30 - nAvy
-    ///
-    /// this->m_EndurancePack.ClearStateByDriveCart();
-
-    //----------------------------------------------------------------------------------------------------
-    /// 카트를 탈때는 무기, 날개는 안보이게
-    //----------------------------------------------------------------------------------------------------
-    /*if( m_phPartVIS[ BODY_PART_KNAPSACK ] )
-        ::setVisibilityRecursive( *m_phPartVIS[ BODY_PART_KNAPSACK ], 0.0f );
-    if( m_phPartVIS[ BODY_PART_WEAPON_R ] )
-        ::setVisibility( *m_phPartVIS[ BODY_PART_WEAPON_R ], 0.0f );
-    if( m_phPartVIS[ BODY_PART_WEAPON_L ] )
-        ::setVisibility( *m_phPartVIS[ BODY_PART_WEAPON_L ], 0.0f );*/
 
     int iVisibilityPart[3] = {BODY_PART_KNAPSACK, BODY_PART_WEAPON_R, BODY_PART_WEAPON_L};
     for (int i = 0; i < 3; i++) {
@@ -5102,9 +5082,6 @@ CObjAVT::CreateCartFromMyData(bool bShowEffect) {
         }
     }
 
-    //----------------------------------------------------------------------------------------------------
-    /// 탈때의 효과 출력
-    //----------------------------------------------------------------------------------------------------
     if (bShowEffect) {
         int iEffectNO = PAT_RIDE_EFFECT(m_sBodyIDX.m_nItemNo);
         int iSoundNO = PAT_RIDE_SOUND(m_sBodyIDX.m_nItemNo);
@@ -5127,10 +5104,19 @@ CObjAVT::CreateCart(unsigned int iPetType,
     int iLegPart,
     int iAbilIPart,
     int iWeaponPart) {
-    if (iBodyPart == 0 || iEnginePart == 0 || iLegPart == 0) {
+    if (iEnginePart == 0) {
         return false;
     }
 
+    switch (iPetType) { 
+        case PET_TYPE_CART01:
+        case PET_TYPE_CASTLE_GEAR01:
+            if (iBodyPart == 0 || iLegPart == 0) {
+                return false;
+            }
+            break;
+    }
+    
     m_ObjVibration.EndVibration();
 
     m_iPetType = iPetType;
@@ -5143,10 +5129,9 @@ CObjAVT::CreateCart(unsigned int iPetType,
     m_pObjCART = g_pObjMGR->Add_CartCHAR(iPetType, this, 0);
     if (m_pObjCART == NULL) {
         assert(0 && "Create cart failed");
-        /// g_itMGR.OpenMsgBox( "Failed to create cart" );
         return false;
     }
-
+    
     SetPetParts(RIDE_PART_BODY, iEnginePart, false);
     SetPetParts(RIDE_PART_ENGINE, iBodyPart, false);
     SetPetParts(RIDE_PART_LEG, iLegPart, false);
@@ -5157,7 +5142,7 @@ CObjAVT::CreateCart(unsigned int iPetType,
         g_pObjMGR->Del_Object(m_pObjCART);
         return false;
     }
-
+    
     D3DXVECTOR3 pos(0.0f, 0.0f, 0.0f);
     ResetCUR_POS(pos);
     ::savePrevPosition(m_hNodeMODEL);
@@ -5167,7 +5152,7 @@ CObjAVT::CreateCart(unsigned int iPetType,
     SetCMD_STOP();
 
     this->m_btMoveMODE = MOVE_MODE_DRIVE;
-
+    
     return true;
 }
 

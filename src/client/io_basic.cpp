@@ -89,18 +89,14 @@ CBasicDATA::Load3DDATA() {
     m_SkelMALE = m_SKELETON.Add_SKELETON("3DDATA\\avatar\\male.zmd");
     m_SkelFEMALE = m_SKELETON.Add_SKELETON("3DDATA\\avatar\\female.zmd");
 
-    ///
-    ///	for pet bones..
-    ///
-    m_SkelPET[PET_TYPE_CART01] = m_SKELETON.Add_SKELETON("3DDATA\\Pat\\Cart\\Cart01.zmd");
-    m_SkelPET[PET_TYPE_CASTLE_GEAR01] =
-        m_SKELETON.Add_SKELETON("3DDATA\\Pat\\CastleGear\\CastleGear02\\CastleGear02.ZMD");
+    STBDATA pat_skeletons;
+    CVFSManager& vfs = CVFSManager::GetSingleton();
+    vfs.load_stb(pat_skeletons, PAT_SKELETON_STB);
 
-#ifdef FRAROSE
-    for (int i = 0; i < 20; i++)
-        m_SkelPET[PET_TYPE_MOUNT01 + i] = m_SKELETON.Add_SKELETON(
-            CStr::Printf("3DDATA\\Pat\\Mount\\Mount%02i\\Mount%02i.ZMD", i, i));
-#endif
+    for (int i = 0; i < pat_skeletons.row_count; i++) {
+        m_SkelPET[pat_skeletons.get_int32(i, 0)] =
+            m_SKELETON.Add_SKELETON(pat_skeletons.get_cstr(i, 1));
+    }
 
     m_MatOCEAN = ::loadOceanMaterial("mat_ocean",
         g_GameDATA.m_hShader_ocean,

@@ -647,20 +647,29 @@ CUserDATA::Cal_RunSPEED() {
         float fPsvSpd = GetPassiveSkillValue(AT_PSV_MOV_SPD)
             + fMoveSpeed * GetPassiveSkillRate(AT_PSV_MOV_SPD) / 100.f;
         return (fMoveSpeed + fPsvSpd);
+    }
+
+    fMoveSpeed = 200;
+    tagITEM* body_part = &this->m_Inventory.m_ItemRIDE[RIDE_PART_BODY];
+
+    if (body_part && PAT_ITEM_TYPE(body_part->GetItemNO()) == TUNING_PART_BODY_MOUNT) {
+        if (body_part->GetLife()) {
+            fMoveSpeed = PAT_ITEM_MOV_SPD(body_part->GetItemNO());
+        }
     } else {
         tagITEM* pLEG = &this->m_Inventory.m_ItemRIDE[RIDE_PART_LEG];
         tagITEM* pENG = &this->m_Inventory.m_ItemRIDE[RIDE_PART_ENGINE];
 
-        if (pLEG->GetLife() && pENG->GetLife())
-            fMoveSpeed =
-                PAT_ITEM_MOV_SPD(pLEG->GetItemNO()) * PAT_ITEM_MOV_SPD(pENG->GetItemNO()) / 10.f;
-        else
-            fMoveSpeed = 200; /// ÀÌµ¿ ÃÖ¼Ò ¼Óµµ
-
-        fMoveSpeed += this->m_iAddValue[AT_SPEED];
-        if (this->Get_WeightRATE() >= WEIGHT_RATE_WALK && fMoveSpeed > 300.f)
-            fMoveSpeed = 300.f;
+        if (pLEG->GetLife() && pENG->GetLife()) {
+            fMoveSpeed = PAT_ITEM_MOV_SPD(pLEG->GetItemNO())
+                * PAT_ITEM_MOV_SPD(pENG->GetItemNO()) / 10.f;
+        }
     }
+        
+    fMoveSpeed += this->m_iAddValue[AT_SPEED];
+    if (this->Get_WeightRATE() >= WEIGHT_RATE_WALK && fMoveSpeed > 300.f)
+        fMoveSpeed = 300.f;
+    
     this->Cal_AruaRunSPD();
 
     return fMoveSpeed;

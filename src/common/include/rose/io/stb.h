@@ -65,6 +65,7 @@ constexpr const char* NATURAL_STB = "3ddata/stb/list_natural.stb";
 constexpr const char* NPC_STB = "3ddata/stb/list_npc.stb";
 constexpr const char* NPC_FACE_STB = "3ddata/stb/list_npcface.stb";
 constexpr const char* PAT_STB = "3ddata/stb/list_pat.stb";
+constexpr const char* PAT_SKELETON_STB = "3ddata/stb/list_pat_skeleton.stb";
 constexpr const char* PRODUCT_STB = "3ddata/stb/list_product.stb";
 constexpr const char* QUEST_ITEM_STB = "3ddata/stb/list_questitem.stb";
 constexpr const char* RANGE_SET_STB = "3ddata/stb/rangeset.stb";
@@ -422,6 +423,9 @@ constexpr const char* ZONE_STB = "3ddata/stb/list_zone.stb";
 #define PAT_ITEM_CART_GAUAGE(I) g_PatITEM.get_int32(I, 64)
 #define PAT_ITEM_EQUIP_REQUIRE_CLASS(I) g_PatITEM.get_int32(I, 65)
 #define PAT_ITEM_ABILITY_TYPE(I) g_PatITEM.get_int32(I, 66)
+
+#define PAT_ATTACH_NODE(I) g_PatITEM.get_int32(I, 67)
+#define PAT_SCALE(I) g_PatITEM.get_int32(I, 68)
 
 #ifdef __KCHS_BATTLECART__
     #define PAT_ITEM_HP(I) g_PatITEM.get_int32(I, 67)
