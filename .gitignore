@@ -8,6 +8,9 @@ game/error.txt
 game/rose-next.ini
 server/
 
+# Assets build data
+.pipeline/
+
 # Visual studio
 *.vs/
 *.pch
@@ -25,4 +28,3 @@ src/engine/include/zz_build_count
 # Python
 __pycache__/
 *.pyc
-
