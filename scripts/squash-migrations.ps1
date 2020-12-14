@@ -9,6 +9,9 @@ param (
 )
 
 $pg_root = "C:/Program Files/PostgreSQL/12/bin"
+if (Test-Path "env:PGBIN") {
+    $pg_root = $env:PGBIN
+}
 $pg_createdb = Join-Path $pg_root createdb.exe
 $pg_dropdb = Join-Path $pg_root dropdb.exe
 $pg_dump = Join-Path $pg_root pg_dump.exe
@@ -32,38 +35,19 @@ $env:PGPASSWORD = $pg_password
 $rose_next_root = Join-Path $PSScriptRoot ..
 $db_root = Join-Path $rose_next_root database
 
-# Account database
-$account_db_root = Join-Path $db_root migrations account
-$account_migrations = Get-ChildItem -Path $account_db_root -Directory | Sort-Object
-$account_out = Join-Path $out ($out_name + "-account.sql")
-
-Write-Host "Executing account database migrations"
-
-& $pg_createdb $pg_database
-Foreach ($migration in $account_migrations) {
-    & $psql -f (Join-Path $migration up.sql)
-}
-
-Write-Host "Dumping account database to $account_out"
-
-& $pg_dump @pg_flags -f $account_out $pg_database 
-& $pg_dropdb $pg_database
-
-
 # game database
-$game_db_root = Join-Path $db_root migrations game
-$game_migrations = Get-ChildItem -Path $game_db_root -Directory | Sort-Object
-$game_out = Join-Path $out ($out_name + ".sql")
+$migrations_root = Join-Path $db_root migrations
+$migrations = Get-ChildItem -Path $migrations_root -Directory | Sort-Object
+$squashed_out = Join-Path $out ($out_name + ".sql")
 
-Write-Host "Executing game database migrations"
+Write-Host "Executing migrations"
 
 & $pg_createdb $pg_database
-Foreach ($migration in $game_migrations) {
+Foreach ($migration in $migrations) {
     & $psql -f (Join-Path $migration up.sql)
 }
 
-Write-Host "Dumping game database to $game_out"
+Write-Host "Dumping database to $squashed_out"
 
-& $pg_dump @pg_flags -f $game_out $pg_database 
+& $pg_dump @pg_flags -f $squashed_out $pg_database
 & $pg_dropdb $pg_database
-

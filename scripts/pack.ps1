@@ -1,15 +1,15 @@
 param (
     [ValidateScript( { Test-Path $_ })]
-    [string]$tools = (Join-Path $PSScriptRoot .. "tools/"),
+    [string]$tools = (Join-Path $PSScriptRoot .. "bin" "release"),
 
     [ValidateScript( { Test-Path $_ })]
     [string]$manifest = (Join-Path $PSScriptRoot .. "pack.manifest"),
 
     [ValidateScript( { Test-Path $_ })]
-    [string]$in = (Join-Path $PSScriptRoot .. "build"),
+    [string]$in = (Join-Path $PSScriptRoot .. "bin" "assets"),
 
     [ValidateScript( { Test-Path $_ })]
-    [string]$out = (Join-Path $PSScriptRoot .. "dist" "client"),
+    [string]$out = (Join-Path $PSScriptRoot .. "dist" "debug" "client"),
 
     [string[]]$flags = @()
 )

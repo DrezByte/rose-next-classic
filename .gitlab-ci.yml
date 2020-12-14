@@ -1,29 +1,75 @@
-default:
-    tags:
-        - windows
+# Disabled 13 Dec 2020 since main build machine went down and this needs to be
+# refactored after the merging of the asset files into this repo
 
-variables:
-    RUSTC_WRAPPER: sccache
+# default:
+#     tags:
+#         - windows
 
-build:
-    stage: build
-    script:
-        - scripts/build.ps1 -config debug
-        - scripts/build.ps1 -config release
-    only:
-        - master
-        - merge_requests
-        - tags
-    artifacts:
-        paths:
-            - bin/debug/*.exe
-            - bin/debug/*.dll
-            - bin/debug/thirdparty/*.exe
-            - bin/release/*.exe
-            - bin/release/*.dll
-            - bin/release/thirdparty/*.exe
-            - thirdparty/directxtex-2020.9.30/*.exe
-cache:
-    paths:
-        - bin/**/thirdparty/
-        - build/**/thirdparty/
+# variables:
+#     RUSTC_WRAPPER: sccache
+
+# build:
+#     stage: build
+#     script:
+#         - scripts/build.ps1 -config debug
+#         - scripts/build.ps1 -config release
+#     only:
+#         - master
+#         - merge_requests
+#         - tags
+#     artifacts:
+#         paths:
+#             - bin/debug/*.exe
+#             - bin/debug/*.dll
+#             - bin/debug/thirdparty/*.exe
+#             - bin/release/*.exe
+#             - bin/release/*.dll
+#             - bin/release/thirdparty/*.exe
+#             - thirdparty/directxtex-2020.9.30/*.exe
+# cache:
+#     paths:
+#         - bin/**/thirdparty/
+#         - build/**/thirdparty/
+
+# Below is the CI script from the old asset repo
+
+# variables:
+#     LATEST_PIPELINE_PATH: "https://gitlab.com/api/v4/projects/11940511/jobs/artifacts/master/raw/bin/release/pipeline.exe?job=build"
+#     LATEST_TEXCONV_PATH: "https://gitlab.com/api/v4/projects/11940511/jobs/artifacts/master/raw/thirdparty/directxtex-2020.9.30/texconv.exe?job=build"
+
+# default:
+#     before_script:
+#         - scripts/get-tools.ps1
+#     tags:
+#         - windows
+
+# stages:
+#     - bake
+#     - pack
+
+# bake:
+#     stage: bake
+#     script: scripts/bake.ps1 -flags ("--clean")
+#     only:
+#         - master
+#         - merge_requests
+#         - tags
+#     artifacts:
+#         paths:
+#             - build/
+#     cache:
+#         paths:
+#             - build/
+
+# pack:
+#     stage: pack
+#     script:
+#         - scripts/pack.ps1
+#         - scripts/server-data.ps1
+#     only:
+#         - master
+#         - merge_requests
+#         - tags
+#     artifacts:
+#         paths:
+#             - dist/
