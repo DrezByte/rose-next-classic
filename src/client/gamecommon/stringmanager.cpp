@@ -5,7 +5,7 @@
 #include "../Util/Localizing.h"
 #include "rose/io/stb.h"
 #include "../Common/IO_skill.h"
-#include "../Common/IO_Quest.h"
+#include "io_quest.h"
 #include "../Interface/CHelpMgr.h"
 #include "item.h"
 

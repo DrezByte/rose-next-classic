@@ -6,7 +6,7 @@
     #include "..\GameProc\CDayNNightProc.h"
     #include "../Game.h"
     #include "../interface/it_mgr.h"
-    #include "common/io_quest.h"
+    #include "io_quest.h"
 #else
     #include "IO_Quest.h"
     extern DWORD Get_WorldPassTIME();

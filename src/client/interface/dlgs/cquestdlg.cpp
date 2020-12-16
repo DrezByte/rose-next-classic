@@ -6,7 +6,7 @@
 #include "../../Game.h"
 #include "../../Object.h"
 #include "../../Network/CNetwork.h"
-#include "../../Common/IO_QUEST.h"
+#include "io_quest.h"
 #include "../../Util/Localizing.h"
 #include "../CTDrawImpl.h"
 #include "../CToolTipMgr.h"

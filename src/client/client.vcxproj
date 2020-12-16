@@ -194,6 +194,7 @@
     <ClCompile Include="..\common\shared\citem.cpp" />
     <ClCompile Include="..\common\shared\cquest.cpp" />
     <ClCompile Include="..\common\shared\cuserdata_new.cpp" />
+    <ClCompile Include="..\common\shared\io_quest.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CClientStorage.cpp" />
     <ClCompile Include="CommandFilter.cpp" />
@@ -512,7 +513,6 @@
     <ClCompile Include="Common\CUserDATA.cpp" />
     <ClCompile Include="Common\IO_AI.CPP" />
     <ClCompile Include="Common\IO_Motion.cpp" />
-    <ClCompile Include="Common\IO_Quest.cpp" />
     <ClCompile Include="Common\IO_Skill.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
@@ -548,6 +548,7 @@
     <ClInclude Include="..\common\shared\cquest.h" />
     <ClInclude Include="..\common\shared\cuserdata.h" />
     <ClInclude Include="..\common\shared\datatype.h" />
+    <ClInclude Include="..\common\shared\io_quest.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CClientStorage.h" />
     <ClInclude Include="CommandFilter.h" />
@@ -878,7 +879,6 @@
     <ClInclude Include="Common\CRegenAREA.h" />
     <ClInclude Include="Common\IO_AI.H" />
     <ClInclude Include="Common\IO_Motion.h" />
-    <ClInclude Include="Common\IO_Quest.h" />
     <ClInclude Include="Common\IO_Skill.h" />
     <ClInclude Include="Game_FUNC.h" />
     <ClInclude Include="LUA_Func.h" />

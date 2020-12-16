@@ -25,6 +25,7 @@
     <ClInclude Include="..\common\shared\cquest.h" />
     <ClInclude Include="..\common\shared\cuserdata.h" />
     <ClInclude Include="..\common\shared\datatype.h" />
+    <ClInclude Include="..\common\shared\io_quest.h" />
     <ClInclude Include="src\cchardata.h" />
     <ClInclude Include="src\cchatroom.h" />
     <ClInclude Include="src\cgameobj.h" />
@@ -39,7 +40,6 @@
     <ClInclude Include="src\common\cregenarea.h" />
     <ClInclude Include="src\common\io_ai.h" />
     <ClInclude Include="src\common\io_motion.h" />
-    <ClInclude Include="src\common\io_quest.h" />
     <ClInclude Include="src\common\io_skill.h" />
     <ClInclude Include="src\def_stb.h" />
     <ClInclude Include="src\etc_math.h" />
@@ -70,6 +70,7 @@
     <ClCompile Include="..\common\shared\citem.cpp" />
     <ClCompile Include="..\common\shared\cquest.cpp" />
     <ClCompile Include="..\common\shared\cuserdata_new.cpp" />
+    <ClCompile Include="..\common\shared\io_quest.cpp" />
     <ClCompile Include="src\ai_lib\ai_action.cpp" />
     <ClCompile Include="src\ai_lib\ai_condition.cpp" />
     <ClCompile Include="src\cchardata.cpp" />
@@ -88,7 +89,6 @@
     <ClCompile Include="src\common\cuserdata.cpp" />
     <ClCompile Include="src\common\io_ai.cpp" />
     <ClCompile Include="src\common\io_motion.cpp" />
-    <ClCompile Include="src\common\io_quest.cpp" />
     <ClCompile Include="src\common\io_skill.cpp" />
     <ClCompile Include="src\etc_math.cpp" />
     <ClCompile Include="src\gs_listuser.cpp" />

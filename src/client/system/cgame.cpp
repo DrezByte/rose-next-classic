@@ -48,7 +48,7 @@
 #include "../interface/ExternalUI/ExternalUILobby.h"
 #include "interface/dev_ui.h"
 
-#include "../Common/IO_Quest.h"
+#include "io_quest.h"
 #include "rose/io/stb.h"
 #include "../gamedata/cmanufacture.h"
 #include "../gamedata/CExchange.h"

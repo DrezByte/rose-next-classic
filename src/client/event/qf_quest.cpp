@@ -5,7 +5,7 @@
 
 #include "Quest_FUNC.h"
 #include "OBJECT.h"
-#include "Common/IO_Quest.h"
+#include "io_quest.h"
 #include "Network/CNetwork.h"
 #include "Util/LogWnd.h"
 

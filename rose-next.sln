@@ -71,6 +71,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common-shared", "common-sha
 		src\common\shared\cuserdata.h = src\common\shared\cuserdata.h
 		src\common\shared\cuserdata_new.cpp = src\common\shared\cuserdata_new.cpp
 		src\common\shared\datatype.h = src\common\shared\datatype.h
+		src\common\shared\io_quest.cpp = src\common\shared\io_quest.cpp
+		src\common\shared\io_quest.h = src\common\shared\io_quest.h
 	EndProjectSection
 EndProject
 Global

@@ -113,7 +113,7 @@
 #include "../SFX/SFXFont.h"
 #include "../SFX/SFXManager.h"
 
-#include "../Common/IO_QUEST.H"
+#include "io_quest.h"
 #include "controls/EffectString.h"
 #include <algorithm>
 

@@ -20,7 +20,7 @@
 #include "tgamectrl/TGameCtrl.h"
 
 #include "CViewMSG.h"
-#include "Common/IO_Quest.h"
+#include "io_quest.h"
 #include "Common/IO_Skill.h"
 #include "Game_FUNC.h"
 #include "Interface/CLoading.h"

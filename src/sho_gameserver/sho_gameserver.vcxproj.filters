@@ -100,9 +100,6 @@
     <ClInclude Include="src\common\io_motion.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\io_quest.h">
-      <Filter>Source Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\io_skill.h">
       <Filter>Source Files\common</Filter>
     </ClInclude>
@@ -159,6 +156,9 @@
     </ClInclude>
     <ClInclude Include="src\network.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shared\io_quest.h">
+      <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -246,9 +246,6 @@
     <ClCompile Include="src\common\io_motion.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\io_quest.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\io_skill.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -297,6 +294,9 @@
     </ClCompile>
     <ClCompile Include="src\network.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\shared\io_quest.cpp">
+      <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

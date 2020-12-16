@@ -1,14 +1,31 @@
-
 #include "stdAFX.h"
 
 #include "IO_SKILL.h"
 #include "IO_QUEST.h"
 #include "CUserDATA.h"
 
+#ifdef __SERVER
 #include "ZoneLIST.h"
 
 extern short Get_WorldTIME();
 extern short Get_ServerChannelNO();
+#else
+	#include "CObjUSER.h"
+	#include "GameData/CClan.h"
+	#include "System/SystemProcScript.h"
+	#include "Object.h"
+
+	#include "GameCommon/Skill.h"
+	#include "Util/ClassTIME.h"
+
+	#include "System/CGame.h"
+
+	#include "Util/LogWnd.h"
+	#include "GameProc/CDayNNightProc.h"
+
+	#include "Event/QuestRewardQueue.h"
+#endif
+
 
 t_HASHKEY
 Make_EventObjectID(int iZoneNO, int iMapX, int iMapY, int iEventID) {
@@ -18,9 +35,10 @@ Make_EventObjectID(int iZoneNO, int iMapX, int iMapY, int iEventID) {
 }
 
 CQuestDATA g_QuestList;
+#ifdef __SERVER
 extern FILE* g_fpTXT;
+#endif
 
-//-------------------------------------------------------------------------------------------------
 template<class dType1, class dType2>
 inline bool
 Check_QuestOP(BYTE btOP, dType1 iLeft, dType2 iRight) {
@@ -199,8 +217,8 @@ Check_UserVAR(tQST_PARAM* pPARAM, STR_ABIL_DATA* pDATA) {
 static bool
 Check_QuestITEM(tQST_PARAM* pPARAM, STR_ITEM_DATA* pDATA) {
     tagITEM sITEM;
-
     sITEM.Init(pDATA->uiItemSN);
+
     if (pDATA->iWhere >= EQUIP_IDX_FACE_ITEM && pDATA->iWhere < MAX_EQUIP_IDX) {
         // 장착 장비 체크...
         tagITEM* pFindITEM = pPARAM->m_pOWNER->Quest_FindEquipITEM(pDATA->iWhere);
@@ -503,10 +521,16 @@ F_QSTCOND006(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
         return false;
     }
 
+#ifdef __SERVER
+    int radius = pCOND->m_Cond006.iRadius;
+#else
+    int radius = pCOND->m_Cond006.iRadius * 100;
+#endif
+
     if (pPARAM->m_pOWNER->Quest_DistanceFrom(pCOND->m_Cond006.iX,
             pCOND->m_Cond006.iY,
             pCOND->m_Cond006.iZ)
-        <= pCOND->m_Cond006.iRadius)
+        <= radius)
         return true;
 
 #ifndef __SERVER
@@ -890,23 +914,6 @@ struct STR_COND_018
 
 bool
 F_QSTCOND019(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    /*
-    /// 요일 + 시각 체크
-    struct STR_COND_019
-    {
-        unsigned int	uiSize;
-        int				iType;
-
-        BYTE			btWeekDay;	// 요일 (0 ~ 6)
-
-        BYTE			btHour1;	// 시
-        BYTE			btMin1;		// 분
-        BYTE			btHour2;
-        BYTE			btMin2;
-        //  현재의 요일이 btWeekDay 이고, btHour1시 btMin1분  <= 현재 시각 <= btHour1시 btMin1분
-    이면 true
-    };
-    */
 
 #ifdef __SERVER
     SYSTEMTIME sTIME;
@@ -928,14 +935,22 @@ F_QSTCOND019(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
 
 bool
 F_QSTCOND020(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
+#ifdef __SERVER
     if (!pPARAM->m_pOWNER)
         return false;
     return (pPARAM->m_pOWNER->Get_TeamNO() >= pCOND->m_Cond020.iNo1
         && pPARAM->m_pOWNER->Get_TeamNO() <= pCOND->m_Cond020.iNo2);
+#else
+    CObjUSER* pUser = (CObjUSER*)(pPARAM->m_pOWNER);
+    return (pUser->Get_TeamNO() >= pCOND->m_Cond020.iNo1
+        && pUser->Get_TeamNO() <= pCOND->m_Cond020.iNo2);
+    return true;
+#endif
 }
 
 bool
 F_QSTCOND021(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
+#ifdef __SERVER
     if (NULL == pPARAM->m_pOWNER)
         return false;
 
@@ -964,6 +979,9 @@ F_QSTCOND021(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
         <= pCOND->m_Cond021.iRadius)
         return true;
     return false;
+#else
+	return true;
+#endif
 }
 
 bool
@@ -978,7 +996,10 @@ F_QSTCOND022(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
 
 bool
 F_QSTCOND023(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    // 클랜에 가입 체크
+    if (!pPARAM->m_pOWNER)
+        return false;
+
+#ifdef __SERVER
     if (pCOND->m_Cond023.btReg) {
         // 가입했냐?
         if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
@@ -989,101 +1010,206 @@ F_QSTCOND023(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
             return true;
         }
     }
+#else
+    CObjUSER* pUser = (CObjUSER*)(pPARAM->m_pOWNER);
+
+    switch (pCOND->m_Cond023.btReg) {
+        case 0: ///비가입자인가?
+            if (pUser->GetClanID())
+                return false;
+            return true;
+        case 1: ///가입자인가?
+            if (pUser->GetClanID())
+                return true;
+            return false;
+        default:
+            assert(0 && "F_QSTCOND023::Invalid btReg Value");
+            return false;
+    }
+#endif
 
     return false;
 }
+
 bool
 F_QSTCOND024(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    /*
-    // 클랜 직위 체크
-    struct STR_COND_024
-    {
-        unsigned int	uiSize;
-        int				iType;
+    if (!pPARAM->m_pOWNER)
+        return false;
 
-        short			nPOS;	// 직위 번호
-        BYTE			btOP;	// 0 = 같다, 1 = 크다, 2 = 크거나 같다. 3=작다, 4=작거나 같다.
-    };
-    */
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         short nPos = pPARAM->m_pOWNER->GetClanPOS();
         return ::Check_QuestOP(pCOND->m_Cond024.btOP, nPos, pCOND->m_Cond024.nPOS);
     }
+#else
+    CObjUSER* pUser = (CObjUSER*)(pPARAM->m_pOWNER);
+    return Check_QuestOP(pCOND->m_Cond024.btOP, pUser->GetClanPos(), pCOND->m_Cond024.nPOS);
+#endif
 
     return false;
 }
+
 bool
 F_QSTCOND025(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    // 클랜 개인 기여도 체크
+    if (!pPARAM->m_pOWNER)
+        return false;
+
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         int iContr = pPARAM->m_pOWNER->GetClanCONTRIBUTE();
         return ::Check_QuestOP(pCOND->m_Cond025.btOP, iContr, pCOND->m_Cond025.nCONT);
     }
     return false;
+#else
+    CObjUSER* pUser = (CObjUSER*)(pPARAM->m_pOWNER);
+
+    return Check_QuestOP(pCOND->m_Cond025.btOP,
+        CClan::GetInstance().GetMyClanPoint(),
+        pCOND->m_Cond025.nCONT);
+#endif
 }
+
 bool
 F_QSTCOND026(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    // 등급 체크
+    if (!pPARAM->m_pOWNER)
+        return false;
+
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         short nLEV = pPARAM->m_pOWNER->GetClanLEVEL();
         return ::Check_QuestOP(pCOND->m_Cond026.btOP, nLEV, pCOND->m_Cond026.nGRD);
     }
     return false;
+#else
+    CObjUSER* pUser = (CObjUSER*)(pPARAM->m_pOWNER);
+    return Check_QuestOP(pCOND->m_Cond026.btOP,
+        CClan::GetInstance().GetLevel(),
+        pCOND->m_Cond026.nGRD);
+#endif
 }
+
 bool
 F_QSTCOND027(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    // 점수 체크
+    if (!pPARAM->m_pOWNER)
+        return false;
+
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         int iScore = pPARAM->m_pOWNER->GetClanSCORE();
         return ::Check_QuestOP(pCOND->m_Cond027.btOP, iScore, pCOND->m_Cond027.nPOINT);
     }
     return false;
+#else
+    CObjUSER* pUser = (CObjUSER*)(pPARAM->m_pOWNER);
+
+    return Check_QuestOP(pCOND->m_Cond027.btOP,
+        CClan::GetInstance().GetPoint(),
+        pCOND->m_Cond027.nPOINT);
+#endif
 }
+
 bool
 F_QSTCOND028(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    // 머니 체크
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         __int64 biMoney = pPARAM->m_pOWNER->GetClanMONEY();
         return ::Check_QuestOP(pCOND->m_Cond028.btOP, biMoney, pCOND->m_Cond028.iMONEY);
     }
     return false;
+#else
+    if (!pPARAM->m_pOWNER)
+        return false;
+
+    return Check_QuestOP(pCOND->m_Cond028.btOP,
+        CClan::GetInstance().GetMoney(),
+        pCOND->m_Cond028.iMONEY);
+#endif
 }
+
 bool
 F_QSTCOND029(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    // 인원 체크
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         short nCnt = pPARAM->m_pOWNER->GetClanUserCNT();
         return ::Check_QuestOP(pCOND->m_Cond029.btOP, nCnt, pCOND->m_Cond029.nMemberCNT);
     }
     return false;
+#else
+    if (!pPARAM->m_pOWNER)
+        return false;
+
+    CObjUSER* pUser = (CObjUSER*)(pPARAM->m_pOWNER);
+
+    return Check_QuestOP(pCOND->m_Cond029.btOP,
+        CClan::GetInstance().GetMemberCount(),
+        pCOND->m_Cond029.nMemberCNT);
+#endif
 }
+
+#ifdef __SERVER
 bool
 F_QSTCOND030(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
-    // 스킬 체크
-    /*
-    struct STR_COND_030
-    {
-        unsigned int	uiSize;
-        int				iType;
-
-        short			nSkill1;
-        short			nSkill2;	// nSkill1 ~ nSkill2 의 스킬이 있는지/없는지 체크
-        BYTE			btOP;		// 0: 없는가 ?  1: 있는가 ?
-    };
-    */
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         BYTE btFind;
         btFind =
             pPARAM->m_pOWNER->FindClanSKILL(pCOND->m_Cond030.nSkill1, pCOND->m_Cond030.nSkill2);
-#ifdef MAX_CLAN_SKILL_SLOT
+	#ifdef MAX_CLAN_SKILL_SLOT
         if (pCOND->m_Cond030.btOP)
             return btFind != MAX_CLAN_SKILL_SLOT;
 
         return btFind == MAX_CLAN_SKILL_SLOT;
-#endif
+	#endif
     }
 
     return false;
+}
+#else
+bool
+F_QSTCOND030(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
+    if (!pPARAM->m_pOWNER)
+        return false;
+
+    // CObjUSER* pUser = (CObjUSER*)( pPARAM->m_pOWNER );
+
+    CClanSkillSlot* pSkillSlot = CClan::GetInstance().GetClanSkillSlot();
+    if (pSkillSlot == NULL)
+        return false;
+
+    int iSkill1 = pCOND->m_Cond030.nSkill1;
+    int iSkill2 = pCOND->m_Cond030.nSkill2;
+
+    if (iSkill1 > iSkill2) {
+        int Temp = iSkill1;
+        iSkill1 = iSkill2;
+        iSkill2 = Temp;
+    }
+
+    /// iSkill1 부터 iSkill2 사이의 스킬이 있다면..
+    for (int i = iSkill1; i <= iSkill2; i++) {
+        CSkill* pSkill = pSkillSlot->GetSkillBySkillIDX(i);
+        if (pSkill) {
+            if (pSkill->HasExpiredTime()) {
+                DWORD dwExpiredTime = pSkill->GetExpiredTime();
+
+                DWORD dwCurruntAbsSec = classTIME::GetCurrentAbsSecond();
+                if (dwExpiredTime < dwCurruntAbsSec)
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    return false;
+}
+#endif
+
+bool
+F_QUEST_COND_NULL(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
+    return true;
+}
+bool
+F_QUEST_REWD_NULL(uniQstENTITY* pCOND, tQST_PARAM* pPARAM, bool bDoReward) {
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1091,11 +1217,18 @@ F_QSTCOND030(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
+#ifdef __SERVER
 bool
 F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) // 05.05.21 icarus:: 보상목록 작성 불필요...
+        return true;
+#endif
     /// 퀘스트 등록/삭제 요청
     switch (pREWD->m_Rewd000.btOp) {
-        case 0: // 삭제.
+        case 0:
             if (NULL == pPARAM->m_pQUEST) // 잘못된 퀘스트 데이타로 인해서...
             {
 
@@ -1123,6 +1256,11 @@ F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
                 }
             }
 #endif
+
+#ifndef __SERVER
+            g_itMGR.ShowQuestStartMessage(pREWD->m_Rewd000.iQuestSN);
+#endif
+
             break;
         }
 
@@ -1141,6 +1279,11 @@ F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
             }
 
             pPARAM->m_pQUEST->SetID(pREWD->m_Rewd000.iQuestSN, false);
+
+#ifndef __SERVER
+            g_itMGR.ShowQuestStartMessage(pREWD->m_Rewd000.iQuestSN);
+#endif
+
             break;
 
         case 3: // 3 = 변경/최기화
@@ -1159,6 +1302,11 @@ F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
             pPARAM->m_pQUEST->Init();
             pPARAM->m_pQUEST->SetID(pREWD->m_Rewd000.iQuestSN, true);
+
+#ifndef __SERVER
+            g_itMGR.ShowQuestStartMessage(pREWD->m_Rewd000.iQuestSN);
+#endif
+
             break;
 
         case 4: // 4 = 선택.
@@ -1185,8 +1333,17 @@ F_QSTREWD000(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD001(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD001(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     /// 퀘스트전용 아이템 주기/뺏기 (일반 아이템도 이거 사용해도 됨)
     tagITEM sITEM;
 
@@ -1222,16 +1379,6 @@ F_QSTREWD001(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
             // 일반 인벤토리에서 아이템 삭제, 장착 아이템은 뺏지 못함...
             return pPARAM->m_pOWNER->Quest_SubITEM(sITEM);
-            /*
-            t_EquipINDEX EquipIDX = sITEM.GetEquipPOS();
-            if ( EquipIDX != MAX_EQUIP_IDX )
-            {
-                // 장비 삭제.
-                sITEM.Clear ();
-                pPARAM->m_pOWNER->Set_EquipITEM( EquipIDX, sITEM );
-            }
-            return true;
-            */
         }
         case 1: // 주기
             // btPartyOpt;	/// 0 = 파티원 적용 안함, 1 = 파티원 적용
@@ -1243,8 +1390,16 @@ F_QSTREWD001(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
     return false;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD002(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD002(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) // 05.05.21 icarus:: 보상목록 작성 불필요...
+        return true;
+#endif
     /// 퀘스트 변수값/스위치값 변경
     for (int iL = 0; iL < pREWD->m_Rewd002.iDataCnt; iL++) {
         if (!::Set_QuestVAR(pPARAM, &pREWD->m_Rewd002.CheckData[iL])) {
@@ -1263,8 +1418,18 @@ F_QSTREWD002(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD003(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD003(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
+
     /// 캐릭터 능력치 변경
     for (int iL = 0; iL < pREWD->m_Rewd003.iDataCnt; iL++) {
         switch (pREWD->m_Rewd003.CheckData[iL].btOp) {
@@ -1291,8 +1456,16 @@ F_QSTREWD003(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     return true;
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD004(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD004(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) // 05.05.21 icarus:: 보상목록 작성 불필요...
+        return true;
+#endif
+
     /// 캐릭터 진행변수값 변경
     for (int iL = 0; iL < pREWD->m_Rewd004.iDataCnt; iL++) {
         if (!::Set_QuestVAR(pPARAM, &pREWD->m_Rewd004.CheckData[iL])) {
@@ -1310,22 +1483,17 @@ F_QSTREWD004(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD005(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
-    /*
-    /// 보상
-    struct STR_REWD_005
-    {
-        unsigned int	uiSize;
-        int				iType;
-
-        BYTE			btTarget;	/// 0 = 경험치, 1 = 돈 , 2 = 아이템
-        BYTE			btEquation;	/// 사전에 약속된 계산식
-        int				iValue;		/// 기준값
-        int				iItemSN;	/// 대상 아이템
-        BYTE			btPartyOpt;	/// 0 = 파티원 적용 안함, 1 = 파티원 적용
-    } ;
-    */
+#else
+bool
+F_QSTREWD005(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     // 경험치 보상
     if (0 == pREWD->m_Rewd005.btTarget) {
         return pPARAM->m_pOWNER->Reward_CalEXP(pREWD->m_Rewd005.btEquation,
@@ -1335,6 +1503,7 @@ F_QSTREWD005(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
         // 돈 보상
         if (1 == pREWD->m_Rewd005.btTarget) {
         if (NULL == pPARAM->m_pQUEST) {
+
 #ifndef __SERVER
             //--------------------------------------------------------------------------------
             LOGWAR("[ %s ] F_QSTREWD005[ 돈 보상 ] FAILED[ NULL == pPARAM->m_pQUEST ] ",
@@ -1381,8 +1550,17 @@ F_QSTREWD005(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     return false;
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD006(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD006(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
+
 #ifndef __SERVER
     //--------------------------------------------------------------------------------
     LOGOUT("[ %s ] F_QSTREWD006[ 캐릭터 Hp, Mp 회복 ]", pPARAM->m_pCurrentTRIGGER->m_Name.Get());
@@ -1437,6 +1615,7 @@ struct STR_REWD_007
 #endif
     return true;
 }
+
 bool
 F_QSTREWD008(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 /// 몹소환
@@ -1520,25 +1699,32 @@ struct STR_REWD_008
 
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD009(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
-    /*
-    /// *** 몇번 체크로 이동 ==> 변수명 변경, shNameLen 추가
-    struct STR_REWD_009
-    {
-        unsigned int	uiSize;
-        int				iType;
-
-        short			shNameLen;
-        char			szNextTriggerSN[ 1 ];	/// 현재 패턴에서 iNextTriggerSN(O베이스)번째
-    이동해서 트리거체크
-    };
-    */
     pPARAM->m_HashNextTRIGGER = ::StrToHashKey(pREWD->m_Rewd009.szNextTriggerSN);
     return (0 != pPARAM->m_HashNextTRIGGER);
 }
+#else
+bool
+F_QSTREWD009(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    pPARAM->m_HashNextTRIGGER = ::StrToHashKey(pREWD->m_Rewd009.szNextTriggerSN);
+    return (0 != pPARAM->m_HashNextTRIGGER);
+}
+#endif
+
+#ifdef __SERVER
 bool
 F_QSTREWD010(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD010(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
+
     if (NULL == pPARAM->m_pOWNER) {
 
 #ifndef __SERVER
@@ -1554,8 +1740,14 @@ F_QSTREWD010(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD011(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD011(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+#endif
 /*
 /// NPC 변수 값 체크
 typedef struct	tagValue
@@ -1608,6 +1800,8 @@ typedef struct	tagValue
 #endif
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD012(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 /*
@@ -1621,7 +1815,6 @@ struct STR_REWD_012
     char		szMsg[ 1 ];		/// 대사
 };
 */
-#ifdef __SERVER
     if (!pPARAM->m_pNpcVAR)
         return false;
 
@@ -1636,11 +1829,22 @@ struct STR_REWD_012
             pPARAM->m_pNpcVAR->VSend_gsv_ANNOUNCE_CHAT(pREWD->m_Rewd012_STR.szMsg);
             break;
     }
-#endif
     return true;
 }
+#else
+bool
+F_QSTREWD012(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+	return true;
+}
+#endif
+
+#ifdef __SERVER
 bool
 F_QSTREWD013(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD013(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+#endif
 /*
 /// 몆초 후에 어떤 트리거 수행
 struct STR_REWD_013
@@ -1693,8 +1897,16 @@ struct STR_REWD_013
     return true;
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD014(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD014(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     /// 스킬를 주거나 삭제한다
     /*
     struct STR_REWD_014
@@ -1718,8 +1930,15 @@ F_QSTREWD014(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     return pPARAM->m_pOWNER->Sub_SkillNSend(pREWD->m_Rewd014.iSkillNo);
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD015(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD015(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) // 05.05.21 icarus:: 보상목록 작성 불필요...
+        return true;
+#endif
     /*
     /// Switch Off On
     struct STR_REWD_015
@@ -1739,8 +1958,16 @@ F_QSTREWD015(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     pPARAM->m_pOWNER->m_Quests.Set_SWITCH(pREWD->m_Rewd015.nSN, pREWD->m_Rewd015.btOp);
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD016(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD016(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) // 05.05.21 icarus:: 보상목록 작성 불필요...
+        return true;
+#endif
     /*
     /// 그룹별 Switch Clear
     //#define		TYPE_REWD_016
@@ -1761,8 +1988,16 @@ F_QSTREWD016(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD017(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD017(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) // 05.05.21 icarus:: 보상목록 작성 불필요...
+        return true;
+#endif
     /// 전체 Switch Clear
     if (!pPARAM->m_pOWNER) {
         _ASSERT(0);
@@ -1773,24 +2008,9 @@ F_QSTREWD017(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     return true;
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD018(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
-    /*
-    /// NPC 변수 출력
-    struct STR_REWD_018
-    {
-        unsigned int	uiSize;
-        int				iType;
-
-        short			nFormatLength;
-        short			nCnt;
-        BYTE			Data[ 1 ];
-        /* Data 안에는 Null을 포함한 char szFormat[ nFormatLength ] + STR_NPCVAR NpcVars[ 1 ]
-            Data 크기 = nFormatLength + nCnt * sizeof (STR_NPCVAR) */
-    /* szFormat[ nFormatLength ]. NULL포함. printf의 포맷문자열과 동일.
-        "xxxx %d xxxx %d xxx "에서 %d가 nCnt만큼 있음.
-    */
-#ifdef __SERVER
     CObjVAR* pNpc;
 
     char* szResult = new char[pREWD->m_Rewd018.iStrID + 6 * pREWD->m_Rewd018.nCnt + 1];
@@ -1817,35 +2037,33 @@ F_QSTREWD018(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
     SAFE_DELETE_ARRAY(szResult);
     SAFE_DELETE_ARRAY(szParam);
-#endif
     return true;
 }
+#else
+bool
+F_QSTREWD018(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    return true;
+}
+#endif
+
+#ifdef __SERVER
 bool
 F_QSTREWD019(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
-/// 특정 팀번호를 가진 아바타에게 트리거 실행
-/*
-struct STR_REWD_019
-{
-    unsigned int	uiSize;
-    int				iType;
-
-    short			nZoneNo;
-    short			nTeamNo;
-    short			nTriggerLength;
-    char			TriggerName[ 1 ]; // char Trigger[ nTriggerLength ], NULL 포함
-};
-*/
-#ifdef __SERVER
     return g_pZoneLIST->Do_QuestTrigger(pREWD->m_Rewd019.nZoneNo,
         pREWD->m_Rewd019.nTeamNo,
         pREWD->m_Rewd019.m_HashTrigger);
-#else
-    return true;
-#endif
 }
+#else
+bool
+F_QSTREWD019(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    return true;
+}
+#endif
+
+#ifdef __SERVER
 bool
 F_QSTREWD020(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
-    /// 팀번호 부여 (PVP 존) - 트리거를 발동시킨 분께 팀번호 부여
+
     if (!pPARAM->m_pOWNER)
         return false;
 
@@ -1859,6 +2077,14 @@ F_QSTREWD020(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     }
     return false;
 }
+#else
+bool
+F_QSTREWD020(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+	return true;
+}
+#endif
+
+#ifdef __SERVER
 bool
 F_QSTREWD021(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     /// 현재존의 부활 위치 지정 (PVP 존)
@@ -1867,6 +2093,18 @@ F_QSTREWD021(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
 
     return pPARAM->m_pOWNER->Set_RevivePOS(pREWD->m_Rewd021.iX, pREWD->m_Rewd021.iY);
 }
+#else
+bool
+F_QSTREWD021(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) // 05.05.21 icarus:: 보상목록 작성 불필요...
+        return true;
+    /// 현재존의 부활 위치 지정 (PVP 존)
+    if (!pPARAM->m_pOWNER)
+        return false;
+
+    return true;
+}
+#endif
 
 bool
 F_QSTREWD022(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
@@ -1893,24 +2131,36 @@ F_QSTREWD022(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     return false;
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD023(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
-    /*
-    // 클랜 등급 한단계 증가 - 추가 데이터 없음
-    struct STR_REWD_023
-    {
-        unsigned int	uiSize;
-        int				iType;
-    } ;
-    */
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         pPARAM->m_pOWNER->IncClanLEVEL();
         return true;
     }
     return false;
 }
+#else
+bool
+F_QSTREWD023(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+
+    return true;
+}
+#endif
+
+#ifdef __SERVER
 bool
 F_QSTREWD024(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD024(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     /*
     // 머니 감소 / 증가
     struct STR_REWD_024
@@ -1922,6 +2172,7 @@ F_QSTREWD024(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
         BYTE			btOP;	// 5 = 값바꿈, 6 = 증가(주어진 만큼), 7 = 감소(주어진 만큼)
     } ;
     */
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->Is_ClanMASTER()) {
         switch (pREWD->m_Rewd024.btOP) {
             case 5: // 값바꿈
@@ -1936,13 +2187,24 @@ F_QSTREWD024(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
             default:
                 return false;
         }
-
         return true;
-    }
-    return false;
+	}
+	return false;
+#else
+	return true;
+#endif
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD025(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD025(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     /*
     // 점수 감소/ 증가
     struct STR_REWD_025
@@ -1954,6 +2216,7 @@ F_QSTREWD025(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
         BYTE			btOP;	// 5 = 값바꿈, 6 = 증가(주어진 만큼), 7 = 감소(주어진 만큼)
     } ;
     */
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         switch (pREWD->m_Rewd025.btOP) {
             case 5: // 값바꿈
@@ -1972,9 +2235,21 @@ F_QSTREWD025(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
         return true;
     }
     return false;
+#else
+	return true;
+#endif
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD026(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD026(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     /*
     // 스킬 습득 / 삭제
     struct STR_REWD_026
@@ -1986,6 +2261,7 @@ F_QSTREWD026(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
         BYTE			btOP;		// 0: 삭제, 1: 습득
     } ;
     */
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         if (pREWD->m_Rewd026.btOP)
             return pPARAM->m_pOWNER->AddClanSKILL(pREWD->m_Rewd026.nSkillNo);
@@ -1994,9 +2270,21 @@ F_QSTREWD026(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     }
 
     return false;
+#else
+	return true;
+#endif
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD027(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD027(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     /*
     // 기여도 감소 / 증가
     struct STR_REWD_027
@@ -2008,6 +2296,7 @@ F_QSTREWD027(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
         BYTE			btOP;	// 5 = 값바꿈, 6 = 증가(주어진 만큼), 7 = 감소(주어진 만큼)
     } ;
     */
+#ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         switch (pREWD->m_Rewd027.btOP) {
             case 5: // 값바꿈
@@ -2027,23 +2316,24 @@ F_QSTREWD027(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
         return true;
     }
     return false;
+#else
+	return true;
+#endif;
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD028(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
-/*
-// 클랜원 워프
-struct STR_REWD_028
-{
-    unsigned int	uiSize;
-    int				iType;
+#else
+bool
+F_QSTREWD029(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward)
+        return true;
 
-    int				iRange; // 주변 몇 미터
-    short			nZoneNo; // 타겟 존번호
-    int				iX;		// 타겟 x좌표
-    int				iY;		// 타겟 y좌표
-} ;
-*/
+    if (!pPARAM->m_pOWNER)
+        return false;
+#endif
+
 #ifdef __SERVER
     if (pPARAM->m_pOWNER && pPARAM->m_pOWNER->GetClanID()) {
         // 같은 클랜번호 케릭을 강제 워프...
@@ -2064,13 +2354,29 @@ struct STR_REWD_028
         }
         return true;
     }
-#endif
-
+    
     return false;
+#else
+    CSystemProcScript::GetSingleton().CallLuaFunction(pREWD->m_Rewd029.szSrciptName,
+        ZZ_PARAM_INT,
+        g_pAVATAR->Get_INDEX(),
+        ZZ_PARAM_END);
+
+    return true;
+#endif
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD030(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD030(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
+
     if (NULL == pPARAM->m_pOWNER) {
 
 #ifndef __SERVER
@@ -2083,12 +2389,19 @@ F_QSTREWD030(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
     }
 
     pPARAM->m_pOWNER->Reward_InitSKILL();
-
     return true;
 }
 
+#ifdef __SERVER
 bool
 F_QSTREWD031(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD031(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     /*	/// 몬스터 사냥 변수 증가
         struct STR_REWD_031
         {
@@ -2100,17 +2413,25 @@ F_QSTREWD031(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
             STR_QUEST_DATA	Var;			// 변수 정보
         };
     */
+#ifdef __SERVER
     if (!::Set_QuestVAR(pPARAM, &pREWD->m_Rewd031.Var)) {
         return false;
     }
-
-    // pREWD->m_Rewd031.iMonsterSN;
-    // pREWD->m_Rewd031.iCompareValue;
+#endif
 
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD032(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD032(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
     /*	/// 퀘스트 아이템 획득 정보
         struct STR_REWD_032
         {
@@ -2122,30 +2443,34 @@ F_QSTREWD032(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
             BYTE			btPartyOpt;		// 0 = 파티 적용 안 됨, 파티 적용됨
         };
     */
-    // 퀘스트전용 아이템 주기/뺏기 (일반 아이템도 이거 사용해도 됨)
+#ifdef __SERVER
     tagITEM sITEM;
 
     pREWD->m_Rewd032.iCompareValue;
 
     sITEM.Init(pREWD->m_Rewd032.uiItemSN, 1 /*pREWD->m_Rewd001.nDupCNT*/);
     if (0 == sITEM.GetHEADER()) {
-#ifndef __SERVER
-        //--------------------------------------------------------------------------------
-        LOGWAR(
-            "[ %s ] F_QSTREWD032[ 퀘스트전용 아이템 주기/뺏기 ] FAILED[ 0 == sITEM.GetHEADER() ] ",
-            pPARAM->m_pCurrentTRIGGER->m_Name.Get());
-        //--------------------------------------------------------------------------------
-#endif
         return false;
     }
 
     // btPartyOpt;	/// 0 = 파티원 적용 안함, 1 = 파티원 적용
     pPARAM->m_pOWNER->Reward_ITEM(sITEM, pREWD->m_Rewd032.btPartyOpt, pPARAM->m_btQuestSLOT);
+#endif
 
     return true;
 }
+
+#ifdef __SERVER
 bool
 F_QSTREWD033(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#else
+bool
+F_QSTREWD033(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
+    if (!bDoReward) {
+        return true;
+    }
+#endif
+
     /*	/// 선택보상 트리거 정보
         struct STR_REWD_033
         {
@@ -2155,16 +2480,18 @@ F_QSTREWD033(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
             short			nNextRewardSplitter;	// -1 이면 보상트리거의 끝임
         };
     */
-    //	pREWD->m_Rewd033.nNextRewardSplitter;
     return true;
 }
+
 bool
 F_QSTREWD034(uniQstENTITY* pREWD, tQST_PARAM* pPARAM) {
+#ifdef __SERVER
     if (!pPARAM->m_pNpcVAR)
         return false;
 
     // 0 = 숨기기 , 1 = 보이기, 2 = 토글하기
     pPARAM->m_pNpcVAR->VSet_SHOW(pREWD->m_Rewd034.btHIDE);
+#endif
 
     return true;
 }
@@ -2180,6 +2507,7 @@ F_QST_FALSE(uniQstENTITY* pCOND, tQST_PARAM* pPARAM) {
 }
 
 //-------------------------------------------------------------------------------------------------
+#ifdef __SERVER
 struct tagF_QstCOND {
     bool (*fpCheck)(uniQstENTITY* pCOND, tQST_PARAM* pPARAM);
 } g_fpQstCOND[] = {
@@ -2219,7 +2547,6 @@ struct tagF_QstCOND {
     F_QSTCOND027,
     F_QSTCOND028,
     F_QSTCOND029,
-
     F_QSTCOND030,
 
     F_QST_FALSE,
@@ -2253,7 +2580,69 @@ struct tagF_QstCOND {
     F_QST_FALSE,
     F_QST_FALSE,
 };
+#else
+struct tagF_QstCOND {
+    bool (*fpCheck)(uniQstENTITY* pCOND, tQST_PARAM* pPARAM);
+} g_fpQstCOND[] = {
+    F_QSTCOND000,
+    F_QSTCOND001,
+    F_QSTCOND002,
+    F_QSTCOND003,
+    F_QSTCOND004,
+    F_QSTCOND005,
+    F_QSTCOND006,
+    F_QSTCOND007,
+    F_QSTCOND008,
+    F_QSTCOND009,
+    F_QSTCOND010,
 
+    F_QSTCOND011,
+    F_QSTCOND012,
+    F_QSTCOND013,
+
+    F_QSTCOND014,
+
+    F_QSTCOND015,
+    F_QSTCOND016,
+
+    F_QSTCOND017,
+
+    F_QSTCOND018,
+    F_QSTCOND019,
+    F_QSTCOND020,
+    F_QSTCOND021,
+    F_QSTCOND022,
+
+    F_QSTCOND023,
+    F_QSTCOND024,
+    F_QSTCOND025,
+    F_QSTCOND026,
+    F_QSTCOND027,
+    F_QSTCOND028,
+    F_QSTCOND029,
+    F_QSTCOND030,
+
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+    F_QUEST_COND_NULL,
+};
+#endif
+
+#ifdef __SERVER
 struct tagF_QstREWD {
     bool (*fpReward)(uniQstENTITY* pREWD, tQST_PARAM* pPARAM);
 } g_fpQstREWD[] = {
@@ -2267,7 +2656,7 @@ struct tagF_QstREWD {
     F_QSTREWD007,
     F_QSTREWD008,
     F_QSTREWD009,
-    F_QSTREWD010, // 스텟 초기화
+    F_QSTREWD010,
 
     F_QSTREWD011,
     F_QSTREWD012,
@@ -2280,27 +2669,24 @@ struct tagF_QstREWD {
 
     F_QSTREWD018,
     F_QSTREWD019,
-
     F_QSTREWD020,
     F_QSTREWD021,
 
     F_QSTREWD022,
-
     F_QSTREWD023,
     F_QSTREWD024,
     F_QSTREWD025,
     F_QSTREWD026,
     F_QSTREWD027,
     F_QSTREWD028,
+    F_QST_TRUE,
+    F_QSTREWD030,
 
-    F_QST_TRUE, // 29번은 클라이언트 전용..
-
-    F_QSTREWD030, // 스킬 초기화
     F_QSTREWD031, /// 몬스터 사냥 변수 증가
     F_QSTREWD032, /// 퀘스트 아이템 획득 정보
     F_QSTREWD033, /// 선택보상 트리거 정보
 
-    F_QSTREWD034, // /// NPC 숨기기/보이기/토글하기
+    F_QSTREWD034,
 
     F_QST_FALSE,
     F_QST_FALSE,
@@ -2335,6 +2721,64 @@ struct tagF_QstREWD {
     F_QST_FALSE,
     F_QST_FALSE,
 };
+#else
+struct tagF_QstREWD {
+    bool (*fpReward)(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward);
+} g_fpQstREWD[] = {
+    F_QSTREWD000,
+    F_QSTREWD001,
+    F_QSTREWD002,
+    F_QSTREWD003,
+    F_QSTREWD004,
+    F_QSTREWD005,
+    F_QSTREWD006,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QSTREWD009,
+    F_QSTREWD010,
+
+    F_QSTREWD011,
+    F_QSTREWD012,
+    F_QSTREWD013,
+    F_QSTREWD014,
+
+    F_QSTREWD015,
+    F_QSTREWD016,
+    F_QSTREWD017,
+
+    F_QSTREWD018,
+    F_QSTREWD019,
+    F_QSTREWD020,
+    F_QSTREWD021,
+
+    F_QUEST_REWD_NULL,
+    F_QSTREWD023,
+    F_QSTREWD024,
+    F_QSTREWD025,
+    F_QSTREWD026,
+    F_QSTREWD027,
+    F_QUEST_REWD_NULL,
+    F_QSTREWD029,
+    F_QSTREWD030,
+
+    F_QSTREWD031, /// 몬스터 사냥 변수 증가
+    F_QSTREWD032, /// 퀘스트 아이템 획득 정보
+    F_QSTREWD033, /// 선택보상 트리거 정보
+
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+    F_QUEST_REWD_NULL,
+};
+#endif
 
 //-------------------------------------------------------------------------------------------------
 bool
@@ -2356,12 +2800,13 @@ CQuestDATA::LoadQuestTable() {
 
     CGameSTB cFILE;
     if (cFILE.Open(m_QuestListSTB.Get())) {
+#ifdef __SERVER
         STBDATA AILang;
         if (m_QuestLangSTB.Get()) {
             AILang.load(m_QuestLangSTB.Get());
         }
         this->m_pSTB = &AILang;
-
+#endif
         char* szFileName;
         CStrVAR TmpStr(512);
 
@@ -2373,13 +2818,15 @@ CQuestDATA::LoadQuestTable() {
             } else
                 szFileName = cFILE.GetString(0, nY);
 
+#ifdef __SERVER
             if (cFILE.GetString(0, nY) && szFileName) {
-#ifndef __SERVER
-                this->Client_LoadDATA(szFileName);
+            	this->LoadDATA(szFileName);
+        	}
 #else
-                this->LoadDATA(szFileName);
-#endif
+            if (szFileName) {
+                this->Client_LoadDATA(szFileName);
             }
+#endif
         }
         cFILE.Close();
         return true;
@@ -2388,18 +2835,26 @@ CQuestDATA::LoadQuestTable() {
     return false;
 }
 
+#ifdef __SERVER
 bool
 CQuestDATA::LoadQuestTable(char* szQuestFile,
     char* szQuestListSTB,
     char* szBaseDIR,
     char* szQuestLangSTB,
     int iLangCol) {
+#else
+bool
+CQuestDATA::LoadQuestTable(char* szQuestFile, char* szQuestListSTB, char* szBaseDIR) {
+#endif
+
     this->m_BaseDIR.Set(szBaseDIR);
 
     if (!szBaseDIR) {
         m_QuestFILE.Set(szQuestFile);
         m_QuestListSTB.Set(szQuestListSTB);
+#ifdef __SERVER
         m_QuestLangSTB.Set(szQuestLangSTB);
+#endif
     } else {
         m_QuestFILE.Alloc(static_cast<WORD>(strlen(szQuestFile) + strlen(szBaseDIR) + 10));
         m_QuestFILE.Printf("%s%s", szBaseDIR, szQuestFile);
@@ -2407,13 +2862,18 @@ CQuestDATA::LoadQuestTable(char* szQuestFile,
         m_QuestListSTB.Alloc(static_cast<WORD>(strlen(szQuestListSTB) + strlen(szBaseDIR) + 10));
         m_QuestListSTB.Printf("%s%s", szBaseDIR, szQuestListSTB);
 
+#ifdef __SERVER
         if (szQuestLangSTB) {
             m_QuestLangSTB.Alloc(
                 static_cast<WORD>(strlen(szQuestLangSTB) + strlen(szBaseDIR) + 10));
             m_QuestLangSTB.Printf("%s%s", szBaseDIR, szQuestLangSTB);
         }
+#endif
     }
+
+#ifdef __SERVER
     m_iLangCol = iLangCol;
+#endif
 
     // char *szFileName;
 
@@ -2445,8 +2905,6 @@ CQuestDATA::LoadQuestTrigger(CFileSystem* pFileSystem, unsigned int uiTriggerCNT
     for (unsigned int uiT = 0; uiT < uiTriggerCNT; uiT++) {
         pTrigger = new CQuestTRIGGER;
         if (!pFirstTrigger) {
-            // 05.06.09 첫번째 트리거 :: list_npc에 등록된 몬스터 사망시 발동되는 자동 트리거 파일중
-            // 하단 체크 안함 밑에 추가되어있는 트리거에 오너몬스터를 설정하기 위해서...
             pFirstTrigger = pTrigger;
         }
 
@@ -2455,7 +2913,7 @@ CQuestDATA::LoadQuestTrigger(CFileSystem* pFileSystem, unsigned int uiTriggerCNT
 #else
         if (!pTrigger->Client_Load(pFileSystem))
 #endif
-        {
+		{
             _ASSERT(0);
             SAFE_DELETE(pTrigger);
             continue;
@@ -2466,18 +2924,27 @@ CQuestDATA::LoadQuestTrigger(CFileSystem* pFileSystem, unsigned int uiTriggerCNT
         tagHASH<CQuestTRIGGER*>* pHashNode = m_HashQUEST.Search(HashKey);
         pFindTrigger = pHashNode ? pHashNode->m_DATA : NULL;
         if (pFindTrigger) {
+#ifndef __SERVER
+            g_LOG.CS_ODS(0xffff,
+                "ERROR:: QUEST TRIGGER: HashKey is equal at \"%s\" skip \"%s\" trigger, [ %s ]\n",
+                pTrigger->m_Name.Get(),
+                pFindTrigger->m_Name.Get(),
+                szFileName);
+#endif
             SAFE_DELETE(pTrigger);
             continue;
         }
 
         m_HashQUEST.Insert(HashKey, pTrigger);
         if (pPrevTrigger) {
-            pPrevTrigger->m_pNextTrigger = pTrigger;
-        }
+            if (pPrevTrigger->GetCheckNext())
+                pPrevTrigger->m_pNextTrigger = pTrigger;
+		}
         pPrevTrigger = pTrigger;
     }
 }
 
+#ifdef __SERVER
 bool
 CQuestDATA::LoadDATA(char* szFileName) {
     FILE* fpIN;
@@ -2507,6 +2974,38 @@ CQuestDATA::LoadDATA(char* szFileName) {
 
     return true;
 }
+#else
+bool
+CQuestDATA::Client_LoadDATA(char* szFileName) {
+    CFileSystem* pFileSystem = (CVFSManager::GetSingleton()).GetFileSystem();
+    if (pFileSystem->OpenFile(szFileName) == false) {
+        //::MessageBox (NULL, "File open error...", szFileName, MB_OK);
+        (CVFSManager::GetSingleton()).ReturnToManager(pFileSystem);
+        return false;
+    }
+
+    unsigned int ulPatternCNT, ulSize;
+    pFileSystem->ReadUInt32(&ulSize);
+    pFileSystem->ReadUInt32(&ulPatternCNT);
+    short nStrLen;
+    pFileSystem->ReadInt16(&nStrLen);
+    pFileSystem->Seek(nStrLen, FILE_POS_CUR);
+
+    unsigned int uiTriggerCNT;
+    for (unsigned long ulP = 0; ulP < ulPatternCNT; ulP++) {
+        pFileSystem->ReadUInt32(&uiTriggerCNT);
+        pFileSystem->ReadInt16(&nStrLen);
+        pFileSystem->Seek(nStrLen, FILE_POS_CUR);
+
+        this->LoadQuestTrigger(pFileSystem, uiTriggerCNT, szFileName);
+    }
+
+    pFileSystem->CloseFile();
+    (CVFSManager::GetSingleton()).ReturnToManager(pFileSystem);
+
+    return true;
+}
+#endif
 
 void
 CQuestDATA::Free() {
@@ -2522,7 +3021,7 @@ CQuestDATA::Free() {
 void
 CQuestDATA::CheckAllQuest(CUserDATA* pUSER) {}
 
-//-------------------------------------------------------------------------------------------------
+#ifdef __SERVER
 eQST_RESULT
 CQuestDATA::CheckQUEST(CUserDATA* pUSER,
     t_HASHKEY HashQuest,
@@ -2530,30 +3029,48 @@ CQuestDATA::CheckQUEST(CUserDATA* pUSER,
     int iEventNpcIDX,
     CGameOBJ* pCallOBJ,
     short nSelectReward) {
+
     if (!this->m_bEnable) {
         // 퀘스트 데이타 점검중...
         return QST_RESULT_STOPPED;
     }
     ::InterlockedIncrement(&this->m_lRefCnt);
+#else
+eQST_RESULT
+CQuestDATA::CheckQUEST(CUserDATA* pUSER, t_HASHKEY HashQuest, bool bDoReward) {
+#endif
 
     eQST_RESULT eResult = QST_RESULT_INVALID;
     CQuestTRIGGER* pTrigger;
     tQST_PARAM qstPARAM;
 
+    qstPARAM.Init(pUSER, pUSER ? pUSER->Quest_GetZoneNO() : 0);
+
     tagHASH<CQuestTRIGGER*>* pHashNode = m_HashQUEST.Search(HashQuest);
     pTrigger = pHashNode ? pHashNode->m_DATA : NULL;
 
-    // npc 죽을때 발생되는 트리거로...서버랑 맞아야 됨 :: 해킹방지....
+#ifdef __SERVER
     if (pTrigger && pTrigger->m_iOwerNpcIDX && pTrigger->m_iOwerNpcIDX != iEventNpcIDX) {
         ::InterlockedDecrement(&this->m_lRefCnt);
         return QST_RESULT_INVALID;
     }
+#else
+if (pTrigger == NULL) {
+	return QST_RESULT_INVALID;
+}
+#endif
 
-    qstPARAM.Init(pUSER, pUSER ? pUSER->Quest_GetZoneNO() : 0);
+#ifdef __SERVER
     qstPARAM.m_pCallOBJ = pCallOBJ;
+#endif
 
     while (pTrigger) {
+#ifdef __SERVER
         if (pTrigger->Proc(&qstPARAM, bDoReward, nSelectReward)) {
+#else
+        qstPARAM.m_pCurrentTRIGGER = pTrigger;
+        if (pTrigger->Proc(&qstPARAM, bDoReward)) {
+#endif
             if (qstPARAM.m_HashNextTRIGGER) {
                 pHashNode = m_HashQUEST.Search(qstPARAM.m_HashNextTRIGGER);
                 pTrigger = pHashNode ? pHashNode->m_DATA : NULL;
@@ -2562,7 +3079,17 @@ CQuestDATA::CheckQUEST(CUserDATA* pUSER,
                 continue;
             }
 
+#ifdef __SERVER
             ::InterlockedDecrement(&this->m_lRefCnt);
+#endif
+
+#ifndef __SERVER
+            //----------------------------------------------------------------------------------------------------
+            /// 뷰잉된 서버로 부터 받은 보상내용 실행
+            //----------------------------------------------------------------------------------------------------
+            g_QuestRewardQueue.ApplyReward();
+#endif
+
             return QST_RESULT_SUCCESS;
         }
 
@@ -2572,7 +3099,9 @@ CQuestDATA::CheckQUEST(CUserDATA* pUSER,
         pTrigger = pTrigger->m_pNextTrigger;
     }
 
+#ifdef __SERVER
     ::InterlockedDecrement(&this->m_lRefCnt);
+#endif
 
     if (QST_RESULT_INVALID == eResult && qstPARAM.m_bServerFUNC)
         return QST_RESULT_FAILED;
@@ -2592,12 +3121,14 @@ CQuestTRIGGER::Init_COND(uniQstENTITY* pCOND) {
                 pCOND->m_Cond012.iEventID);
             break;
         }
+#ifdef __SERVER
         case 6:
             pCOND->m_Cond006.iRadius *= 100;
             break;
         case 21: //
             pCOND->m_Cond021.iRadius *= 100;
             break;
+#endif
     }
 }
 void
@@ -2616,17 +3147,12 @@ CQuestTRIGGER::Init_REWD(uniQstENTITY* pREWD) {
             pREWD->m_Rewd019.m_HashTrigger = HashKey;
             break;
         }
-        // case 21 :
-        //{
-        //	int iTmp=0;
-        //	pREWD->m_Rewd021.iX;
-        //	pREWD->m_Rewd021.iY;
-        //	break;
-        //}
+#ifdef __SERVER
         case 28: {
             pREWD->m_Rewd028.iRange *= 100;
             break;
         }
+#endif
     }
 }
 
@@ -2816,40 +3342,93 @@ CQuestTRIGGER::Free() {
     SAFE_DELETE_ARRAY(m_ppReward);
 }
 
+#ifdef __SERVER
 bool
 CQuestTRIGGER::Proc(tQST_PARAM* pPARAM, bool bDoReward, short nSelectReward) {
+#else
+bool
+CQuestTRIGGER::Proc(tQST_PARAM* pPARAM, bool bDoReward) {
+#endif
 
     unsigned int uiC;
 
     for (uiC = 0; uiC < m_uiCondCNT; uiC++) {
         if (!g_fpQstCOND[m_ppCondition[uiC]->iType].fpCheck(m_ppCondition[uiC], pPARAM)) {
+#ifndef __SERVER
+            /// 랜덤 체크하는 부분들은 서버로부터 받은건 다시 체크하지 않는다.
+            if (bDoReward && (m_ppCondition[uiC]->iType == 10))
+                continue;
+
+            char* szMsg;
+            if (pPARAM->m_nErrSTEP >= 0) {
+                szMsg = CStr::Printf(
+                    "	[QST] %s에서 %d번째 조건데이타( 조건타입:%d ) 중 %d번째 조건 만족 못함",
+                    pPARAM->m_pCurrentTRIGGER->m_Name.Get(),
+                    uiC,
+                    m_ppCondition[uiC]->iType,
+                    pPARAM->m_nErrSTEP);
+            } else {
+                szMsg = CStr::Printf(
+                    "	[QST] %s에서 %d번째 조건데이타( 조건타입:%d ) 조건 만족 못함",
+                    pPARAM->m_pCurrentTRIGGER->m_Name.Get(),
+                    uiC,
+                    m_ppCondition[uiC]->iType);
+            }
+
+            //--------------------------------------------------------------------------------
+            DUMPWAR(szMsg)("!!!조건만족 못함!!! ", pPARAM->m_pCurrentTRIGGER->m_Name.Get());
+            //--------------------------------------------------------------------------------
+#endif
+            // pPARAM->m_pErrENTITY = m_ppCondition[ uiC ];
             return false;
         }
     }
 
+#ifdef __SERVER
     short nCurReward = -1;
+#endif
+
     for (uiC = 0; uiC < m_uiRewdCNT; uiC++) {
+
+#ifdef __SERVER
         // 선택 보상...
         if (33 == m_ppReward[uiC]->iType) {
             nCurReward++;
             if (nCurReward != nSelectReward) {
                 if (-1 != m_ppReward[uiC]->m_Rewd033.nNextRewardSplitter) {
-                    // 다음 선택 보상으로...
                     uiC = m_ppReward[uiC]->m_Rewd033.nNextRewardSplitter;
-                } // else 선택 보상 끝이다...
-
-                goto _NEXT_FOR;
+                }
+                continue;
             }
-
-            // 사용자가 선택한 보상이다...
             nSelectReward = -99;
         }
 
         if (!g_fpQstREWD[m_ppReward[uiC]->iType].fpReward(m_ppReward[uiC], pPARAM)) {
             return false;
         }
-    _NEXT_FOR:
-        continue;
+#else
+		if (!g_fpQstREWD[m_ppReward[uiC]->iType].fpReward(m_ppReward[uiC], pPARAM, bDoReward)) {
+            char* szMsg;
+            if (pPARAM->m_nErrSTEP >= 0) {
+                szMsg = CStr::Printf(
+                    "	[QST] %s에서 %d번째 보상데이타( 조건타입:%d ) 중 %d번째 조건 만족 못함",
+                    pPARAM->m_pCurrentTRIGGER->m_Name.Get(),
+                    uiC,
+                    m_ppReward[uiC]->iType,
+                    pPARAM->m_nErrSTEP);
+            } else {
+                szMsg =
+                    CStr::Printf("	[QST] %s에서 %d번째 보상데이타( 조건타입:%d ) 조건 만족 못함",
+                        pPARAM->m_pCurrentTRIGGER->m_Name.Get(),
+                        uiC,
+                        m_ppReward[uiC]->iType);
+            }
+            //--------------------------------------------------------------------------------
+            DUMPWAR(szMsg)("!!!조건만족 못함!!! ", pPARAM->m_pCurrentTRIGGER->m_Name.Get());
+            //--------------------------------------------------------------------------------
+            return false;
+        }
+#endif
     }
 
     return true;

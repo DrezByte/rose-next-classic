@@ -2,7 +2,7 @@
 
 #include ".\cquestlistitem.h"
 #include "../../../Game.h"
-#include "../../../common/io_quest.h"
+#include "io_quest.h"
 #include "../../CToolTipMgr.h"
 #include "../../IO_ImageRes.h"
 #include "../../CTDrawImpl.h"

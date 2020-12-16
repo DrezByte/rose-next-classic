@@ -1049,9 +1049,6 @@
     <ClCompile Include="Common\IO_Motion.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\IO_Quest.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\IO_Skill.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -1150,6 +1147,9 @@
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\imgui_imp.cpp">
       <Filter>Thirdparty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\shared\io_quest.cpp">
+      <Filter>Common Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2128,9 +2128,6 @@
     <ClInclude Include="Common\IO_Motion.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\IO_Quest.h">
-      <Filter>Source Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\IO_Skill.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
@@ -2229,6 +2226,9 @@
     </ClInclude>
     <ClInclude Include="io\filesystem.h">
       <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\shared\io_quest.h">
+      <Filter>Common Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
