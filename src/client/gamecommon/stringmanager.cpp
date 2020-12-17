@@ -39,7 +39,7 @@ const char* _ItemTypeTable[MAX_ITEM_TYPE_TB] = {"3DData\\STB\\LIST_ARMS_s.stl",
 
 const char* _NormalTypeTable[MAX_NORMAL_TYPE_TB] = {"3DData\\STB\\STR_ITEMPREFIX.stl",
     "3DData\\STB\\LIST_NPC_s.stl",
-    "3DData\\STB\\LIST_STRING.stl",
+    "3DData\\STB\\list_string_s.stl",
     "3DData\\STB\\STR_ABILITY.stl",
     "3DData\\STB\\STR_JOB.stl",
     "3DData\\STB\\STR_ITEMTYPE.stl",

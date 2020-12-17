@@ -143,7 +143,7 @@ STL 3ddata/stb/list_arms_s.csv
 STL 3ddata/stb/list_body_s.csv
 STL 3ddata/stb/list_cap_s.csv
 STL 3ddata/stb/list_back_s.csv
-STL 3ddata/stb/list_clSTL ass_s.csv
+STL 3ddata/stb/list_class_s.csv
 STL 3ddata/stb/list_eventstring.csv
 STL 3ddata/stb/list_faceitem_s.csv
 STL 3ddata/stb/list_foot_s.csv
@@ -157,7 +157,7 @@ STL 3ddata/stb/list_sell_s.csv
 STL 3ddata/stb/list_questitem_s.csv
 STL 3ddata/stb/list_skill_s.csv
 STL 3ddata/stb/list_status_s.csv
-STL 3ddata/stb/list_string.csv
+STL 3ddata/stb/list_string_s.csv
 STL 3ddata/stb/list_subwpn_s.csv
 STL 3ddata/stb/list_union_s.csv
 STL 3ddata/stb/list_useitem_s.csv
