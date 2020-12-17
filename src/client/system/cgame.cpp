@@ -46,7 +46,7 @@
 #include "../interface/dlgs/AvatarInfoDlg.h"
 #include "../interface/cursor/ccursor.h"
 #include "../interface/ExternalUI/ExternalUILobby.h"
-#include "interface/dev_ui.h"
+#include "interface/dev/dev_ui.h"
 
 #include "io_quest.h"
 #include "rose/io/stb.h"

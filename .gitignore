@@ -1,6 +1,5 @@
 [Bb]in/
 [Bb]uild/
-[Dd]ev/
 [Dd]ist/
 [Ll]ib/
 
@@ -11,6 +10,9 @@ server/
 
 # Assets build data
 .pipeline/
+
+# Dev data
+/dev/
 
 # Visual studio
 *.vs/

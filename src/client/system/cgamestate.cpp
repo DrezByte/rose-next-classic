@@ -2,7 +2,7 @@
 
 #include "cgamestate.h"
 #include "capplication.h"
-#include "interface/dev_ui.h"
+#include "interface/dev/dev_ui.h"
 
 CGameState::CGameState(void):
     m_iStateID(0),

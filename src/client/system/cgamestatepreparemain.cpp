@@ -14,7 +14,7 @@
 #include "../interface/Dlgs/CMinimapDlg.h"
 #include "../interface/Dlgs/CItemDlg.h"
 #include "../interface/Cursor/CCursor.h"
-#include "interface/dev_ui.h"
+#include "interface/dev/dev_ui.h"
 
 #include "../GameData/CGameDataCreateAvatar.h"
 #include "../GameData/CClan.h"

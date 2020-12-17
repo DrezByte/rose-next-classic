@@ -200,7 +200,10 @@
     <ClCompile Include="CommandFilter.cpp" />
     <ClCompile Include="CViewMSG.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="interface\dev_ui.cpp" />
+    <ClCompile Include="interface\dev\dev_ui.cpp" />
+    <ClCompile Include="interface\dev\dev_game_window.cpp" />
+    <ClCompile Include="interface\dev\dev_main_window.cpp" />
+    <ClCompile Include="interface\dev\dev_target_window.cpp" />
     <ClCompile Include="Interface\DLGs\console_dialog.cpp" />
     <ClCompile Include="JCommandState.cpp" />
     <ClCompile Include="SqliteDB.cpp" />
@@ -554,7 +557,11 @@
     <ClInclude Include="CommandFilter.h" />
     <ClInclude Include="CViewMSG.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="interface\dev_ui.h" />
+    <ClInclude Include="interface\dev\dev_game_window.h" />
+    <ClInclude Include="interface\dev\dev_main_window.h" />
+    <ClInclude Include="interface\dev\dev_ui.h" />
+    <ClInclude Include="interface\dev\dev_target_window.h" />
+    <ClInclude Include="interface\dev\dev_ui_state.h" />
     <ClInclude Include="Interface\DLGs\console_dialog.h" />
     <ClInclude Include="io\filesystem.h" />
     <ClInclude Include="JCommandState.h" />

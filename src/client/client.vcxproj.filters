@@ -120,6 +120,9 @@
     <Filter Include="Thirdparty\imgui">
       <UniqueIdentifier>{4c0d6d1b-536f-4f86-8f9b-f9ea031f3e86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Interface\dev">
+      <UniqueIdentifier>{f1190d97-df82-4010-b05c-b455a62b5a88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCamera.cpp">
@@ -1142,14 +1145,23 @@
     <ClCompile Include="..\common\shared\ceconomy.cpp">
       <Filter>Common Files</Filter>
     </ClCompile>
-    <ClCompile Include="interface\dev_ui.cpp">
-      <Filter>Source Files\Interface</Filter>
-    </ClCompile>
     <ClCompile Include="thirdparty\imgui\imgui_imp.cpp">
       <Filter>Thirdparty\imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\common\shared\io_quest.cpp">
       <Filter>Common Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\dev\dev_ui.cpp">
+      <Filter>Source Files\Interface\dev</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\dev\dev_target_window.cpp">
+      <Filter>Source Files\Interface\dev</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\dev\dev_main_window.cpp">
+      <Filter>Source Files\Interface\dev</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\dev\dev_game_window.cpp">
+      <Filter>Source Files\Interface\dev</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2221,14 +2233,26 @@
     <ClInclude Include="..\common\shared\ceconomy.h">
       <Filter>Common Files</Filter>
     </ClInclude>
-    <ClInclude Include="interface\dev_ui.h">
-      <Filter>Source Files\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="io\filesystem.h">
       <Filter>Source Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="..\common\shared\io_quest.h">
       <Filter>Common Files</Filter>
+    </ClInclude>
+    <ClInclude Include="interface\dev\dev_ui.h">
+      <Filter>Source Files\Interface\dev</Filter>
+    </ClInclude>
+    <ClInclude Include="interface\dev\dev_target_window.h">
+      <Filter>Source Files\Interface\dev</Filter>
+    </ClInclude>
+    <ClInclude Include="interface\dev\dev_game_window.h">
+      <Filter>Source Files\Interface\dev</Filter>
+    </ClInclude>
+    <ClInclude Include="interface\dev\dev_main_window.h">
+      <Filter>Source Files\Interface\dev</Filter>
+    </ClInclude>
+    <ClInclude Include="interface\dev\dev_ui_state.h">
+      <Filter>Source Files\Interface\dev</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
