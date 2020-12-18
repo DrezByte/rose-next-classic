@@ -35,7 +35,7 @@ using json = nlohmann::json;
 void
 CQUEST::Init() {
     m_wID = 0;
-    ClearAllSwitch();
+    this->switches.reset();
     ::ZeroMemory(m_pVAR, sizeof(m_pVAR));
     ::ZeroMemory(m_ITEMs, sizeof(m_ITEMs));
 }
@@ -99,55 +99,19 @@ CQUEST::Get_VAR(int iVarNO) {
 
 //-------------------------------------------------------------------------------------------------
 void
-CQUEST::ClearAllSwitch() {
-    ::ZeroMemory(m_btSWITCHES, sizeof(m_btSWITCHES));
-}
-BYTE
-CQUEST::GetBit(int iIndex) {
-    return (m_btSWITCHES[iIndex >> BIT_SHIFT] & g_btSwitchBitMask[iIndex & WHICH_BIT]) ? 1 : 0;
-}
-void
-CQUEST::SetBit(int iIndex) {
-    m_btSWITCHES[iIndex >> BIT_SHIFT] |= g_btSwitchBitMask[iIndex & WHICH_BIT];
-}
-void
-CQUEST::ClearBit(int iIndex) {
-    m_btSWITCHES[iIndex >> BIT_SHIFT] &= ~(g_btSwitchBitMask[iIndex & WHICH_BIT]);
-}
-BYTE
-CQUEST::FlipBit(int iIndex) {
-    if (this->GetBit(iIndex))
-        this->ClearBit(iIndex);
-    else
-        this->SetBit(iIndex);
-
-    return this->GetBit(iIndex);
-}
-
-//-------------------------------------------------------------------------------------------------
-void
-CQUEST::Set_SWITCH(int iSwitchNO, int iValue) {
+CQUEST::set_switch(int iSwitchNO, int iValue) {
     if (iSwitchNO < 0 || iSwitchNO >= QUEST_SWITCH_PER_QUEST)
         return;
 
-    if (iValue)
-        this->SetBit(iSwitchNO);
-    else
-        this->ClearBit(iSwitchNO);
+    this->switches.set(iSwitchNO, iValue);
 }
+
 int
-CQUEST::Get_SWITCH(int iSwitchNO) {
+CQUEST::get_switch(int iSwitchNO) {
     if (iSwitchNO < 0 || iSwitchNO >= QUEST_SWITCH_PER_QUEST)
         return -1;
 
-    return this->GetBit(iSwitchNO);
-}
-int
-CQUEST::Flip_SWITCH(int iSwitchNO) {
-    if (iSwitchNO < 0 || iSwitchNO >= QUEST_SWITCH_PER_QUEST)
-        return -1;
-
-    return this->FlipBit(iSwitchNO);
+    return this->switches[iSwitchNO];
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -217,16 +181,9 @@ void to_json(json& j, const CQUEST& q) {
     }
 
     json switches = json::array();
-    for (size_t i = 0; i < (QUEST_SWITCH_PER_QUEST / 8); ++i) {
-        const uint8_t b = q.m_btSWITCHES[i];
-        switches.push_back((b >> 0) & 0x1);
-        switches.push_back((b >> 1) & 0x1);
-        switches.push_back((b >> 2) & 0x1);
-        switches.push_back((b >> 3) & 0x1);
-        switches.push_back((b >> 4) & 0x1);
-        switches.push_back((b >> 5) & 0x1);
-        switches.push_back((b >> 6) & 0x1);
-        switches.push_back((b >> 7) & 0x1);
+    for (size_t i = 0; i < q.switches.size(); ++i) {
+        const int val = q.switches[i]; // Implicit conversion from bool to int
+        switches.push_back(val);
     }
 
     json items = json::array();
@@ -264,17 +221,9 @@ from_json(const json&j, CQUEST& q) {
 
     if (j.contains("switches") && j["switches"].is_array()) {
         json switches = j["switches"];
-        for (size_t i = 0; i < min(switches.size(), QUEST_SWITCH_PER_QUEST) / 8; ++i) {
-            uint8_t b = 0;
-            b |= switches[i] << 0;
-            b |= switches[i] << 1;
-            b |= switches[i] << 2;
-            b |= switches[i] << 3;
-            b |= switches[i] << 4;
-            b |= switches[i] << 5;
-            b |= switches[i] << 6;
-            b |= switches[i] << 7;
-            q.m_btSWITCHES[i] = b;
+        for (size_t i = 0; i < min(switches.size(), QUEST_SWITCH_PER_QUEST); ++i) {
+            const int val = switches[i]; // Implicit conversion from json to int
+            q.switches.set(i, val);
         }
     }
 

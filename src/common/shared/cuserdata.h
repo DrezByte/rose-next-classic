@@ -210,36 +210,13 @@ struct tagSkillAbility {
 #define QUEST_SWITCH_GROUP_CNT (QUEST_SWITCH_CNT / sizeof(DWORD))
 
 class tagQuestData {
-private:
-    enum { BIT_SHIFT = 3, WHICH_BIT = 0x07 };
-    BYTE GetBit(int iIndex) {
-        return (m_btSWITCHES[iIndex >> BIT_SHIFT] & g_btSwitchBitMask[iIndex & WHICH_BIT]) ? 1 : 0;
-    }
-    void SetBit(int iIndex) {
-        m_btSWITCHES[iIndex >> BIT_SHIFT] |= g_btSwitchBitMask[iIndex & WHICH_BIT];
-    }
-    void ClearBit(int iIndex) {
-        m_btSWITCHES[iIndex >> BIT_SHIFT] &= ~(g_btSwitchBitMask[iIndex & WHICH_BIT]);
-    }
-    BYTE FlipBit(int iIndex) {
-        if (this->GetBit(iIndex))
-            this->ClearBit(iIndex);
-        else
-            this->SetBit(iIndex);
-
-        return this->GetBit(iIndex);
-    }
-
 public:
     short m_nEpisodeVAR[QUEST_EPISODE_VAR_CNT];
     short m_nJobVAR[QUEST_JOB_VAR_CNT];
     short m_nPlanetVAR[QUEST_PLANET_VAR_CNT];
     short m_nUnionVAR[QUEST_UNION_VAR_CNT];
     CQUEST m_QUEST[QUEST_PER_PLAYER];
-    union {
-        DWORD m_dwSWITCHES[QUEST_SWITCH_CNT / 32];
-        BYTE m_btSWITCHES[QUEST_SWITCH_CNT / 8];
-    };
+    std::bitset<QUEST_SWITCH_CNT> switches;
 
 #ifdef __APPLY_EXTAND_QUEST_VAR
     short m_nEtcVAR[QUEST_ETC_VAR_CNT]; // 2 * 50
@@ -254,7 +231,7 @@ public:
         ::ZeroMemory(m_nEtcVAR, sizeof(short) * QUEST_ETC_VAR_CNT);
 #endif
 
-        this->ClearAllSwitchs();
+        this->switches.reset();
 
         for (short nI = 0; nI < QUEST_PER_PLAYER; nI++) {
             m_QUEST[nI].Init();
@@ -272,21 +249,18 @@ public:
 #endif
 
     //-------------------------------------------------------------------------------------------------
-    void ClearAllSwitchs() { ::ZeroMemory(m_dwSWITCHES, sizeof(m_dwSWITCHES)); }
     void Set_SWITCH(int iSwitchNO, int iValue) {
         if (iSwitchNO < 0 || iSwitchNO >= QUEST_SWITCH_CNT)
             return;
 
-        if (iValue)
-            this->SetBit(iSwitchNO);
-        else
-            this->ClearBit(iSwitchNO);
+        this->switches.set(iSwitchNO, iValue);
     }
+
     int Get_SWITCH(int iSwitchNO) {
         if (iSwitchNO < 0 || iSwitchNO >= QUEST_SWITCH_CNT)
             return -1;
 
-        return this->GetBit(iSwitchNO);
+        return this->switches[iSwitchNO];
     }
 };
 

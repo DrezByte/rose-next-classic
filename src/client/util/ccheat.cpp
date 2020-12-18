@@ -733,7 +733,7 @@ classPARSESTR::DoQuestVal(char* pStr) {
 
     if (strcmp("SW", pARG) == 0) {
         for (int i = 0; i < QUEST_SWITCH_PER_QUEST; i++) {
-            sprintf(g_MsgBuf, "[ %d, %d ]", i, g_pAVATAR->m_Quests.m_QUEST[iSlotNO].Get_SWITCH(i));
+            sprintf(g_MsgBuf, "[ %d, %d ]", i, g_pAVATAR->m_Quests.m_QUEST[iSlotNO].get_switch(i));
             g_itMGR.AppendChatMsg(g_MsgBuf, IT_MGR::CHAT_TYPE_SYSTEM);
         }
     }

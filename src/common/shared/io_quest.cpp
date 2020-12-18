@@ -97,7 +97,7 @@ Get_QuestVAR(tQST_PARAM* pPARAM, STR_QUEST_DATA* pDATA) {
         case QST_VARTYPE_VAR:
             return (!pPARAM->m_pQUEST) ? INT_FAILED : pPARAM->m_pQUEST->Get_VAR(pDATA->m_wVarNO);
         case QST_VARTYPE_SWITCH:
-            return (!pPARAM->m_pQUEST) ? INT_FAILED : pPARAM->m_pQUEST->Get_SWITCH(pDATA->m_wVarNO);
+            return (!pPARAM->m_pQUEST) ? INT_FAILED : pPARAM->m_pQUEST->get_switch(pDATA->m_wVarNO);
         case QST_VARTYPE_TIMER:
             return (!pPARAM->m_pQUEST) ? INT_FAILED : pPARAM->m_pQUEST->GetRemainTIME();
 
@@ -128,7 +128,7 @@ Set_QuestVAR(tQST_PARAM* pPARAM, STR_QUEST_DATA* pDATA, int iValue) {
             pPARAM->m_pQUEST->Set_VAR(pDATA->m_wVarNO, iValue);
             break;
         case QST_VARTYPE_SWITCH:
-            pPARAM->m_pQUEST->Set_SWITCH(pDATA->m_wVarNO, iValue);
+            pPARAM->m_pQUEST->set_switch(pDATA->m_wVarNO, iValue);
             break;
 
             /*
@@ -1984,7 +1984,21 @@ F_QSTREWD016(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
         return false;
     }
 
-    pPARAM->m_pOWNER->m_Quests.m_dwSWITCHES[pREWD->m_Rewd016.nGroupSN] = 0;
+    // Update a group of switches (4-bytes)
+    // Previous implementation;
+    //  DWORD m_dwSWITCHES[QUEST_SWITCH_CNT / 32];
+    //  pPARAM->m_pOWNER->m_Quests.m_dwSWITCHES[pREWD->m_Rewd016.nGroupSN] = 0;
+
+    size_t start_bit = static_cast<size_t>(pREWD->m_Rewd016.nGroupSN);
+
+    const size_t switch_range = 32;
+    for (size_t i = 0; i < switch_range; ++i) {
+        const size_t curr_bit = start_bit + i;
+        if (curr_bit >= pPARAM->m_pOWNER->m_Quests.switches.size()) {
+            break;
+        }
+        pPARAM->m_pOWNER->m_Quests.switches[curr_bit] = 0;
+    }
 
     return true;
 }
@@ -2004,7 +2018,7 @@ F_QSTREWD017(uniQstENTITY* pREWD, tQST_PARAM* pPARAM, bool bDoReward) {
         return false;
     }
 
-    pPARAM->m_pOWNER->m_Quests.ClearAllSwitchs();
+    pPARAM->m_pOWNER->m_Quests.switches.reset();
     return true;
 }
 

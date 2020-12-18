@@ -29,16 +29,9 @@ void to_json(json& j, const tagQuestData& q) {
     }
 
     json quest_switches = json::array();
-    for (size_t i = 0; i < QUEST_SWITCH_CNT / 8; ++i) {
-        const uint8_t b = q.m_btSWITCHES[i];
-        quest_switches.push_back((b >> 0) & 0x1);
-        quest_switches.push_back((b >> 1) & 0x1);
-        quest_switches.push_back((b >> 2) & 0x1);
-        quest_switches.push_back((b >> 3) & 0x1);
-        quest_switches.push_back((b >> 4) & 0x1);
-        quest_switches.push_back((b >> 5) & 0x1);
-        quest_switches.push_back((b >> 6) & 0x1);
-        quest_switches.push_back((b >> 7) & 0x1);
+    for (size_t i = 0; i < QUEST_SWITCH_CNT ; ++i) {
+        int val = q.switches[i]; // Implicit conversion from bool to int
+        quest_switches.push_back(val);
     }
 
     json quests = json::array();
@@ -90,17 +83,9 @@ from_json(const json& j, tagQuestData& q) {
 
     if (j.contains("switches") && j["switches"].is_array()) {
         json quest_switches = j["switches"];
-        for (size_t i = 0; i < min(quest_switches.size(), QUEST_SWITCH_CNT) / 8; ++i) {
-            uint8_t b = 0;
-            b |= quest_switches[i] << 0;
-            b |= quest_switches[i] << 1;
-            b |= quest_switches[i] << 2;
-            b |= quest_switches[i] << 3;
-            b |= quest_switches[i] << 4;
-            b |= quest_switches[i] << 5;
-            b |= quest_switches[i] << 6;
-            b |= quest_switches[i] << 7;
-            q.m_btSWITCHES[i] = b;
+        for (size_t i = 0; i < min(quest_switches.size(), QUEST_SWITCH_CNT); ++i) {
+            const int val = quest_switches[i]; // Implicit conversion from json to int
+            q.switches.set(i, val);
         }
     }
 

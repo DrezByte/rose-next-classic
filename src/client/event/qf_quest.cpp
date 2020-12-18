@@ -248,10 +248,10 @@ QF_getQuestSwitch(int hQUEST, int iSwitchNO) {
     LOGOUT("QF_getQuestSwitch( %d, %d ) SUCCESS[ %d ] ",
         hQUEST,
         iSwitchNO,
-        g_pAVATAR->m_Quests.m_QUEST[hQUEST].Get_SWITCH(iSwitchNO));
+        g_pAVATAR->m_Quests.m_QUEST[hQUEST].get_switch(iSwitchNO));
     //--------------------------------------------------------------------------------
 
-    return g_pAVATAR->m_Quests.m_QUEST[hQUEST].Get_SWITCH(iSwitchNO);
+    return g_pAVATAR->m_Quests.m_QUEST[hQUEST].get_switch(iSwitchNO);
 }
 
 /*
@@ -263,7 +263,7 @@ void	QF_setQuestSwitch ( int hQUEST, int iSwitchNO, int iValue )
     if ( hQUEST<0 || hQUEST>QUEST_PER_PLAYER )
         return;
 
-    g_pAVATAR->m_Quests.m_QUEST[ hQUEST ].Set_SWITCH( iSwitchNO, iValue );
+    g_pAVATAR->m_Quests.m_QUEST[ hQUEST ].set_switch( iSwitchNO, iValue );
     g_pNet->Send_cli_SET_QUEST_SWITCH( hQUEST );
 }
 */
