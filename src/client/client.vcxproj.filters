@@ -123,6 +123,9 @@
     <Filter Include="Source Files\Interface\dev">
       <UniqueIdentifier>{f1190d97-df82-4010-b05c-b455a62b5a88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Thirdparty\discord">
+      <UniqueIdentifier>{4e69a306-b9cb-43ed-9d4f-b97a963bfe55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCamera.cpp">
@@ -1162,6 +1165,48 @@
     </ClCompile>
     <ClCompile Include="interface\dev\dev_game_window.cpp">
       <Filter>Source Files\Interface\dev</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\achievement_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\activity_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\application_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\core.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\image_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\lobby_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\network_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\overlay_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\relationship_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\storage_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\store_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\types.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\user_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\discord-2.5.6\cpp\voice_manager.cpp">
+      <Filter>Thirdparty\discord</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2253,6 +2298,63 @@
     </ClInclude>
     <ClInclude Include="interface\dev\dev_ui_state.h">
       <Filter>Source Files\Interface\dev</Filter>
+    </ClInclude>
+    <ClInclude Include="discord_config.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\achievement_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\activity_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\application_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\core.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\discord.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\event.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\ffi.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\image_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\lobby_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\network_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\overlay_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\relationship_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\storage_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\store_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\types.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\user_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\cpp\voice_manager.h">
+      <Filter>Thirdparty\discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\discord-2.5.6\c\discord_game_sdk.h">
+      <Filter>Thirdparty\discord</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,10 @@ $tool_out = Join-Path $out tool/
 $db_out = Join-Path $out database/
 
 $directxtex_ver = "2020.9.30"
+$discord_ver = "2.5.6"
+
 $texconv = Join-Path $rose_next_root thirdparty directxtex-$directxtex_ver texconv.exe
+$discord_dll = (Join-Path $rose_next_root thirdparty discord-$discord_ver lib x86 discord_game_sdk.dll)
 
 $squash_script = Join-Path $PSScriptRoot "squash-migrations.ps1"
 
@@ -43,13 +46,14 @@ if ($client -eq $true) {
     xcopy /Y (Join-Path $build_root triggervfs.dll) $client_out
     xcopy /Y (Join-Path $build_root rosenext.exe) $client_out
     xcopy /Y (Join-Path $build_root znzin.dll) $client_out
+    xcopy /Y $discord_dll $client_out
 
     Write-Host "Collecting client assets"
     if ($config -eq "debug") {
         robocopy /E $asset_build_root $client_out
     }
     else {
-        & ./pack.ps1 -out $client_out
+        & $PSScriptRoot/pack.ps1 -out $client_out
     }
 }
 else {

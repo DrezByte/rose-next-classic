@@ -6,6 +6,9 @@
 
 #include "fmt/format.h"
 
+#define LOG(level, msg, ...) \
+    g_LOG.log(level, __FILE__, __LINE__, msg, __VA_ARGS__)
+
 #define LOG_TRACE(msg, ...) \
     g_LOG.log(Rose::Common::LogLevel::Trace, __FILE__, __LINE__, msg, __VA_ARGS__)
 

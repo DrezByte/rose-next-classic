@@ -10,6 +10,18 @@
 #include "util\CRangeTBL.h"
 #include "sound\IO_Sound.h"
 
+#include "discord_config.h"
+
+#ifdef DISCORD
+    #include "discord.h"
+
+    // clang-format off
+    namespace Rose::Common {
+        enum class Job;
+    }
+    // clang-format on
+#endif
+
 class ApplicationVideoMode {
 public:
     int depth;
@@ -128,6 +140,13 @@ public:
     void SetFullscreenMode(bool bFullScreenMode);
 
     std::set<ApplicationVideoMode> get_video_modes();
+
+#ifdef DISCORD
+    std::unique_ptr<discord::Core> discord_core;
+
+    bool CApplication::init_discord();
+    void update_discord_status(CObjUSER* user);
+#endif
 };
 
 //-------------------------------------------------------------------------------------------------

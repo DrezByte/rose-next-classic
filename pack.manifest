@@ -1,3 +1,6 @@
+IGNORE *.exe
+IGNORE *.dll
+
 IGNORE *.idx
 IGNORE *.vfs
 

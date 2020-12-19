@@ -74,6 +74,38 @@ job_from(T i) {
     }
 }
 
+constexpr const char* job_to_string(Job j) {
+    switch (j) {
+        case Job::Soldier:
+            return "Soldier";
+        case Job::Knight:
+            return "Knight";
+        case Job::Champion:
+            return "Champion";
+        case Job::Muse:
+            return "Muse";
+        case Job::Mage:
+            return "Mage";
+        case Job::Cleric:
+            return "Cleric";
+        case Job::Hawker:
+            return "Hawker";
+        case Job::Raider:
+            return "Raider";
+        case Job::Scout:
+            return "Scout";
+        case Job::Dealer:
+            return "Dealer";
+        case Job::Bourg:
+            return "Bourg";
+        case Job::Artisan:
+            return "Artisan";
+        default:
+            return "Visitor";
+    }
+}
+
+
 inline bool
 is_first_job(Job job) {
     return job == Job::Muse || job == Job::Hawker || job == Job::Dealer || job == Job::Soldier;

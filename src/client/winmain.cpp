@@ -141,7 +141,13 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmd
         hInstance);
 
     g_pObjMGR = CObjectMANAGER::Instance();
+
     g_pCApp->ResetExitGame();
+
+#ifdef DISCORD
+    g_pCApp->init_discord();
+    g_pCApp->update_discord_status(nullptr);
+#endif
 
     bool bDeviceInitialized = Init_DEVICE();
     if (bDeviceInitialized) {

@@ -214,6 +214,11 @@ CGameStateMain::Enter(int iPrevStateID) {
         g_itMGR.CloseDialog(DLG_TYPE_MINIMAP);
     else
         g_itMGR.OpenDialog(DLG_TYPE_MINIMAP, false);
+
+#ifdef DISCORD
+    g_pCApp->update_discord_status(g_pAVATAR);
+#endif
+
     return 0;
 }
 
@@ -229,6 +234,10 @@ CGameStateMain::Leave(int iNextStateID) {
         sfx_font->RemoveEffectStringsByType(CSFXFont::TYPE_ZONE_NAME);
         sfx_font->RemoveEffectStringsByType(CSFXFont::TYPE_ZONE_DESC);
     }
+
+#ifdef DISCORD
+    g_pCApp->update_discord_status(nullptr);
+#endif
 
     return 0;
 }

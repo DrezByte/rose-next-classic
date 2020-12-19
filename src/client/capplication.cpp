@@ -16,7 +16,30 @@
 #include "Sound/DirectMusicPlayer.h"
 
 #include "tgamectrl/time2.h"
+
+#include "rose/common/game_config.h"
+#include "rose/common/game_types.h"
+
+using namespace Rose::Common;
+
 CApplication* CApplication::m_pInstance = NULL;
+
+constexpr LogLevel
+log_level_from(discord::LogLevel level) {
+    switch (level) {
+        case discord::LogLevel::Error:
+            return LogLevel::Error;
+        case discord::LogLevel::Warn:
+            return LogLevel::Warn;
+        case discord::LogLevel::Info:
+            return LogLevel::Info;
+        case discord::LogLevel::Debug:
+            return LogLevel::Debug;
+        default:
+            return LogLevel::Trace;
+    }
+    return LogLevel::Trace;
+}
 
 //#define DEFAULT_WINDOWED_STYLE ( WS_OVERLAPPEDWINDOW )
 //#define DEFAULT_WINDOWED_STYLE ( WS_OVERLAPPEDWINDOW | ~WS_MAXIMIZEBOX )
@@ -69,6 +92,12 @@ CApplication::MessageProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam) {
     if (CGame::GetInstance().AddWndMsgQ(uiMsg, wParam, lParam)) {
         return ::DefWindowProc(hWnd, uiMsg, wParam, lParam);
     }
+
+#ifdef DISCORD
+    if (this->discord_core) {
+        this->discord_core->RunCallbacks();
+    }
+#endif
 
     switch (uiMsg) {
         case WM_SYSCHAR: /// systemkey와 일반 키를 조합해서 누를때 "띵"소리 없애기
@@ -159,6 +188,7 @@ CApplication::CApplication() {
 
     CStr::Init();
 }
+
 CApplication::~CApplication() {
     if (m_hWND) {
         ::DestroyWindow(m_hWND);
@@ -603,3 +633,48 @@ CApplication::get_video_modes() {
 
     return modes;
 }
+
+#ifdef DISCORD
+bool
+CApplication::init_discord() {
+    discord::Core* core = nullptr;
+    const discord::Result res = discord::Core::Create(DISCORD_CLIENTID,
+        DiscordCreateFlags_NoRequireDiscord, // Don't require discord to be opened
+        &core);
+    this->discord_core.reset(core);
+    this->discord_core->SetLogHook(discord::LogLevel::Debug,
+        [](discord::LogLevel level, const char* message) {
+            LOG(log_level_from(level), message);
+        });
+
+    if (res != discord::Result::Ok) {
+        LOG_ERROR("Failed to create discord core instance, code: {}", static_cast<uint32_t>(res));
+    }
+    return res == discord::Result::Ok;
+}
+
+
+void
+CApplication::update_discord_status(CObjUSER* user) {
+    discord::Activity activity{};
+    activity.GetAssets().SetLargeImage(DISCORD_LARGE_IMAGE);
+    activity.GetAssets().SetLargeText(DISCORD_LARGE_TEXT);
+
+    if (user) {
+        std::string name = user->Get_NAME();
+        const Job job = job_from(user->Get_JOB());
+        const int level = user->Get_LEVEL();
+
+        std::string state = fmt::format("{} - Level {}", job_to_string(job), level);
+
+        activity.SetDetails(name.c_str());
+        activity.SetState(state.c_str());
+    }
+
+    discord_core->ActivityManager().UpdateActivity(activity, [](discord::Result res) {
+        if (res != discord::Result::Ok) {
+            LOG_ERROR("Failed updating discord activity, code: {}", static_cast<uint32_t>(res));
+        }
+    });
+}
+#endif // DISCORD
