@@ -641,21 +641,28 @@ CApplication::init_discord() {
     const discord::Result res = discord::Core::Create(DISCORD_CLIENTID,
         DiscordCreateFlags_NoRequireDiscord, // Don't require discord to be opened
         &core);
+
+    if (res != discord::Result::Ok || !core) {
+        LOG_ERROR("Failed to create discord core instance, code: {}", static_cast<uint32_t>(res));
+        return false;
+    }
+
     this->discord_core.reset(core);
     this->discord_core->SetLogHook(discord::LogLevel::Debug,
         [](discord::LogLevel level, const char* message) {
             LOG(log_level_from(level), message);
         });
 
-    if (res != discord::Result::Ok) {
-        LOG_ERROR("Failed to create discord core instance, code: {}", static_cast<uint32_t>(res));
-    }
     return res == discord::Result::Ok;
 }
 
 
 void
 CApplication::update_discord_status(CObjUSER* user) {
+    if (!discord_core) {
+        return;
+    }
+
     discord::Activity activity{};
     activity.GetAssets().SetLargeImage(DISCORD_LARGE_IMAGE);
     activity.GetAssets().SetLargeText(DISCORD_LARGE_TEXT);
