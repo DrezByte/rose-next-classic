@@ -115,11 +115,24 @@ CObjectMANAGER::Get_EmptySlot() {
 
 //-------------------------------------------------------------------------------------------------
 void
-CObjectMANAGER::Set_ServerObjectIndex(short nClientObjectIndex, WORD wServerObjectIndex) {
-    _ASSERT(!m_nServer2ClientOBJ[wServerObjectIndex]);
+CObjectMANAGER::Set_ServerObjectIndex(short client_idx, WORD server_idx) {
+    short existing_client_idx = m_nServer2ClientOBJ[client_idx];
 
-    m_wClient2ServerOBJ[nClientObjectIndex] = wServerObjectIndex;
-    m_nServer2ClientOBJ[wServerObjectIndex] = nClientObjectIndex;
+    if (existing_client_idx == client_idx) {
+        LOG_WARN("Server added duplicate object, server id: (client id: )", server_idx);
+        return;
+    }
+
+    if (existing_client_idx > 0) {
+        LOG_WARN(
+            "Server replaced existing object, server id: {} (new client_id: {}, old client_id: {})",
+            server_idx,
+            client_idx,
+            existing_client_idx);
+    }
+
+    m_wClient2ServerOBJ[client_idx] = server_idx;
+    m_nServer2ClientOBJ[server_idx] = client_idx;
 }
 
 bool
