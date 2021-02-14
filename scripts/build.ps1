@@ -35,7 +35,7 @@ Import-Module (Join-Path $vs_install "Common7\Tools\Microsoft.VisualStudio.DevSh
 $null = Enter-VsDevShell -VsInstallPath $vs_install -SkipAutomaticLocation
 Write-Host "Started Visual Studio shell"
 
-$rose_next_root = Join-Path $PSScriptRoot ..
+$rose_next_root = (Get-Item $PSScriptRoot).Parent
 
 # -- Build thirdparty
 Write-Header "Building thirdparty"
@@ -47,33 +47,22 @@ if (!$?) {
   exit 1
 }
 
-Write-Header "Building Rust projects"
-Push-Location $rose_next_root/src
-
 # -- Build Rust projects
-$rust_toolchain = "stable-i686-pc-windows-msvc"
-& rustup toolchain install $rust_toolchain
-& rustup override set $rust_toolchain
-Write-Host "Set Rust to use $rust_toolchain toolchain"
+Write-Header "Building Rust projects"
 
-if ($config -eq "debug") {
-  & cargo build
-  if (!$?) {
-    Pop-Location
-    exit 1
-  }
+$rust_toolchain = "stable-i686-pc-windows-msvc"
+$rust_target = "i686-pc-windows-msvc"
+& rustup toolchain install $rust_toolchain
+& rustup target add $rust_target
+
+$cargo_args = @("--manifest-path", "$rose_next_root/src/Cargo.toml")
+if ($config -eq "release") {
+  $cargo_args += "--release"
 }
-else {
-  & cargo build --release
-  if (!$?) {
-    Pop-Location
-    exit 1
-  }
-}
-Pop-Location
+
+& cargo +$rust_toolchain build @cargo_args
 
 # -- Build C++ projects
-Write-Header "Building C++ projects"
 & MSBuild.exe "-p:Configuration=$config;Platform=x86" -maxCpuCount -v:minimal $rose_next_root\rose-next.sln
 if (!$?) {
   exit 1

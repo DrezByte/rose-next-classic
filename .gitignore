@@ -31,3 +31,6 @@ src/engine/include/zz_build_count
 # Python
 __pycache__/
 *.pyc
+
+# Environment
+.env

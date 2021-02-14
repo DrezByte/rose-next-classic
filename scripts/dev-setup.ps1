@@ -1,23 +1,6 @@
-# TODO: Figure out how this fits into the workflow for the source tree?
-# Perhaps our dev environment should be fully symlinked here?
-# 	dev/game/ (symlink to the asset builds?)
-# 	dev/server/ (symlink to the asset builds?)
-# The main consideration is the client creates files that are not part of the
-# disribution so we want to avoid polluting our build. With the server, we want
-# to be able to support a server.toml
-#
-# @echo off
-# set SERVER_DATA=%~dp0\..\server\data\3ddata
+# Sets up the local dev environment for client and server. A dev/ directory is
+# created at the root directory which links to the built assets
 
-# IF NOT EXIST %SERVER_DATA% (
-# 	mkdir %SERVER_DATA%\..
-# 	mklink /J %SERVER_DATA% %~dp0..\game\3ddata
-# ) ELSE (
-# 	echo %SERVER_DATA% already exists
-# )
-
-
-# pause
 function symlink_children {
     param (
         [ValidateScript( { Test-Path $_ })]
@@ -39,17 +22,30 @@ function symlink_children {
     }
 }
 
-$root = (Join-Path $PSScriptRoot ..)
-$asset_dir = (Join-Path $root "bin" "assets")
+$rose_next_root = (Get-Item $PSScriptRoot).Parent
+$asset_dir_debug = (Join-Path $rose_next_root "bin" "assets" "debug")
+$asset_dir_release = (Join-Path $rose_next_root "bin" "assets" "debug")
 
 # Client links
-$client_dir = (Join-Path $root "dev" "client")
-symlink_children -src $asset_dir -dst $client_dir
+$client_dir_debug = (Join-Path $rose_next_root "dev" "client" "debug")
+$client_dir_release = (Join-Path $rose_next_root "dev" "client", "release")
+Write-Host "Setting up dev clients:"
+
+Write-Host "Linking $asset_dir_debug => $client_dir_debug"
+symlink_children -src $asset_dir_debug -dst $client_dir_debug
+
+Write-Host "Linking $asset_dir_release => $client_dir_release"
+symlink_children -src $asset_dir_release -dst $client_dir_release
 
 
 # Server links
-$server_dir = (Join-Path $root "dev" "server" "data")
-$asset_3ddata = (Join-Path $asset_dir "3ddata")
-$server_3ddata = (Join-Path $server_dir "3ddata")
+$server_dir = (Join-Path $rose_next_root "dev" "server")
+$asset_3ddata = (Join-Path $asset_dir_debug "3ddata")
+$server_3ddata = (Join-Path $server_dir "data" "3ddata")
 
+Write-Host "Setting up dev server: Linking $asset_dir_debug => $server_dir"
 New-Item -ItemType Junction -Path $server_3ddata -Target $asset_3ddata
+
+$setting_example = (Join-Path $rose_next_root "doc" "server.toml.example")
+$setting_server = (Join-Path $server_dir "server.toml.example")
+Copy-Item -Path $setting_example -Destination $setting_server

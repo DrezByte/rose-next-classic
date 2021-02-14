@@ -1,8 +1,0 @@
-IGNORE *.exe
-IGNORE *.dll
-
-IGNORE *.idx
-IGNORE *.vfs
-
-NOPACK 3ddata/control/xml/**
-NOPACK sound/**
