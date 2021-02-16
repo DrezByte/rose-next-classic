@@ -10,17 +10,11 @@
     <Filter Include="network">
       <UniqueIdentifier>{94835381-bb5f-4583-96e6-78ae0ec4ba02}</UniqueIdentifier>
     </Filter>
-    <Filter Include="network\packets">
-      <UniqueIdentifier>{82dd461f-2b9b-43de-837b-97bc482aee82}</UniqueIdentifier>
-    </Filter>
     <Filter Include="util">
       <UniqueIdentifier>{13e1d4ad-4fb9-4503-8c22-ab0bb2cbffba}</UniqueIdentifier>
     </Filter>
     <Filter Include="io">
       <UniqueIdentifier>{9dccc8fc-9564-4d2d-9f16-22372da6b13c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="network\packets\common">
-      <UniqueIdentifier>{7bd101c5-06f8-4929-9ecb-950f961b1b83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,34 +84,5 @@
     <ClCompile Include="src\network\network_util.cpp">
       <Filter>network</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Flatbuffer Include="..\common-lib\include\rose\network\packets\login_rep.fbs">
-      <Filter>network\packets</Filter>
-    </Flatbuffer>
-    <Flatbuffer Include="..\common-lib\include\rose\network\packets\login_req.fbs">
-      <Filter>network\packets</Filter>
-    </Flatbuffer>
-    <Flatbuffer Include="..\common-lib\include\rose\network\packets\packet_data.fbs">
-      <Filter>network\packets</Filter>
-    </Flatbuffer>
-    <FlatBuffer Include="..\common-lib\include\rose\network\packets\char_create_req.fbs">
-      <Filter>network\packets</Filter>
-    </FlatBuffer>
-    <FlatBuffer Include="..\common-lib\include\rose\network\packets\update_stats.fbs">
-      <Filter>network\packets</Filter>
-    </FlatBuffer>
-    <FlatBuffer Include="..\common-lib\include\rose\network\packets\char_move.fbs">
-      <Filter>network\packets</Filter>
-    </FlatBuffer>
-    <FlatBuffer Include="..\common-lib\include\rose\network\packets\common\vec3.fbs">
-      <Filter>network\packets\common</Filter>
-    </FlatBuffer>
-    <FlatBuffer Include="..\common-lib\include\rose\network\packets\common\char_move_mode.fbs">
-      <Filter>network\packets\common</Filter>
-    </FlatBuffer>
-    <FlatBuffer Include="..\common-lib\include\rose\network\packets\char_move_attack.fbs">
-      <Filter>network\packets</Filter>
-    </FlatBuffer>
   </ItemGroup>
 </Project>

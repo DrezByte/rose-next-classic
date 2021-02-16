@@ -75,6 +75,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common-shared", "common-sha
 		src\common\shared\io_quest.h = src\common\shared\io_quest.h
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packets", "packets", "{A552ADBD-CAA6-494D-B41D-C0493B1BF092}"
+	ProjectSection(SolutionItems) = preProject
+		src\common-lib\packets\char_create_req.fbs = src\common-lib\packets\char_create_req.fbs
+		src\common-lib\packets\char_move.fbs = src\common-lib\packets\char_move.fbs
+		src\common-lib\packets\char_move_attack.fbs = src\common-lib\packets\char_move_attack.fbs
+		src\common-lib\packets\login_rep.fbs = src\common-lib\packets\login_rep.fbs
+		src\common-lib\packets\login_req.fbs = src\common-lib\packets\login_req.fbs
+		src\common-lib\packets\packet_data.fbs = src\common-lib\packets\packet_data.fbs
+		src\common-lib\packets\update_stats.fbs = src\common-lib\packets\update_stats.fbs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{58F1BCA2-0BF3-424E-8E05-0CC93EE40CE9}"
+	ProjectSection(SolutionItems) = preProject
+		src\common-lib\packets\common\char_move_mode.fbs = src\common-lib\packets\common\char_move_mode.fbs
+		src\common-lib\packets\common\vec3.fbs = src\common-lib\packets\common\vec3.fbs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|x86 = debug|x86
@@ -124,6 +141,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{58F1BCA2-0BF3-424E-8E05-0CC93EE40CE9} = {A552ADBD-CAA6-494D-B41D-C0493B1BF092}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E7D4BF58-FB42-4410-8BDE-E698B777F7D7}

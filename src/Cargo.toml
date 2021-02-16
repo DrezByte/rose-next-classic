@@ -1,8 +1,11 @@
 [workspace]
 members = [
     "common-lib",
-    "launcher",
     "pipeline"
+]
+exclude = [
+    "launcher",
+    "server"
 ]
 
 # Enable this when you want to make changes to a local copy of rose-tools
