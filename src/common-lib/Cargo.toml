@@ -9,8 +9,7 @@ crate-type = ["staticlib", "rlib"]
 
 [build-dependencies]
 cbindgen = "0.12"
-# Use custom flatc that supports "extra" args
-flatc-rust = {version="0.1.4-alpha.0", git="https://github.com/rminderhoud/flatc-rust", branch="ralph/extra-args"}
+flatc-rust = "0.2"
 
 [dependencies]
 chrono = "0.4"

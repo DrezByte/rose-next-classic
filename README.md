@@ -4,17 +4,37 @@ ROSE Next is a new ROSE Online experience.
 
 ## Quickstart
 
-- Install all the required tools (see (requirements)[#requirements])
-- Run `scripts/build.ps1 -config "debug"` and `scripts/build.ps1 -config "release"`
-- Run `scripts/bake.ps1`
-- Create a new database
-- Run `scripts/squash-migrations.ps1`
-- Import `database/rose-next.sql`
-- Create a new user
-- Run `scripts/dev-setup.ps1`
-- Create and configure `dev/server/server.toml` (see `doc/server.toml.example`)
-- Start servers: `sho_loginserver.exe` `sho_worldserver.exe` `sho_gameserver.exe`
-- Start client: `rose-next.exe`
+To get started quickly, consider using the existing Justfile. Available commands:
+
+```
+Available recipes:
+    build config=CONFIG        # Build code projects
+    build-all config=CONFIG    # Build all code and assets
+    build-assets config=CONFIG # Build game assets
+    cld key=""                 # Alias to start auto client in release
+    client config=CONFIG       # Start the client
+    client-auto config=CONFIG key="" # Start the client and auto-connect looking up the connection info in env
+    clr key=""                 # Alias to start auto client in release
+    dev-setup                  # Setup dev environment by linking to assets dir
+    gameserver config=CONFIG   # Start gameserver
+    gs config=CONFIG           # alias for `gameserver`
+    loginserver config=CONFIG  # Start loginserver
+    ls config=CONFIG           # alias for `loginserver`
+    server-all config=CONFIG   # Start all servers
+    worldserver config=CONFIG  # Start worldserver
+    ws config=CONFIG           # alias for `worldserver`
+```
+
+- Install all the requirements (see (requirements)[#requirements])
+- Setup the database, see (database)(#Database)
+  - Squash the migrations
+  - Create the database + tables
+  - Create a new user
+- Run `just build-all` to build all the requirements
+- Run `just dev-setup` to setup a local dev environment
+- Create `dev/server/settings.toml` (see `doc/server.toml.example` for a sample)
+- Create a `.env` file in the main directory (see `doc/.env.example` for sample)
+- Start client `just client`
 
 ## Build
 
@@ -27,6 +47,7 @@ ROSE Next is a new ROSE Online experience.
 - Python 3+ (for scripts)
 - Clang-format (for code formatting)
 - Powershell core 7.0+
+- (Optional) (just)[https://github.com/casey/just] 
 
 ### Build
 
@@ -141,7 +162,6 @@ client/server executables.
 one. Refer to the docs for `scripts/bake.ps1`
 
 - Run the `scripts/dev-setup.ps1` script
-- Run the `scripts/generate_launchers.cmd` script for convenience scripts
 - Update the server configuration file (`dev/server/server.toml`) with your
   database settings.
 

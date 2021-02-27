@@ -1,18 +1,11 @@
-[Bb]in/
-[Bb]uild/
-[Dd]ist/
-[Ll]ib/
-
-# Game/Server data
-game/error.txt
-game/rose-next.ini
-server/
+/[Bb]in/
+/[Bb]uild/
+/[Dd]ist/
+/[Dd]ev/
+/[Ll]ib/
 
 # Assets build data
 .pipeline/
-
-# Dev data
-/dev/
 
 # Visual studio
 *.vs/
@@ -34,3 +27,6 @@ __pycache__/
 
 # Environment
 .env
+
+# Rust
+/src/bin
