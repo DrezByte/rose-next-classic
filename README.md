@@ -1,6 +1,18 @@
-# ROSE Next
+# ROSE Next Classic
 
-ROSE Next is a new ROSE Online experience.
+ROSE Next classic was an attempt to develop a new version of ROSE Online based
+on the existing irose code base. Many new developments were added at a
+technical level with minor or no changes to the core gameplay. The biggest
+change was porting the old ROSE code from MSSQL to Postgres.
+
+This project has been discontinued but the work is released for others to
+continue upon it if they wish. While there are some bugs, there are significant
+enhancements over the original iROSE code.
+
+Since this is likely the "biggest" release of any serious ROSE project in the
+past several years, we hope that the community will appreciate our efforts.
+
+Thanks to all that contributed.
 
 ## Quickstart
 
@@ -84,6 +96,9 @@ projects by compiling the `rose-next.sln` solution.
 ## Client
 
 ### Assets
+
+It is recommended to use your own assets but the original rose-next assets can
+be downloaded from https://f000.backblazeb2.com/file/rose-archive/clients/rose-next-assets.7z
 
 The `client` requires assets to be baked before it can run. This can be
 accomplished using the `pipeline` tool in conjunction with the `bake.manifest`
